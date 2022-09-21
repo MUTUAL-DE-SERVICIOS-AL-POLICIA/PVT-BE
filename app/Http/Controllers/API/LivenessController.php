@@ -7,6 +7,7 @@ use Muserpol\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Muserpol\Http\Requests\LivenessForm;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
+use Muserpol\Models\AffiliateToken;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -69,10 +70,14 @@ class LivenessController extends Controller
 
     public function index(Request $request)
     {
+        $update_device_id = isset($request->device_id) ? $request->device_id : null;
+        
         $device = $request->affiliate->affiliate_token->affiliate_device;
         $available_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
 
-        if ($device->enrolled && Storage::exists('liveness/faces/'.$request->affiliate->id) && ($available_procedures->count() > 0)) {
+        if ($device->enrolled && Storage::exists('liveness/faces/'.$request->affiliate->id) && ($available_procedures->count() > 0) && is_null($update_device_id)) {
+            
+            
             if ($device->eco_com_procedure_id != null) {
                 if ($device->eco_com_procedure_id == $available_procedures->first()->id) {
                     return response()->json([
@@ -105,7 +110,31 @@ class LivenessController extends Controller
                     'total_actions' => count($device->liveness_actions)
                 ]
             ], 200);
-        } elseif (!$device->enrolled) {
+        } elseif($device->enrolled && Storage::exists('liveness/faces/'.$request->affiliate->id) && !is_null($update_device_id)) {
+            if(Storage::exists('liveness/faces/'.$request->affiliate->id) && $device->verified) {
+                $device->liveness_actions = $this->random_actions(false);
+                $device->save();
+                $affiliate = $request->affiliate->id;
+                return response()->json([
+                    'error' => false,
+                    'message' => 'Siga la instrucción',
+                    'data' => [
+                        'completed' => false,
+                        'type' => 'liveness',
+                        'dialog' => [
+                            'title' => 'RECONOCIMIENTO FACIAL PARA NUEVO DISPOSITIVO',
+                            'content' => 'Para el acceso a la Aplicación Móvil con un nuevo dispositivo debe realizar el proceso de reconocimiento facial mediante una fotografía de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente y el nuevo dispositivo sea vinculado.',
+                        ],
+                        'action' => $device->liveness_actions[0],
+                        'current_action' => 1,
+                        'total_actions' => 1
+                    ]
+                ], 200);
+            } else {
+                logger("else");
+            }
+        }
+        elseif (!$device->enrolled) {
             if (Storage::exists('liveness/faces/'.$request->affiliate->id)) {
                 Storage::deleteDirectory('liveness/faces/'.$request->affiliate->id);
             }
@@ -139,6 +168,7 @@ class LivenessController extends Controller
     public function store(LivenessForm $request)
     {
         $device = $request->affiliate->affiliate_token->affiliate_device;
+        $new_device_id = $request->device_id ?? null;
         $continue = true;
         if (str_contains($request->image, ';base64,')) {
             $image = explode(";base64,", $request->image)[1];
@@ -155,11 +185,12 @@ class LivenessController extends Controller
         $current_action = $liveness_actions->where('successful', false)->first();
         $current_action_index = $total_actions - $remaining_actions;
 
+        if($request->device_id){
+            $remaining_actions = 1;
+        }
 
-        //  Entra aca para guardar foto
         if ($remaining_actions > 0) {
             Storage::put($path.$file_name, base64_decode($image), 'public');
-            // conexión con flask
             $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/crop', [
                 'body' => json_encode([
                     'id' => $request->affiliate->id,
@@ -175,6 +206,7 @@ class LivenessController extends Controller
                     return strpos($item, '.npy') !== false;
                 })) > 1) {
                     $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/verify', [
+                        
                         'body' => json_encode([
                             'id' => $request->affiliate->id,
                             'image' => $file_name
@@ -247,18 +279,41 @@ class LivenessController extends Controller
                                             ]);
                                         } else {
                                             $current_procedure = EcoComProcedure::affiliate_available_procedures($request->affiliate->id)->first();
-                                            if ($current_procedure) {
+                                            if ($current_procedure && is_null($new_device_id)) {
                                                 $device->update([
                                                     'eco_com_procedure_id' => $current_procedure->id,
                                                     'liveness_actions' => null
                                                 ]);
-                                            } else {
+                                            } elseif ($new_device_id) {
+                                                $affiliate_token = $request->affiliate->affiliate_token;
+                                                $affiliate_token->firebase_token = $request->firebase_token;
+                                                $affiliate_token->update();
+                                                $device->device_id = $new_device_id;
+                                                $device->update();
+                                                return response()->json([
+                                                    'error' => false,
+                                                    'message' => 'Reconocimiento facila realizado exitosamente',
+                                                    'data' => [
+                                                        'completed' => true,
+                                                        'type' => 'Face recognition',
+                                                        'verified' => $device->verified
+                                                    ]
+                                                ], 200);
+                                            }
+                                            else {
                                                 return response()->json([
                                                     'error' => true,
                                                     'message' => 'Ocurrió un error inesperado, comuniquese con el personal de MUSERPOL.',
                                                     'data' => []
                                                 ], 500);
                                             }
+                                        }
+                                        if(!is_null($new_device_id)) {
+                                            $affiliate_token = $request->affiliate->affiliate_token;
+                                            $affiliate_token->firebase_token = $request->firebase_token;
+                                            $affiliate_token->update();
+                                            $device->device_id = $new_device_id;
+                                            $device->update();
                                         }
                                         return response()->json([
                                             'error' => false,
@@ -314,7 +369,7 @@ class LivenessController extends Controller
             } else {
                 $phones = [];
             }
-            if ($request->affiliate->affiliate_token->affiliate_device->eco_com_procedure_id == $current_procedures->first()->id) {
+            if ($request->affiliate->affiliate_token->affiliate_device->eco_com_procedure_id == $current_procedures->first()->id ) {
                 $month = $request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->rent_month ? $request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->rent_month : '';
                 return response()->json([
                     'error' => false,

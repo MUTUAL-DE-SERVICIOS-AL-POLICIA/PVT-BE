@@ -57,6 +57,14 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function guardar($affiliate, $update, $affiliate_token) {
+        $affiliate->affiliate_token()->update($update);
+        $affiliate_device = new AffiliateDevice;
+        $affiliate_device->affiliate_token_id = $affiliate_token->id;
+        $affiliate_device->enrolled = false;
+        $affiliate_device->verified = false;
+        $affiliate_device->save();
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -70,6 +78,8 @@ class AuthController extends Controller
         $device_id = $request->device_id;
         $firebase_token = $request->firebase_token;
         $is_new_app= isset( $request->is_new_app ) ? $request->is_new_app : false;
+        $update_device_id = false; // Niomi
+        $code = 200;
 
         if($is_new_app){
             /*if (Util::isDoblePerceptionEcoCom($identity_card)) {
@@ -90,7 +100,7 @@ class AuthController extends Controller
                         if ($affiliate_token->affiliate_id != $affiliate->id) { 
                             return response()->json([
                                 'error' => true,
-                                'message' => 'Afiliado registrado con otro dispositivo.',
+                                'message' => 'Este dispositivo está registrado con otro usuario.',
                                 'data' => (object)[]
                             ], 403);
                         } 
@@ -124,63 +134,71 @@ class AuthController extends Controller
                     $affiliate_token = AffiliateToken::whereAffiliateId($affiliate->id)->first();
 
                     $token = null;
-                    if (!$affiliate->affiliate_token && !$affiliate_token) {
+                    if (!$affiliate->affiliate_token && !$affiliate_token) { // Primer ingreso
                         $token = $this->getToken($device_id);
                         $affiliate_token = $affiliate->affiliate_token()->create([
                             'api_token' => $token,
-                            // 'device_id' => $device_id,
-                            'firebase_token' => $firebase_token
                         ]);
                         $affiliate_device = new AffiliateDevice;
-                        $affiliate_device->create([
+                        $device = $affiliate_device->create([
                             'affiliate_token_id' => $affiliate_token->id,
-                            'device_id' => $device_id,
                             'enrolled' => false,
                             'verified' => false
                         ]);
-                    } elseif ($affiliate_token && $affiliate) { 
-                        if ($device_id == $affiliate_token->affiliate_device->device_id || $affiliate_token->affiliate_device->device_id == null) {
-                            $token = $this->getToken($device_id); 
-                            $update = [
-                                'api_token' => $token,
-                                'firebase_token' => $firebase_token
-                            ];
-                            if ($affiliate_token->affiliate_device->device_id == null) {
-                                // $update['device_id'] = $device_id;
-                                $affiliate_token->affiliate_device()->update(['device_id' => $device_id]);
-                            }
-                            $affiliate->affiliate_token()->update($update); 
+                    } elseif ($affiliate_token && $affiliate) {  // Segunda vez o más o por oficina virtual 
+                        if ($affiliate_token->affiliate_device) { 
+                            if ($device_id == $affiliate_token->affiliate_device->device_id || $affiliate_token->affiliate_device->device_id == null) {
+                                $token = $this->getToken($device_id); 
+                                $update = [
+                                    'api_token' => $token,
+                                    'firebase_token' => $firebase_token
+                                ];
+                                if ($affiliate_token->affiliate_device->device_id == null && $affiliate_token->affiliate_device->enrolled) { // esto
+                                    $device = $affiliate_token->affiliate_device()->update(['device_id' => $device_id]);
+                                }
+                                $affiliate->affiliate_token()->update($update); 
 
-                            $affiliate_token_id = $affiliate_token->id; 
-                            if(AffiliateDevice::find($affiliate_token_id) == null) { 
-                                logger("entra otro if");
-                                $affiliate_device = new AffiliateDevice;
-                                $affiliate_device->create([
-                                    'affiliate_token_id' => $affiliate_token_id,
-                                    'device_id' => $device_id,
-                                    'enrolled' => false,
-                                    'verified' => false
-                                ]);
+                                $device = (object)[];
+                                $device->enrolled = $affiliate_token->affiliate_device->enrolled;
+                                $device->verified = $affiliate_token->affiliate_device->verified;
+                            } elseif ($device_id != $affiliate_token->affiliate_device->device_id) {
+                                if($affiliate_token->affiliate_device->enrolled == true && $affiliate_token->affiliate_device->verified == true) {
+                                    $token = $this->getToken($device_id);
+                                    $update = [
+                                        'api_token' => $token,
+                                    ];
+                                    $affiliate->affiliate_token()->update($update);
+                                    $update_device_id = true;
+                                    $device = (object)[];
+                                    $device->enrolled = true;
+                                    $device->verified = true;
+                                } elseif ($affiliate_token->affiliate_device->enrolled == false && $affiliate_token->affiliate_device->verified == false) {
+                                    $token = $this->getToken($device_id);
+                                    $update = [
+                                        'api_token' => $token
+                                    ];
+                                    $affiliate->affiliate_token()->update($update);
+                                    $update_device_id = false;
+                                    $device = (object)[];
+                                    $device->enrolled = false;
+                                    $device->verified = false;
+                                }
                             }
-                        } 
-                        elseif(AffiliateDevice::find($affiliate_token->id) == null) { 
-                            // Actualizamos el device_id
+                        } elseif(AffiliateDevice::find($affiliate_token->id) == null) {  // Entro a la oficina virtual y ahora quiere ingresar a CE
                             $token = $this->getToken($device_id);
                             $update = [
                                 'api_token' => $token,
-                                'firebase_token' => $firebase_token,
-                                // 'device_id' => $device_id
                             ];
                             $affiliate->affiliate_token()->update($update);
                             $affiliate_device = new AffiliateDevice;
-                            $affiliate_device->create([
+                            $device = $affiliate_device->create([
                                 'affiliate_token_id' => $affiliate_token->id,
-                                'device_id' => $device_id,
                                 'enrolled' => false,
                                 'verified' => false
                             ]);
                         }
                     }
+                    $code = $update_device_id ? 201: 200;
                     if ($token) {
 
                         return response()->json([
@@ -195,13 +213,12 @@ class AuthController extends Controller
                                     'identity_card' => $eco_com_beneficiary->ciWithExt(),
                                     'pension_entity' => $affiliate->pension_entity ? $affiliate->pension_entity->name : '',
                                     'category' => $affiliate->category->name,
-                                    'enrolled' => $affiliate_token->affiliate_device->enrolled,
-                                    'verified' => $affiliate_token->affiliate_device->verified,
-                                    // 'enrolled' => $affiliate->device->enrolled,
-                                    // 'verified' => $affiliate->device->verified,
+                                    'enrolled' => $device->enrolled,
+                                    'verified' => $device->verified,
                                 ],
+                                'update_device_id' => $update_device_id
                             ]
-                        ], 200);
+                        ], $code);
                     } else {
                         return response()->json([
                             'error' => true,
@@ -224,6 +241,10 @@ class AuthController extends Controller
                 'data' => (object)[]
             ], 403);
         }
+    }
+
+    public function resp(){
+
     }
 
     /**
