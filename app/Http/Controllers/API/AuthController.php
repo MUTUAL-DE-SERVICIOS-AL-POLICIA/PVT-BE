@@ -57,14 +57,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function guardar($affiliate, $update, $affiliate_token) {
-        $affiliate->affiliate_token()->update($update);
-        $affiliate_device = new AffiliateDevice;
-        $affiliate_device->affiliate_token_id = $affiliate_token->id;
-        $affiliate_device->enrolled = false;
-        $affiliate_device->verified = false;
-        $affiliate_device->save();
-    }
     /**
      * Store a newly created resource in storage.
      *
@@ -243,9 +235,6 @@ class AuthController extends Controller
         }
     }
 
-    public function resp(){
-
-    }
 
     /**
      * Remove the specified resource from storage.
