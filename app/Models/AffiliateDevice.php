@@ -8,7 +8,7 @@ use Muserpol\Models\AffiliateToken;
 
 class AffiliateDevice extends Model
 {
-    protected $fillable = ['enrolled', 'verified', 'liveness_actions', 'eco_com_procedure_id', 'affiliate_token_id'];
+    protected $fillable = ['enrolled', 'verified', 'liveness_actions', 'eco_com_procedure_id', 'affiliate_token_id', 'device_id'];
     protected $primaryKey = 'affiliate_token_id';
     public $incrementing = false;
     protected $casts = [

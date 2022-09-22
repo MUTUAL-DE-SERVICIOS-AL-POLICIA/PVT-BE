@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class WorkflowState extends Model
 {
-    // use SoftDeletes;
+    use SoftDeletes;
     protected $table = "wf_states";
     public $timestamps = false;
     protected $fillable = ['module_id', 'role_id', 'name','first_shortened', 'sequence_number'];
