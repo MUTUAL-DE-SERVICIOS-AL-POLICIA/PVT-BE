@@ -19,8 +19,8 @@
                         <td colspan="2">
                             <table class="no-border" style="border:none">
                                 <tr class="no-border" style="border:none">
-                                    <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($ret_fun->affiliate->getDateEntryAvailability()) ?? 'error' }}  </td>
-                                    <td class="text-center uppercase font-bold px-5 py-3" style="border:none">  {{ Util::formatMonthYear($ret_fun->affiliate->getDateFinishAvailability()) ?? 'error' }}  </td>
+                                    <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ $ret_fun->affiliate->getDateEntryAvailability()!='-'? Util::formatMonthYear($ret_fun->affiliate->getDateEntryAvailability()): '-' }}  </td>
+                                    <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ $ret_fun->affiliate->getDateEntryAvailability()!='-'? Util::formatMonthYear($ret_fun->affiliate->getDateFinishAvailability()): '-' }}  </td>
                                 </tr>
                             </table>
                         </td>
