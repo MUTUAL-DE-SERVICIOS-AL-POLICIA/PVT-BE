@@ -566,6 +566,21 @@ class EconomicComplementController extends Controller
                 $submit->save();
             }
         }
+        if($request->reception_type == ID::ecoCom()->inclusion) {
+            if (AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()) {
+                $affiliateDevice = AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device ? AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device : null;
+                $affiliateToken =  AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first();
+                if (!is_null($affiliateDevice)) {
+                    $affiliateDevice->device_id = null;
+                    $affiliateDevice->enrolled = false;
+                    $affiliateDevice->verified = false;
+                    $affiliateDevice->save();
+                    $affiliateToken->api_token = null;
+                    $affiliateToken->firebase_token = null;
+                    $affiliateToken->save();
+                }
+            }
+        }
         return redirect()->action('EconomicComplementController@show', ['id' => $economic_complement->id]);
     }
 
