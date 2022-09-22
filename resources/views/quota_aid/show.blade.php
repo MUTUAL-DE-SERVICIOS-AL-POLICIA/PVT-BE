@@ -113,15 +113,6 @@
                 </quota-aid-certification-button>
             @endif
 
-            @if(Util::getRol()->id == 41)
-                <quota-aid-certification-button
-                    title="Imprimir Dictamen Legal"
-                    quota-aid-id="{{ $quota_aid->id }}"
-                    url-print="{{ route('quota_aid_print_legal_dictum', $quota_aid->id) }}"
-                    message="true"
-                >
-                </quota-aid-certification-button>
-            @endif
 
             @if(Util::getRol()->id == 43)
                 <quota-aid-certification-button
@@ -186,6 +177,15 @@
                 </button>
             </span>
             @include('quota_aid.quota_aid_records', ['quota_aid_records' => $quota_aid_records,])
+            @if(Util::getRol()->id == 44)
+                <quota-aid-certification-button
+                    title="Imprimir Dictamen Legal"
+                    quota-aid-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('quota_aid_print_legal_dictum', $quota_aid->id) }}"
+                    message="true"
+                >
+                </quota-aid-certification-button>
+            @endif
         </div>
         <div class="pull-right">
             <div class="form-inline">
@@ -342,6 +342,7 @@
                             </div>
                             <div id="tab-observations" class="tab-pane">
                                     {{-- @include('ret_fun.observation') --}}
+                                    @include('quota_aid.observation', ['quota_aid'=>$quota_aid,'observations'=>$quota_aid->quota_aid_observations,'observations_delete'=>$quota_aid->quota_aid_observations_delete])
                             </div>
 
                         </div>

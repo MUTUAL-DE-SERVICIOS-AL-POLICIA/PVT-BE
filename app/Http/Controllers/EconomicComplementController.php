@@ -641,6 +641,21 @@ class EconomicComplementController extends Controller
                 'wf_states.first_shortened as wf_state_name'
             )
             ->get();
+        
+        //para devolver hacia adelante
+        $return_sequence = $economic_complement->wf_records->first();
+        if($return_sequence <> null && $return_sequence->record_type_id == 4 && $return_sequence->wf_state_id == $economic_complement->wf_current_state_id){
+            $wf_back = DB::table("wf_states")
+            ->where("wf_states.module_id", $module->id)
+            ->where('wf_states.id', $return_sequence->old_wf_state_id)
+            ->select(
+                'wf_states.id as wf_state_id',
+                'wf_states.first_shortened as wf_state_name'
+            )
+            ->get();
+            $wf_sequences_back = $wf_sequences_back->merge($wf_back);
+        }
+        //
 
         /**
          ** for observations
@@ -719,29 +734,22 @@ class EconomicComplementController extends Controller
             'cities_pluck' => $cities_pluck,
             'birth_cities' => $birth_cities,
             'is_editable' => $is_editable,
-
             'degrees' => $degrees,
             'categories' => $categories,
             'affiliate_states' => $affiliate_states,
-
             'user' => $user,
             'procedure_modalities' => $procedure_modalities,
             'requirements' => $procedure_requirements,
             'procedure_types' => $procedure_types,
             'submitted' =>  $submitted->pluck('eco_com_submitted_documents.procedure_requirement_id', 'procedure_requirements.number'),
             'submit_documents' => $submitted->get(),
-
             'can_validate' => $can_validate,
             'can_cancel' => $can_cancel,
             'wf_sequences_back' => $wf_sequences_back,
-
             'observation_types' =>  $observation_types,
-
             'permissions' =>  $permissions,
-
             'eco_com_legal_guardian_types' =>  $eco_com_legal_guardian_types,
             'financial_entities' =>  $financial_entities,
-            
             'fotofrente' =>  $fotoFrente,
             'fotosonriente' =>  $fotoSonriente,
             'fotoizquierda' =>  $fotoIzquierda,

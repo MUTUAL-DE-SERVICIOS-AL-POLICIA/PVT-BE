@@ -3,6 +3,7 @@
 namespace Muserpol\Models\Workflow;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WorkflowState extends Model
 {

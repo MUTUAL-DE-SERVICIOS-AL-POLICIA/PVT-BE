@@ -38,7 +38,7 @@ class EconomicComplementObserver
             ]);
         }
     }
-    private function defaultValuesWfRecord($wf_current_state_id = null, $record_type_id = null, $message = null)
+    private function defaultValuesWfRecord($wf_current_state_id = null, $record_type_id = null, $message = null, $old_wf_state_id = null, $old_user_id = null)
     {
         $default = [
             'user_id' => Auth::user()->id,
@@ -46,6 +46,8 @@ class EconomicComplementObserver
             'wf_state_id' => $wf_current_state_id,
             'record_type_id' => $record_type_id,
             'message' => $message,
+            'old_wf_state_id' => $old_wf_state_id,
+            'old_user_id' => $old_user_id,
         ];
         return $default;
     }
@@ -116,10 +118,10 @@ class EconomicComplementObserver
         $old_wf_state_sequence = WorkflowState::find($old->wf_current_state_id)->sequence_number;
 
         if ($eco_com->wf_current_state_id != $old->wf_current_state_id && $wf_state_sequence > $old_wf_state_sequence) {
-            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 3, "El usuario " . Auth::user()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $eco_com->wf_state->name));
+            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 3, "El usuario " . Auth::user()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $eco_com->wf_state->name , $old->wf_current_state_id, $old->user_id));
         }
         if ($eco_com->wf_current_state_id != $old->wf_current_state_id && $wf_state_sequence < $old_wf_state_sequence) {
-            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 4, "El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $eco_com->wf_state->name . " con nota: " . request()->message . "."));
+            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 4, "El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $eco_com->wf_state->name . " con nota: " . request()->message . ".", $old->wf_current_state_id, $old->user_id));
         }
         if ($old->inbox_state == false && $eco_com->inbox_state == true && $eco_com->wf_current_state_id == $old->wf_current_state_id) {
             $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 1, 'El usuario ' . Auth::user()->username . ' Validó el trámite.'));

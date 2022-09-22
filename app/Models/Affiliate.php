@@ -205,11 +205,30 @@ class Affiliate extends Model
   }
   public function getDateEntryAvailability()
   {
-    $availability = $this->getContributionsWithType(10);
+    $availability = $this->getContributionsWithTypes(12,13);
     if (sizeOf($availability) > 0) {
-      return Util::getDateFormat($availability[0]->start);
+      //return Util::getDateFormat($availability[0]->start);
+      return $availability[0]->start;
     }
     return '-';
+  }
+  public function getDateFinishAvailability()
+  {
+    $availability = $this->getContributionsWithTypes(12,13);
+    if (sizeOf($availability) > 0) {
+      //return Util::getDateFormat($availability[sizeOf($availability)-1]->end);
+      return $availability[sizeOf($availability)-1]->end;
+    }
+    return '-';
+  }
+  public function getDateIntervalAvailability()
+  {
+      $total_dates= $this->getDatesTotalAvailability();
+      $contributions = array(
+        'years' => intval($total_dates / 12),
+        'months' => $total_dates % 12
+    );
+    return $contributions;
   }
   public function getLastBaseWage()
   {
@@ -289,7 +308,15 @@ class Affiliate extends Model
   }
   public function getDatesAvailability()
   {
-    return $this->getContributionsWithType(10);
+    return $this->getContributionsWithType(12);
+  }
+  public function getDatesWithoutAvailability()
+  {
+    return $this->getContributionsWithType(13);
+  }
+  public function getDatesTotalAvailability()
+  {
+    return Util::sumTotalContributions($this->getDatesWithoutAvailability())+(Util::sumTotalContributions($this->getDatesAvailability()));
   }
   public function getDatesGlobal()
   {
@@ -308,6 +335,28 @@ class Affiliate extends Model
     $dates = [];
     if (!$contribution_type) return "error";
     $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->orderBy('month_year', 'asc')->get();
+    if ($length = $contributions->count()) {
+      $start = $contributions[0]->month_year;
+      for ($i = 0; $i < $length - 1; $i++) {
+        if ($i <= $length - 1) {
+          if (Carbon::parse($contributions[$i]->month_year)->addMonth()->toDateString() == Carbon::parse($contributions[$i + 1]->month_year)->toDateString()) { } else {
+            $dates[] = (object)array('start' => $start, 'end' => $contributions[$i]->month_year);
+            $start = $contributions[$i + 1]->month_year;
+          }
+        }
+      }
+      $dates[] = (object)array('start' => $start, 'end' => $contributions[$i]->month_year);
+    }
+    return $dates;
+  }
+  public function getContributionsWithTypes($contribution_type_id_s,$contribution_type_id_e)
+  {
+    $contribution_type_start = ContributionType::find($contribution_type_id_s)->id;
+    $contribution_type_end = ContributionType::find($contribution_type_id_e)->id;
+    $contribution_types= [$contribution_type_start,$contribution_type_end];
+    $dates = [];
+    if (!$contribution_type_start && !$contribution_type_end) return "error";
+    $contributions = $this->contributions()->whereIn('contribution_type_id',$contribution_types)->orderBy('month_year', 'asc')->get();
     if ($length = $contributions->count()) {
       $start = $contributions[0]->month_year;
       for ($i = 0; $i < $length - 1; $i++) {
@@ -354,6 +403,7 @@ class Affiliate extends Model
     }
     return $total;
   }
+  //--**OBTIENE EL TOTAL DE CUOTAS**//
   public function getTotalQuotes()
   {
     // $total_global_backed = Util::sumTotalContributions($this->getDatesGlobal());
@@ -410,12 +460,16 @@ class Affiliate extends Model
     );
     return $total_dates;
   }
-  public function globalPayRetFun()
-  {
-    $current_procedure = Util::getRetFunCurrentProcedure();
-    $number_contributions = $current_procedure->contributions_number;
-    return $this->getTotalQuotes() < $number_contributions;
+  public function getLastContributionAttribute(){
+
+    return $this->contributions()->latest('month_year')->first();
   }
+  // public function globalPayRetFun()
+  // {
+  //   $current_procedure = Util::getRetFunCurrentProcedure();
+  //   $number_contributions = $current_procedure->contributions_number;
+  //   return $this->getTotalQuotes() < $number_contributions;
+  // }
 
   public function getQuotaAidContributions($quota_aid_id)
   {
@@ -469,13 +523,18 @@ class Affiliate extends Model
     }
     return $null_data;
   }
+  //--**SUMA LAS CONTRIBUCIONES CON SIGNO + **//
   public function getContributionsPlus($with_reimbursements = true)
   {
 
     if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0) {
       return [];
     }
-    $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+    if($this->retirement_funds()->where('code','not like','%A%')->first()->procedure_modality->procedure_type->id == 21){
+      $number_contributions = $this->getTotalQuotes();
+     }else{
+      $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+    }
     if ($with_reimbursements) {
       $contributions = DB::select("
             SELECT
@@ -484,7 +543,10 @@ class Affiliate extends Model
                 sum(contributions_reimbursements.base_wage) as base_wage,
                 sum(contributions_reimbursements.seniority_bonus) as seniority_bonus,
                 sum(contributions_reimbursements.total) as total,
-                sum(contributions_reimbursements.retirement_fund) as retirement_fund
+                sum(contributions_reimbursements.retirement_fund) as retirement_fund,
+                sum(contributions_reimbursements.mortuary_quota) as mortuary_quota,
+                sum(contributions_reimbursements.public_security_bonus) as public_security_bonus,
+                sum(contributions_reimbursements.gain) as gain
                 FROM(
                 SELECT
                     reimbursements.id,
@@ -559,12 +621,17 @@ class Affiliate extends Model
       /* TODO verificar reverse order*/
     }
   }
+  //--**OBTIENE LAS CONTRIBUCIONES DE DISPONIBILIDAD**--//
   public function getContributionsAvailability($with_reimbursements = true)
   {
     if ($this->selectedContributions() > 0 ||  $this->contributions()->count() == 0) {
       return [];
     }
-    $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+    if($this->retirement_funds->last()->procedure_modality->procedure_type->id == 21){
+      $number_contributions = $this->getTotalQuotes();
+     }else{
+      $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+    }
     if ($with_reimbursements) {
       $contributions = DB::select("
         SELECT
@@ -599,7 +666,7 @@ class Affiliate extends Model
             reimbursements.total
                 FROM reimbursements
                 WHERE affiliate_id = " . $this->id . " and reimbursements.deleted_at is null  and month_year in (SELECT contributions.month_year
-                                                FROM contributions where contributions.affiliate_id = " . $this->id . " and contribution_type_id = 10)
+                                                FROM contributions where contributions.affiliate_id = " . $this->id . " and contribution_type_id in (12,13))
                 UNION ALL
                 SELECT
                 contributions.id,
@@ -625,7 +692,7 @@ class Affiliate extends Model
             contributions.total
                 FROM contributions
                 LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
-                WHERE affiliate_id = " . $this->id . " and contributions.deleted_at is null and contribution_types.id = 10
+                WHERE affiliate_id = " . $this->id . " and contributions.deleted_at is null and contribution_types.id in (12,13)
         ) as contributions_reimburements
             GROUP BY month_year, affiliate_id
             ORDER BY month_year DESC");
@@ -634,9 +701,14 @@ class Affiliate extends Model
       return "error.... working........";
     }
   }
+  //--**OBTIENE EL TOTAL DEL SALARIO COTIZABLE PARA FONDO**--//
   public function getTotalAverageSalaryQuotable($with_reimbursements = true)
   {
-    $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+    if($this->retirement_funds->last()->procedure_modality->procedure_type->id == 21){
+      $number_contributions = $this->getTotalQuotes();
+     }else{
+      $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+    }
     // $availability = $this->getContributionsWithType(10);#disponibilidad
 
     // if (sizeOf($availability) > 0) {
@@ -689,7 +761,7 @@ class Affiliate extends Model
   }
   public function hasAvailability()
   {
-    return sizeOf($this->getContributionsWithType(10)) > 0;
+    return sizeOf($this->getContributionsWithType(12)) > 0;
   }
   public function selectedContributions()
   {
@@ -857,4 +929,13 @@ class Affiliate extends Model
    {
       return ($this->date_death != null || $this->reason_death != null || $this->death_certificate_number != null || $this->affiliate_state->name == "Fallecido");
    }
+
+    public function getExpeditionCardAttribute()
+    {
+        $data = ' ';
+        if ($this->city_identity_card && $this->city_identity_card->name != 'NINGUNO'){
+          $data .= ' ' . $this->city_identity_card->name;
+        } 
+        return $data;
+    }
 }

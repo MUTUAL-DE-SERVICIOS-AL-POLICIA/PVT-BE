@@ -6,7 +6,7 @@
     @if($retirement_fund->hasLegalGuardian())
         @include('ret_fun.print.legal_guardian', ['legal_guardian'=>$retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->first()->legal_guardian()->first()])
     @endif
-    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
+    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4 || $retirement_fund->procedure_modality->id == 63)
         @include('ret_fun.print.beneficiaries_list', ['beneficiaries'=>$beneficiaries])
     @endif
     @include('ret_fun.print.signature_footer',['user'=>$user])

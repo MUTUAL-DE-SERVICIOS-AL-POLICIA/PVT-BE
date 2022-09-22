@@ -37,9 +37,17 @@ class QuotaAidMortuary extends Model
 	{
 		return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument');
     }
-    public function quota_aid_observation()
+    // public function quota_aid_observation()
+    // {
+    //     return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
+    // }
+    public function quota_aid_observations()
     {
-        return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidObservation');
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
+    }
+    public function quota_aid_observations_delete()
+    {
+        return $this->morphToMany('Muserpol\Models\ObservationType', 'observable')->whereNotNull('observables.deleted_at')->withPivot(['user_id', 'date', 'message', 'enabled', 'deleted_at'])->withTimestamps();
     }
     public function quota_aid_beneficiaries()
     {
@@ -67,7 +75,7 @@ class QuotaAidMortuary extends Model
     }
     public function wf_records()
     {
-        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
+        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable')->orderBy('id', 'desc');
     }
     public function getBasicInfoCode()
     {
@@ -108,5 +116,9 @@ class QuotaAidMortuary extends Model
             return $this->procedure_modality->id == 13 ? $this->affiliate : $this->affiliate->spouse->first();
         }
         return null;
+    }
+    public function procedure_records()
+    {
+        return $this->morphMany('Muserpol\Models\ProcedureRecord', 'recordable');
     }
 }

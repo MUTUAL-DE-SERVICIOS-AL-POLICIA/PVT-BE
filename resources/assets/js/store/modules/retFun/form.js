@@ -97,6 +97,15 @@ const mutations = {
         message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
       });
     }
+    if (obj.contributionTypes.some(item => item.id == 12 || item.id == 13)) {
+      let message = obj.contributionTypes.filter(item => item.id == 12 || item.id == 13);
+      state.contributionTypes.push({
+        id: 12,
+        name: "Disponibilidad C/S",
+        path: "print/cer_availability_new",
+        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
+      });
+    }
   },
   resetContributionTypes(state, array){
       state.contributionTypes = array;

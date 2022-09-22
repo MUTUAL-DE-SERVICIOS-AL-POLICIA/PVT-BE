@@ -13,9 +13,9 @@ class AddColumnEconomiComplemtTramite extends Migration
      */
     public function up()
     {
-        Schema::table('economic_complements', function (Blueprint $table) {
+        /*Schema::table('economic_complements', function (Blueprint $table) {
             $table->date('procedure_date')->nullable();
-        });
+        });*/
     }
 
     /**

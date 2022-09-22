@@ -96,7 +96,8 @@
                             </tr>
                             <tr class="text-sm">
                                 <td class="text-left px-10 py-3 uppercase">fecha de ingreso a disponibilidad</td>
-                                <td class="text-left uppercase font-bold px-5 py-3">{{ $affiliate->getDateEntryAvailability() }}</td>
+                                <td class="text-left uppercase font-bold px-5 py-3">{{$affiliate->getDateEntryAvailability()!='-'?(Util::getDateFormat($affiliate->getDateEntryAvailability())):$affiliate->getDateEntryAvailability() }}</td>
+                                
                             </tr>
                             <tr class="text-sm">
                                 <td class="text-left px-10 py-3 uppercase">fecha de baja</td>

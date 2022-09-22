@@ -118,7 +118,7 @@ class EconomicComplement extends Model
     }
     public function wf_records()
     {
-        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable');
+        return $this->morphMany('Muserpol\Models\Workflow\WorkflowRecord', 'recordable')->orderBy('id', 'desc');
     }
     public function observations()
     {
@@ -788,5 +788,24 @@ class EconomicComplement extends Model
     public function isLagging()
     {
         return $this->workflow_id == ID::workflow()->eco_com_lagging;
+    }
+    public function getPeriods(){
+        $procedure = EcoComProcedure::find($this->eco_com_procedure_id);
+        $periods = [];
+        switch ($procedure->semester) {
+        case 'Primer':
+            for($i = 7 ;$i <= 12; $i++){
+               $periods[$i] = Carbon::parse(Carbon::parse($procedure->year)->year.'-'.$i.'-01')->format('Y-m-d');
+            }
+            return  $periods;
+            break;
+        case 'Segundo':
+            for($i = 1 ;$i <= 7; $i++){
+              $periods[$i] = Carbon::parse(((Carbon::parse($procedure->year)->addYear(1))->year).'-'.$i.'-01')->format('Y-m-d');
+            }
+            return  $periods;
+            break;
+        default:
+        }
     }
 }
