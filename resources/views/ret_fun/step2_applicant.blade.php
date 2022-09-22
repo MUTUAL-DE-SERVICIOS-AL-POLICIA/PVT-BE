@@ -14,7 +14,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3" :class="{'has-error': errors.has('date_derelict') }">
+                <div class="col-md-3" :class="{'has-error': errors.has('date_derelict') }" v-if="!validDateDerelict">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">
                             Fecha de desvinculaci&oacute;n</label>
@@ -22,6 +22,15 @@
                             <input type="text" name="date_derelict" v-model="date_derelict" v-month-year class="form-control" v-validate.initial="'required|max_current_date_month_year'">
                             <i v-show="errors.has('date_derelict')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('date_derelict')" class="text-danger">@{{ errors.first('date_derelict') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" v-if="validDateDerelict" >
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">
+                            Fecha de desvinculaci&oacute;n</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="date_derelict" v-model="date_derelict" v-month-year class="form-control" v-validate.initial="'required|max_current_date_month_year'">
                         </div>
                     </div>
                 </div>
