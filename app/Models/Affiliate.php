@@ -937,4 +937,8 @@ class Affiliate extends Model
         } 
         return $data;
     }
+    public function hasAvailabilityTime()
+    {
+      return (sizeOf($this->getContributionsWithType(12)) > 0) || (sizeOf($this->getContributionsWithType(13)) > 0);
+    }
 }
