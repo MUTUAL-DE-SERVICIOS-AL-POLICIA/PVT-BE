@@ -1998,7 +1998,7 @@ class RetirementFundCertificationController extends Controller
       $beneficiaries = $testimony_applicant->ret_fun_beneficiaries;
       $quantity = $beneficiaries->count();
       $start_message = false;
-      if ($quantity > 1) {
+     if ($quantity > 2) {
         $person .= ' y de los derechohabientes ';
         $start_message = true;
       }
@@ -2043,7 +2043,7 @@ class RetirementFundCertificationController extends Controller
           }
         }
       }
-    $person .='. Solicitan ';
+    $person .='. Solicita(n) ';
   }
   }
   
@@ -2255,8 +2255,9 @@ class RetirementFundCertificationController extends Controller
     Policial Solidario, se efectuarán en Ventanilla de Atención al Afiliado de la Oficina Central u Oficinas Regionales en el interior, verificándose que los documentos presentados estén completos de acuerdo a lo
     referido en el Artículo 44 del presente Reglamento, en función a la modalidad del beneficio; en caso de identificar algún documento faltante no se procederá a la recepción (…)”</i>,establece los parámetros de presentación
     de los documentos para acceder a la otorgación del beneficio.
-    <br><br>
-    Que, el Artículo 44 del reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(REQUISITOS PARA SOLICITUDES NUEVAS). - I. Las solicitudes nuevas para el pago del beneficio de Fondo de Retiro Policial Solidario, que
+    <br><br>';
+    if($retirement_fund->procedure_modality->procedure_type_id == 2){
+      $considering_two.='Que, el Artículo 44 del reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(REQUISITOS PARA SOLICITUDES NUEVAS). - I. Las solicitudes nuevas para el pago del beneficio de Fondo de Retiro Policial Solidario, que
     ingresen a partir de la aprobación del presente Reglamento deberán contener los siguientes documentos: <b>a.) Requisitos generales</b> 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios
     en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple de la Cédula
     de Identidad del titular, vigente a la fecha de solicitud. 4. Memorándum original o copia legalizada de Agradecimiento de Servicios emitido por el Comando General de la Policía Boliviana, dirigido a nombre del titular.  5.
@@ -2283,6 +2284,7 @@ class RetirementFundCertificationController extends Controller
         (Ex Privada, en periodos anteriores a Mayo/2007), deberá presentar adicionalmente documentación requerida por la Mutual de Servicios al Policía – MUSERPOL</i>';
       }
       $considering_two.='<i>(...)”</i>, por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
+     }
     }
     $considering_two.= 'Que, el Artículo 61 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(DEFINICIÓN Y CONFORMACIÓN).- I. La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante acto administrativo determina la
     otorgación del beneficio de Fondo de Retiro Policial Solidario. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL(...)”</i>. Por consiguiente, la Resolución Administrativa
@@ -2350,17 +2352,18 @@ class RetirementFundCertificationController extends Controller
             $considering_three.= $individual_accounts;
             //falta para la disponivilidad con aportes
             if($retirement_fund->procedure_modality->procedure_type_id == 2){// Solo para Fondo de retiro
-              $considering_three.='Que, mediante Certificación de Aportes N° '.$certification_date->code.' del Área de Cuentas Individuales de la Unidad
-              de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha '. Util::getStringDate($certification_date->date).', se verifica su permanencia en el destino de disponibilidad por el periodo de <b>'.Util::formatMonthYearLiteral($affiliate->getDatesTotalAvailability()).',</b> en los cuales,';
-              if ($affiliate->hasAvailability()) {
-                $availability = Util::sumTotalContributions($affiliate->getDatesAvailability());
-                $considering_three.='se evidencia descuento para el Beneficio de Fondo de Retiro Policial Solidario por '.Util::formatMonthYearLiteral($availability).', motivo por el cual en consideración a la Disposición Transitoria Cuarta del Reglamento del mencionado beneficio, el afiliado podrá solicitar la devolución del mismo.
-                <br><br>
-                Que, habiéndose procedido a la solicitud formal para la devolución de descuentos efectivizados durante la permanencia en el destino de la disponibilidad de las letras al Titular '.($affiliate->gender == 'M' ? ' Sr. ' : ' Sra. ').$affiliate_name.', corresponde que la misma sea atendida en concordancia con lo determinado en el Reglamento de Fondo de Retiro Policial Solidario aprobado y vigente.<br><br>';
-                
-              }else{
-              $considering_three.='no se evidencia descuentos para el beneficio de Fondo de Retiro Policial Solidario.<br><br>';
-            }
+              if($affiliate->hasAvailabilityTime()){//Tiene clasificador con Disponibilidad con y sin portes
+                 $considering_three.='Que, mediante Certificación de Aportes N° '.$certification_date->code.' del Área de Cuentas Individuales de la Unidad
+                 de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha '. Util::getStringDate($certification_date->date).', se verifica su permanencia en el destino de disponibilidad por el periodo de <b>'.Util::formatMonthYearLiteral($affiliate->getDatesTotalAvailability()).',</b> en los cuales,';
+                 if ($affiliate->hasAvailability()) {
+                   $availability = Util::sumTotalContributions($affiliate->getDatesAvailability());
+                   $considering_three.='se evidencia descuento para el Beneficio de Fondo de Retiro Policial Solidario por '.Util::formatMonthYearLiteral($availability).', motivo por el cual en consideración a la Disposición Transitoria Cuarta del Reglamento del mencionado beneficio, el afiliado podrá solicitar la devolución del mismo.
+                   <br><br>
+                   Que, habiéndose procedido a la solicitud formal para la devolución de descuentos efectivizados durante la permanencia en el destino de la disponibilidad de las letras al Titular '.($affiliate->gender == 'M' ? ' Sr. ' : ' Sra. ').$affiliate_name.', corresponde que la misma sea atendida en concordancia con lo determinado en el Reglamento de Fondo de Retiro Policial Solidario aprobado y vigente.<br><br>';
+                 }else{
+                 $considering_three.='no se evidencia descuentos para el beneficio de Fondo de Retiro Policial Solidario.<br><br>';
+                 }
+              }
           }
           break;
           case 23://área de calificación
@@ -2544,13 +2547,13 @@ class RetirementFundCertificationController extends Controller
     $qualification_id = 23;
     $qualification = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', $qualification_id)->first();
      $body_resolution .= '<b>' . $cardinal[$cardinal_index++] . '.-</b> Reconocer '.($retirement_fund->procedure_modality->procedure_type_id==21?'la ':'el ').$retirement_fund->procedure_modality->procedure_type->name.($retirement_fund->procedure_modality_id == ID::retFunDevPay()->titular_id?' al ':' por '). $retirement_fund->procedure_modality->name . ', por el periodo de&nbsp;<b>' . Util::formatMonthYearLiteral($months).
-     '</b> de acuerdo a Calificación de la Unidad de Fondo de Retiro Policial Solidario, de fecha&nbsp; <b>' . Util::getStringDate($qualification->date) . '</b>, el monto de <strong>' . Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun) . '</strong>.';
+     '</b> de acuerdo a Calificación de la Unidad de Fondo de Retiro Policial Solidario, de fecha&nbsp; <b>' . Util::getStringDate($qualification->date) . '</b>, el monto de <strong>' . Util::formatMoneyWithLiteral($retirement_fund->subtotal_ret_fun) . '</strong>';
 
 
    $discounts = $retirement_fund->discount_types();
     $discount = $discounts->where('discount_type_id', '1')->first();
     if (isset($discount->id) && $discount->pivot->amount > 0) {
-      $body_resolution .= " Descontando el monto del anticipo <strong>" . Util::formatMoneyWithLiteral($discount->pivot->amount) . "</strong>.";
+      $body_resolution .= ". Descontando el monto del anticipo <strong>" . Util::formatMoneyWithLiteral($discount->pivot->amount) . "</strong>.";
       /*$body_resolution .= ". Descontando el monto del anticipo, reconocer el pago del beneficio de Fondo de Retiro Policial Solidario, por un TOTAL de <strong>" . Util::formatMoneyWithLiteral($retirement_fund->total_availability + $retirement_fund->subtotal_ret_fun - $discount->pivot->amount) . "</strong>";
       if ($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 1) {
         $body_resolution .= ".";
