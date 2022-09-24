@@ -2601,7 +2601,7 @@ class RetirementFundCertificationController extends Controller
           $i++;
           if (!$header) {
             if($header_discount){
-              $body_resolution .= ' la suma total de  <b>'.Util::formatMoneyWithLiteral($discount_guarantee->pivot->amount).'</b> por concepto de garantía de préstamo, a favor de : ';
+              $body_resolution .= ' por concepto de garantía de préstamo, a favor de : ';
             }else{
             $body_resolution .= ' a favor de ';
             }
