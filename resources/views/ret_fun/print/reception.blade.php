@@ -38,13 +38,13 @@
         <div class="font-bold uppercase m-b-5 counter">DOCUMENTOS RECEPCIONADOS</div>
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
-                <tr class="font-medium text-white text-sm">
+                <tr class="font-medium text-white text-xs">
                     <td class="text-center p-5">N°</td>
                     <td class="text-center p-5">REQUISITOS</td>
                     <td class="text-center p-5">V°B°</td>
                 </tr>
             </thead>
-            <tbody class="text-sm">
+            <tbody class="text-xs">
                 @foreach($submitted_documents as $i=>$item)
                     @if($item->procedure_requirement->number > 0)
                         <tr>
@@ -67,13 +67,13 @@
         @if($submitted_documents[0]->procedure_requirement->number != 1)
             <table class="table-info w-100 m-b-5">
                 <thead class="bg-grey-darker">
-                    <tr class="font-medium text-white text-sm">
+                    <tr class="font-medium text-white text-xs">
                         {{-- <td class="text-center p-5">N°</td> --}}
                         <td class="text-center p-5">ADICIONALES</td>
                         <td class="text-center p-5">V°B°</td>
                     </tr>
                 </thead>
-                <tbody class="text-sm">
+                <tbody class="text-xs">
                     @foreach($submitted_documents as $i=>$item)
                         @if($item->procedure_requirement->number == 0)
                             <tr>
@@ -94,29 +94,25 @@
                 </tbody>
             </table>
         @endif
-        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidario.</div>
-        <div class="text-justify text-sm">{{$legend_ret_fun}}</div>
+        <div class="text-justify text-xxs">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidariooo.</div>
+        <div class="text-justify text-xxs">{{$legend_ret_fun}}</div>
         <br>
         <table class="m-t-35">
             <tr>
-                <td class="no-border text-center text-base w-50 align-bottom">
-                    <span class="font-bold">
-                        ----------------------------------------------------
-                    </span>
-                </td>
-                <td class="no-border text-center text-base w-50 align-bottom">
-                    <span class="font-bold">
-                        ----------------------------------------------------
-                    </span>
-                </td>
-            </tr>
-            <tr>
                 <td class="no-border text-center text-base w-50 align-top">
+                    <br><br><br>
+                    <span class="font-bold">
+                        ----------------------------------------------------
+                    </span>
                     <span class="font-bold">{!! strtoupper($applicant->fullName()) !!}</span>
                     <br/>
                     <span class="font-bold">C.I. {!! $applicant->identity_card !!} {!! strtoupper($applicant->city_identity_card->first_shortened)!!}</span>
                 </td>
-                <td class="no-border text-center text-base w-50">
+                <td class="no-border text-center text-base w-50 align-top">
+                    <br><br><br>
+                    <span class="font-bold">
+                        ----------------------------------------------------
+                    </span>
                     <span class="font-bold block">{!! strtoupper($user->fullName()) !!}</span>
                     <div class="text-xs text-center" style="width: 350px; margin:0 auto; font-weight:100">{!! $user->position !!}</div>
                 </td>
