@@ -2600,7 +2600,11 @@ class RetirementFundCertificationController extends Controller
         foreach ($loans as $loan) {
           $i++;
           if (!$header) {
+            if($header_discount){
+              $body_resolution .= ' por concepto de garantía de préstamo, a favor de : ';
+            }else{
             $body_resolution .= ' a favor de ';
+            }
           }
           if ($i != 1) {
             if ($num_loans - $i == 0)
