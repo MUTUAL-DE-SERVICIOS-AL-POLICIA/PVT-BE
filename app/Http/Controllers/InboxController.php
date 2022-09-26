@@ -575,7 +575,7 @@ class InboxController extends Controller
       ->setOption('margin-bottom', '15mm')
       ->setOrientation('landscape')
       ->setOption('footer-center', 'Pagina [page] de [toPage]')
-      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
       ->stream("documentos enviados.pdf");
   }
   public function printSendEcoCom(Request $request)
