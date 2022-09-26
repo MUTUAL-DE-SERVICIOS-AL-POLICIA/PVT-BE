@@ -362,7 +362,7 @@ class RetirementFundCertificationController extends Controller
       'retirement_fund' => $retirement_fund,
     ];
     if ($only_print) {
-      return \PDF::loadView('ret_fun.print.beneficiaries_qualification', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+      return \PDF::loadView('ret_fun.print.beneficiaries_qualification', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
     }
     return $data;
   }
@@ -399,7 +399,7 @@ class RetirementFundCertificationController extends Controller
     ];
     $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable());
     if ($only_print) {
-      return \PDF::loadView('ret_fun.print.qualification_average_salary_quotable', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("SalarioPromedioCotizable.pdf");
+      return \PDF::loadView('ret_fun.print.qualification_average_salary_quotable', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("SalarioPromedioCotizable.pdf");
     }
     return $data;
   }
@@ -580,7 +580,7 @@ class RetirementFundCertificationController extends Controller
     $data = array_merge($data, $temp);
 
     if ($only_print) {
-      return \PDF::loadView('ret_fun.print.qualification_step_data', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+      return \PDF::loadView('ret_fun.print.qualification_step_data', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
     }
     return $data;
   }
@@ -707,7 +707,7 @@ class RetirementFundCertificationController extends Controller
       'current_procedure' => $current_procedure,
     ];
     if ($only_print) {
-      return \PDF::loadView('ret_fun.print.qualification_data_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+      return \PDF::loadView('ret_fun.print.qualification_data_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
     }
     return $data;
   }
@@ -783,7 +783,7 @@ class RetirementFundCertificationController extends Controller
       'retirement_fund' => $retirement_fund,
     ];
     if ($only_print) {
-      return \PDF::loadView('ret_fun.print.qualification_data_ret_fun_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+      return \PDF::loadView('ret_fun.print.qualification_data_ret_fun_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
     }
     return $data;
   }
@@ -829,7 +829,7 @@ class RetirementFundCertificationController extends Controller
       ->setOption('margin-bottom', '15mm')
       // ->setOption('footer-html', $footerHtml)
       // ->setOption('footer-right', 'Pagina [page] de [toPage]')
-      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
       // ->setOption('user-style-sheet', 'css/app1.css')
       ->stream("namepdf");
   }
@@ -989,7 +989,7 @@ class RetirementFundCertificationController extends Controller
     )
       ->setOption('encoding', 'utf-8')
       ->setOption('footer-right', 'Pagina [page] de [toPage]')
-      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
       ->stream("$namepdf");
   }
 
@@ -1069,7 +1069,7 @@ class RetirementFundCertificationController extends Controller
       'direction' => $direction,
       'unit' => $unit,
     ];
-    return \PDF::loadView('contribution.print.certification_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    return \PDF::loadView('contribution.print.certification_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
   }
   public function printCertificationAvailability($id)
   {
@@ -1134,7 +1134,7 @@ class RetirementFundCertificationController extends Controller
       'unit' => $unit,
     ];
 
-    return \PDF::loadView('contribution.print.certification_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    return \PDF::loadView('contribution.print.certification_availability', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
   }
   public function printCertificationItem0($id)
   {
@@ -1231,7 +1231,7 @@ class RetirementFundCertificationController extends Controller
       'direction' => $direction,
       'unit' => $unit,
     ];
-    return \PDF::loadView('contribution.print.certification_item0', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    return \PDF::loadView('contribution.print.certification_item0', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
   }
 
   public function printCertificationAvailabilityNew($id)
@@ -2600,7 +2600,11 @@ class RetirementFundCertificationController extends Controller
         foreach ($loans as $loan) {
           $i++;
           if (!$header) {
+            if($header_discount){
+              $body_resolution .= ' por concepto de garantía de préstamo, a favor de : ';
+            }else{
             $body_resolution .= ' a favor de ';
+            }
           }
           if ($i != 1) {
             if ($num_loans - $i == 0)

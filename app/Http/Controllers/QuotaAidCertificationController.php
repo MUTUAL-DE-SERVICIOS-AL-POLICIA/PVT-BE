@@ -81,7 +81,7 @@ class QuotaAidCertificationController extends Controller
     $pdftitle = "Carta de Compromiso de Auxilio Mortuorio";
     $namepdf = Util::getPDFName($pdftitle, $bene);
     // return view('ret_fun.print.beneficiaries_qualification', compact('date','subtitle','username','title','number','retirement_fund','affiliate','submitted_documents'));
-    return \PDF::loadView('quota_aid.print.quota_aid_commitment_letter', compact('date', 'username', 'title', 'glosa', 'bene', 'city', 'beneficiary'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+    return \PDF::loadView('quota_aid.print.quota_aid_commitment_letter', compact('date', 'username', 'title', 'glosa', 'bene', 'city', 'beneficiary'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
   }
 
   public function printDirectContributionQuoteAid(Request $request)
@@ -132,7 +132,7 @@ class QuotaAidCertificationController extends Controller
       ->setPaper('letter')
       ->setOption('encoding', 'utf-8')
       ->setOption('footer-right', 'Pagina [page] de [toPage]')
-      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
       ->stream("$namepdf");
   }
 
@@ -192,7 +192,7 @@ class QuotaAidCertificationController extends Controller
       ->setPaper('letter')
       ->setOption('encoding', 'utf-8')
       ->setOption('footer-right', 'Pagina [page] de [toPage]')
-      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
       ->stream("$namepdf");
   }
 
@@ -315,7 +315,7 @@ class QuotaAidCertificationController extends Controller
       'quota_aid' => $quota_aid,
     ];
     if ($only_print) {
-      return \PDF::loadView('quota_aid.print.beneficiaries_qualification', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+      return \PDF::loadView('quota_aid.print.beneficiaries_qualification', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
     }
     return $data;
   }
@@ -362,7 +362,7 @@ class QuotaAidCertificationController extends Controller
       return \PDF::loadView('quota_aid.print.qualification_data', $data)
         ->setOption('encoding', 'utf-8')
         // ->setOption('footer-right', 'Pagina [page] de [toPage]')
-        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
         ->stream("calificacion");
     }
     return $data;
@@ -383,7 +383,7 @@ class QuotaAidCertificationController extends Controller
       ->setOption('margin-bottom', '15mm')
       // ->setOption('footer-html', $footerHtml)
       // ->setOption('footer-right', 'Pagina [page] de [toPage]')
-      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+      ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
       // ->setOption('user-style-sheet', 'css/app1.css')
       ->stream("namepdf");
   }
@@ -601,10 +601,10 @@ class QuotaAidCertificationController extends Controller
       'unit' => $unit,
     ];
     if ($quota_aid->procedure_modality->procedure_type_id == 3) {
-      return \PDF::loadView('contribution.print.certification_quota_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+      return \PDF::loadView('contribution.print.certification_quota_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
     }
     if ($quota_aid->procedure_modality->procedure_type_id == 4) {
-      return \PDF::loadView('contribution.print.certification_aid_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')->stream("$namepdf");
+      return \PDF::loadView('contribution.print.certification_aid_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
     }
   }
   private function generateBarCode($quota_aid)
