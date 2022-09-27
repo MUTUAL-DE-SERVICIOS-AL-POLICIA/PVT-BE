@@ -904,23 +904,15 @@ class Affiliate extends Model
 
   //obtener si el afiliado ha dejado de sol consecutivamente mas de 2 tramites de eco_com
   public function stop_eco_com_consecutively() {
-    $eco_com = $this->economic_complements()->select('eco_com_procedures.id','year','semester')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')->orderBy('eco_com_procedures.year')->orderBy('eco_com_procedures.semester')->pluck('eco_com_procedures.id');
-    $eco_com = $eco_com->toArray();
-    $count_actives = EcoComProcedure::current_procedures()->count();
-    $count_procedures = $count_actives + 2;// por dos semestres
-    $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->pluck('id')->take($count_procedures);
     $stop_consecutively = false;
-    $i = 2;
-    while($i > 0){
-      $count_procedures = $count_procedures-1;
-      if (in_array($eco_com_procedures[$count_procedures], $eco_com) == false)
+    $beforelast_procedure = EcoComProcedure::orderByDesc('year')->orderByDesc('normal_start_date')->limit(2)->pluck('id')[1];
+    $count_beforelast_procedure = $this->economic_complements()->where('eco_com_procedure_id', $beforelast_procedure)->count();
+    if($count_beforelast_procedure < 1){
+      $latest_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('normal_start_date')->limit(2)->whereNotIn('id', EcoComProcedure::current_procedures()->pluck('id'))->pluck('id');
+      $latest_procedures = $this->economic_complements()->whereIn('eco_com_procedure_id', $latest_procedures)->count();
+      if ($latest_procedures < 1) {
         $stop_consecutively = true;
-      else
-        $stop_consecutively = false;
-
-      if($stop_consecutively == false)
-        break;
-      $i--;
+      }
     }
    return $stop_consecutively;
   }
