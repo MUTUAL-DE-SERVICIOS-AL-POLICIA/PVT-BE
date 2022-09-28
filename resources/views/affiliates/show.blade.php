@@ -142,6 +142,7 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                         <li class="list-group-item tab-affiliate-records" data-toggle="tab" href="#tab-affiliate-records"><a href="#"><i class="fa fa-eye-slash"></i> Historial</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-affiliate-photos"><a href="#"><i class="fa fa-camera-retro"></i> Fotos</a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-deceased-photos"><a href="#"><i class="fa fa-image"></i> Difuntos</a></li>
 
                     </ul>
             </div>
@@ -340,7 +341,13 @@ th.ellipsis-text {
                     <div id="tab-affiliate-photos" class="tab-pane">
                         @include('affiliates.photos',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents,'fotofrente'=>$fotofrente,'fotosonriente'=>$fotosonriente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha])
                     </div>
-
+                    <div id="tab-deceased-photos" class="tab-pane">
+                        @include('affiliates.deceased',
+                        ['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents,
+                        'fotofrentevejez'=>$fotofrenteVejez,'fotoizquierdavejez'=>$fotoizquierdaVejez,'fotoderechavejez'=>$fotoderechaVejez,
+                        'fotofrenteviudedad'=>$fotofrenteViudedad,'fotoizquierdaviudedad'=>$fotoizquierdaViudedad,'fotoderechaviudedad'=>$fotoderechaViudedad
+                        ])
+                    </div>
                 </div>
 
     </div>
