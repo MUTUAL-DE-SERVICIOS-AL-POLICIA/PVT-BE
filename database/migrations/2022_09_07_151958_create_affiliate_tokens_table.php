@@ -18,7 +18,7 @@ class CreateAffiliateTokensTable extends Migration
             $table->bigInteger('affiliate_id');
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
             $table->string('api_token')->unique()->nullable()->default(null);
-            $table->string('firebase_token')->unique()->nullable()->default(null);
+            $table->string('firebase_token')->nullable()->default(null);
             $table->timestamps();
         });
     }

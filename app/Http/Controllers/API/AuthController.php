@@ -70,7 +70,7 @@ class AuthController extends Controller
         $device_id = $request->device_id;
         $firebase_token = $request->firebase_token;
         $is_new_app= isset( $request->is_new_app ) ? $request->is_new_app : false;
-        $update_device_id = false; // Niomi
+        $update_device_id = false; 
         $code = 200;
 
         if($is_new_app){
@@ -84,7 +84,6 @@ class AuthController extends Controller
                 $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
                 if ($eco_com_beneficiary) {  
                     $affiliate = $eco_com_beneficiary->economic_complement->affiliate; 
-                    // $affiliate_token = AffiliateToken::whereDeviceId($device_id)->first(); 
                     $affiliate_device = AffiliateDevice::whereDeviceId($device_id)->first();
 
                     if ($affiliate_device) { 
@@ -124,6 +123,13 @@ class AuthController extends Controller
                         ], 403);
                     }
                     $affiliate_token = AffiliateToken::whereAffiliateId($affiliate->id)->first();
+                    $incomming_firebase = AffiliateToken::whereFirebaseToken($firebase_token)->latest()->first();  // get()
+                    if(!is_null($incomming_firebase)) {
+                        if(!is_null($incomming_firebase->firebase_token)) {
+                        $incomming_firebase->firebase_token = null; 
+                        $incomming_firebase->update();
+                      }
+                    }
 
                     $token = null;
                     if (!$affiliate->affiliate_token && !$affiliate_token) { // Primer ingreso
@@ -143,12 +149,17 @@ class AuthController extends Controller
                                 $token = $this->getToken($device_id); 
                                 $update = [
                                     'api_token' => $token,
-                                    'firebase_token' => $firebase_token
                                 ];
                                 if ($affiliate_token->affiliate_device->device_id == null && $affiliate_token->affiliate_device->enrolled) { // esto
                                     $device = $affiliate_token->affiliate_device()->update(['device_id' => $device_id]);
                                 }
-                                $affiliate->affiliate_token()->update($update); 
+                                $affiliate->affiliate_token()->update($update);
+
+                                $var = $affiliate_token->affiliate_device;
+                                if($var->enrolled) {
+                                    $affiliate_token->firebase_token = $firebase_token;
+                                    $affiliate_token->update();
+                                }
 
                                 $device = (object)[];
                                 $device->enrolled = $affiliate_token->affiliate_device->enrolled;
