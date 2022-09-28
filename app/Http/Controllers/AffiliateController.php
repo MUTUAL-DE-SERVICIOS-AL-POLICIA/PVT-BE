@@ -377,6 +377,28 @@ class AffiliateController extends Controller
         if (Storage::exists($path.'/Derecha.jpg')) 
             $fotoDerecha=base64_encode(Storage::get($path.'/Derecha.jpg'));
 
+        $fotoFrenteViudedad="";
+        $fotoIzquierdaViudedad="";
+        $fotoDerechaViudedad="";
+        $path = 'liveness/faces/'.$affiliate->id.'/deceased';
+        if (Storage::exists($path.'/Frente_viudedad.jpg'))
+            $fotoFrenteViudedad=base64_encode(Storage::get($path.'/Frente_viudedad.jpg'));
+        if (Storage::exists($path.'/Izquierda_viudedad.jpg'))
+            $fotoIzquierdaViudedad=base64_encode(Storage::get($path.'/Izquierda_viudedad.jpg'));
+        if (Storage::exists($path.'/Derecha_viudedad.jpg'))
+            $fotoDerechaViudedad=base64_encode(Storage::get($path.'/Derecha_viudedad.jpg'));
+
+        $fotoFrenteVejez="";
+        $fotoIzquierdaVejez="";
+        $fotoDerechaVejez="";
+        $path = 'liveness/faces/'.$affiliate->id.'/deceased';
+        if (Storage::exists($path.'/Frente_vejez.jpg'))
+            $fotoFrenteVejez=base64_encode(Storage::get($path.'/Frente_vejez.jpg'));
+        if (Storage::exists($path.'/Izquierda_vejez.jpg'))
+            $fotoIzquierdaVejez=base64_encode(Storage::get($path.'/Izquierda_vejez.jpg'));
+        if (Storage::exists($path.'/Derecha_vejez.jpg'))
+            $fotoDerechaVejez=base64_encode(Storage::get($path.'/Derecha_vejez.jpg'));
+
         if(AffiliateToken::where('affiliate_id','=',$affiliate->id)->first())
             $affiliateDevice = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device? AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device:NULL;
         else
@@ -444,6 +466,15 @@ class AffiliateController extends Controller
             'fotosonriente' =>  $fotoSonriente,
             'fotoizquierda' =>  $fotoIzquierda,
             'fotoderecha' =>  $fotoDerecha,
+
+            'fotofrenteVejez' =>  $fotoFrenteVejez,
+            'fotoizquierdaVejez' =>  $fotoIzquierdaVejez,
+            'fotoderechaVejez' =>  $fotoDerechaVejez,
+
+            'fotofrenteViudedad' =>  $fotoFrenteViudedad,
+            'fotoizquierdaViudedad' =>  $fotoIzquierdaViudedad,
+            'fotoderechaViudedad' =>  $fotoDerechaViudedad,
+
             'affiliatedevice' =>  $affiliateDevice,
             'file' => $file,
         );
