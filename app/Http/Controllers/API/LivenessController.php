@@ -277,7 +277,7 @@ class LivenessController extends Controller
                                                 'enrolled' => true,
                                                 'liveness_actions' => null
                                             ]);
-                                        } else {
+                                        } else { // para control de vivencia
                                             $current_procedure = EcoComProcedure::affiliate_available_procedures($request->affiliate->id)->first();
                                             if ($current_procedure && is_null($new_device_id)) {
                                                 $device->update([
@@ -299,15 +299,14 @@ class LivenessController extends Controller
                                                         'verified' => $device->verified
                                                     ]
                                                 ], 200);
-                                            }
-                                            else {
+                                            } else {
                                                 return response()->json([
                                                     'error' => true,
                                                     'message' => 'Ocurrió un error inesperado, comuniquese con el personal de MUSERPOL.',
                                                     'data' => []
                                                 ], 500);
                                             }
-                                        }
+                                        } // para enrolamiento
                                         if(!is_null($new_device_id)) {
                                             $affiliate_token = $request->affiliate->affiliate_token;
                                             $affiliate_token->firebase_token = $request->firebase_token;
