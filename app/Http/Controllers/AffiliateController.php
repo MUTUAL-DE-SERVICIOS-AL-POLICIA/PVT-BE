@@ -364,14 +364,11 @@ class AffiliateController extends Controller
         }
 
         $fotoFrente="";
-        $fotoSonriente="";
         $fotoIzquierda="";
         $fotoDerecha="";
         $path = 'liveness/faces/'.$affiliate->id;
         if (Storage::exists($path.'/Frente.jpg')) 
             $fotoFrente=base64_encode(Storage::get($path.'/Frente.jpg'));
-        if (Storage::exists($path.'/Sonriente.jpg')) 
-            $fotoSonriente=base64_encode(Storage::get($path.'/Sonriente.jpg'));
         if (Storage::exists($path.'/Izquierda.jpg')) 
             $fotoIzquierda=base64_encode(Storage::get($path.'/Izquierda.jpg'));
         if (Storage::exists($path.'/Derecha.jpg')) 
@@ -463,7 +460,7 @@ class AffiliateController extends Controller
             'financial_entities' =>  $financial_entities,
 
             'fotofrente' =>  $fotoFrente,
-            'fotosonriente' =>  $fotoSonriente,
+            //'fotosonriente' =>  $fotoSonriente,
             'fotoizquierda' =>  $fotoIzquierda,
             'fotoderecha' =>  $fotoDerecha,
 

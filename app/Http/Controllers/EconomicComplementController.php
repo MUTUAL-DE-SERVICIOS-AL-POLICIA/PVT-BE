@@ -571,7 +571,6 @@ class EconomicComplementController extends Controller
             if(AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()){
                 $affiliateDevice = AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device ? AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device : null;
                 $fotoFrente="";
-                $fotoSonriente="";
                 $fotoIzquierda="";
                 $fotoDerecha="";
                 $path_old = 'liveness/faces/'.$affiliate->id;

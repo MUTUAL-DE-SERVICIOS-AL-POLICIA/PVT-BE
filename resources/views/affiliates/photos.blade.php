@@ -11,11 +11,6 @@
                     <img src="data:image/png;base64,{{$fotofrente}}" alt="" />
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="file">
-                    <img src="data:image/png;base64,{{$fotosonriente}}" alt="" />
-                </div>
-            </div>
         </div>
         <div class="row">
             <div class="col-md-6">

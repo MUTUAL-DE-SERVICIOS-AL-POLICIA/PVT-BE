@@ -339,7 +339,7 @@ th.ellipsis-text {
                     </div>
 
                     <div id="tab-affiliate-photos" class="tab-pane">
-                        @include('affiliates.photos',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents,'fotofrente'=>$fotofrente,'fotosonriente'=>$fotosonriente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha])
+                        @include('affiliates.photos',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents,'fotofrente'=>$fotofrente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha])
                     </div>
                     <div id="tab-deceased-photos" class="tab-pane">
                         @include('affiliates.deceased',

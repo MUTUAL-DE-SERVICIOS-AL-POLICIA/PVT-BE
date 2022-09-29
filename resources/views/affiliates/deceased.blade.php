@@ -16,7 +16,7 @@
             <div class="col-md-6">
                 <div class="file">
                     <img src="data:image/png;base64,{{$fotoizquierdavejez}}" alt="" />
-                </div>viudedad
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="file">
