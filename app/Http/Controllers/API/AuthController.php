@@ -225,7 +225,8 @@ class AuthController extends Controller
                                     'enrolled' => $device->enrolled,
                                     'verified' => $device->verified,
                                 ],
-                                'update_device_id' => $update_device_id
+                                'update_device_id' => $update_device_id,
+                                'is_doble_perception' => $is_doble_perception
                             ]
                         ], $code);
                     } else {
