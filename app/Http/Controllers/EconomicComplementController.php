@@ -49,6 +49,7 @@ use Illuminate\Support\Facades\Storage;
 use Muserpol\Models\AffiliateDevice;
 use Muserpol\Models\AffiliateToken;
 use Validator;
+use Muserpol\Models\EconomicComplement\EcoComModality;
 
 use Muserpol\Models\BaseWage;
 
@@ -567,6 +568,39 @@ class EconomicComplementController extends Controller
             }
         }
         if($request->reception_type == ID::ecoCom()->inclusion) {
+            if(AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()){
+                $affiliateDevice = AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device ? AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device : null;
+                $fotoFrente="";
+                $fotoIzquierda="";
+                $fotoDerecha="";
+                $path_old = 'liveness/faces/'.$affiliate->id;
+                $path_new = 'liveness/faces/'.$affiliate->id.'/deceased/';
+                if (!is_null($affiliateDevice)) {
+                    if ($affiliateDevice->verified){
+                       $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->orderBy('id', 'asc')->first();
+                        if ($last_process){
+                        $eco_com_modality = EcoComModality::find($last_process->eco_com_modality_id)->first()->procedure_modality_id;
+                            if ($eco_com_modality == 29)
+                                $type ='Vejez';
+                            else
+                                $type ='Viudedad';
+    
+                            if (Storage::exists($path_old.'/Frente.jpg')){
+                                Storage::move($path_old.'/Frente.jpg',$path_new.'Frente_'.$type.'.jpg');
+                                Storage::move($path_old.'/Frente.npy',$path_new.'Frente_'.$type.'.npy');
+                            }
+                            if (Storage::exists($path_old.'/Izquierda.jpg')){
+                                Storage::move($path_old.'/Izquierda.jpg',$path_new.'Izquierda_'.$type.'.jpg');
+                                Storage::move($path_old.'/Izquierda.npy',$path_new.'Izquierda_'.$type.'.npy');
+                            }
+                            if (Storage::exists($path_old.'/Derecha.jpg')){
+                                Storage::move($path_old.'/Derecha.jpg',$path_new.'Derecha_'.$type.'.jpg');
+                                Storage::move($path_old.'/Derecha.npy',$path_new.'Derecha_'.$type.'.npy');
+                            }
+                        }
+                    }
+                }
+            }
             if (AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()) {
                 $affiliateDevice = AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device ? AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device : null;
                 $affiliateToken =  AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first();
