@@ -70,8 +70,9 @@ class AuthController extends Controller
         $device_id = $request->device_id;
         $firebase_token = $request->firebase_token;
         $is_new_app= isset( $request->is_new_app ) ? $request->is_new_app : false;
-        $update_device_id = false; 
+        $update_device_id = false;
         $code = 200;
+        $is_doble_perception = false;
 
         if($is_new_app){
             /*if (Util::isDoblePerceptionEcoCom($identity_card)) {
@@ -81,12 +82,17 @@ class AuthController extends Controller
                     'data' => (object)[]
                 ], 403);
             } else {*/
-                $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
-                if ($eco_com_beneficiary) {  
-                    $affiliate = $eco_com_beneficiary->economic_complement->affiliate; 
+                if (Util::isDoblePerceptionEcoCom($identity_card)){
+                    $is_doble_perception = true;
+                    $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($identity_card)->whereBirthDate($birth_date)->whereEcoComModalityId(1)->first();
+                }else{
+                    $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
+                }
+                if ($eco_com_beneficiary) {
+                    $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
                     $affiliate_device = AffiliateDevice::whereDeviceId($device_id)->first();
 
-                    if ($affiliate_device) { 
+                    if ($affiliate_device) {
                         $affiliate_token  = $affiliate_device->affiliate_token;
                         if ($affiliate_token->affiliate_id != $affiliate->id) { 
                             return response()->json([
@@ -94,8 +100,8 @@ class AuthController extends Controller
                                 'message' => 'Este dispositivo está registrado con otro usuario.',
                                 'data' => (object)[]
                             ], 403);
-                        } 
-                    } 
+                        }
+                    }
                     $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) {
                         $q->orderBy('year')->orderBy('normal_start_date');
                     })->latest()->first();
@@ -219,7 +225,8 @@ class AuthController extends Controller
                                     'enrolled' => $device->enrolled,
                                     'verified' => $device->verified,
                                 ],
-                                'update_device_id' => $update_device_id
+                                'update_device_id' => $update_device_id,
+                                'is_doble_perception' => $is_doble_perception
                             ]
                         ], $code);
                     } else {
