@@ -33,7 +33,7 @@ class EconomicComplementController extends Controller
        $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
 
        if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
-           $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($identity_card)->whereBirthDate($birth_date)->whereEcoComModalityId(2)->first();
+           $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereEcoComModalityId(2)->first();
            $affiliate_widowhood = $eco_com_beneficiary->economic_complement->affiliate;
            array_push($affiliate_ids, $affiliate_widowhood->id);
        }
