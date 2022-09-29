@@ -55,7 +55,7 @@ class EconomicComplementResource extends Resource
         {
             if ($this->total) {
                 $data[] = [
-                    'key' => 'Monto calculado',
+                    'key' => 'Total Comp. Económico',
                     'value' => Util::formatMoney($this->getOnlyTotalEcoCom(), true),
                 ];
             }
