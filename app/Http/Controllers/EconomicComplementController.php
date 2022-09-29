@@ -252,6 +252,7 @@ class EconomicComplementController extends Controller
             abort(500, "ERROR");
         }
         $affiliate = Affiliate::find($request->affiliate_id);
+        $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
         $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $request->eco_com_procedure_id)->first()->id]);
@@ -577,14 +578,12 @@ class EconomicComplementController extends Controller
                 $path_new = 'liveness/faces/'.$affiliate->id.'/deceased/';
                 if (!is_null($affiliateDevice)) {
                     if ($affiliateDevice->verified){
-                       $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->orderBy('id', 'asc')->first();
                         if ($last_process){
-                        $eco_com_modality = EcoComModality::find($last_process->eco_com_modality_id)->first()->procedure_modality_id;
-                            if ($eco_com_modality == 29)
-                                $type ='Vejez';
+                        $eco_com_modality = EcoComModality::find($last_process)->procedure_modality_id;
+                        if ($eco_com_modality == 29)
+                            {   $type ='Vejez';}
                             else
-                                $type ='Viudedad';
-    
+                            {   $type ='Viudedad';}
                             if (Storage::exists($path_old.'/Frente.jpg')){
                                 Storage::move($path_old.'/Frente.jpg',$path_new.'Frente_'.$type.'.jpg');
                                 Storage::move($path_old.'/Frente.npy',$path_new.'Frente_'.$type.'.npy');
