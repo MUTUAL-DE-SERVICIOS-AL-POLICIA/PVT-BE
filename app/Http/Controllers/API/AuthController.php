@@ -84,7 +84,7 @@ class AuthController extends Controller
             } else {*/
                 if (Util::isDoblePerceptionEcoCom($identity_card)){
                     $is_doble_perception = true;
-                    $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($identity_card)->whereBirthDate($birth_date)->whereEcoComModalityId(1)->first();
+                    $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($identity_card)->whereBirthDate($birth_date)->whereIn('eco_com_modality_id',[1,4,8,6])->first();
                 }else{
                     $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
                 }
