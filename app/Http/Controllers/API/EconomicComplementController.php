@@ -76,7 +76,13 @@ class EconomicComplementController extends Controller
      */
     public function show(Request $request, EconomicComplement $economicComplement)
     {
-        if ($economicComplement->affiliate_id == $request->affiliate->id) {
+        $eco_com_beneficiary = $economicComplement->eco_com_beneficiary;
+        $affiliate = $request->affiliate;
+        if (Util::isDoblePerceptionEcoCom($eco_com_beneficiary->identity_card)) {
+            $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($eco_com_beneficiary->identity_card)->whereEcoComModalityId(2)->first();
+            $affiliate = $eco_com_beneficiary->economicComplement->affiliate;
+        }
+        if ($economicComplement->affiliate_id == $request->affiliate->id || $economicComplement->affiliate_id == $affiliate->id) {
             return response()->json([
                 'error' => false,
                 'message' => 'Complemento Económico ' . $economicComplement->code,

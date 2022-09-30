@@ -47,12 +47,11 @@ class AffiliateObservationController extends Controller
                             $message = 'Usted dejó de solicitar su trámite por dos semestres o más, debe apersonarse por oficinas de la MUSERPOL para su rehabilitación al pago.';
                         }
                     }else{
-                        $message = 'Debe realizar la solicitud de trámite';
-                        // if($available_procedures > 1) {
-                        //     $message = 'Tiene '.$available_procedures.' solicitudes de trámite disponibles.';
-                        // } else {
-                        //     $message = 'Tiene una solicitud de trámite disponible.';
-                        // }
+                        if($available_procedures > 1) {
+                            $message = 'Debe realizar las solicitudes de trámite';
+                        } else {
+                            $message = 'Debe realizar la solicitud de trámite';
+                        }
                     }
                 }
             } else {
