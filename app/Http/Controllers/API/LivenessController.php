@@ -123,7 +123,7 @@ class LivenessController extends Controller
                         'type' => 'liveness',
                         'dialog' => [
                             'title' => 'RECONOCIMIENTO FACIAL PARA NUEVO DISPOSITIVO',
-                            'content' => 'Para el acceso a la Aplicación Móvil con un nuevo dispositivo debe realizar el proceso de reconocimiento facial mediante una fotografía de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente y el nuevo dispositivo sea vinculado.',
+                            'content' => 'Para el acceso a la Aplicación Móvil con un nuevo dispositivo, usted debe realizar el proceso de reconocimiento facial mediante una fotografía de su rostro y el nuevo dispositivo será registrado.',
                         ],
                         'action' => $device->liveness_actions[0],
                         'current_action' => 1,
