@@ -142,7 +142,7 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                         <li class="list-group-item tab-affiliate-records" data-toggle="tab" href="#tab-affiliate-records"><a href="#"><i class="fa fa-eye-slash"></i> Historial</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-affiliate-photos"><a href="#"><i class="fa fa-camera-retro"></i> Fotos</a></li>
-                        <li class="list-group-item " data-toggle="tab" href="#tab-deceased-photos"><a href="#"><i class="fa fa-image"></i> Difuntos</a></li>
+                        <li class="list-group-item " data-toggle="tab" href="#tab-deceased-photos"><a href="#"><i class="fa fa-image"></i> Historial de Fotos</a></li>
 
                     </ul>
             </div>
