@@ -16,6 +16,7 @@ class AffiliateObservationController extends Controller
      */
     public function index(Request $request, Affiliate $affiliate)
     {
+        $message = "";
         if ($request->affiliate->id == $affiliate->id) {
             $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) {
                 $q->orderBy('year')->orderBy('normal_start_date');
@@ -46,11 +47,12 @@ class AffiliateObservationController extends Controller
                             $message = 'Usted dejó de solicitar su trámite por dos semestres o más, debe apersonarse por oficinas de la MUSERPOL para su rehabilitación al pago.';
                         }
                     }else{
-                        if($available_procedures > 1) {
-                            $message = 'Tiene '.$available_procedures.' solicitudes de trámite disponibles.';
-                        } else {
-                            $message = 'Tiene una solicitud de trámite disponible.';
-                        }
+                        $message = 'Debe realizar la solicitud de trámite';
+                        // if($available_procedures > 1) {
+                        //     $message = 'Tiene '.$available_procedures.' solicitudes de trámite disponibles.';
+                        // } else {
+                        //     $message = 'Tiene una solicitud de trámite disponible.';
+                        // }
                     }
                 }
             } else {
