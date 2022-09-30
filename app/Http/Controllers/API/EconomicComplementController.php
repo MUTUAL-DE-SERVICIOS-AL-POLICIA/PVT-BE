@@ -38,13 +38,16 @@ class EconomicComplementController extends Controller
            array_push($affiliate_ids, $affiliate_widowhood->id);
        }
        $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
-      if (filter_var($request->query('current'), FILTER_VALIDATE_BOOLEAN, false)) {
+       if (filter_var($request->query('current'), FILTER_VALIDATE_BOOLEAN, false)) {
         $state_types = EcoComStateType::whereIn('name', ['Enviado', 'Creado'])->pluck('id');
         $data = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
             ->leftJoin('eco_com_states', 'economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
             ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
-            ->whereIn('eco_com_states.eco_com_state_type_id', $state_types)
-            ->wherein('economic_complements.eco_com_procedure_id',$current_procedures)
+            ->where(function($q) use ($current_procedures, $state_types) {
+                $q->whereIn('economic_complements.eco_com_procedure_id',$current_procedures)->orWhereHas('eco_com_state', function ($query) use ($state_types) {
+                    return $query->whereIn('eco_com_states.eco_com_state_type_id', $state_types);
+                });
+            })
             ->whereIn('affiliate_id', $affiliate_ids)
             ->select('economic_complements.*')
             ->orderBY('eco_com_procedures.year','DESC')
@@ -54,8 +57,11 @@ class EconomicComplementController extends Controller
         $data = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
             ->leftJoin('eco_com_states', 'economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
             ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
-            ->whereIn('eco_com_states.eco_com_state_type_id', $state_types)
-            ->whereNotIn('economic_complements.eco_com_procedure_id',$current_procedures)
+            ->where(function($q) use ($current_procedures, $state_types) {
+                $q->whereNotIn('economic_complements.eco_com_procedure_id',$current_procedures)->WhereHas('eco_com_state', function ($query) use ($state_types) {
+                    return $query->whereIn('eco_com_states.eco_com_state_type_id', $state_types);
+                });
+            })
             ->whereIn('affiliate_id', $affiliate_ids)
             ->select('economic_complements.*')
             ->orderBY('eco_com_procedures.year','DESC')
