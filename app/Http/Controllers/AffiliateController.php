@@ -377,7 +377,7 @@ class AffiliateController extends Controller
         $fotoFrenteViudedad="";
         $fotoIzquierdaViudedad="";
         $fotoDerechaViudedad="";
-        $path = 'deceased/faces/'.$affiliate->id;
+        $path = 'deceaseds/faces/'.$affiliate->id;
         if (Storage::exists($path.'/Frente_Viudedad.jpg'))
             $fotoFrenteViudedad=base64_encode(Storage::get($path.'/Frente_Viudedad.jpg'));
         if (Storage::exists($path.'/Izquierda_Viudedad.jpg'))

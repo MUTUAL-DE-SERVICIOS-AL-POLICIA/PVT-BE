@@ -575,7 +575,7 @@ class EconomicComplementController extends Controller
                 $fotoIzquierda="";
                 $fotoDerecha="";
                 $path_old = 'liveness/faces/'.$affiliate->id;
-                $path_new = 'deceased/faces/'.$affiliate->id;
+                $path_new = 'deceaseds/faces/'.$affiliate->id;
                 if (!is_null($affiliateDevice)) {
                     if ($affiliateDevice->verified){
                         if ($last_process){
