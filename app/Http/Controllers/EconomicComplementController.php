@@ -575,7 +575,7 @@ class EconomicComplementController extends Controller
                 $fotoIzquierda="";
                 $fotoDerecha="";
                 $path_old = 'liveness/faces/'.$affiliate->id;
-                $path_new = 'liveness/faces/'.$affiliate->id.'/deceased/';
+                $path_new = 'deceaseds/faces/'.$affiliate->id;
                 if (!is_null($affiliateDevice)) {
                     if ($affiliateDevice->verified){
                         if ($last_process){
@@ -585,16 +585,16 @@ class EconomicComplementController extends Controller
                             else
                             {   $type ='Viudedad';}
                             if (Storage::exists($path_old.'/Frente.jpg')){
-                                Storage::move($path_old.'/Frente.jpg',$path_new.'Frente_'.$type.'.jpg');
-                                Storage::move($path_old.'/Frente.npy',$path_new.'Frente_'.$type.'.npy');
+                                Storage::move($path_old.'/Frente.jpg',$path_new.'/Frente_'.$type.'.jpg');
+                                Storage::move($path_old.'/Frente.npy',$path_new.'/Frente_'.$type.'.npy');
                             }
                             if (Storage::exists($path_old.'/Izquierda.jpg')){
-                                Storage::move($path_old.'/Izquierda.jpg',$path_new.'Izquierda_'.$type.'.jpg');
-                                Storage::move($path_old.'/Izquierda.npy',$path_new.'Izquierda_'.$type.'.npy');
+                                Storage::move($path_old.'/Izquierda.jpg',$path_new.'/Izquierda_'.$type.'.jpg');
+                                Storage::move($path_old.'/Izquierda.npy',$path_new.'/Izquierda_'.$type.'.npy');
                             }
                             if (Storage::exists($path_old.'/Derecha.jpg')){
-                                Storage::move($path_old.'/Derecha.jpg',$path_new.'Derecha_'.$type.'.jpg');
-                                Storage::move($path_old.'/Derecha.npy',$path_new.'Derecha_'.$type.'.npy');
+                                Storage::move($path_old.'/Derecha.jpg',$path_new.'/Derecha_'.$type.'.jpg');
+                                Storage::move($path_old.'/Derecha.npy',$path_new.'/Derecha_'.$type.'.npy');
                             }
                         }
                     }
