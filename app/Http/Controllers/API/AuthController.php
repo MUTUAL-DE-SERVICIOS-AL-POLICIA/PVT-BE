@@ -156,9 +156,9 @@ class AuthController extends Controller
                                 $update = [
                                     'api_token' => $token,
                                 ];
-                                // if ($affiliate_token->affiliate_device->device_id == null && $affiliate_token->affiliate_device->enrolled) { // esto
-                                //     $device = $affiliate_token->affiliate_device()->update(['device_id' => $device_id]);
-                                // }
+                                if ($affiliate_token->affiliate_device->device_id == null && $affiliate_token->affiliate_device->enrolled) { // esto
+                                    $device = $affiliate_token->affiliate_device()->update(['device_id' => $device_id]);
+                                }
                                 $affiliate->affiliate_token()->update($update);
 
                                 $var = $affiliate_token->affiliate_device;
