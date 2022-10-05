@@ -718,6 +718,7 @@
                                 <th>Categoria</th>
                                 <th>Salario Cotizable</th>
                                 <th>Total Aporte</th>
+                                <th>Aporte FRPS</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -727,7 +728,8 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>{{ $total_availability_aporte }}</td>
+                                <td></td>
+                                <td>{{ $total_availability_aporte_frps }}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -813,6 +815,7 @@
                 {data: 'seniority_bonus'},
                 {data: 'quotable_salary'},
                 {data: 'total'},
+                {data: 'retirement_fund'},
             ],
         });
     });
