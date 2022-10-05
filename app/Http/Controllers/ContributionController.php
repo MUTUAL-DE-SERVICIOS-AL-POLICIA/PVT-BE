@@ -937,7 +937,7 @@ class ContributionController extends Controller
 
         }
         $availability = $affiliate->getContributionsAvailability();
-        $subtotal_availability = array_sum(array_column($availability, 'total'));
+        $subtotal_availability = array_sum(array_column($availability, 'retirement_fund'));
         $ret_fun->subtotal_availability = $subtotal_availability;
         $ret_fun->save();
         $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
