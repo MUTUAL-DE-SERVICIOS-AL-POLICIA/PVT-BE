@@ -152,15 +152,34 @@ class AuthController extends Controller
                     } elseif ($affiliate_token && $affiliate) {  // Segunda vez o más o por oficina virtual 
                         if ($affiliate_token->affiliate_device) { 
                             if ($device_id == $affiliate_token->affiliate_device->device_id || $affiliate_token->affiliate_device->device_id == null) {
-                                $token = $this->getToken($device_id); 
-                                $update = [
-                                    'api_token' => $token,
-                                ];
-                                if ($affiliate_token->affiliate_device->device_id == null && $affiliate_token->affiliate_device->enrolled) { // esto
-                                    $device = $affiliate_token->affiliate_device()->update(['device_id' => $device_id]);
-                                }
-                                $affiliate->affiliate_token()->update($update);
 
+                                if($affiliate_token->affiliate_device->device_id == null) {
+                                    if($affiliate_token->affiliate_device->enrolled && $affiliate_token->affiliate_device->verified) {
+                                        $update_device_id = true;
+                                        $token = $this->getToken($device_id); 
+                                        $update = [
+                                            'api_token' => $token,
+                                        ];
+                                        $affiliate->affiliate_token()->update($update);
+                                    } elseif($affiliate_token->affiliate_device->enrolled == false && $affiliate_token->affiliate_device->verified == false){
+                                        $token = $this->getToken($device_id); 
+                                        $update = [
+                                            'api_token' => $token,
+                                        ];
+                                        $affiliate->affiliate_token()->update($update);
+                                    } else {
+                                        $update = [
+                                            'api_token' => null
+                                        ];
+                                        $affiliate->affiliate_token()->update($update);
+                                    }
+                                } else {
+                                    $token = $this->getToken($device_id); 
+                                    $update = [
+                                        'api_token' => $token,
+                                    ];
+                                    $affiliate->affiliate_token()->update($update);
+                                }
                                 $var = $affiliate_token->affiliate_device;
                                 if($var->enrolled) {
                                     $affiliate_token->firebase_token = $firebase_token;
@@ -171,26 +190,26 @@ class AuthController extends Controller
                                 $device->enrolled = $affiliate_token->affiliate_device->enrolled;
                                 $device->verified = $affiliate_token->affiliate_device->verified;
                             } elseif ($device_id != $affiliate_token->affiliate_device->device_id) {
+                                $device = (object)[];
                                 if($affiliate_token->affiliate_device->enrolled == true && $affiliate_token->affiliate_device->verified == true) {
+                                    $update_device_id = $device->enrolled = $device->verified = true;
                                     $token = $this->getToken($device_id);
                                     $update = [
                                         'api_token' => $token,
                                     ];
                                     $affiliate->affiliate_token()->update($update);
-                                    $update_device_id = true;
-                                    $device = (object)[];
-                                    $device->enrolled = true;
-                                    $device->verified = true;
                                 } elseif ($affiliate_token->affiliate_device->enrolled == false && $affiliate_token->affiliate_device->verified == false) {
+                                    $update_device_id = $device->enrolled = $device->verified = false;
                                     $token = $this->getToken($device_id);
                                     $update = [
-                                        'api_token' => $token
+                                        'api_token' => $token,
                                     ];
                                     $affiliate->affiliate_token()->update($update);
-                                    $update_device_id = false;
-                                    $device = (object)[];
-                                    $device->enrolled = false;
-                                    $device->verified = false;
+                                } else {
+                                   $update = [
+                                    'api_token' => null
+                                   ];
+                                    $affiliate->affiliate_token()->update($update);
                                 }
                             }
                         } elseif(AffiliateDevice::find($affiliate_token->id) == null) {  // Entro a la oficina virtual y ahora quiere ingresar a CE
@@ -209,7 +228,6 @@ class AuthController extends Controller
                     }
                     $code = $update_device_id ? 201: 200;
                     if ($token) {
-
                         return response()->json([
                             'error' => false,
                             'message' => 'Usuario autenticado',
