@@ -1843,20 +1843,20 @@ class RetirementFundController extends Controller
                 return Util::getDateFormat($contribution->month_year);
             })
             ->editColumn('base_wage', function ($contribution) {
-                return Util::formatMoney($contribution->base_wage);
+                return $contribution->base_wage;
             })
             ->editColumn('seniority_bonus', function ($contribution) {
-                return Util::formatMoney($contribution->seniority_bonus);
+                return $contribution->seniority_bonus;
             })
             ->editColumn('total', function ($contribution) {
-                return Util::formatMoney($contribution->total);
+                return $contribution->total;
             })
             ->editColumn('retirement_fund', function ($contribution) {
-                return Util::formatMoney($contribution->retirement_fund);
+                return $contribution->retirement_fund;
             })
             ->editColumn('quotable_salary', function ($contribution) {
                 $quotable_salary = $contribution->seniority_bonus + $contribution->base_wage;
-                return Util::formatMoney($quotable_salary);
+                return $quotable_salary;
             })
             ->addIndexColumn()
             ->make(true);
@@ -1871,20 +1871,20 @@ class RetirementFundController extends Controller
                 return Util::getDateFormat($contribution->month_year);
             })
             ->editColumn('base_wage', function ($contribution) {
-                return Util::formatMoney($contribution->base_wage);
+                return $contribution->base_wage;
             })
             ->editColumn('seniority_bonus', function ($contribution) {
-                return Util::formatMoney($contribution->seniority_bonus);
+                return $contribution->seniority_bonus;
             })
             ->editColumn('total', function ($contribution) {
-                return Util::formatMoney($contribution->total);
+                return $contribution->total;
             })
             ->editColumn('retirement_fund', function ($contribution) {
-                return Util::formatMoney($contribution->retirement_fund);
+                return $contribution->retirement_fund;
             })
             ->editColumn('quotable_salary', function ($contribution) {
                 $quotable_salary = $contribution->seniority_bonus + $contribution->base_wage;
-                return Util::formatMoney($quotable_salary);
+                return $quotable_salary;
             })
             ->addIndexColumn()
             ->make(true);
