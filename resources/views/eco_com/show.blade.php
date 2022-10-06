@@ -134,8 +134,8 @@
                 <eco-com-record :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-record>
             </div>
             <div id="tab-eco-com-boleta" class="tab-pane">
-                <eco-com-boleta :affiliate="{{ $affiliate }}" :affiliatedevice="{{ $affiliatedevice }}" inline-template>
-                    @include('eco_com.boleta',['affiliate'=>$affiliate,'economic_complement'=>$economic_complement,'fotofrente'=>$fotofrente,'fotosonriente'=>$fotosonriente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha,'fotocianverso'=>$fotocianverso,'fotocireverso'=>$fotocireverso,'fotoboleta'=>$fotoboleta, 'affiliatedevice'=>$affiliatedevice ])
+                <eco-com-boleta :affiliate="{{ $affiliate }}" :affiliatedevice="{{ $affiliatedevice }}" :affiliatetoken="{{$affiliatetoken}}" inline-template>
+                    @include('eco_com.boleta',['affiliate'=>$affiliate,'economic_complement'=>$economic_complement,'fotofrente'=>$fotofrente,'fotosonriente'=>$fotosonriente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha,'fotocianverso'=>$fotocianverso,'fotocireverso'=>$fotocireverso,'fotoboleta'=>$fotoboleta, 'affiliatedevice'=>$affiliatedevice,'affiliatetoken'=>$affiliatetoken])
                 </eco-com-boleta>
             </div>
         </div>
