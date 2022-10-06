@@ -2,15 +2,13 @@
     <div class="ibox-content">
         <div class="row">
             <div class="pull-left"><legend >Rostro</legend></div>
-            <div class="text-right">
-                @if(!$affiliatedevice->isEmpty())
+            <div class="text-right" v-if="btnVerified">
                     <div class="text-center" v-if="editable">
                         <button data-animation="flip" class="btn btn-danger"  @click="updateDesvalidar"><i class="fa" ></i>Desvalidar CI </button> 
                     </div>
                     <div class="text-center" v-if="!editable">
                         <button data-animation="flip" class="btn btn-primary"  @click="updateValidar"><i class="fa" ></i>Validar CI </button>
                     </div>
-                @endif
             </div>
         </div>
         <div class="row">
