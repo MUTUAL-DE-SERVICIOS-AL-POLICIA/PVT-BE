@@ -771,7 +771,9 @@ class EconomicComplementController extends Controller
         $path = 'eco_com/'.$affiliate->id;
         if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg')) 
             $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg'));
-        $affiliateDevice = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()?AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device:-1;
+        $affiliateToken = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first();
+        $affiliateDevice = $affiliateToken?$affiliateToken->affiliate_device:-1;
+        
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -805,6 +807,7 @@ class EconomicComplementController extends Controller
             'fotocireverso' =>  $fotoCIReverso,
             'fotoboleta' =>  $fotoBoleta,
             'affiliatedevice' =>  $affiliateDevice,
+            'affiliatetoken' => $affiliateToken?$affiliateToken:-1
         ];
         return view('eco_com.show', $data);
     }
