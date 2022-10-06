@@ -5,11 +5,16 @@
 			'affiliatedevice'
 		],
 		data(){
-			return { editable: true }
+			return { editable: true,
+		             btnVerified:false}
 		},
 		mounted() {
-			if (this.affiliatedevice.length==1)
-				this.editable=this.affiliatedevice[0].verified;
+			if (this.affiliatedevice!=-1){
+				this.editable = this.affiliatedevice.verified;
+			    this.btnVerified=true;
+		    }else{
+				this.btnVerified=false;
+			}
     	},
 		methods: {
             updateValidar: function() {
