@@ -266,7 +266,7 @@ class AuthController extends Controller
         }else{
             return response()->json([
                 'error' => true,
-                'message' => 'Usted esta usando una aplicación obsoleta, favor de actualizar.',
+                'message' => 'Para continuar y mejorar el servicio, usted debe actualizar la Aplicación Móvil',
                 'data' => (object)[]
             ], 403);
         }
