@@ -692,10 +692,16 @@ class AffiliateController extends Controller
     
     public function deleteEnrolled($affiliate_id){
         $affiliateDevice = AffiliateToken::where('affiliate_id', $affiliate_id)->first()->affiliate_device;
+        $affiliateToken = AffiliateToken::where('affiliate_id', $affiliate_id)->first();
         $affiliateDevice->enrolled = false;
         $affiliateDevice->verified = false;
+        $affiliateDevice->device_id = null;
         $affiliateDevice->save();
+        $affiliateToken->api_token = null;
+        $affiliateToken->firebase_token = null;
+        $affiliateToken->save();
     }
+
 
     public function CIDevice($affiliate_id, $valor){
         // logger($affiliate_id);

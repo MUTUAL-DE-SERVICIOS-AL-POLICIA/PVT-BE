@@ -1393,8 +1393,15 @@ class EconomicComplementController extends Controller
         }
         if ($id) {
             $eco_com = EconomicComplement::find($id);
+            $beneficiary = EcoComBeneficiary::whereEconomicComplementId($id)->first();
             $eco_com->code = $eco_com->code . 'A';
             $eco_com->save();
+            $affiliate_tokens = AffiliateToken::whereAffiliateId($eco_com->affiliate_id)->first();
+            $affiliate_device = $affiliate_tokens->affiliate_device;
+            $affiliate_device->eco_com_procedure_id = null;
+            if($affiliate_device->eco_com_procedure_id == null) logger("SI"); else logger("NO");
+            $eco_com->eco_com_beneficiary()->delete();
+            $affiliate_device->update();
             $eco_com->eco_com_beneficiary()->delete();
             $eco_com->eco_com_legal_guardian()->delete();
             $eco_com->submitted_documents()->delete();
@@ -1405,6 +1412,13 @@ class EconomicComplementController extends Controller
             $eco_com->discount_types()->detach();
             $eco_com->tags()->detach();
             $eco_com->delete();
+            $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($beneficiary->identity_card)->first();
+            if(!$eco_com_beneficiary) {
+                logger("beneficiario inexistente");
+                $affiliate_tokens->api_token = null;
+                $affiliate_tokens->firebase_token = null;
+                $affiliate_tokens->update();
+            }
             return response()->json([
                 'message' => 'deleted',
             ], 204);

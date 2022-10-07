@@ -70,11 +70,12 @@ class AuthController extends Controller
         $device_id = $request->device_id;
         $firebase_token = $request->firebase_token;
         $is_new_app= isset( $request->is_new_app ) ? $request->is_new_app : false;
+        $is_new_version= isset( $request->is_new_version ) ? $request->is_new_version : false;
         $update_device_id = false;
         $code = 200;
         $is_doble_perception = false;
 
-        if($is_new_app){
+        if($is_new_app && $is_new_version){
             /*if (Util::isDoblePerceptionEcoCom($identity_card)) {
                 return response()->json([
                     'error' => true,
@@ -181,10 +182,10 @@ class AuthController extends Controller
                                     $affiliate->affiliate_token()->update($update);
                                 }
                                 $var = $affiliate_token->affiliate_device;
-                                if($var->enrolled) {
+                                if($var->enrolled && !is_null($token) && !$update_device_id) {
                                     $affiliate_token->firebase_token = $firebase_token;
                                     $affiliate_token->update();
-                                }
+                                } 
 
                                 $device = (object)[];
                                 $device->enrolled = $affiliate_token->affiliate_device->enrolled;
