@@ -2,6 +2,7 @@
     <div class="ibox-content">
         <div class="row">
             <div class="pull-left"> <legend >Rostro</legend></div>
+            @if (Util::rolIsEcoCom())
             <div class="text-right" v-if="btnVerified">
                     <div class="text-center" v-if="editable">
                         <button data-animation="flip" class="btn btn-danger"  @click="updateDesvalidar"><i class="fa" ></i>Desvalidar CI </button> 
@@ -10,6 +11,7 @@
                         <button data-animation="flip" class="btn btn-primary"  @click="updateValidar"><i class="fa" ></i>Validar CI </button>
                     </div>
             </div>
+            @endif
         </div>
         <div class="row">
             <div class="alert alert-warning" v-if="btnVerified">
