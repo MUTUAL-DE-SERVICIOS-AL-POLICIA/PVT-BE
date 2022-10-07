@@ -1,3 +1,4 @@
+@php($role = \Muserpol\Helpers\Util::getRol()->id)
 <div class="col-lg-12">
         <div class="ibox">
             <div class="ibox-content">
@@ -34,7 +35,7 @@
                             'class' => 'form-control', 'v-model' => 'form.category_id' ,':disabled' => '!editing']) !!}</div>
                     <div class="col-md-2"><strong>Grado:</strong></div>
                     <div class="col-md-4">{!! Form::select('degree_id', $degrees, null, ['placeholder' => 'Seleccione un Grado', 'class' => 'form-control' , 'v-model'
-                            => 'form.degree_id' ,':disabled' => '!editing' ]) !!}</div>
+                            => 'form.degree_id' ,':disabled' => '!editing || !((editing && '.$role .' == 5) || (editing && '.$role.' == 28) || (editing && '.$role.' == 43))' ]) !!}</div>
                 </div>
                 <br>
                 <div class="row">
