@@ -2,18 +2,31 @@
 	export default{
         props:[
             'affiliate',
-			'affiliatedevice'
+			'affiliatedevice',
+			'affiliatetoken'
 		],
 		data(){
 			return { editable: true,
-		             btnVerified:false}
+		             btnVerified:false,
+					 notification: true
+				    }
 		},
 		mounted() {
 			if (this.affiliatedevice!=-1){
 				this.editable = this.affiliatedevice.verified;
-			    this.btnVerified=true;
+			    this.btnVerified = true;
 		    }else{
-				this.btnVerified=false;
+				this.btnVerified = false;
+			}
+			if(this.affiliatetoken!=-1){
+					if(this.affiliatetoken.api_token!= null && this.affiliatetoken.firebase_token!= null){
+					  this.notification = true;
+					  }
+					  else{
+					  this.notification = false;
+					  };
+			}else{
+                this.notification = false;
 			}
     	},
 		methods: {

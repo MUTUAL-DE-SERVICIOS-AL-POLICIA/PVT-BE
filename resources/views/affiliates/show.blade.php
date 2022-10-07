@@ -339,7 +339,9 @@ th.ellipsis-text {
                     </div>
 
                     <div id="tab-affiliate-photos" class="tab-pane">
-                        @include('affiliates.photos',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents,'fotofrente'=>$fotofrente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha])
+                    <affiliate-photo :affiliate="{{ $affiliate }}" :affiliatedevice="{{ $affiliatedevice?$affiliatedevice:-1 }}" :affiliatetoken="{{$affiliatetoken?$affiliatetoken:-1}}" inline-template>
+                        @include('affiliates.photos',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents,'fotofrente'=>$fotofrente,'fotoizquierda'=>$fotoizquierda,'fotoderecha'=>$fotoderecha,'fotocianverso'=>$fotocianverso,'fotocireverso'=>$fotocireverso])
+                    </affiliate-photo>
                     </div>
                     <div id="tab-deceased-photos" class="tab-pane">
                         @include('affiliates.deceased',
