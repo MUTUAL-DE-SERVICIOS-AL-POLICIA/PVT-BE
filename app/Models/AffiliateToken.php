@@ -12,7 +12,6 @@ class AffiliateToken extends Model
     protected $fillable = [
         'affiliate_id',
         'api_token',
-        'device_id',
         'firebase_token'
     ];
     public function affiliate()

@@ -395,6 +395,16 @@ class AffiliateController extends Controller
         if (Storage::exists($path.'/Derecha_Vejez.jpg'))
             $fotoDerechaVejez=base64_encode(Storage::get($path.'/Derecha_Vejez.jpg'));
 
+        $fotoCIAnverso="";
+        $fotoCIReverso="";
+        $path = 'ci/'.$affiliate->id;
+        if (Storage::exists($path.'/ci_anverso.jpg')) 
+            $fotoCIAnverso=base64_encode(Storage::get($path.'/ci_anverso.jpg'));
+        if (Storage::exists($path.'/ci_reverso.jpg')) 
+            $fotoCIReverso=base64_encode(Storage::get($path.'/ci_reverso.jpg'));
+
+        $affiliateToken = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first();
+
         if(AffiliateToken::where('affiliate_id','=',$affiliate->id)->first())
             $affiliateDevice = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device? AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device:NULL;
         else
@@ -463,6 +473,9 @@ class AffiliateController extends Controller
             'fotoizquierda' =>  $fotoIzquierda,
             'fotoderecha' =>  $fotoDerecha,
 
+            'fotocianverso' =>  $fotoCIAnverso,
+            'fotocireverso' =>  $fotoCIReverso,
+
             'fotofrenteVejez' =>  $fotoFrenteVejez,
             'fotoizquierdaVejez' =>  $fotoIzquierdaVejez,
             'fotoderechaVejez' =>  $fotoDerechaVejez,
@@ -471,6 +484,7 @@ class AffiliateController extends Controller
             'fotoizquierdaViudedad' =>  $fotoIzquierdaViudedad,
             'fotoderechaViudedad' =>  $fotoDerechaViudedad,
 
+            'affiliatetoken' => $affiliateToken,
             'affiliatedevice' =>  $affiliateDevice,
             'file' => $file,
         );
