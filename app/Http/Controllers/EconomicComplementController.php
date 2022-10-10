@@ -277,7 +277,7 @@ class EconomicComplementController extends Controller
                     $affiliate->service_months = $request->affiliate_service_months;
                 }
             }
-            $affiliate->degree_id = $request->affiliate_degree_id;
+            //$affiliate->degree_id = $request->affiliate_degree_id;
             $affiliate->pension_entity_id = $request->pension_entity_id;
             $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
             $affiliate->save();

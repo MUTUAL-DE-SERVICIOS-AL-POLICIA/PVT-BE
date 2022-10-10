@@ -196,7 +196,7 @@
                 <label class="control-label">Grado</label>
             </div>
               <div class="col-md-4">
-                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing" v-validate="'required'">
+                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing || (roleId != 5) " v-validate="'required'">
                   <option v-for="(c, index) in degrees" :value="c.id" :key="index">{{c.name}}</option>
                 </select>
                 <div v-show="errors.has('degree_id')">
