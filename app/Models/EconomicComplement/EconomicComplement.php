@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Crypt;
 use Hashids\Hashids;
 use DB;
 use Muserpol\Helpers\ID;
+use Muserpol\Http\Controllers\ContributionPassiveController;
+use Muserpol\Models\Contribution\ContributionPassive;
 use Auth;
 
 class EconomicComplement extends Model
@@ -73,7 +75,7 @@ class EconomicComplement extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'message'])->withTimestamps();
+        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['id','amount', 'date', 'message'])->withTimestamps();
     }
     public function encode()
     {
@@ -806,6 +808,86 @@ class EconomicComplement extends Model
             return  $periods;
             break;
         default:
+        }
+    }
+    public function ecoComContributionPassive(){
+        if($this->total>0){
+            if($this->hasDiscountType(7)){
+                $dada_discount = $this->discount_types->where('id',7)->first();
+                $amount = $dada_discount->pivot->amount;//monto descuento
+                $amount_month = round($amount / 6, 2);//monto por mes
+                $periods = $this->getPeriods(); // obtiene los periodos de aporte de acuerdo al semestre
+                $amount_dignity_rent = ($this->dignity_pension==null)?0:$this->dignity_pension;
+                $quotable_amount = $this->total_rent - $amount_dignity_rent;
+                    switch ($this->eco_com_modality->procedure_modality_id) {
+                      case 29:
+                          $rent_class =  'VEJEZ';
+                          break;
+                      case 30:
+                          $rent_class =  'VIUDEDAD';
+                          break;
+                      default:
+                    }
+                    //Peridos al semestre que corresponde
+                    foreach($periods as $period){
+                       $change = false;
+                       $message = false;
+                       $contibution=ContributionPassive::where('affiliate_id',$this->affiliate_id)->where('month_year',$period)->where('contributionable_type','discount_type_economic_complement')->where('contributionable_id',$dada_discount->pivot->id)->count();
+                        if($contibution == 0){
+                            $datos = [
+                                'user_id' => Auth::user()->id,
+                                'affiliate_id' => $this->affiliate_id,
+                                'month_year' => $period,
+                                'quotable' => $quotable_amount,
+                                'rent_pension' => $this->total_rent,
+                                'dignity_rent' => $amount_dignity_rent,
+                                'interest' => 0,
+                                'total' => (float)$amount_month,
+                                'affiliate_rent_class' => $rent_class,
+                                'contribution_state_id' => 1,
+                                'contributionable_type' => 'discount_type_economic_complement',
+                                'contributionable_id' =>  $dada_discount->pivot->id
+                                 ];
+                            ContributionPassiveController::store($datos);
+                        $message += ["Se creó el registro"];
+                        }else{
+                            ///Inicio Actualizacion
+                            ///Cargado de Datos en la Tabla contribution_passives si existieran cambios en///
+                            $contribution_update = [];
+                            $different_contributions = ContributionPassive::where('affiliate_id',$this->affiliate_id)
+                            ->where('month_year',$period)
+                            ->where('contributionable_type','discount_type_economic_complement')
+                            ->where('contributionable_id', $dada_discount->pivot->id)->first();
+                            if($different_contributions->where('total','!=',(float)$amount_month)->count()>=1){
+                              $contribution_update += ['total'=> (float)$amount_month];
+                              $change = true;
+                            }
+                            if($different_contributions->where('quotable','!=',(float)$quotable_amount)->count()>=1){
+                              $contribution_update += ['quotable'=> $quotable_amount];
+                              $change = true;
+                            }
+                            if($different_contributions->where('rent_pension','!=',(float)$this->total_rent)->count()>=1){
+                              $contribution_update += ['rent_pension'=> (float)$this->total_rent];
+                              $change = true;
+                            }
+                            if($different_contributions->where('dignity_rent','!=',(float)$amount_dignity_rent)->count()>=1){
+                              $contribution_update += ['dignity_rent'=> (float)$amount_dignity_rent];
+                              $change = true;
+                            }
+                            if($different_contributions->where('affiliate_rent_class','!=',$rent_class)->count()>=1){
+                              $contribution_update += ['affiliate_rent_class'=> $rent_class];
+                              $change = true;
+                            }
+                            //se realiza la actualizacion//
+                            if($change){
+                                $contribution_update += ['user_id' => Auth::user()->id];
+                                $message = ContributionPassiveController::update($contribution_update,$different_contributions->id);
+                                $message += ["Se actualizó el registro"];
+                            }
+                        }
+                    }
+                return $message;
+            }
         }
     }
 }

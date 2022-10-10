@@ -435,7 +435,7 @@ Route::group(['middleware' => ['auth']], function () {
         ->setOption('margin-bottom', '15mm')
         ->setOrientation('landscape')
         ->setOption('footer-center', 'Pagina [page] de [toPage]')
-        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
         ->stream("pre-calificados.pdf");
 
       return view('print_global.report', $data);
@@ -503,7 +503,7 @@ Route::group(['middleware' => ['auth']], function () {
         ->setOption('margin-bottom', '15mm')
         ->setOrientation('landscape')
         ->setOption('footer-center', 'Pagina [page] de [toPage]')
-        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
         ->stream("pre-calificados.pdf");
 
       return view('print_global.report', $data);
@@ -549,7 +549,7 @@ Route::group(['middleware' => ['auth']], function () {
         ->setOption('margin-bottom', '15mm')
         ->setOrientation('landscape')
         ->setOption('footer-center', 'Pagina [page] de [toPage]')
-        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
         ->stream("pre-calificados.pdf");
     })->name('print_be');
 
@@ -637,7 +637,7 @@ Route::group(['middleware' => ['auth']], function () {
         ->setOption('margin-bottom', '15mm')
         ->setOrientation('landscape')
         // ->setOption('footer-center', 'Pagina [page] de [toPage]')
-        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - 2018')
+        ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)
         ->stream("pre-calificados.pdf");
 
       return view('print_global.report', $data);
