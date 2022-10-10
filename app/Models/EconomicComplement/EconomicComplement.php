@@ -771,6 +771,11 @@ class EconomicComplement extends Model
         return $query->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
         ->leftJoin('workflows', 'economic_complements.workflow_id', '=', 'workflows.id');
     }
+    public function scopeAffiliateTokens($query)
+    {
+        return $query->leftJoin('affiliate_tokens', 'economic_complements.affiliate_id', '=', 'affiliate_tokens.affiliate_id')
+               ->leftJoin('affiliate_devices', 'affiliate_tokens.id', '=', 'affiliate_devices.affiliate_token_id');
+    }
     public function getEcoComBeneficiaryBank()
     {
         $beneficiary = $this->eco_com_beneficiary;
