@@ -2570,6 +2570,7 @@ class RetirementFundCertificationController extends Controller
     $discount_sum = $discounts->where('discount_type_id', '>', '1')->sum('amount');
     //return $discount_sum;
     $header_discount = false;
+    $header_garantee = false;
     if ($discount_sum > 0) {
       $discounts = $retirement_fund->discount_types();
       $discount = $discounts->where('discount_type_id', '2')->first();
@@ -2586,14 +2587,20 @@ class RetirementFundCertificationController extends Controller
 
         $loans = InfoLoan::where('affiliate_id', $affiliate->id)->get();
         if (!$header_discount) {
-          $body_resolution .= '<b>' . $cardinal[$cardinal_index++] . '.-</b> A solicitud de la Dirección de Estrategias Sociales e Inversiones, retener para pago de Garantia de prestamo '; // de los garantes: el monto de <b>".Util::formatMoneyWithLiteral(($discount->pivot->amount??0))."</b> por concepto de garantía de préstamo a favor de";// los señores. ".$discount->code." y nota ".$discount->note_code." de fecha ".$discount->date;
+          $body_resolution .= '<b>' . $cardinal[$cardinal_index++] . '.-</b> A solicitud de la Dirección de Estrategias Sociales e Inversiones, retener para pago de Garantia de prestamo '; // de los garantes
+          $header_garantee=true;
         } else {
           $body_resolution .= " y ";
         }
         $num_loans = $loans->count();
         $header = false;
         if ($num_loans > 1) {
-          $body_resolution .= 'la suma total de  <b>'.Util::formatMoneyWithLiteral($discount_guarantee->pivot->amount).'</b> por concepto de garantía de préstamo, a favor de :';
+          $body_resolution .= 'la suma total de  <b>'.Util::formatMoneyWithLiteral($discount_guarantee->pivot->amount).'</b> ';
+          if($header_garantee){
+            $body_resolution .= ' a favor de : ';
+          }else{
+            $body_resolution .= ' por concepto de garantía de préstamo, a favor de : ';
+          }
           $header = true;
         }
         $i = 0;

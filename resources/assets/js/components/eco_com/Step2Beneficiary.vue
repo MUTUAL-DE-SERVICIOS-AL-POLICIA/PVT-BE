@@ -706,7 +706,7 @@
                     name="affiliate_degree_id"
                     v-model.trim="affiliate.degree_id"
                     v-validate="'required'"
-                    :disabled="isHabitual"
+                    disabled
                   >
                     <option :value="null"></option>
                     <option v-for="d in degrees" :value="d.id" :key="d.id">{{ d.name }}</option>
