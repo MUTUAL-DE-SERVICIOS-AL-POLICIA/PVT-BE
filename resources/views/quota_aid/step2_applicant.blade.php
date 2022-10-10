@@ -19,7 +19,7 @@
                         <label class="col-sm-4 control-label">
                                 Grado</label>
                         <div class="col-sm-8">
-                            <select name="degree" class="form-control" v-model="affiliate.degree_id" v-validate.initial="'required'">
+                            <select name="degree" class="form-control" v-model="affiliate.degree_id" v-validate.initial="'required'" disabled>
                                 <option :value="null"></option>
                                 <option v-for="(degree, index) in degrees" :value="degree.id">@{{ degree.name }}</option>
                             </select>
