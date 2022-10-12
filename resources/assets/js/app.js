@@ -66,6 +66,9 @@ Vue.use(VeeValidate, {
         date_derelict: {
           required: "Debe ingresar fecha de desvinculación."
         },
+        date_last_contribution: {
+          required: "Debe ingresar fecha del último aporte."
+        },
         applicant_city_identity_card: {
           required:
             "Debe seleccionar la ciudad de expedición del ci del solicitante."
