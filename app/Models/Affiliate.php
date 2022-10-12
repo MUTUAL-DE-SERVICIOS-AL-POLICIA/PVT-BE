@@ -46,6 +46,7 @@ class Affiliate extends Model
     'date_death',
     'reason_death',
     'date_derelict',
+    'date_last_contribution',
     'reason_derelict',
     'phone_number',
     'cell_phone_number',
@@ -82,6 +83,13 @@ class Affiliate extends Model
     return Carbon::parse($value)->format('m/Y');
   }
   public function getDateDerelictAttribute($value)
+  {
+    if (!$value) {
+      return null;
+    }
+    return Carbon::parse($value)->format('m/Y');
+  }
+  public function getDateLastContributionAttribute($value)
   {
     if (!$value) {
       return null;
@@ -192,6 +200,10 @@ class Affiliate extends Model
   public function getDateDerelict($size = 'short')
   {
     return Util::getDateFormat($this->date_derelict, $size);
+  }
+  public function getDateLastContributionDate($size = 'short')
+  {
+    return Util::getDateFormat($this->date_last_contribution, $size);
   }
   public function getBirthDate($size = 'short')
   {
@@ -321,7 +333,7 @@ class Affiliate extends Model
   public function getDatesGlobal()
   {
     $date_start = Util::verifyMonthYearDate($this->date_entry) ? Util::parseMonthYearDate($this->date_entry) : $this->date_entry;
-    $date_end = Util::verifyMonthYearDate($this->date_derelict) ? Util::parseMonthYearDate($this->date_derelict) : $this->date_derelict;
+    $date_end = Util::verifyMonthYearDate($this->date_last_contribution) ? Util::parseMonthYearDate($this->date_last_contribution) : $this->date_last_contribution;
     $dates[] = (object)array(
       // 'start' => ($date_start < '1976-05-01' && ) ? "1976-05-01" : $date_start,
       'start' => $date_start,

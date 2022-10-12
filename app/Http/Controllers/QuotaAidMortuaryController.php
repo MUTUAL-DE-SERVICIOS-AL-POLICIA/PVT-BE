@@ -58,7 +58,7 @@ class QuotaAidMortuaryController extends Controller
   public function getAllQuotaAid(DataTables $datatables)
   {
     $quota_aids = QuotaAidMortuary::with([
-      'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id,date_death,date_entry,date_derelict',
+      'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id,date_death,date_entry,date_derelict,date_last_contribution',
       'city_start:id,name,first_shortened',
       'wf_state:id,name,first_shortened',
       'procedure_modality:id,name,shortened,procedure_type_id',
