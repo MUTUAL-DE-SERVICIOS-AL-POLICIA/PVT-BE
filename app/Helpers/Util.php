@@ -932,9 +932,9 @@ class Util
   {
     $total = 0;
     $date_entry = Carbon::createFromFormat('m/Y', $affiliate->date_entry);
-    $date_derelict = Carbon::createFromFormat('m/Y', $affiliate->date_derelict);
+    $date_last_contribution = Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution);
     $months_entry = ($date_entry->format('Y') * 12) + $date_entry->format('m');
-    $months_dereliect = ($date_derelict->format('Y') * 12) + $date_derelict->format('m');
+    $months_dereliect = ($date_last_contribution->format('Y') * 12) + $date_last_contribution->format('m');
     $frecuency = 0;
     $interest_rate = 1.05; //replace by procedure interest rate
     foreach ($contributions as $contribution) {

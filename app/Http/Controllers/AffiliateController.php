@@ -305,8 +305,8 @@ class AffiliateController extends Controller
         $month_end = $end[1];
         $year_end = $end[0];
 
-        if($affiliate->date_derelict)
-            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));
+        if($affiliate->date_last_contribution)
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution));
         else
             $start = explode('-', date('Y-m-d'));
         $month_start = $start[1];
@@ -620,6 +620,7 @@ class AffiliateController extends Controller
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        $affiliate->date_last_contribution =Util::verifyMonthYearDate($request->date_last_contribution) ? Util::parseMonthYearDate($request->date_last_contribution) : $request->date_last_contribution;
         $affiliate->save();
 
         $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity);

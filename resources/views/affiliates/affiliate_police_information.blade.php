@@ -35,7 +35,7 @@
                             'class' => 'form-control', 'v-model' => 'form.category_id' ,':disabled' => '!editing']) !!}</div>
                     <div class="col-md-2"><strong>Grado:</strong></div>
                     <div class="col-md-4">{!! Form::select('degree_id', $degrees, null, ['placeholder' => 'Seleccione un Grado', 'class' => 'form-control' , 'v-model'
-                            => 'form.degree_id' ,':disabled' => '!editing || !((editing && '.$role .' == 5) || (editing && '.$role.' == 28) || (editing && '.$role.' == 43))' ]) !!}</div>
+                        => 'form.degree_id' ,':disabled' => '!editing || !((editing && '.$role .' == 5) || (editing && '.$role.' == 28) || (editing && '.$role.' == 43))' ]) !!}</div>
                 </div>
                 <br>
                 <div class="row">
@@ -69,6 +69,14 @@
                     <div class="col-md-2"><strong>Fecha de Desvinculaci&oacute;n:</strong></div>
                     <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_derelict" v-month-year :disabled="!editing"></div>
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-2"><strong>Último periodo según listas de revista:  </strong></div><!--aqui -->
+                    <!-- <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_last_contribution" v-month-year :disabled="!editing" ></div> -->
+                    <div class="col-md-4">{!! Form::text('date_last_contribution', null, ['v-month-year','class' => 'form-control' , 'v-model'
+                        => 'form.date_last_contribution' ,':disabled' => '!editing || !((editing && '.$role .' == 12) || (editing && '.$role.' == 39))' ]) !!}</div>
+                </div>
+
                 <br>
                 <div class="row">
                     <div class="text-center" v-if="editing">
