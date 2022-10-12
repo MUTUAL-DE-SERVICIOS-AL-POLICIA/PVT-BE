@@ -1018,7 +1018,7 @@ class RetirementFundController extends Controller
 
         // return response()->json(['ret_funds' => $ret_funds->toArray(),'total'=>$total]);
         $retirement_funds = RetirementFund::with([
-            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id,date_death,date_entry,date_derelict',
+            'affiliate:id,identity_card,city_identity_card_id,first_name,second_name,last_name,mothers_last_name,surname_husband,gender,degree_id,degree_id,date_death,date_entry,date_derelict,date_last_contribution',
             'city_start:id,name,first_shortened',
             'wf_state:id,name,first_shortened',
             'procedure_modality:id,name,shortened,procedure_type_id',
@@ -1820,9 +1820,9 @@ class RetirementFundController extends Controller
     {
         $total = 0;
         $date_entry = Carbon::createFromFormat('m/Y', $affiliate->date_entry);
-        $date_derelict = Carbon::createFromFormat('m/Y', $affiliate->date_derelict);
+        $date_last_contribution = Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution);
         $months_entry = ($date_entry->format('Y') * 12) + $date_entry->format('m');
-        $months_dereliect = ($date_derelict->format('Y') * 12) + $date_derelict->format('m');
+        $months_dereliect = ($date_last_contribution->format('Y') * 12) + $date_last_contribution->format('m');
         $frecuency = 0;
         $interest_rate = 1.05; //replace by procedure interest rate
         foreach ($contributions as $contribution) {
