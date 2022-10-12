@@ -504,8 +504,8 @@ class ContributionController extends Controller
         $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
         $month_end = $end[1];
         $year_end = $end[0];
-        if($affiliate->date_derelict)
-            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));  
+        if($affiliate->date_last_contribution)
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution));  
         else
             $start = explode('-', date('Y-m-d'));  
         $month_start = $start[1];
@@ -527,11 +527,11 @@ class ContributionController extends Controller
         //codigo para obtener totales para el resument        
         $this->authorize('update',new Contribution);
         $date_entry =$affiliate->date_entry;
-        $date_derelict = $affiliate->date_derelict;     
-        if(!$affiliate->date_derelict)
-            $date_derelict  =   date('Y-m-d');
-        if(!$date_entry || !$date_derelict){
-            Session::flash('message','Verifique la fecha de entrada y desvinculación del afiliado antes de continuar');
+        $date_last_contribution = $affiliate->date_last_contribution;     
+        if(!$affiliate->date_last_contribution)
+            $date_last_contribution  =   date('Y-m-d');
+        if(!$date_entry || !$date_last_contribution){
+            Session::flash('message','Verifique la fecha de entrada y ultimo aporte del afiliado antes de continuar');
             return redirect('affiliate/'.$affiliate->id);
         }
         
@@ -564,8 +564,8 @@ class ContributionController extends Controller
         $month_end = $end[1];
         $year_end = $end[0];
         
-        $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));      
-        if(!$affiliate->date_derelict)
+        $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution));      
+        if(!$affiliate->date_last_contribution)
         $start = explode('-', date('Y-m-d'));              
         $month_start = $start[1];
         $year_start = $start[0];                
@@ -735,12 +735,12 @@ class ContributionController extends Controller
         $ret_fun = RetirementFund::find($ret_fun_id);
         $affiliate = $ret_fun->affiliate;
 
-        if (!(isset($affiliate->date_entry) && isset($affiliate->date_derelict))) {
-            Session::flash('message', 'Verifique la fecha de entrada y desvinculación del afiliado existan antes de continuar');
+        if (!(isset($affiliate->date_entry) && isset($affiliate->date_last_contribution))) {
+            Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte del afiliado existan antes de continuar');
             return redirect('ret_fun/' . $ret_fun_id);
         }
-        if (Util::parseMonthYearDate($affiliate->date_derelict) < Util::parseMonthYearDate($affiliate->date_entry)) {
-            Session::flash('message', 'Verifique la fecha de entrada y desvinculación del afiliado estén correctas antes de continuar');
+        if (Util::parseMonthYearDate($affiliate->date_last_contribution) < Util::parseMonthYearDate($affiliate->date_entry)) {
+            Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte del afiliado estén correctas antes de continuar');
             return redirect('ret_fun/' . $ret_fun_id);
         }
 
@@ -792,8 +792,8 @@ class ContributionController extends Controller
 
         /* last contributions and date derelict comparision */
 
-        if (Util::parseMonthYearDate($affiliate->date_derelict) > $last_contribution) {
-            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_derelict));
+        if (Util::parseMonthYearDate($affiliate->date_last_contribution) > $last_contribution) {
+            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_last_contribution));
             $months = array();
             while($month->toDateString() > $last_contribution){
                 array_push($months, [
@@ -821,11 +821,11 @@ class ContributionController extends Controller
                 $month->subMonth();
             }
             DB::table('contributions')->insert($months);
-        }elseif(Util::parseMonthYearDate($affiliate->date_derelict) < $last_contribution){
-            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_derelict));
+        }elseif(Util::parseMonthYearDate($affiliate->date_last_contribution) < $last_contribution){
+            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_last_contribution));
             $temp_ids = array();
             foreach ($contributions->reverse() as $value) {
-                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > Util::parseMonthYearDate($affiliate->date_derelict) ){
+                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > Util::parseMonthYearDate($affiliate->date_last_contribution) ){
                     array_push($temp_ids, $value->id);
                 }
             }
@@ -903,15 +903,15 @@ class ContributionController extends Controller
        
         $contribution_types = ContributionType::select('id', 'name')->orderBy('id')->get();
         $date_entry = $ret_fun->affiliate->date_entry;
-        $date_derelict = $ret_fun->affiliate->date_derelict;
-        // return $date_derelict;
+        $date_last_contribution = $ret_fun->affiliate->date_last_contribution;
+        // return $date_last_contribution;
         // return $contribution_types;
         //return $contributions;
-        if($date_entry && $date_derelict){
+        if($date_entry && $date_last_contribution){
             $data =   array('contributions' => $contributions,
                             'contribution_types'=> $contribution_types,
                             'date_entry' => Util::parseMonthYearDate($date_entry),
-                            'date_derelict' => Util::parseMonthYearDate($date_derelict),
+                            'date_last_contribution' => Util::parseMonthYearDate($date_last_contribution),
                             'ret_fun'=>$ret_fun);
             return view('contribution.select',$data);
         }

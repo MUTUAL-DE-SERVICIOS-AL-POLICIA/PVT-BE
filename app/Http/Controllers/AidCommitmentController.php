@@ -136,8 +136,8 @@ class AidCommitmentController extends Controller
             $affiliate->affiliate_state_id = ID::affiliateState()->fallecido;
         if($aid_commitment->contributor == 'C')
             $affiliate->affiliate_state_id = ID::affiliateState()->fallecido;
-        if($affiliate->date_derelict == NULL)
-            $affiliate->date_derelict = $aid_commitment->pension_declaration_date;
+        if($affiliate->date_last_contribution == NULL)
+            $affiliate->date_last_contribution = $aid_commitment->pension_declaration_date;
 
         $affiliate->save();
         return $aid_commitment;
