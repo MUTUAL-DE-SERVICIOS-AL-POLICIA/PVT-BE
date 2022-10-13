@@ -98,6 +98,24 @@
             <tr class="text-sm">
                 <td class="text-left px-10 py-3 uppercase"  colspan=3>Son: {{ Util::convertir($eco_com->total) }} BOLIVIANOS</td>
             </tr>
+            @if (isset($eco_com->total_repay))
+            <tr class="text-sm">
+                <td class="text-left px-10 py-3 uppercase font-bold">TOTAL PAGADO</td>
+                <td class="text-right uppercase px-5 py-3 font-bold"> {{ Util::formatMoney($eco_com->total - $eco_com->total_repay) }} </td>
+                <td class="text-center uppercase px-5 py-3"></td>
+            </tr>
+            <tr class="text-sm">
+                <td class="text-left px-10 py-3 uppercase"  colspan=3>Son: {{ Util::convertir($eco_com->total - $eco_com->total_repay) }} BOLIVIANOS</td>
+            </tr>
+            <tr class="text-sm">
+                <td class="text-left px-10 py-3 uppercase font-bold">REINTEGRO</td>
+                <td class="text-right uppercase px-5 py-3 font-bold"> {{ Util::formatMoney($eco_com->total_repay) }} </td>
+                <td class="text-center uppercase px-5 py-3"></td>
+            </tr>
+            <tr class="text-sm">
+                <td class="text-left px-10 py-3 uppercase"  colspan=3>Son: {{ Util::convertir($eco_com->total_repay) }} BOLIVIANOS</td>
+            </tr>
+            @endif
         </tbody>
     </table>
     <div class="p-10 border justify rounded"><span class="font-bold uppercase">nota:</span> {{ $eco_com->comment }}</div>
