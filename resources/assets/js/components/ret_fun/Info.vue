@@ -6,7 +6,9 @@ export default {
       'rf_city_end',
       'rf_procedure_modality',
       'states',
-      'read'
+      'read',
+      'rf_procedure_type',
+      'rf_wf_state'
   ],
   data(){
       return{
@@ -14,10 +16,12 @@ export default {
           form:this.retirement_fund,
           city_end: this.rf_city_end,
           city_start: this.rf_city_start,
-          procedure_modality: this.rf_procedure_modality,          
+          procedure_modality: this.rf_procedure_modality,
           values:{
               reception_date: this.retirement_fund.reception_date
-          }
+          },
+          procedure_type: this.rf_procedure_type,
+          wf_state: this.rf_wf_state,
       }
   },
   created(){
@@ -32,7 +36,13 @@ export default {
      },
      procedure_modality_name: function(){
           return !!this.procedure_modality? this.procedure_modality.name:'';
-     } 
+     },
+     procedure_type_name: function(){
+          return !!this.procedure_modality? this.procedure_type.second_name:'';
+     },
+     wf_state_name: function(){
+          return !!this.wf_state? this.wf_state.name:'';
+     }
 
   },
   methods:{
