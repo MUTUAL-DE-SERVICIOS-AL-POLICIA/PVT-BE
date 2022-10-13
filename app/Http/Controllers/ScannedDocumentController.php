@@ -32,16 +32,16 @@ class ScannedDocumentController extends Controller
         //
     }
 
-    public function upload(Request $request)
+    public function upload(Request $request,$affiliate_id)
     {
-        $id=$request->affiliate_id;
-        $file_name = $id.'.PDF';
+        //$id=$request->affiliate_id;
+        $file_name = $affiliate_id.'.pdf';
         $base_path = env('FTP_DIRECTORY');
 
         if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
             return $file = Storage::disk('ftp')->download($base_path.'/'.$file_name);
         }else{
-            $file_name = $affiliate->id.'.pdf';
+            //$file_name = $affiliate->id.'.pdf';
             if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
                 return $file = Storage::disk('ftp')->download($base_path.'/'.$file_name);
             }
