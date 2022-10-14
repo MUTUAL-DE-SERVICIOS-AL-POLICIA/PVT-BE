@@ -75,7 +75,7 @@ class DirectContributionController extends Controller
     {
         $this->authorize('create', DirectContribution::class);
         $user = Auth::User();
-        $affiliate = Affiliate::select('affiliates.id', 'identity_card', 'city_identity_card_id', 'registration', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband', 'birth_date', 'gender', 'degrees.name as degree', 'civil_status', 'affiliate_states.name as affiliate_state', 'phone_number', 'cell_phone_number', 'date_derelict', 'date_death', 'reason_death')
+        $affiliate = Affiliate::select('affiliates.id', 'identity_card', 'city_identity_card_id', 'registration', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband', 'birth_date', 'gender', 'degrees.name as degree', 'civil_status', 'affiliate_states.name as affiliate_state', 'phone_number', 'cell_phone_number','date_derelict', 'date_last_contribution', 'date_death', 'reason_death')
             ->leftJoin('degrees', 'affiliates.id', '=', 'degrees.id')
             ->leftJoin('affiliate_states', 'affiliates.affiliate_state_id', '=', 'affiliate_states.id')
             ->find($affiliate->id);
@@ -201,8 +201,8 @@ class DirectContributionController extends Controller
         $month_end = $end[1];
         $year_end = $end[0];
 
-        if($affiliate->date_derelict)
-            $start = explode('-', Util::parseMonthYearDate($affiliate->date_derelict));
+        if($affiliate->date_last_contribution)
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution));
         else
             $start = explode('-', date('Y-m-d'));
         $month_start = $start[1];

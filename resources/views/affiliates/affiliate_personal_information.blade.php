@@ -8,13 +8,10 @@
                         <div class="pull-left"> <legend > Información Personal</legend></div>
                         @can('update',$affiliate)
                             <div class="text-right">
-                                @if(isset($affiliatedevice))
-                                    @if(!$affiliatedevice->isEmpty())
-                                        @if(!empty($affiliatedevice->first()->device_id))
-                                        <button data-animation="flip" class="btn btn-danger" v-if="editing" @click="deleteDevice"><i class="fa fa-mobile" ></i> Desvincular móvil </button>
-                                        @endif
-                                    @endif
-                                @endif
+                            @if(isset($affiliatedevice))
+                                <button data-animation="flip" class="btn btn-danger" v-if="editing" @click="deleteDevice" data-placement="top" title="Desvincular móvil"><i class="fa fa-mobile" ></i> Desvincular móvil </button>
+                                <button data-animation="flip" class="btn btn-danger" v-if="editing" @click="deleteEnrolled" data-placement="top" title="Desenrolar"><i class="fa fa-id-badge" aria-hidden="true"></i> Desenrolar</button>
+                            @endif
                                 <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing" @if($is_editable == 0)disabled="disabled"@endif ><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
                             </div>
                         @endcan

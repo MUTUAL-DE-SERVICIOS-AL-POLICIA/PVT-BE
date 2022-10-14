@@ -25,14 +25,13 @@
                         <strong> Modalidad:</strong>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" v-model="procedure_modality_name" disabled="">
+                        <input type="text" class="form-control" v-model="procedure_type_name" disabled="">
                     </div>
                     <div class="col-md-2">
-                        <strong>Ciudad de Recepción:</strong>
+                        <strong> Sub Modalidad:</strong>
                     </div>
                     <div class="col-md-4">
-                        {!! Form::select('city_start_id', $cities, null , ['placeholder' => 'Seleccione ciudad', 'class' => 'form-control','v-model'=>'form.city_start_id',':disabled'=>'!editing'])
-                        !!}
+                        <input type="text" class="form-control" v-model="procedure_modality_name" disabled="">
                     </div>
                     {{-- <div class="col-md-1"></div> --}}
                 </div>
@@ -69,12 +68,24 @@
                             <option v-for="(state, index) in states" :value="state.id" :key="index">@{{state.name}}</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-        
+                    <div class="col-md-2">
+                        <strong>Ciudad de Recepción:</strong>
+                    </div>
+                    <div class="col-md-4">
+                        {!! Form::select('city_start_id', $cities, null , ['placeholder' => 'Seleccione ciudad', 'class' => 'form-control','v-model'=>'form.city_start_id',':disabled'=>'!editing'])
+                        !!}
                     </div>
                     {{-- <div class="col-md-1"></div> --}}
                 </div>
                 <br>
+                <div class="row">
+                    <div class="col-md-2">
+                        <strong> Ubicación:</strong>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" v-model="wf_state_name" disabled="">
+                    </div>
+                </div>
             
                 <div v-show="editing">
                     <div class="text-center">
@@ -86,7 +97,7 @@
         </div>        
     </div>
 
-    <div class="ibox">
+    <!-- <div class="ibox">
             <div class="ibox-content">
                     <div  class="pull-left col-md-12">
                         <legend>Resumen</legend>
@@ -199,5 +210,5 @@
 
                     <br>
             </div>        
-        </div>
+        </div> -->
 </div>

@@ -206,9 +206,9 @@ class AidContributionController extends Controller
     public function getAffiliateContributions(Affiliate $affiliate)
     {                                
 
-        $date_derelict = $affiliate->date_derelict;                
-        if(!$date_derelict){
-            Session::flash('message','Verifique la fecha desvinculación del afiliado antes de continuar');
+        $date_last_contribution = $affiliate->date_last_contribution;                
+        if(!$date_last_contribution){
+            Session::flash('message','Verifique la fecha del último periodo del afiliado antes de continuar');
             return redirect('affiliate/'.$affiliate->id);
         }
 
@@ -223,8 +223,8 @@ class AidContributionController extends Controller
             $aid = $contribution->total + $aid;
         }
         $total = $aid;
-        //$dateentry = Util::getStringDate($affiliate->date_derelict);
-        $dateentry = Util::parseMonthYearDate($affiliate->date_derelict);
+        //$dateentry = Util::getStringDate($affiliate->date_last_contribution);
+        $dateentry = Util::parseMonthYearDate($affiliate->date_last_contribution);
         //return $dateentry;
         if($dateentry == NULL || $dateentry == "") {            
             $dateentry = "2017-01-01";
