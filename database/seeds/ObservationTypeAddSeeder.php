@@ -14,7 +14,7 @@ class ObservationTypeAddSeeder extends Seeder
     public function run()
     {
         $observation_types = [
-            ['module_id'=>2,'name' => 'Suspendido - Cuentas por cobrar - RF.','description'=>'Amortizable','shortened'=>'Cuentas por cobrar - RF.','type'=>'AT','active'=>true],
+            ['module_id'=>2,'name' => 'Suspendido - Cuentas por cobrar - RF.','description'=>'Amortizable','shortened'=>'Cuentas por cobrar RF','type'=>'AT','active'=>true],
         ];
         foreach ($observation_types as $observation_type) {
             ObservationType::firstOrCreate($observation_type);
