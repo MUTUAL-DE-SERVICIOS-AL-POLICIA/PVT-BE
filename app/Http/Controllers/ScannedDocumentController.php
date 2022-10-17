@@ -37,7 +37,6 @@ class ScannedDocumentController extends Controller
         $id=$request->affiliate_id;
         $file_name = $id.'.PDF';
         $base_path = env('FTP_DIRECTORY');
-
         if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
             return $file = Storage::disk('ftp')->download($base_path.'/'.$file_name);
         }else{
@@ -51,7 +50,7 @@ class ScannedDocumentController extends Controller
         }
     }
 
-    
+
     public function create_document($affiliate_id){
         $affiliate =Affiliate::find($affiliate_id);
         $procedure_documents = ProcedureDocument::all();

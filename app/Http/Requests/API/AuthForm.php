@@ -24,7 +24,8 @@ class AuthForm extends ApiRequest
         return [
             'identity_card' => 'required',
             'birth_date' => 'required',
-            'device_id' => 'required|min:3|max:255'
+            'device_id' => 'required|min:3|max:255',
+            // 'firebase_token' => 'required'
         ];
     }
 }
