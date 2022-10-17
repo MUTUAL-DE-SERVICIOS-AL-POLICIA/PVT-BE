@@ -660,7 +660,7 @@ class EconomicComplementController extends Controller
          ** for observations
          */
         // $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
-        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'AT')->get();
+        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'AT')->where('active',true)->get();
         // $affiliate_observations = AffiliateObservation::where('affiliate_id', $economic_complement->affiliate_id)->get();
         // foreach($affiliate_observations as $observation){
         //     if($observation->observationType->type=='AT')
