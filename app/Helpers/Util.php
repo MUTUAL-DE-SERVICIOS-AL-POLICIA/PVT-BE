@@ -660,7 +660,7 @@ class Util
     $affiliate->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
     $affiliate->phone_number = $object->phone_number;
     $affiliate->cell_phone_number = $object->cell_phone_number;
-    $affiliate->city_birth_id = $object->city_birth_id;
+    $affiliate->city_birth_id = $object->city_birth_id?$object->city_birth_id:$affiliate->city_birth_id;
     $affiliate->city_identity_card_id = $object->city_identity_card_id;
     $affiliate->save();
   }
@@ -681,7 +681,7 @@ class Util
     $spouse->surname_husband = $object->surname_husband;
     $spouse->civil_status = $object->civil_status;
     $spouse->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
-    $spouse->city_birth_id = $object->city_birth_id;
+    $spouse->city_birth_id = $object->city_birth_id?$object->city_birth_id:$spouse->city_birth_id;;
     $spouse->city_identity_card_id = $object->city_identity_card_id;
     $spouse->date_death = $object->date_death ? Util::verifyBarDate($object->date_death) ? Util::parseBarDate($object->date_death) : $object->date_death  : null;
     $spouse->reason_death = $object->reason_death ?? null;
