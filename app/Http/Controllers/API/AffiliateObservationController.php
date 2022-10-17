@@ -16,6 +16,7 @@ class AffiliateObservationController extends Controller
      */
     public function index(Request $request, Affiliate $affiliate)
     {
+        $message = "";
         if ($request->affiliate->id == $affiliate->id) {
             $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) {
                 $q->orderBy('year')->orderBy('normal_start_date');
@@ -25,7 +26,7 @@ class AffiliateObservationController extends Controller
                     'error' => true,
                     'message' => 'No es beneficiario habitual',
                     'data' => []
-                ], 401);    
+                ], 401);
             }
             $observations = array_unique($affiliate->observations()->whereNull('deleted_at')->where('description', 'Denegado')->where('enabled', false)->pluck('shortened')->all());
             $enabled = (count($observations) == 0);
@@ -34,20 +35,23 @@ class AffiliateObservationController extends Controller
             if ($enabled) {
                 if ($available_procedures == 0) {
                     $enabled = false;
-                    $message = 'El pago vía SIGEP se realizará los dias 15 y 18 julio 2022. Para mayor información visite https://www.muserpol.gob.bo';
+                    $message = "";
                 } else {
-                    $latest_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('normal_start_date')->limit(2)->whereNotIn('id', EcoComProcedure::current_procedures()->pluck('id'))->pluck('id');
-                    $latest_procedures = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $latest_procedures)->count();
-                    if ($latest_procedures < 1) {
-                        $enabled = false;
-                        $message = 'Usted dejó de solicitar su trámite por dos semestres o más, debe apersonarse por oficinas de la MUSERPOL para su rehabilitación al pago.';
-                    } else {
-                        if($available_procedures > 1) {
-                            $message = 'Tiene '.$available_procedures.' solicitudes de trámite disponibles.';
-                        } else {
-                            $message = 'Tiene una solicitud de trámite disponible.';
+                    $beforelast_procedure = EcoComProcedure::orderByDesc('year')->orderByDesc('normal_start_date')->limit(2)->pluck('id')[1];
+                    $count_beforelast_procedure = $affiliate->economic_complements()->where('eco_com_procedure_id', $beforelast_procedure)->count();
+                    if($count_beforelast_procedure < 1){
+                        $latest_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('normal_start_date')->limit(2)->whereNotIn('id', EcoComProcedure::current_procedures()->pluck('id'))->pluck('id');
+                        $latest_procedures = $affiliate->economic_complements()->whereIn('eco_com_procedure_id', $latest_procedures)->count();
+                        if ($latest_procedures < 1) {
+                            $enabled = false;
+                            $message = 'Usted dejó de solicitar su trámite por dos semestres o más, debe apersonarse por oficinas de la MUSERPOL para su rehabilitación al pago.';
                         }
-                        
+                    }else{
+                        if($available_procedures > 1) {
+                            $message = 'Debe realizar las solicitudes de trámite';
+                        } else {
+                            $message = 'Debe realizar la solicitud de trámite';
+                        }
                     }
                 }
             } else {

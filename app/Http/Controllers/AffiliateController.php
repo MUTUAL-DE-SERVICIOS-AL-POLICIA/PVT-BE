@@ -41,6 +41,7 @@ use Muserpol\Models\FinancialEntity;
 use Illuminate\Support\Facades\Storage;
 
 use Muserpol\Models\AffiliateDevice;
+use Muserpol\Models\AffiliateToken;
 
 class AffiliateController extends Controller
 {
@@ -363,20 +364,51 @@ class AffiliateController extends Controller
         }
 
         $fotoFrente="";
-        $fotoSonriente="";
         $fotoIzquierda="";
         $fotoDerecha="";
         $path = 'liveness/faces/'.$affiliate->id;
         if (Storage::exists($path.'/Frente.jpg')) 
             $fotoFrente=base64_encode(Storage::get($path.'/Frente.jpg'));
-        if (Storage::exists($path.'/Sonriente.jpg')) 
-            $fotoSonriente=base64_encode(Storage::get($path.'/Sonriente.jpg'));
         if (Storage::exists($path.'/Izquierda.jpg')) 
             $fotoIzquierda=base64_encode(Storage::get($path.'/Izquierda.jpg'));
         if (Storage::exists($path.'/Derecha.jpg')) 
             $fotoDerecha=base64_encode(Storage::get($path.'/Derecha.jpg'));
 
-        $affiliateDevice = AffiliateDevice::where('affiliate_id','=',$affiliate->id)->get();
+        $fotoFrenteViudedad="";
+        $fotoIzquierdaViudedad="";
+        $fotoDerechaViudedad="";
+        $path = 'deceaseds/faces/'.$affiliate->id;
+        if (Storage::exists($path.'/Frente_Viudedad.jpg'))
+            $fotoFrenteViudedad=base64_encode(Storage::get($path.'/Frente_Viudedad.jpg'));
+        if (Storage::exists($path.'/Izquierda_Viudedad.jpg'))
+            $fotoIzquierdaViudedad=base64_encode(Storage::get($path.'/Izquierda_Viudedad.jpg'));
+        if (Storage::exists($path.'/Derecha_Viudedad.jpg'))
+            $fotoDerechaViudedad=base64_encode(Storage::get($path.'/Derecha_Viudedad.jpg'));
+
+        $fotoFrenteVejez="";
+        $fotoIzquierdaVejez="";
+        $fotoDerechaVejez="";
+        if (Storage::exists($path.'/Frente_Vejez.jpg'))
+            $fotoFrenteVejez=base64_encode(Storage::get($path.'/Frente_Vejez.jpg'));
+        if (Storage::exists($path.'/Izquierda_Vejez.jpg'))
+            $fotoIzquierdaVejez=base64_encode(Storage::get($path.'/Izquierda_Vejez.jpg'));
+        if (Storage::exists($path.'/Derecha_Vejez.jpg'))
+            $fotoDerechaVejez=base64_encode(Storage::get($path.'/Derecha_Vejez.jpg'));
+
+        $fotoCIAnverso="";
+        $fotoCIReverso="";
+        $path = 'ci/'.$affiliate->id;
+        if (Storage::exists($path.'/ci_anverso.jpg')) 
+            $fotoCIAnverso=base64_encode(Storage::get($path.'/ci_anverso.jpg'));
+        if (Storage::exists($path.'/ci_reverso.jpg')) 
+            $fotoCIReverso=base64_encode(Storage::get($path.'/ci_reverso.jpg'));
+
+        $affiliateToken = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first();
+
+        if(AffiliateToken::where('affiliate_id','=',$affiliate->id)->first())
+            $affiliateDevice = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device? AffiliateToken::where('affiliate_id','=',$affiliate->id)->first()->affiliate_device:NULL;
+        else
+            $affiliateDevice = null;
 
         $file_name = $affiliate->id.'.PDF';
         $base_path = env('FTP_DIRECTORY');
@@ -437,9 +469,22 @@ class AffiliateController extends Controller
             'financial_entities' =>  $financial_entities,
 
             'fotofrente' =>  $fotoFrente,
-            'fotosonriente' =>  $fotoSonriente,
+            //'fotosonriente' =>  $fotoSonriente,
             'fotoizquierda' =>  $fotoIzquierda,
             'fotoderecha' =>  $fotoDerecha,
+
+            'fotocianverso' =>  $fotoCIAnverso,
+            'fotocireverso' =>  $fotoCIReverso,
+
+            'fotofrenteVejez' =>  $fotoFrenteVejez,
+            'fotoizquierdaVejez' =>  $fotoIzquierdaVejez,
+            'fotoderechaVejez' =>  $fotoDerechaVejez,
+
+            'fotofrenteViudedad' =>  $fotoFrenteViudedad,
+            'fotoizquierdaViudedad' =>  $fotoIzquierdaViudedad,
+            'fotoderechaViudedad' =>  $fotoDerechaViudedad,
+
+            'affiliatetoken' => $affiliateToken,
             'affiliatedevice' =>  $affiliateDevice,
             'file' => $file,
         );
@@ -652,14 +697,30 @@ class AffiliateController extends Controller
     } 
 
     public function deleteDevice($affiliate_id){
-        $affiliateDevice = AffiliateDevice::find($affiliate_id);
+        $affiliateDevice = AffiliateToken::where('affiliate_id', $affiliate_id)->first()->affiliate_device;
+        $affiliateToken = AffiliateToken::where('affiliate_id', $affiliate_id)->first();
         $affiliateDevice->device_id = null;
-        $affiliateDevice->api_token = null;
         $affiliateDevice->save();
+        $affiliateToken->api_token = null;
+        $affiliateToken->save();
+    }
+    
+    public function deleteEnrolled($affiliate_id){
+        $affiliateDevice = AffiliateToken::where('affiliate_id', $affiliate_id)->first()->affiliate_device;
+        $affiliateToken = AffiliateToken::where('affiliate_id', $affiliate_id)->first();
+        $affiliateDevice->enrolled = false;
+        $affiliateDevice->verified = false;
+        $affiliateDevice->device_id = null;
+        $affiliateDevice->save();
+        $affiliateToken->api_token = null;
+        $affiliateToken->firebase_token = null;
+        $affiliateToken->save();
     }
 
+
     public function CIDevice($affiliate_id, $valor){
-        $affiliateDevice = AffiliateDevice::find($affiliate_id);
+        // logger($affiliate_id);
+        $affiliateDevice = AffiliateToken::where('affiliate_id', $affiliate_id)->first()->affiliate_device;
         $affiliateDevice->verified = $valor;
         $affiliateDevice->save();
     }
