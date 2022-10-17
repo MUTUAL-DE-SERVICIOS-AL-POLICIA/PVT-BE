@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(AportesDocumentsSeeder::class);
         //$this->call(AportesRequirementsSeeder::class);
         //$this->call(AportesComisionRequirements::class);
-        $this->call(ProcedureDevPaySeeder::class);
+       $this->call(ProcedureDevPaySeeder::class);
+       $this->call(ObservationTypeAddSeeder::class);
     }
 }
