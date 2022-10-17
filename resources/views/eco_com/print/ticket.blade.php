@@ -83,6 +83,20 @@
                 <em class="size-10" style="border-bottom:2px dotted #000">{{ Util::convertir($eco_com->total)   }}BOLIVIANOS.</em>
                 </td>
         </tr>
+        @if (isset($eco_com->total_repay))
+        <tr>
+            <td colspan="2" class="no-border">
+                <strong><em>TOTAL PAGADO Bs:</em></strong><br>
+                <em class="size-10" style="border-bottom:2px dotted #000">{{ Util::convertir($eco_com->total - $eco_com->total_repay)}}BOLIVIANOS.</em>
+                </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="no-border">
+                <strong><em>REINTEGRO Bs:</em></strong><br>
+                <em class="size-10" style="border-bottom:2px dotted #000">{{ Util::convertir($eco_com->total_repay)}}BOLIVIANOS.</em>
+                </td>
+        </tr>
+        @endif
         </table>
     </div>
     <div class="main-left">
@@ -105,6 +119,20 @@
                 <strong><em> Bs. {{ Util::formatMoney($eco_com->total) }}</em></strong>
                 </td>
             </tr>
+            @if (isset($eco_com->total_repay))
+            <tr>
+                <th class="no-border text-left w-70" style=""><em>TOTAL PAGADO</em></th>
+                <td class="no-border text-right w-30" style=""> 
+                <strong><em> Bs. {{ Util::formatMoney($eco_com->total- $eco_com->total_repay ) }}</em></strong>
+                </td>
+            </tr>
+            <tr>
+                <th class="no-border text-left w-70" style=""><em>REINTEGRO</em></th>
+                <td class="no-border text-right w-30" style=""> 
+                <strong><em> Bs. {{ Util::formatMoney($eco_com->total_repay) }}</em></strong>
+                </td>
+            </tr>
+            @endif
     </table>
     </div>
 </div>

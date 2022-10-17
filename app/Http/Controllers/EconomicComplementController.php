@@ -47,7 +47,9 @@ use Muserpol\Models\FinancialEntity;
 
 use Illuminate\Support\Facades\Storage;
 use Muserpol\Models\AffiliateDevice;
+use Muserpol\Models\AffiliateToken;
 use Validator;
+use Muserpol\Models\EconomicComplement\EcoComModality;
 
 use Muserpol\Models\BaseWage;
 
@@ -250,6 +252,7 @@ class EconomicComplementController extends Controller
             abort(500, "ERROR");
         }
         $affiliate = Affiliate::find($request->affiliate_id);
+        $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
         $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $request->eco_com_procedure_id)->first()->id]);
@@ -565,6 +568,52 @@ class EconomicComplementController extends Controller
                 $submit->save();
             }
         }
+        if($request->reception_type == ID::ecoCom()->inclusion) {
+            if(AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()){
+                $affiliateDevice = AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device ? AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device : null;
+                $fotoFrente="";
+                $fotoIzquierda="";
+                $fotoDerecha="";
+                $path_old = 'liveness/faces/'.$affiliate->id;
+                $path_new = 'deceaseds/faces/'.$affiliate->id;
+                if (!is_null($affiliateDevice)) {
+                    if ($affiliateDevice->verified){
+                        if ($last_process){
+                        $eco_com_modality = EcoComModality::find($last_process)->procedure_modality_id;
+                        if ($eco_com_modality == 29)
+                            {   $type ='Vejez';}
+                            else
+                            {   $type ='Viudedad';}
+                            if (Storage::exists($path_old.'/Frente.jpg')){
+                                Storage::move($path_old.'/Frente.jpg',$path_new.'/Frente_'.$type.'.jpg');
+                                Storage::move($path_old.'/Frente.npy',$path_new.'/Frente_'.$type.'.npy');
+                            }
+                            if (Storage::exists($path_old.'/Izquierda.jpg')){
+                                Storage::move($path_old.'/Izquierda.jpg',$path_new.'/Izquierda_'.$type.'.jpg');
+                                Storage::move($path_old.'/Izquierda.npy',$path_new.'/Izquierda_'.$type.'.npy');
+                            }
+                            if (Storage::exists($path_old.'/Derecha.jpg')){
+                                Storage::move($path_old.'/Derecha.jpg',$path_new.'/Derecha_'.$type.'.jpg');
+                                Storage::move($path_old.'/Derecha.npy',$path_new.'/Derecha_'.$type.'.npy');
+                            }
+                        }
+                    }
+                }
+            }
+            if (AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()) {
+                $affiliateDevice = AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device ? AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()->affiliate_device : null;
+                $affiliateToken =  AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first();
+                if (!is_null($affiliateDevice)) {
+                    $affiliateDevice->device_id = null;
+                    $affiliateDevice->enrolled = false;
+                    $affiliateDevice->verified = false;
+                    $affiliateDevice->save();
+                    $affiliateToken->api_token = null;
+                    $affiliateToken->firebase_token = null;
+                    $affiliateToken->save();
+                }
+            }
+        }
         return redirect()->action('EconomicComplementController@show', ['id' => $economic_complement->id]);
     }
 
@@ -722,8 +771,9 @@ class EconomicComplementController extends Controller
         $path = 'eco_com/'.$affiliate->id;
         if (Storage::exists($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg')) 
             $fotoBoleta=base64_encode(Storage::get($path.'/boleta_de_renta_'.$economic_complement->eco_com_procedure_id.'.jpg'));
-
-        $affiliateDevice = AffiliateDevice::where('affiliate_id','=',$economic_complement->affiliate_id)->get();
+        $affiliateToken = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first();
+        $affiliateDevice = $affiliateToken?$affiliateToken->affiliate_device:-1;
+        
         $data = [
             'economic_complement' => $economic_complement,
             'affiliate' => $affiliate,
@@ -757,6 +807,7 @@ class EconomicComplementController extends Controller
             'fotocireverso' =>  $fotoCIReverso,
             'fotoboleta' =>  $fotoBoleta,
             'affiliatedevice' =>  $affiliateDevice,
+            'affiliatetoken' => $affiliateToken?$affiliateToken:-1
         ];
         return view('eco_com.show', $data);
     }
@@ -1345,8 +1396,15 @@ class EconomicComplementController extends Controller
         }
         if ($id) {
             $eco_com = EconomicComplement::find($id);
+            $beneficiary = EcoComBeneficiary::whereEconomicComplementId($id)->first();
             $eco_com->code = $eco_com->code . 'A';
             $eco_com->save();
+            $affiliate_tokens = AffiliateToken::whereAffiliateId($eco_com->affiliate_id)->first();
+            $affiliate_device = $affiliate_tokens->affiliate_device;
+            $affiliate_device->eco_com_procedure_id = null;
+            if($affiliate_device->eco_com_procedure_id == null) logger("SI"); else logger("NO");
+            $eco_com->eco_com_beneficiary()->delete();
+            $affiliate_device->update();
             $eco_com->eco_com_beneficiary()->delete();
             $eco_com->eco_com_legal_guardian()->delete();
             $eco_com->submitted_documents()->delete();
@@ -1357,6 +1415,13 @@ class EconomicComplementController extends Controller
             $eco_com->discount_types()->detach();
             $eco_com->tags()->detach();
             $eco_com->delete();
+            $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($beneficiary->identity_card)->first();
+            if(!$eco_com_beneficiary) {
+                logger("beneficiario inexistente");
+                $affiliate_tokens->api_token = null;
+                $affiliate_tokens->firebase_token = null;
+                $affiliate_tokens->update();
+            }
             return response()->json([
                 'message' => 'deleted',
             ], 204);
@@ -1863,7 +1928,7 @@ class EconomicComplementController extends Controller
     public function cambioEstadoObservados($id){//para habilitar un tramite observado,vizualiza para todos los tramites
         $eco_com = EconomicComplement::find($id);
         $affiliate = Affiliate::find($eco_com->affiliate_id);
-        logger($affiliate);
+        // logger($affiliate);
         if ($affiliate->sigep_status == 'ACTIVO' && strlen($affiliate->account_number)>0 && strlen($affiliate->financial_entity_id)>0){
             $eco_com->eco_com_state_id=25;
         }

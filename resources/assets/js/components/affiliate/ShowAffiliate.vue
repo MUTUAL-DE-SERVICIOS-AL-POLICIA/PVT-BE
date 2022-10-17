@@ -248,6 +248,30 @@ import { flashErrors } from "../../helper.js";
                     allowOutsideClick: () => !this.$swal.isLoading()
                 });
             },
+            async deleteEnrolled () {
+               let uri = `/deleteEnrolled_affiliate/${this.affiliate.id}`;
+                await this.$swal({
+                    title: "¿Está seguro de desenrolar al Afiliado?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#59B75C",
+                    cancelButtonColor: "#EC4758",
+                    confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
+                    cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
+                    showLoaderOnConfirm: true,
+                    preConfirm: () => {
+                    return axios
+                        .get(uri)
+                        .then(response => {
+                            flash('Afiliado desenrolado con exito');
+                        })
+                        .catch(error => {
+                            flash('El afiliado no esta enrolado', 'error');
+                        });
+                    },
+                    allowOutsideClick: () => !this.$swal.isLoading()
+                });
+            },
         },
 	}
 </script>

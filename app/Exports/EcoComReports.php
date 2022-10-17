@@ -31,8 +31,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
         $columns = ",". EconomicComplement::basic_info_discount();
         switch ($this->report_type_id) {
             case 1:
-                $columns_add = ',eco_com_states.name as Estado_de_tramite';
-                $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                $columns_add = ",eco_com_states.name as Estado_de_tramite,CASE WHEN  affiliate_devices.verified = true then 'Validado' ELSE 'Sin Validar' END as verificado,(CASE WHEN  (affiliate_tokens.api_token is not null and affiliate_tokens.firebase_token is not null) then 'Habilitado' ELSE 'No Habilitado' END) as notification";
+                $data = EconomicComplement::where("economic_complements.eco_com_procedure_id",$this->eco_com_procedure_id)
                     ->groupBy("economic_complements.affiliate_id",
                     "economic_complements.code",
                     "economic_complements.reception_date",
@@ -84,12 +84,17 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "eco_com_modalities.name",
                     "workflows.name",
                     "eco_com_user.id",
-                    "eco_com_states.name",)
+                    "eco_com_states.name",
+                    "affiliate_devices.verified",
+                    "affiliate_tokens.api_token",
+                    "affiliate_tokens.firebase_token",
+                    )
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
                     ->wfstates()
                     ->ecocomstates()
+                    ->affiliatetokens()
                     // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums().$columns.$columns_add))
                     ->get();
@@ -211,7 +216,9 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "Amortización_Reposición_de_Fondos",
                     "Amortización_Auxilio_Mortuorio",
                     "Amortización_Cuentas_por_cobrar",
-                    "Estado_de_tramite"
+                    "Estado_de_tramite",
+                    "Contraste C.I",
+                    "Notificación",
                 ];
                 break;
             case 2:
@@ -317,7 +324,6 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "Ubicacion",
             "tipoe_beneficiario",
             "flujo",
-            
         ];
         return array_merge($default, $new_columns);
     }

@@ -316,6 +316,7 @@ Vue.component('affiliate-observations', require('./components/affiliate/Observat
 Vue.component('affiliate-devolutions', require('./components/affiliate/Devolutions.vue'));
 Vue.component('affiliate-record', require('./components/affiliate/Record.vue'));
 Vue.component('affiliate-notes', require('./components/affiliate/Notes.vue'));
+Vue.component('affiliate-photo', require('./components/affiliate/Photo.vue'));
 Vue.component('spouse-show', require('./components/spouse/ShowSpouse.vue'));
 //retirement Fund
 
@@ -458,7 +459,7 @@ Vue.component('certification-button', require('./components/utils/CertificationB
 Vue.component('edit-user', require('./components/user/EditUser.vue'));
 
 // Dispositivo movil
-Vue.component('eco-com-boleta', require('./components/eco_com/Boleta.vue'));
+
 
 Vue.component('eco-com-loadaverages', require('./components/eco_com/LoadAveranges.vue'));
 
