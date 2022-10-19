@@ -2398,6 +2398,7 @@ class RetirementFundCertificationController extends Controller
             $flagy = 0;
             if ($discount_counter > 0) {
               $header_discount = false;
+              $header_garantee = false;
               if (isset($discount_loan->id) && $discount_loan->pivot->amount > 0) {
                 //descuento de prestamo
                 $loan_guarantee .= $this->getFlagy($discount_counter, $flagy);
@@ -2406,13 +2407,13 @@ class RetirementFundCertificationController extends Controller
                 $loan_guarantee .= 'de <b>'.Util::formatMoneyWithLiteral($discount_loan->pivot->amount).'</b>';
                 $header_discount = true;
               }
-
               if (isset($discount_guarantee->id) && $discount_guarantee->pivot->amount > 0) {
                 $loans = InfoLoan::where('affiliate_id', $affiliate->id)->get();
                 $loan_guarantee .= $this->getFlagy($discount_counter, $flagy);
 
                 if (!$header_discount) { //no tiene descuento de prestamo pero se de garantia
                   $loan_guarantee .= '<br>Que, mediante nota '.$discount_guarantee->pivot->code.' de la Dirección de Estrategias Sociales e Inversiones de fecha '.Util::getStringDate($discount_guarantee->pivot->date).', refiriendo que '.($affiliate->gender == 'M' ? ' el <b>Sr. ' : ' la <b>Sra. ').'</b>'.$affiliate_name.', tiene retención por concepto de garantía,';
+                  $header_garantee = true;
                 } else {
                   $loan_guarantee .= '';
                 }
@@ -2420,7 +2421,11 @@ class RetirementFundCertificationController extends Controller
                 $num_loans = $loans->count();
                 $header = false;
                 if ($num_loans > 1) {
+                  if($header_garantee){
+                    $loan_guarantee .= ' a favor de ';
+                  }else{
                   $loan_guarantee .= ' la suma total de  <b>'.Util::formatMoneyWithLiteral($discount_guarantee->pivot->amount).'</b> por concepto de garantía de préstamo, a favor de ';
+                  }
                   $header = true;
                 }
                 $i = 0;
@@ -2741,20 +2746,15 @@ class RetirementFundCertificationController extends Controller
     $users_commission = User::where('is_commission', true)->get();
     $data = [
       'retirement_fund'   =>  $retirement_fund,
-     //'law'  =>  $law,
       'correlative'   =>  $number,
       'ret_fun' => $retirement_fund,
       'affiliate' =>  $affiliate,
       'actual_city'  =>  Auth::user()->city->name,
       'actual_date'  =>  Util::getStringDate($number->date),
-      //'body_finance'  =>  $body_finance,
-      //'reception' =>  $reception,
-      //'body_qualification'    =>  $body_qualification,
       'then'  =>  $then,
       'user'  =>  $user,
       'body_resolution'   =>  $body_resolution,
       'users_commission'  =>  $users_commission,
-      //'body_legal_dictum' =>  $body_legal_dictum,
       'viewed' => $viewed,
       'considering_one' => $considering_one,
       'considering_two' => $considering_two,
