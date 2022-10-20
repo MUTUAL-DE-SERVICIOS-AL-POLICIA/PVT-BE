@@ -321,7 +321,7 @@ class QuotaAidMortuaryController extends Controller
     }
     $affiliate->save();
 
-    $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $request->quota_aid_modality)->select('id')->first();
+    //$procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $request->quota_aid_modality)->select('id')->first();
     $validator = Validator::make($request->all(), [
       //'applicant_first_name' => 'required|max:5',
     ]);
@@ -376,7 +376,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->user_id = Auth::user()->id;
     $quota_aid->affiliate_id = $request->affiliate_id;
     $quota_aid->procedure_modality_id = $request->quota_aid_modality;
-    $quota_aid->quota_aid_procedure_id = $procedure->id;
+    //$quota_aid->quota_aid_procedure_id = $procedure->id;
     $quota_aid->city_start_id = Auth::user()->city_id;
     $quota_aid->city_end_id = Auth::user()->city_id;
     $quota_aid->code = $code;
