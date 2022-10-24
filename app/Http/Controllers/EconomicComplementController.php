@@ -253,6 +253,11 @@ class EconomicComplementController extends Controller
         }
         $affiliate = Affiliate::find($request->affiliate_id);
         /* */
+        if($request->reception_type == ID::ecoCom()->inclusion) {
+            if(AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()){
+            $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
+            }
+        }
         $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $request->eco_com_procedure_id)->first()->id]);
@@ -578,7 +583,7 @@ class EconomicComplementController extends Controller
                 $path_new = 'deceaseds/faces/'.$affiliate->id;
                 if (!is_null($affiliateDevice)) {
                     if ($affiliateDevice->verified){
-                        $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
+                        //$last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
                         if ($last_process){
                         $eco_com_modality = EcoComModality::find($last_process)->procedure_modality_id;
                         if ($eco_com_modality == 29)
