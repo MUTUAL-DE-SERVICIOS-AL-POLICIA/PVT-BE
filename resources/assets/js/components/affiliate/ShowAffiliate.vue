@@ -227,7 +227,7 @@ import { flashErrors } from "../../helper.js";
             async deleteDevice () {
                let uri = `/deleteDevice_affiliate/${this.affiliate.id}`;
                 await this.$swal({
-                    title: "¿Está seguro de Disvincular el Movil?",
+                    title: "¿Está seguro de Desvincular el Movil?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#59B75C",
