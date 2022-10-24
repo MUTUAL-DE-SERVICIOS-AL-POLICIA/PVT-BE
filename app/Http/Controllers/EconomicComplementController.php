@@ -583,7 +583,6 @@ class EconomicComplementController extends Controller
                 $path_new = 'deceaseds/faces/'.$affiliate->id;
                 if (!is_null($affiliateDevice)) {
                     if ($affiliateDevice->verified){
-                        //$last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
                         if ($last_process){
                         $eco_com_modality = EcoComModality::find($last_process)->procedure_modality_id;
                         if ($eco_com_modality == 29)
