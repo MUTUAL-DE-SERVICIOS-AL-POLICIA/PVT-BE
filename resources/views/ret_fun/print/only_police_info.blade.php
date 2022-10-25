@@ -25,7 +25,6 @@
         @if($procedure_modality->procedure_type->id != 21)
             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMonthYear($affiliate->date_entry) }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMonthYear($affiliate->date_derelict) }}</td>
-            <!-- <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMonthYear($affiliate->last_contribution->month_year)}}</td> -->
         @endif
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened ?? null }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->category->name ?? null }}</td>
