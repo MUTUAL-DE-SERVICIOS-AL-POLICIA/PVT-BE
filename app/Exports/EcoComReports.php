@@ -31,7 +31,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
         $columns = ",". EconomicComplement::basic_info_discount();
         switch ($this->report_type_id) {
             case 1:
-                $columns_add = ",eco_com_states.name as Estado_de_tramite,CASE WHEN  affiliate_devices.verified = true then 'Validado' ELSE 'Sin Validar' END as verificado,(CASE WHEN  (affiliate_tokens.api_token is not null and affiliate_tokens.firebase_token is not null) then 'Habilitado' ELSE 'No Habilitado' END) as notification";
+                $columns_add = ",eco_com_states.name as Estado_de_tramite,
+                CASE WHEN  affiliate_devices.enrolled = true then 'Enrolado' ELSE 'No Enrolado' END as enrolled,
+                CASE WHEN  affiliate_devices.verified = true then 'Validado' ELSE 'Sin Validar' END as verified,
+                (CASE WHEN  (affiliate_tokens.api_token is not null and affiliate_tokens.firebase_token is not null) then 'Habilitado' ELSE 'No Habilitado' END) as notification";
                 $data = EconomicComplement::where("economic_complements.eco_com_procedure_id",$this->eco_com_procedure_id)
                     ->groupBy("economic_complements.affiliate_id",
                     "economic_complements.code",
@@ -85,6 +88,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "workflows.name",
                     "eco_com_user.id",
                     "eco_com_states.name",
+                    "affiliate_devices.enrolled",
                     "affiliate_devices.verified",
                     "affiliate_tokens.api_token",
                     "affiliate_tokens.firebase_token",
@@ -217,6 +221,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "Amortización_Auxilio_Mortuorio",
                     "Amortización_Cuentas_por_cobrar",
                     "Estado_de_tramite",
+                    "Enrolamiento",
                     "Contraste C.I",
                     "Notificación",
                 ];

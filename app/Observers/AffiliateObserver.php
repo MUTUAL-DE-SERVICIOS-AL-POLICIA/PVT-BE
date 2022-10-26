@@ -80,7 +80,7 @@ class AffiliateObserver
 
         if($affiliate->city_birth_id != $old->city_birth_id)
         {
-            $message = $message . ' fecha de nacimiento '.($old->city_birth->name??'Sin ciudad').' a '.($affiliate->city_birth->name??'Sin ciudad').', ';
+            $message = $message . ' ciudad de nacimiento '.($old->city_birth->name??'Sin ciudad').' a '.($affiliate->city_birth->name??'Sin ciudad').', ';
 
         }
 
@@ -140,6 +140,39 @@ class AffiliateObserver
         if($affiliate->service_months != $old->service_months)
         {
             $message = $message . ' Meses de servicio '.$old->service_months.' a '.$affiliate->service_months.', ';
+        }
+
+        if($affiliate->date_death != $old->date_death)
+        {
+            $message = $message . ' fecha de fallecimiento '.$old->date_death.' a '.$affiliate->date_death.', ';
+        }
+        if($affiliate->reason_death != $old->reason_death)
+        {
+            $message = $message . ' causa de fallecimiento '.$old->reason_death.' a '.$affiliate->reason_death.', ';
+        }
+        if($affiliate->death_certificate_number != $old->death_certificate_number)
+        {
+            $message = $message . ' nro de certificado de defunción '.$old->death_certificate_number.' a '.$affiliate->death_certificate_number.', ';
+        }
+        if($affiliate->date_last_contribution != $old->date_last_contribution)
+        {
+            $message = $message . ' fecha de último aporte '.$old->date_last_contribution.' a '.$affiliate->date_last_contribution.', ';
+        }
+        if($affiliate->date_derelict != $old->date_derelict)
+        {
+            $message = $message . ' fecha de desvinculación '.$old->date_derelict.' a '.$affiliate->date_derelict.', ';
+        }
+        if($affiliate->account_number != $old->account_number)
+        {
+            $message = $message . ' número de cuenta '.$old->account_number.' a '.$affiliate->account_number.', ';
+        }
+        if($affiliate->sigep_status != $old->sigep_status)
+        {
+            $message = $message . ' estado sigep '.$old->sigep_status.' a '.$affiliate->sigep_status.', ';
+        }
+        if($affiliate->financial_entity_id != $old->financial_entity_id)
+        {
+            $message = $message . ' entidad financiera '.($old->financial_entity->name??"Sin entidad financiera").' a '.($affiliate->financial_entity->name??"Sin entidad financiera").', ';
         }
 
         if ('El usuario ' . Auth::user()->username . ' modificó ' != $message) {
