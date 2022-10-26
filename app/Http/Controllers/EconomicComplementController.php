@@ -252,7 +252,12 @@ class EconomicComplementController extends Controller
             abort(500, "ERROR");
         }
         $affiliate = Affiliate::find($request->affiliate_id);
-        $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
+        /* */
+        if($request->reception_type == ID::ecoCom()->inclusion) {
+            if(AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()){
+            $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
+            }
+        }
         $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $request->eco_com_procedure_id)->first()->id]);
