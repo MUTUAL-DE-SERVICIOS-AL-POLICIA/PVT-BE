@@ -399,7 +399,7 @@ class EconomicComplement extends Model
         $this->save();
         if($change_state){
             //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
-             $valid_payment_contribucion_passive = DB::select("SELECT change_state_contribution_paid_eco_com($user_id,$this->id)");
+             $payment_contribucion_passive_paid = DB::select("SELECT change_state_contribution_paid_eco_com($user_id,$this->id)");
         }
         if($change_state_process){
             //cambio de estado pagado a en proceso en la tabla contribution_passives
