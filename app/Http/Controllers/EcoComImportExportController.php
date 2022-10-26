@@ -324,85 +324,96 @@ class EcoComImportExportController extends Controller
         // return array_merge(session()->get('senasir_data'), ['not_found'=>$no_import]);
     }
     public function importPagoFuturo(Request $request)
-    {
-        // logger("entro");
-        // logger($request);
-        // logger($request->ecoComProcedureId);
-        $found = 0;
-        $found2 = collect([]);
-        $not_found = collect([]);
-        $user = User::first();
-
+    { DB::beginTransaction();
+        $contribution_created = 0;
+        $contribution_updated = 0;
+        $tramit_number = 0;
+        $total_contribution = 0;
+        $data = [
+            'tramit_number' => $tramit_number,
+            'contribution_created'=>$contribution_created,
+            'contribution_updated'=>$contribution_updated,
+            'total_contribution'=>$total_contribution
+        ];
         $current_procedures = $request->ecoComProcedureId;
-        $year_procedures = EcoComProcedure::find($current_procedures);
-        $year_procedures = Carbon::parse($year_procedures->year)->year;
         $pago_futuro_id = 31;
-        $affiliates = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->get();
+      try{
+        $affiliates = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($affiliates as $affiliate) {
             $affiliate_id = $affiliate->observable_id;
             $eco_com = EconomicComplement::select('economic_complements.*')
                 ->where('economic_complements.eco_com_procedure_id', $current_procedures)
+                ->where('economic_complements.wf_current_state_id',3)
+                ->where('economic_complements.eco_com_state_id',16)
+                ->whereNull('economic_complements.deleted_at')
                  ->where('affiliate_id', $affiliate_id)->first();
-            if ($eco_com) { 
-                 if (!$eco_com->hasObservationType($pago_futuro_id)) {
-                     $eco_com->observations()->save($observation, [
-                         'user_id' => Auth::user()->id,
-                         'date' => now(),
-                         'message' => "Observación generada desde el afiliado.",
-                         'enabled' => true
-                     ]);
-                    }              
-                    $eco_com->calculateTotalRentAps();
-                    $total_rent = $eco_com->total_rent;
-                    if ($total_rent > 0) {
-                        $total = round($total_rent * 2.03 / 100, 2);
-                        $aux = $total * 6;
-                        $discount_type = DiscountType::findOrFail(7);
-                        if ($eco_com->discount_types->contains($discount_type->id)) {
-                            $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
-                        } else {
-                            $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
-                        }
-                    
-                        $found++;
-                    }else{
-                        $not_found->push($affiliate_id);
-                    }
-                
-            }else {
-                $not_found->push($affiliate_id);
+            $pension_entity_id = Affiliate::find($affiliate_id)->pension_entity_id;
+            if ($eco_com) {
+                if (!($pension_entity_id == 5) && !($pension_entity_id == null)){
+                         if (!$eco_com->hasObservationType($pago_futuro_id)) {
+                             $eco_com->observations()->save($observation, [
+                                 'user_id' => Auth::user()->id,
+                                 'date' => now(),
+                                 'message' => "Observación generada desde el afiliado.",
+                                 'enabled' => true
+                             ]);
+                          }
+                          $eco_com->calculateTotalRentAps();
+                          $total_rent = $eco_com->total_rent;
+                          if ($total_rent > 0){
+                              $total = round($total_rent * 2.03 / 100, 2);
+                              $aux = $total * 6;
+                              $discount_type = DiscountType::findOrFail(7);
+                              //registro o actualizacion del descuento
+                                if ($eco_com->discount_types->contains($discount_type->id)) {
+                                    $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
+                                } else {
+                                    $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
+                                }
+                                //registro de aportes en la tabla contribution_passives
+                                $user_id = Auth::user()->id;
+                                $import_contribution = DB::select("select import_contribution_eco_com($user_id,$current_procedures,$eco_com->id)");
+                                DB::commit();
+                                if(!is_null($import_contribution[0]->import_contribution_eco_com)){
+                                    $import_contribution = explode(',',$import_contribution[0]->import_contribution_eco_com);
+                                    $tramit_number = $tramit_number + $import_contribution[0];
+                                    $contribution_created = $contribution_created + $import_contribution[1];
+                                    $contribution_updated = $contribution_updated + $import_contribution[2];
+                                    $total_contribution = $contribution_created + $contribution_updated;
+                                    $data = [
+                                        'tramit_number' => $tramit_number,
+                                        'contribution_created'=>$contribution_created,
+                                        'contribution_updated'=>$contribution_updated,
+                                        'total_contribution'=>$total_contribution
+                                    ];
+                                    if(filter_var($import_contribution[3], FILTER_VALIDATE_BOOLEAN)){
+                                        $month = Carbon::parse($import_contribution[4]);
+                                        $month = $month->formatLocalized('%B');
+                                             return response()->json([
+                                            'status' => 'error',
+                                            'errors' => ['El afiliado con Nup:'.$affiliate_id.' tiene registro de aportes en el mes de '.$month.' con origen senasir.'],
+                                            'data'=> $data
+                                        ], 422);
+                                    }
+                                }
+                          }
+                }else{
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => ['El afiliado con Nup:'.$affiliate_id.' tiene registrado como Ente Gestor Senasir ò no se tiene un registro.'],
+                        'data'=> $data
+
+                    ], 422);
+                }
             }
         }
-        //registro de aportes en la tabla contribution_passives
-        $user_id = Auth::user()->id;
-        $import_contribution = DB::select("select import_contribution_eco_com($user_id,$current_procedures)");
-        $import_contribution = explode(',',$import_contribution[0]->import_contribution_eco_com);
-
-        $data = [
-            'found' => $found,
-            'found2' => $found2,
-            'not_found' => $not_found,
-            'import_contribution'=>$import_contribution[1],
-            'import_eco_com'=>$import_contribution[2]
-        ];
         session()->put('pago_futuro_data', $data);
-
-        /*if ($request->refresh != 'true') {
-            $uploadedFile = $request->file('image');
-            $filename = 'pago_futuro.' . $uploadedFile->getClientOriginalExtension();
-            Storage::disk('local')->putFileAs(
-                'pago_futuro/' . now()->year,
-                $uploadedFile,
-                $filename
-            );
-        }
-        Excel::import(new EcoComImportPagoFuturo, 'pago_futuro/' . now()->year . '/pago_futuro.csv');
-        */
         return session()->get('pago_futuro_data');
-        // return null;
-        // return array_merge(session()->get('senasir_data'), []);
-
+       }catch (\Exception $e) {
+            DB::rollback();
+            return $e;
+       }
     }
     public function updatePaidBank(Request $request)
     {
