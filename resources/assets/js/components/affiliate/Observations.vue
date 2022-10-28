@@ -358,8 +358,14 @@ export default {
   },
   computed: {
     observationTypesFilter() {
+      let obs_res =[]
       return this.observationTypes.filter(o => {
-        return !this.observations.map(oo => oo.id).includes(o.id);
+        for(let i=0;i < this.observations.length; i++){
+          if(this.observations[i].pivot.deleted_at == null){
+            obs_res.push(this.observations[i])
+          }
+        }
+        return !obs_res.map(oo => oo.id).includes(o.id);
       });
     }
   }
