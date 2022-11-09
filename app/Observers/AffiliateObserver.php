@@ -103,11 +103,13 @@ class AffiliateObserver
         {
             $message = $message . ' estado '.($old->affiliate_state->name ?? 'Sin Estado').' a '.($affiliate->affiliate_state->name ?? 'Sin Estado').', ';
             $affiliateToken=AffiliateToken::where('affiliate_id',$affiliate->id)->first();
-            if ($affiliateToken) {
-                $affiliateUser=AffiliateUser::where('affiliate_token_id',$affiliateToken->id)->first();
-                if ($affiliateUser) {
-                    $affiliateUser->access_status='Inactivo';
-                    $affiliateUser->save();
+            if ($affiliate->affiliate_state_id==4) {
+                if ($affiliateToken) {
+                    $affiliateUser=AffiliateUser::where('affiliate_token_id',$affiliateToken->id)->first();
+                    if ($affiliateUser) {
+                        $affiliateUser->access_status='Inactivo';
+                        $affiliateUser->save();
+                    }
                 }
             }
         }
