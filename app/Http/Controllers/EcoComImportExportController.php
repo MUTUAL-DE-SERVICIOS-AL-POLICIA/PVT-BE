@@ -346,6 +346,7 @@ class EcoComImportExportController extends Controller
                 ->where('economic_complements.eco_com_procedure_id', $current_procedures)
                 ->where('economic_complements.wf_current_state_id',3)
                 ->where('economic_complements.eco_com_state_id',16)
+                ->whereNotIn('economic_complements.eco_com_modality_id',[3,10,12,11])
                 ->whereNull('economic_complements.deleted_at')
                  ->where('affiliate_id', $affiliate_id)->first();
             $pension_entity_id = Affiliate::find($affiliate_id)->pension_entity_id;
