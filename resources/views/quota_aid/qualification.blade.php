@@ -32,8 +32,8 @@
                                     {{-- @{{ contributionType.name}} <span data-toggle="tooltip" data-placement="top" :title="contributionType.description"><i class="fa fa-question-circle" style="opacity:.7"></i></span>                                    --}}
                                 </h4>
                             </div>
-                            <ret-fun-qualification-group :dates-child="{{ json_encode($dates['dates']) }}">
-                            </ret-fun-qualification-group>
+                            <quota-aid-qualification-group :dates-child="{{ json_encode($dates['dates']) }}">
+                            </quota-aid-qualification-group>
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                                 </tr>
                                 <tr class="font-bold">
                                     <td>Total {{ $quota_aid->procedure_modality->procedure_type->name }}</td>
-                                    <td>Bs {{ Util::formatMoney($procedure->amount) ?? '-' }}</td>
+                                    <td>Bs {{$procedure? (Util::formatMoney($procedure->amount) ?? '-'):'NO TIENE CUANTIA DE CÁLCULO' }}</td>
                                 </tr>
                             </tbody>
                         </table>

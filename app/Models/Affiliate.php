@@ -390,7 +390,7 @@ class Affiliate extends Model
   public function getContributionsWithTypeQuotaAid($quota_aid_id = null)
   {
     $dates = [];
-    $contributions = $this->getQuotaAidContributions($quota_aid_id)['contributions'];
+    $contributions = $this->getQuotaAidContributions2($quota_aid_id)['contributions'];
     if ($length = sizeof($contributions)) {
       $start = $contributions[0]['month_year'];
       for ($i = 0; $i < $length - 1; $i++) {
@@ -498,7 +498,7 @@ class Affiliate extends Model
     }
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     
-    $number_contributions = QuotaAidProcedure::where('is_enabled', 'true')->where('id', $quota_aid->quota_aid_procedure_id)->first()->months;
+    $number_contributions = 12;
     
     $date_death = Carbon::parse(Util::verifyBarDate($date_death)  ? Util::parseBarDate($date_death) : $date_death)->subMonth();
     if ($this->hasQuota()) {
@@ -512,9 +512,9 @@ class Affiliate extends Model
     }
     if ($this->hasAid()) {
       $contributions = $this->aid_contributions()
-        ->where('aid_contributions.month_year', '<=', $date_death)
+        ->where('contribution_passives.month_year', '<=', $date_death)
         ->where('total', '>', 0)
-        ->orderByDesc('aid_contributions.month_year')
+        ->orderByDesc('contribution_passives.month_year')
         ->take($number_contributions)
         ->get()
         ->toArray();
@@ -538,6 +538,85 @@ class Affiliate extends Model
       return $data;
     }
     return $null_data;
+  }
+  //--------cuota y auxilio mortuorio
+  public function getQuotaAidContributions2($quota_aid_id)//estamos aqui
+  {
+    $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+
+    $date_min = $quota_aid->affiliate->getIntervalQualificationQuotaAid($quota_aid_id)['start_date_min'];
+    $date_max = $quota_aid->affiliate->getIntervalQualificationQuotaAid($quota_aid_id)['end_date_max'];
+    $min_limit = Carbon::parse($quota_aid->affiliate->getIntervalQualificationQuotaAid($quota_aid_id)['start_min_limit'])->format('Y-m-d');
+    $max_limit = Carbon::parse($quota_aid->affiliate->getIntervalQualificationQuotaAid($quota_aid_id)['end_max_limit'])->format('Y-m-d');
+
+    $number_contributions=12;
+    $null_data = [
+      'is_continuous' => false,
+      'contributions_print'=>[],
+      'contributions' => [],
+    ];
+    if( is_null($date_min) || is_null($date_max) ){
+      return $null_data;
+    }
+
+    if ($quota_aid->isQuota()) {
+        $contributions = $this->contributions()
+        ->whereNotNull('contributions.contribution_type_mortuary_id')
+        ->where('contributions.contribution_type_mortuary_id',1)
+        ->where('contributions.month_year','>=',$min_limit)
+        ->where('contributions.month_year','<',$max_limit)
+        ->orderByDesc('contributions.month_year')
+       // ->take($number_contributions)
+        ->get();
+        //->toArray();
+    }
+
+    if ($quota_aid->isAid()) {
+      if($quota_aid->procedure_modality_id == 13){//titular
+        $contributions = $this->aid_contributions()
+        ->where('contribution_passives.affiliate_rent_class','ilike','%VEJEZ%')
+        ->whereNotNull('contribution_passives.contribution_type_mortuary_id')
+        ->where('contribution_passives.contribution_type_mortuary_id',1)
+        ->where('contribution_passives.month_year','>=',$min_limit)
+        ->where('contribution_passives.month_year','<',$max_limit)
+        //->where('total', '>', 0)
+        ->orderByDesc('contribution_passives.month_year')
+        //->take($number_contributions)
+        ->get();
+        //->toArray();
+      }
+      if($quota_aid->procedure_modality_id == 14){//Conyugue
+        $contributions = $this->aid_contributions()
+        ->where('contribution_passives.affiliate_rent_class','ilike','%VEJEZ%')
+        // ->where('contribution_passives.month_year','>=',$min_limit)
+        // ->where('contribution_passives.month_year','<=',$max_limit)
+        ->where('total', '>', 0)
+        ->orderByDesc('contribution_passives.month_year')
+        ->take($number_contributions)
+        ->get();
+        //->toArray();
+      }
+      if($quota_aid->procedure_modality_id == 15){//vuda
+        $contributions = $this->aid_contributions()
+        ->where('contribution_passives.affiliate_rent_class','ilike','%VIUDEDAD%')
+        ->whereNotNull('contribution_passives.contribution_type_mortuary_id')
+        ->where('contribution_passives.contribution_type_mortuary_id',1)
+        ->where('contribution_passives.month_year','>=',$min_limit)
+        ->where('contribution_passives.month_year','<',$max_limit)
+        // ->where('total', '>', 0)
+        ->orderByDesc('contribution_passives.month_year')
+        // ->take($number_contributions)
+        ->get();
+        //->toArray();
+      }
+    }
+
+    $data = [
+      'is_continuous' => true,
+      'contributions_print' => $contributions,
+      'contributions' => $contributions->toArray()
+    ];
+    return $data;
   }
   //--**SUMA LAS CONTRIBUCIONES CON SIGNO + **//
   public function getContributionsPlus($with_reimbursements = true)
@@ -949,5 +1028,44 @@ class Affiliate extends Model
     public function hasAvailabilityTime()
     {
       return (sizeOf($this->getContributionsWithType(12)) > 0) || (sizeOf($this->getContributionsWithType(13)) > 0);
+    }
+    public function getIntervalQualificationQuotaAid($quota_aid_id)
+    {
+      $ret_fun = QuotaAidMortuary::find($quota_aid_id);
+      $affiliate = $ret_fun->affiliate;
+      $date_qualification = [];
+      $date_min = $date_max = $min_limit = $max_limit = null;
+
+      if($ret_fun->isQuota()){
+          $date_min = $affiliate->date_entry;
+          $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
+          $min_limit = Util::parseMonthYearDate($date_min);
+          $max_limit = Util::parseMonthYearDate($date_max);
+      }else{
+          if($ret_fun->procedure_modality_id == 15){//fallecimiento viuda
+              $date_min = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
+              $date_max = Carbon::parse(Util::parseBarDate($affiliate->spouse[0]->date_death))->format('m/Y');
+              $min_limit = Util::parseMonthYearDate($date_min);
+              $max_limit = Util::parseMonthYearDate($date_max);
+          }elseif($ret_fun->procedure_modality_id == 14){// fallecimiento conyugue
+            $contributions = $affiliate->aid_contributions()->where('total','>',0)->orderBy('month_year','desc')->limit(12)->get();
+            $date_min =  $affiliate->date_entry;
+            $date_max =  Carbon::parse(Util::parseBarDate($affiliate->spouse[0]->date_death))->format('m/Y');
+            $min_limit = Util::parseMonthYearDate($date_min);
+            $max_limit = Util::parseMonthYearDate($date_max);
+          }else{
+              $date_min = $affiliate->date_last_contribution;// fallecimiento titular
+              $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
+              $min_limit = Util::parseMonthYearDate($date_min);
+              $max_limit = Util::parseMonthYearDate($date_max);
+          }
+      }
+      $data = [
+         'start_date_min' => $date_min,
+         'end_date_max' => $date_max,
+         'start_min_limit' => $min_limit,
+         'end_max_limit' => $max_limit,
+      ];
+      return $data;
     }
 }

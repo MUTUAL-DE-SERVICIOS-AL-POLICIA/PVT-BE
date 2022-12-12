@@ -2,7 +2,7 @@
 namespace Muserpol\Http\Controllers;
 use Muserpol\Models\Contribution\Contribution;
 use Illuminate\Http\Request;
-use Muserpol\Models\Affiliate; 
+use Muserpol\Models\Affiliate;
 use Muserpol\Models\City;
 use Muserpol\Models\Address;
 use Muserpol\Models\AffiliateState;
@@ -33,6 +33,9 @@ use Muserpol\Models\Contribution\ContributionRate;
 use Muserpol\Models\Contribution\ContributionProcess;
 use DateInterval;
 use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
+use Muserpol\Models\Contribution\ContributionTypeQuotaAid;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
 class ContributionController extends Controller
 {
     /**
@@ -1066,10 +1069,430 @@ class ContributionController extends Controller
         $exp = City::find($affiliate->city_identity_card_id);
         $exp = ($exp==Null)? "-": $exp->first_shortened;
         $dateac = Carbon::now()->format('d/m/Y');
-        $place = City::find($retirement_fund->city_start_id);              
+        $place = City::find($retirement_fund->city_start_id);
         $username = Auth::user()->username;
         $pdftitle = "Cuentas Individuales";
         $namepdf = Util::getPDFName($pdftitle, $affiliate);
         return \PDF::loadView('contribution.print.certification_item0', compact('itemcero','itemcero_sin_aporte','subtitle','place','retirement_fund','reimbursements','dateac','exp','degree','contributions','affiliate','title', 'username','institution', 'direction', 'unit', 'date','header', 'number'))->setPaper('letter')->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
-    } 
+    }
+    //quota aid  select contributions
+    public function selectContributionsQuotaAid($ret_fun_id)
+    {
+        $ret_fun = QuotaAidMortuary::find($ret_fun_id);
+        $affiliate = $ret_fun->affiliate;
+
+        if ($ret_fun->procedure_modality_id == 14) { // fallecimiento conyugue
+            Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clacificación de aportes.');
+            return redirect('quota_aid/' . $ret_fun_id);
+        }
+        if($ret_fun->isQuota()){
+            if (!(isset($affiliate->date_entry) && isset($affiliate->date_death))) {
+                Session::flash('message', 'Verifique la fecha de entrada y la fecha de fallecimiento del afiliado existan antes de continuar');
+                return redirect('quota_aid/' . $ret_fun_id);
+            }
+            $date_min = $affiliate->date_entry;
+            $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
+            if (!(isset($date_min) && isset($date_max))) {
+                Session::flash('message', 'Verifique la fecha de entrada y fecha de fallecimiento del afiliado existan antes de continuar');
+                return redirect('quota_aid/' . $ret_fun_id);
+            }
+            $min_limit = Util::parseMonthYearDate($date_min);
+            $max_limit = Util::parseMonthYearDate($date_max);
+            if ($max_limit < $min_limit) {
+                Session::flash('message', 'Verifique la fecha de ingreso '.$min_limit.' y fecha de fallecimiento '.$max_limit.' del titular estén correctas antes de continuar');
+                return redirect('quota_aid/' . $ret_fun_id);
+            }
+        }else{
+            if($ret_fun->procedure_modality_id == 15){//fallecimiento viuda
+                if (!(isset($affiliate->date_death) && isset($affiliate->spouse[0]->date_death))) {
+                    Session::flash('message', 'Verifique la fecha de fallecimiento del afiliado y fecha de fallecimiento de la viuda existan antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+                $date_min = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
+                $date_max = Carbon::parse(Util::parseBarDate($affiliate->spouse[0]->date_death))->format('m/Y');
+                if (!(isset($date_min) && isset($date_max))) {
+                    Session::flash('message', 'Verifique la fecha de fallecimiento del titular y fecha de fallecimiento de la viuda(o) existan antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+                $min_limit = Util::parseMonthYearDate($date_min);
+                $max_limit = Util::parseMonthYearDate($date_max);
+                if ($max_limit < $min_limit) {
+                    Session::flash('message', 'Verifique la fecha de fallecimiento titular '.$min_limit.' y fecha de fallecimiento viuda '.$max_limit.' estén correctas antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+            }else{
+
+                if (!(isset($affiliate->date_last_contribution) && isset($affiliate->date_death))) {
+                    Session::flash('message', 'Verifique la fecha de último periodo de aporte  y fecha de fallecimiento del afiliado existan antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+
+                $date_min = $affiliate->date_last_contribution;
+                $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
+
+                if (!(isset($date_min) && isset($date_max))) {
+                    Session::flash('message', 'Verifique la fecha de último periodo de aporte y fecha de fallecimiento del afiliado existan antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+                $min_limit = Util::parseMonthYearDate($date_min);
+                $max_limit = Util::parseMonthYearDate($date_max);
+                if ($max_limit < $min_limit) {
+                    Session::flash('message', 'Verifique la fecha de último periodo de aporte '.$min_limit.' y fecha de fallecimiento '.$max_limit.'  del afiliado estén correctas antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+            }
+        }
+        if($ret_fun->isQuota()){
+            $contributions = $affiliate->contributions()->orderBy('month_year')->get();
+        }else{
+            $contributions = $affiliate->aid_contributions()->where('month_year','>=',$min_limit)->where('month_year','<',$max_limit)->orderBy('month_year')->get();
+        }
+
+        //auxilio
+        if (count($contributions)<1 && !$ret_fun->isQuota()) {
+             $month = Carbon::parse($min_limit);
+             $months = array();
+             while($month < Carbon::parse($max_limit)->subMonth()){
+                array_push($months, [
+                    'user_id' => Auth::user()->id,
+                    'affiliate_id' => $affiliate->id,
+                    'month_year' => $month->toDateString(),
+                    'contribution_state_id'=>2,
+                    'total' => 0,
+                    'affiliate_rent_class'=> $ret_fun->procedure_modality_id == 15? 'VIUDEDAD':'VEJEZ',
+                    'contribution_type_mortuary_id' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]
+            );
+            $month->addMonth();
+            }
+            DB::table('contribution_passives')->insert($months);
+            $contributions = $affiliate->aid_contributions()->where('month_year','>=',$min_limit)->where('month_year','<',$max_limit)->orderBy('month_year')->get();
+        }
+
+        if (count($contributions)<1) {
+            Session::flash('message', 'Verifique que tenga aportes');
+            return redirect('quota_aid/' . $ret_fun_id);
+        }
+
+        $first_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->first()->month_year)->format('m/Y'));
+        $last_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->last()->month_year)->format('m/Y'));
+        if (Carbon::parse($max_limit)->subMonth() > $last_contribution) {
+            $month =  Carbon::parse($max_limit)->subMonth();
+            $months = array();
+            while($month->toDateString() > $last_contribution){
+                if($ret_fun->isQuota()){
+                    array_push($months, [
+                        'user_id' => Auth::user()->id,
+                        'affiliate_id' => $affiliate->id,
+                        'type' => 'Planilla',
+                        'base_wage' =>0,
+                        'month_year' => $month->toDateString(),
+                        'seniority_bonus' => 0,
+                        'study_bonus' => 0,
+                        'position_bonus' => 0,
+                        'border_bonus' => 0,
+                        'east_bonus' => 0,
+                        'gain' => 0,
+                        'quotable' => 0,
+                        'retirement_fund' => 0,
+                        'mortuary_quota' => 0,
+                        'total' => 0,
+                        'contribution_type_mortuary_id' => null,
+                        'category_id' => 1,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                        ]
+                    );
+                    $month->subMonth();
+                }else{
+                 //   dd('entra aqui en caso 1');
+                    array_push($months, [
+                        'user_id' => Auth::user()->id,
+                        'affiliate_id' => $affiliate->id,
+                        'month_year' => $month->toDateString(),
+                        'contribution_state_id'=>2,
+                        'total' => 0,
+                        'affiliate_rent_class'=> $ret_fun->procedure_modality_id == 15? 'VIUDEDAD':'VEJEZ',
+                        'contribution_type_mortuary_id' => null,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                        ]
+                    );
+                    $month->subMonth();
+                }
+            }
+            if($ret_fun->isQuota())
+                DB::table('contributions')->insert($months);
+            else
+                DB::table('contribution_passives')->insert($months);
+        }elseif($max_limit < $last_contribution){
+            $month = Carbon::parse($max_limit);
+            $temp_ids = array();
+            foreach ($contributions->reverse() as $value) {
+                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > $date_max){
+                    array_push($temp_ids, $value->id);
+                }
+            }
+            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden. ".$max_limit .' < '. $last_contribution);
+            // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
+        }
+         /*Comparación de entre primer aporte y limite inferior*/
+         if ($min_limit < $first_contribution) {
+             $month = Carbon::parse($min_limit);
+             $months = array();
+             while($month < $first_contribution){
+                 if($ret_fun->isQuota()){
+                     array_push($months, [
+                         'user_id' => Auth::user()->id,
+                         'affiliate_id' => $affiliate->id,
+                         'type' => 'Planilla',
+                         'base_wage' =>0,
+                         'month_year' => $month->toDateString(),
+                         'seniority_bonus' => 0,
+                         'study_bonus' => 0,
+                         'position_bonus' => 0,
+                         'border_bonus' => 0,
+                         'east_bonus' => 0,
+                         'gain' => 0,
+                         'quotable' => 0,
+                         'retirement_fund' => 0,
+                         'mortuary_quota' => 0,
+                         'total' => 0,
+                         'contribution_type_mortuary_id' => null,
+                         'category_id' => 1,
+                         'created_at' => Carbon::now(),
+                         'updated_at' => Carbon::now(),
+                         ]
+                     );
+                     $month->addMonth();
+                 }else{
+                     array_push($months, [
+                         'user_id' => Auth::user()->id,
+                         'affiliate_id' => $affiliate->id,
+                         'month_year' => $month->toDateString(),
+                         'contribution_state_id'=>2,
+                         'total' => 0,
+                         'affiliate_rent_class'=> $ret_fun->procedure_modality_id == 15? 'VIUDEDAD':'VEJEZ',
+                         'contribution_type_mortuary_id' => null,
+                         'created_at' => Carbon::now(),
+                         'updated_at' => Carbon::now(),
+                         ]
+                     );
+                     $month->addMonth();
+                 }
+             }
+             if($ret_fun->isQuota())
+                 DB::table('contributions')->insert($months);
+             else
+                 DB::table('contribution_passives')->insert($months);
+         }elseif( $min_limit > $first_contribution){
+             $month = Carbon::parse($min_limit);
+             $temp_ids = array();
+             foreach ($contributions as $value) {
+                 if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) < $date_min ){
+                     array_push($temp_ids, $value->id);
+                 }
+             }
+             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
+             dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
+        }
+        if($ret_fun->isQuota()){
+            $contributions = $affiliate->contributions()->where('month_year','<',"$max_limit")->orderBy('month_year')->get()->pluck('month_year');;
+        }else{
+            $contributions = $affiliate->aid_contributions()->where('month_year','>=',"$min_limit")->where('month_year','<',"$max_limit")->orderBy('month_year')->get()->pluck('month_year');;
+        }
+        $months = array();
+        if(sizeof($contributions) != (1 + Carbon::parse($contributions->last())->diffInMonths(Carbon::parse($contributions->first()))) ){
+            for($month = Carbon::parse($contributions->first()); $month<=$contributions->last(); $month=Carbon::parse($month)->addMonth()){
+                if (in_array($month->toDateString(), $contributions->toArray())) {
+                }else{
+                    if($ret_fun->isQuota()){
+                        array_push($months, [
+                            'user_id' => Auth::user()->id,
+                            'affiliate_id' => $affiliate->id,
+                            'type' => 'Planilla',
+                            'base_wage' =>0,
+                            'month_year' => $month->toDateString(),
+                            'seniority_bonus' => 0,
+                            'study_bonus' => 0,
+                            'position_bonus' => 0,
+                            'border_bonus' => 0,
+                            'east_bonus' => 0,
+                            'gain' => 0,
+                            'quotable' => 0,
+                            'retirement_fund' => 0,
+                            'mortuary_quota' => 0,
+                            'total' => 0,
+                            'contribution_type_mortuary_id' => null,
+                            'category_id' => 1,
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                            ]
+                        );
+                    }else{
+                        array_push($months, [
+                            'user_id' => Auth::user()->id,
+                            'affiliate_id' => $affiliate->id,
+                            'month_year' => $month->toDateString(),
+                            'contribution_state_id'=>2,
+                            'total' => 0,
+                            'affiliate_rent_class'=> $ret_fun->procedure_modality_id == 15? 'VIUDEDAD':'VEJEZ',
+                            'contribution_type_mortuary_id' => null,
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                            ]
+                        );
+                    }
+                }
+            }
+            if($ret_fun->isQuota())
+                DB::table('contributions')->insert($months);
+            else
+                DB::table('contribution_passives')->insert($months);
+        }
+
+        if($ret_fun->isQuota())
+            $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund','mortuary_quota', 'total', 'breakdown_id', 'contribution_type_id','contribution_type_mortuary_id')->where('month_year','<',"$max_limit")->orderbyDesc('month_year')->get();
+        else{
+            $contributions = $affiliate->aid_contributions()->select('id', 'month_year', 'total','contribution_type_mortuary_id')->where('month_year','>=',"$min_limit")->where('month_year','<',"$max_limit")->orderbyDesc('month_year')->get();
+            if($ret_fun->procedure_modality_id == 15){
+                $affiliate->aid_contributions()->select('id', 'month_year', 'total','contribution_type_mortuary_id')->where('month_year','>=',"$min_limit")->where('month_year','<',"$max_limit")->where('affiliate_rent_class','VEJEZ')->update(['affiliate_rent_class' => 'VEJEZ/VIUDEDAD']);
+            }
+        }
+
+        $contribution_types = ContributionTypeQuotaAid::select('id', 'name')->orderBy('id')->get();
+        $date_entry = $date_min;
+        $date_last_contribution =$date_max;
+
+        if($date_min){
+            $data =   array('contributions' => $contributions,
+                            'contribution_types'=> $contribution_types,
+                            'date_entry' => Util::parseMonthYearDate($date_entry),
+                            'date_last_contribution' => Util::parseMonthYearDate($date_last_contribution),
+                            'ret_fun'=>$ret_fun);
+            return view('contribution.selectQuotaAid',$data);
+        }
+        else{
+            Session::flash('message','Verifique la fecha de entrada y fallecimiento del afiliado antes de continuar');
+            return redirect('quota_aid/'.$ret_fun_id);
+        }
+    }
+    //guardar contribuciones
+    public function saveContributionsQuotaAid(Request $request){
+        $request_contributions = $request->contributions;
+        $ret_fun = QuotaAidMortuary::find($request->ret_fun_id);
+        $affiliate = $ret_fun->affiliate;
+        if($ret_fun->isQuota())
+            $contributions = $affiliate->contributions()->orderBy('month_year')->get();
+        else
+            $contributions = $affiliate->aid_contributions()->orderBy('month_year')->get();
+        foreach ($contributions as $c) {
+            foreach($request_contributions as $rc){
+                if($rc['id'] == $c->id){
+                    $c->contribution_type_mortuary_id = $rc['contribution_type_mortuary_id'];
+                    $c->save();
+                }
+            }
+        }
+        $count_contributions = 0;
+        $grace_period = true;
+        $count_grace = 0;
+        if($ret_fun->isQuota()){
+            if($ret_fun->procedure_modality_id == 8){//en cumplimiento de funciones
+                foreach($request_contributions as $index =>$cont){
+                    if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
+                        if($cont['contribution_type_mortuary_id'] == 1){
+                            $count_contributions++;
+                        }else
+                            break;
+                    }else{
+                        $count_grace++;
+                        if($count_contributions+$count_grace > 4){
+                            break;
+                        }
+                        if($count_grace>4)
+                            $grace_period = false;
+                    }
+                }
+                if($count_contributions >= 12){ // debe tener si o si al menos 12 para acceder al beneficio
+                    $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $ret_fun->procedure_modality_id)->where('is_enabled',true)->select('id')->first();
+                    $ret_fun->quota_aid_procedure_id = $procedure->id;
+                    $ret_fun->save();
+                }else{
+                    $ret_fun->quota_aid_procedure_id = null;
+                    $ret_fun->save();
+                }
+            }else{// por riesgo comun
+                foreach($request_contributions as $index =>$cont){
+                    if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
+                        if($cont['contribution_type_mortuary_id'] == 1){
+                            $count_contributions++;
+                        }else
+                            break;
+                    }else{
+                        $count_grace++;
+                        if($count_contributions+$count_grace > 4){
+                            break;
+                        }
+                        if($count_grace>4)
+                            $grace_period = false;
+                    }
+                }
+                if($count_contributions >= 12){ // debe tener si o si al menos 12 para acceder al beneficio
+                    $contributions = $affiliate->contributions()->where('contribution_type_mortuary_id',1)->orderBy('month_year')->get();
+                    $count_contributions = count($contributions);
+                    $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $ret_fun->procedure_modality_id)->where('is_enabled',true)->where('months_min','<=', $count_contributions)->where('months_max','>=', $count_contributions)->select('id')->first();
+                    $ret_fun->quota_aid_procedure_id = $procedure->id;
+                    $ret_fun->save();
+                }else{
+                    $ret_fun->quota_aid_procedure_id = null;
+                    $ret_fun->save();
+                }
+            }
+        }else{//auxilio mortuorio
+            foreach($request_contributions as $index =>$cont){
+                if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
+                    if($cont['contribution_type_mortuary_id'] == 1){
+                        $count_contributions++;
+                    }else
+                        break;
+                }else{
+                    $count_grace++;
+                    if($count_grace>4)
+                        $grace_period = false;
+                }
+            }
+
+            if($count_contributions > 0){ // debe tener si o si al menos 1 para acceder al beneficio
+                $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $ret_fun->procedure_modality_id)->where('is_enabled',true)->where('months_min','<=', $count_contributions)->where('months_max','>=', $count_contributions)->select('id')->first();
+                $ret_fun->quota_aid_procedure_id = $procedure->id;
+                $ret_fun->save();
+            }else{
+                $count_contributions = 1;// aquellos que firman carta de compromiso de pago
+                $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $ret_fun->procedure_modality_id)->where('is_enabled',true)->where('months_min','<=', $count_contributions)->where('months_max','>=', $count_contributions)->select('id')->first();
+                $ret_fun->quota_aid_procedure_id = $procedure->id;
+                $ret_fun->save();
+            }
+        }
+        $contribution_types = ContributionTypeQuotaAid::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_mortuary_id')->distinct()->get()->pluck('contribution_type_mortuary_id'))->orderBy('sequence')->select('name','id')->get();
+       // Util::getNextAreaCode($ret_fun->id);
+        foreach($contribution_types as $index =>$c){
+            switch ($c->id) {
+                case 2:
+                    //$c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 2)->first()->pivot->message ?? null;
+                    break;
+                case 1:
+                   // $c['message'] = $ret_fun->contribution_types()->where('contribution_type_id', 1)->first()->pivot->message ?? null;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
+        return response()->json([
+            'contribution_types' => $contribution_types,
+        ]);
+    }
 }
