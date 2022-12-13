@@ -158,14 +158,13 @@
                 >
                 </quota-aid-certification-button>
             @endif
-
-            {{-- @can('view', new Muserpol\Models\Contribution\Contribution)
-            <a  href="{{ url('ret_fun/'.$quota_aid->id.'/selectcontributions')}}" >
-                <button class="btn btn-primary btn-sm dim"  data-toggle="tooltip" data-placement="top" title="Clasificar Aportes">
-                <i class="fa fa-list-alt" style="font-size:15px"></i> Clasificar Aportes
-                </button>
-            </a>
-            @endcan --}}
+            @if(Muserpol\Helpers\Util::getRol()->id == 39)
+                <a  href="{{ url('quota_aid/'.$quota_aid->id.'/selectcontributions')}}" >
+                    <button class="btn btn-primary btn-sm dim"  data-toggle="tooltip" data-placement="top" title="Clasificar Aportes">
+                    <i class="fa fa-list-alt" style="font-size:15px"></i> Clasificar Aportes
+                    </button>
+                </a>
+            @endif
             @can('qualify', $quota_aid)
             <a href="{{route('quota_aid_qualification', $quota_aid->id)}}">
                 <button class="btn btn-info btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Calificacion" ><i class="fa fa-dollar" style="font-size:15px;"></i> Calificacion</button>
@@ -342,7 +341,7 @@
                             </div>
                             <div id="tab-observations" class="tab-pane">
                                     {{-- @include('ret_fun.observation') --}}
-                                    {{--@include('quota_aid.observation', ['quota_aid'=>$quota_aid,'observations'=>$quota_aid->quota_aid_observations,'observations_delete'=>$quota_aid->quota_aid_observations_delete]) --}}
+                                    @include('quota_aid.observation', ['quota_aid'=>$quota_aid,'observations'=>$quota_aid->quota_aid_observations,'observations_delete'=>$quota_aid->quota_aid_observations_delete])
                             </div>
 
                         </div>

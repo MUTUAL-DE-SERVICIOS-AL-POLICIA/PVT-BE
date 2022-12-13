@@ -4,7 +4,7 @@
     <div class="font-bold uppercase m-b-5 counter">
         INFORMACIÓN TÉCNICA
     </div>
-    <div class="block">
+    <!-- <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
@@ -22,17 +22,42 @@
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">PERIODO DE APORTES CONSIDERADOS PARA EL CÁLCULO DEL BENEFICIO</td>
                     <td colspan="2">
-                        <table class="no-border" style="border:none">
+                    <table class="no-border" style="border:none">
+                            @foreach ($dates as $d)
                             <tr class="no-border" style="border:none">
-                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($start_date) ?? 'error' }} </td>
-                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($end_date) ?? 'error' }} </td>
+                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($d->start) ?? 'error' }} </td>
+                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($d->end) ?? 'error' }} </td>
                             </tr>
+                            @endforeach
                         </table>
                     </td>
                 </tr>
             </tbody>
         </table>
-    </div>
+    </div> -->
+    <div class="block">
+    <table class="table-info w-100 m-b-10">
+        <thead class="bg-grey-darker">
+            <tr class="font-medium text-white text-sm uppercase">
+                <td class="px-15 text-center">Tipo de contribución</td>
+                <td class="px-15 text-center">Años</td>
+                <td class="px-15 text-center">Meses</td>
+            </tr>
+        </thead>
+        <tbody class="table-striped">
+            <tr class="text-sm">
+                <td class="text-left px-10 py-3 uppercase">{{ $contributions['contribution_types'] }}</td><!--aqui-->
+                <td class="text-center px-10 py-3 uppercase">{{ $contributions['years'] }}</td>
+                <td class="text-center px-10 py-3 uppercase">{{ $contributions['months'] }}</td>
+            </tr>
+            <tr>
+                <td class="text-left px-10 py-3 uppercase font-bold">Total de cotizaciones para Calificación</td>
+                <td class="text-center"><strong>{{ $contributions['years'] }}</strong></td>
+                <td class="text-center"><strong>{{ $contributions['months'] }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">

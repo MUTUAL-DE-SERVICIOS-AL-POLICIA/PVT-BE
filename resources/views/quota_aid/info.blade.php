@@ -66,6 +66,14 @@
                             <option v-for="(state, index) in states" :value="state.id" :key="index">@{{state.name}}</option>
                         </select>
                     </div>
+                    <div class="col-md-2">
+                        <strong> Cálculo de cuantía por modalidad(SI/NO):</strong>&nbsp;
+                    </div>
+                     <div class="col-md-4">
+                        <h5 v-if="form.quota_aid_procedure_id != null">SI</h5>
+                        <h5 v-else>NO</h5>
+                        <!-- <input type="text" v-model="form.quota_aid_procedure_id" class="form-control" :disabled="!editing" >  -->
+                    </div>
                     <div class="col-md-6">
                     </div>
                     {{-- <div class="col-md-1"></div> --}}

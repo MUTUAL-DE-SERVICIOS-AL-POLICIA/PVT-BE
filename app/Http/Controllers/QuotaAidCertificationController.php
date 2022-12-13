@@ -34,6 +34,7 @@ use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\Contribution\AidReimbursement;
 use Muserpol\Models\Degree;
 use Muserpol\Models\Testimony;
+use Muserpol\Models\Contribution\ContributionTypeQuotaAid;
 
 class QuotaAidCertificationController extends Controller
 {
@@ -333,13 +334,16 @@ class QuotaAidCertificationController extends Controller
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
+    $contribution_types= ContributionTypeQuotaAid::where('operator','+')->first();
 
-    $dates = $affiliate->getContributionsWithTypeQuotaAid($id);
-    if (sizeof($dates) > 1) {
-      return "error";
-    }
-    $start_date = $dates[0]->start;
-    $end_date = $dates[0]->end;
+    $dates = $affiliate->getContributionsWithTypeQuotaAid($id);//aqui
+    $total_dates = count($dates);
+
+    $contributions = array(
+      'contribution_types' => $contribution_types->name,
+      'years' => intval($total_dates / 12),
+      'months' => $total_dates % 12
+    );
 
     $title = 'CALIFICACIÓN ' . $quota_aid->procedure_modality->procedure_type->second_name;
     $subtitle = $number;
@@ -354,10 +358,11 @@ class QuotaAidCertificationController extends Controller
       'quota_aid' => $quota_aid,
       'affiliate' => $affiliate,
       'beneficiaries' => $beneficiaries,
-      'start_date' => $start_date,
-      'end_date' => $end_date,
+      // 'start_date' => '2022-01-01',
+      // 'end_date' => '2022-01-01',
+      'dates' =>$dates,
+      'contributions'=> $contributions,
     ];
-
     if ($only_print) {
       return \PDF::loadView('quota_aid.print.qualification_data', $data)
         ->setOption('encoding', 'utf-8')
@@ -371,7 +376,6 @@ class QuotaAidCertificationController extends Controller
   {
     $quota_aid = QuotaAidMortuary::find($id);
     $affiliate = $quota_aid->affiliate;
-
     $pages[] = \View::make('quota_aid.print.qualification_data', self::printQualificationData($id, false))->render();
 
     $pages[] = \View::make('quota_aid.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
@@ -497,7 +501,7 @@ class QuotaAidCertificationController extends Controller
       ->setOption('footer-html', $footerHtml)
       ->stream("$namepdf");
   }
-  public function printCertification($id)
+ public function printCertification($id)//cuentas individuales
   {
     $quota_aid = QuotaAidMortuary::find($id);
     $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 36)->first();
@@ -607,6 +611,84 @@ class QuotaAidCertificationController extends Controller
       return \PDF::loadView('contribution.print.certification_aid_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
     }
   }
+  public function printCertification2($id)//cuentas individuales
+  {
+    $quota_aid = QuotaAidMortuary::find($id);
+    $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 36)->first();
+    $code = $quota_aid->code;
+    $area = $next_area_code->wf_state->first_shortened;
+    $user = $next_area_code->user;
+    $date = Util::getDateFormat($next_area_code->date);
+    Carbon::useMonthsOverflow(false);
+    $number = $next_area_code->code;
+    $affiliate = Affiliate::find($quota_aid->affiliate_id);
+    $spouse = null;
+    $reimbursements = [];
+
+    $min_limit = $quota_aid->affiliate->getIntervalQualificationQuotaAid($quota_aid->id)['start_min_limit'];
+    $max_limit = $quota_aid->affiliate->getIntervalQualificationQuotaAid($quota_aid->id)['end_max_limit'];
+
+    $contributions = $affiliate->getQuotaAidContributions2($quota_aid->id)['contributions_print'];
+    $valid_contributions = $affiliate->getQuotaAidContributions2($quota_aid->id)['contributions_print'];
+    if ($quota_aid->procedure_modality->procedure_type_id == 3) {
+      $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
+      ->where('month_year','>=',$min_limit)
+      ->where('month_year', '<',$max_limit)
+      ->orderByDesc('month_year')->get();
+    }
+
+      if ($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {
+        $spouse = $affiliate->spouse()->first();
+      }
+
+    $degree = Degree::find($affiliate->degree_id);
+    $exp = City::find($affiliate->city_identity_card_id);
+    $exp = ($exp == null) ? "-" : $exp->first_shortened;
+    $dateac = Carbon::now()->format('d/m/Y');
+    $place = City::find(Auth::user()->city_id);
+    $num = 0;
+    $pdftitle = "Cuentas Individuales";
+    $namepdf = Util::getPDFName($pdftitle, $affiliate);
+    $subtitle = $next_area_code->code;
+    $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+    $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+    $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+    $title = "CERTIFICACIÓN " . $quota_aid->procedure_modality->procedure_type->second_name;
+    $contributions_number = count($contributions);
+   // dd($contributions_number);
+
+    $data = [
+      'code' => $code,
+      'area' => $area,
+      'user' => $user,
+      'date' => $date,
+      'number' => $number,
+      'contributions_number' => $contributions_number,
+      'num' => $num,
+      'subtitle' => $subtitle,
+      'place' => $place,
+      'quota_aid' => $quota_aid,
+      'reimbursements' => $reimbursements,
+      'dateac' => $dateac,
+      'exp' => $exp,
+      'degree' => $degree,
+      'contributions' => $contributions,
+      'affiliate' => $affiliate,
+      'title' => $title,
+      'spouse' => $spouse,
+      'valid_contributions' => $valid_contributions,
+      //'institution'=>$institution,
+      //'direction'=>$direction,
+      'unit' => $unit,
+    ];
+    if ($quota_aid->procedure_modality->procedure_type_id == 3) {
+      return \PDF::loadView('contribution.print.certification_quota_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
+    }
+    if ($quota_aid->procedure_modality->procedure_type_id == 4) {
+      return \PDF::loadView('contribution.print.certification_aid_contribution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
+    }
+  }
+
   private function generateBarCode($quota_aid)
   {
     $bar_code = \DNS2D::getBarcodePNG(

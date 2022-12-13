@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AidContribution extends Model
 {
+    protected $table = "contribution_passives";
 
     use SoftDeletes; 
 
@@ -18,7 +19,12 @@ class AidContribution extends Model
         'quotable',
         'rent',
         'dignity_rent',
-        'total'
+        'total',
+        'affiate_rent_class',
+        'contribution_type_motuary_id',
+        'contribution_state_id',
+        'contributionable_type',
+        'contributionable_id'
     ];
     
     public function affiliate()

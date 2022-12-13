@@ -321,7 +321,9 @@ class QuotaAidMortuaryController extends Controller
     }
     $affiliate->save();
 
-    //$procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $request->quota_aid_modality)->select('id')->first();
+    if ($request->quota_aid_modality == 14) { //fallecimiento conyugue
+      $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $request->quota_aid_modality)->where('is_enabled',true)->select('id')->first();
+    }
     $validator = Validator::make($request->all(), [
       //'applicant_first_name' => 'required|max:5',
     ]);
@@ -376,7 +378,9 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->user_id = Auth::user()->id;
     $quota_aid->affiliate_id = $request->affiliate_id;
     $quota_aid->procedure_modality_id = $request->quota_aid_modality;
-    //$quota_aid->quota_aid_procedure_id = $procedure->id;
+    if ($request->quota_aid_modality == 14) { //fallecimiento conyugue
+      $quota_aid->quota_aid_procedure_id = $procedure->id;
+    }
     $quota_aid->city_start_id = Auth::user()->city_id;
     $quota_aid->city_end_id = Auth::user()->city_id;
     $quota_aid->code = $code;
@@ -1349,6 +1353,9 @@ class QuotaAidMortuaryController extends Controller
   {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     $affiliate = $quota_aid->affiliate;
+    if (is_null($quota_aid->quota_aid_procedure_id)) {
+      return 'No aplicó a un cálculo de cuantía por modalidad';
+    }
     if (!$quota_aid->getDeceased()->date_death) {
       return 'Verifique que el fallecido (a) tenga fecha de Fallecimiento';
     }
@@ -1356,7 +1363,7 @@ class QuotaAidMortuaryController extends Controller
       return 'Verifique que el titular tenga un beneficio de cuota o auxilio.';
     }
     $degree = $affiliate->degree;
-    $procedure = QuotaAidProcedure::where('procedure_modality_id', $quota_aid->procedure_modality_id)
+    $procedure = QuotaAidProcedure::where('id', $quota_aid->quota_aid_procedure_id)
       ->where('hierarchy_id', $degree->hierarchy_id)
       ->where('is_enabled', true)
       ->first();
@@ -1416,7 +1423,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     $affiliate = $quota_aid->affiliate;
     $degree = $affiliate->degree;
-    $procedure = QuotaAidProcedure::where('procedure_modality_id', $quota_aid->procedure_modality_id)
+    $procedure = QuotaAidProcedure::where('id', $quota_aid->quota_aid_procedure_id)
       ->where('hierarchy_id', $degree->hierarchy_id)
       ->where('is_enabled', true)
       ->first();
@@ -1437,7 +1444,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     $affiliate = $quota_aid->affiliate;
     $degree = $affiliate->degree;
-    $procedure = QuotaAidProcedure::where('procedure_modality_id', $quota_aid->procedure_modality_id)
+    $procedure = QuotaAidProcedure::where('id', $quota_aid->quota_aid_prodedure_id)
       ->where('hierarchy_id', $degree->hierarchy_id)
       ->where('is_enabled', true)
       ->first();
@@ -1549,6 +1556,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->city_start_id = $request->city_start_id;
     $quota_aid->reception_date = $request->reception_date;
     $quota_aid->procedure_state_id = $request->procedure_state_id;
+    $quota_aid->quota_aid_procedure_id = $request->quota_aid_procedure_id;
     if ($quota_aid->procedure_state_id == ID::state()->eliminado) {
       $quota_aid->code .= "A";
     }

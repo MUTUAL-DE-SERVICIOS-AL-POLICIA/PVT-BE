@@ -112,6 +112,10 @@ Breadcrumbs::register('classify_contributions', function ($breadcrumbs, $retirem
   $breadcrumbs->push('Clasificacion de Aportes');
 });
 
+Breadcrumbs::register('classify_contributions-quota-aid', function ($breadcrumbs, $quota_aid) {
+  $breadcrumbs->parent('show_quota_aid', $quota_aid);
+  $breadcrumbs->push('Clasificacion de Aportes');
+});
 Breadcrumbs::register('document_scanned', function ($breadcrumbs, $affiliate) {
   $breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
   $breadcrumbs->push('Escanear Documento');
