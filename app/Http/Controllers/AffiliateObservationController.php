@@ -154,7 +154,6 @@ class AffiliateObservationController extends Controller
         }
         $affiliate = Affiliate::find($request->affiliateId);
         $observation = ObservationType::find($request->observationTypeId);
-        $hasObservation = false;
         if ($affiliate->observations->contains($observation->id)) {
             if($observation->id == 31){//pago a futuro
                 $eco_com_process = DB::table('observables')->select('observables.observable_id')->join('economic_complements','observables.observable_id','economic_complements.id')->where('observable_type', 'economic_complements')->where('economic_complements.affiliate_id', $affiliate->id)->where('economic_complements.eco_com_state_id',16)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->distinct()->get();
