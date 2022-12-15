@@ -6,7 +6,10 @@ use Muserpol\Models\AffiliateRecord;
 use Log;
 use Carbon\Carbon;
 use Auth;
+use Muserpol\AffiliateUser;
 use Muserpol\Helpers\Util;
+use Muserpol\Models\AffiliateToken;
+
 class AffiliateObserver
 {
     public function created(Affiliate $affiliate){
@@ -99,7 +102,16 @@ class AffiliateObserver
         if($affiliate->affiliate_state_id != $old->affiliate_state_id)
         {
             $message = $message . ' estado '.($old->affiliate_state->name ?? 'Sin Estado').' a '.($affiliate->affiliate_state->name ?? 'Sin Estado').', ';
-
+            $affiliateToken=AffiliateToken::where('affiliate_id',$affiliate->id)->first();
+            if ($affiliate->affiliate_state_id==4) {
+                if ($affiliateToken) {
+                    $affiliateUser=AffiliateUser::where('affiliate_token_id',$affiliateToken->id)->first();
+                    if ($affiliateUser) {
+                        $affiliateUser->access_status='Inactivo';
+                        $affiliateUser->save();
+                    }
+                }
+            }
         }
 
         if($affiliate->type != $old->type)
@@ -145,14 +157,38 @@ class AffiliateObserver
         if($affiliate->date_death != $old->date_death)
         {
             $message = $message . ' fecha de fallecimiento '.$old->date_death.' a '.$affiliate->date_death.', ';
+            $affiliateToken=AffiliateToken::where('affiliate_id',$affiliate->id)->first();
+            if ($affiliateToken) {
+                $affiliateUser=AffiliateUser::where('affiliate_token_id',$affiliateToken->id)->first();
+                if ($affiliateUser) {
+                    $affiliateUser->access_status='Inactivo';
+                    $affiliateUser->save();
+                }
+            }
         }
         if($affiliate->reason_death != $old->reason_death)
         {
             $message = $message . ' causa de fallecimiento '.$old->reason_death.' a '.$affiliate->reason_death.', ';
+            $affiliateToken=AffiliateToken::where('affiliate_id',$affiliate->id)->first();
+            if ($affiliateToken) {
+                $affiliateUser=AffiliateUser::where('affiliate_token_id',$affiliateToken->id)->first();
+                if ($affiliateUser) {
+                    $affiliateUser->access_status='Inactivo';
+                    $affiliateUser->save();
+                }
+            }
         }
         if($affiliate->death_certificate_number != $old->death_certificate_number)
         {
             $message = $message . ' nro de certificado de defunción '.$old->death_certificate_number.' a '.$affiliate->death_certificate_number.', ';
+            $affiliateToken=AffiliateToken::where('affiliate_id',$affiliate->id)->first();
+            if ($affiliateToken) {
+                $affiliateUser=AffiliateUser::where('affiliate_token_id',$affiliateToken->id)->first();
+                if ($affiliateUser) {
+                    $affiliateUser->access_status='Inactivo';
+                    $affiliateUser->save();
+                }
+            }
         }
         if($affiliate->date_last_contribution != $old->date_last_contribution)
         {

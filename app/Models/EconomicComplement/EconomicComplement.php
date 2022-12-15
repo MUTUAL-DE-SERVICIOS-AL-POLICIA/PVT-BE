@@ -384,6 +384,7 @@ class EconomicComplement extends Model
             }
         }
         $change_state = false;
+        $change_state_process = false;
         $user_id = Auth::user()->id;
         if ($this->discount_types->count() > 0) {
             if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
@@ -392,13 +393,18 @@ class EconomicComplement extends Model
             }else{
                 if ($this->eco_com_state_id == 18) {
                     $this->eco_com_state_id = 16;
+                    $change_state_process = true;
                 }
             }
         }
         $this->save();
         if($change_state){
             //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
-             $valid_payment_contribucion_passive = DB::select("SELECT change_state_contribution_paid_eco_com($user_id,$this->id)");
+             $payment_contribucion_passive_paid = DB::select("SELECT change_state_contribution_paid_eco_com($user_id,$this->id)");
+        }
+        if($change_state_process){
+            //cambio de estado pagado a en proceso en la tabla contribution_passives
+            $payment_contribucion_passive_process = DB::select("SELECT change_state_contribution_process_eco_com($user_id,$this->id)");
         }
 
         return response()->json([
