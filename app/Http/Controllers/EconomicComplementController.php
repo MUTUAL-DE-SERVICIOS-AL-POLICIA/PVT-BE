@@ -2001,4 +2001,34 @@ class EconomicComplementController extends Controller
         return $e;
         }
     }
+    public function delete_quota_aid_mortuary(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'ecoComId' => 'required',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $exception->errors(),
+            ], 422);
+        }
+        $eco_com = EconomicComplement::find($request->ecoComId);
+        $discount_id = $eco_com->discount_types->where('id',7)->first()->pivot->id;
+        $amount = $eco_com->discount_types->where('id',7)->first()->pivot->amount;
+        $contribution_number = ContributionPassive::where('contributionable_id',$discount_id)->where('contributionable_type','discount_type_economic_complement')->count();
+        $discount_type_id=7;
+        if ($eco_com->discount_types->contains($discount_type_id)) {
+            if($contribution_number === 0){
+             $eco_com->discount_types()->detach($discount_type_id);
+             $record = new AffiliateRecord();
+             $record->user_id = Auth::user()->id;
+             $record->affiliate_id = $affiliate->id;
+             $record->message = "El usuario " . Auth::user()->username  . " eliminó el descuento de Bs.".$amount." para el Aporte de Auxilio Mortuorio.";
+             $record->save();
+            }
+        } else {
+            return response()->json(['errors' => ['El Trámite no tiene descuento para el Aporte de Auxilio Mortuorio. ']], 422);
+        }
+    }
 }
