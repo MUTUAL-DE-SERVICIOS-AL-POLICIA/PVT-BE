@@ -31,7 +31,7 @@
                         <tr>                            
                             <td> {{ $folder->procedure_modality->name }} </td>                            
                             <td> @if($folder->is_paid === true) SI @endif @if($folder->is_paid === false)NO @endif </td>
-                            <td> {{ $folder->procedure_modality->note }} </td>
+                            <td> {{ $folder->note }} </td>
                             @can('update', new Muserpol\Models\Affiliatefolder)
                              <td><button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#folderDialog"
                                 data-modid="{{ $folder->procedure_modality_id }}"
@@ -109,8 +109,8 @@
             <div class="modal-body">
                 <input type="hidden" name ="affiliate_id" value="{{$affiliate_id}}">
                 <div class="form-group"><label>Tr&aacute;mite</label>
-                    <select class="form-control" name="procedure_modality_id" id="mod_id">
-                        @foreach($procedure_modalities as $modality)
+                <select class="form-control" name="procedure_modality_id" id="mod_id">
+                        @foreach($file_modalities as $modality)
                         <option value={{$modality->id}}>{{$modality->name}}</option>
                         @endforeach
                     </select>
