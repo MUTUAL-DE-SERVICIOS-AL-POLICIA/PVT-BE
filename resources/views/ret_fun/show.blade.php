@@ -438,7 +438,7 @@
             var id=button.data('id')
             var cod_folder = button.data('codfile')
             var num_folder = button.data('folnum')
-            var moda_id =button.data('modid');
+            var mod_id =button.data('modid');
             var note = button.data('note');
             var is_paid = button.data('ispaid');
 
@@ -457,6 +457,7 @@
             modal_folder.find('.modal-body #cod_folder').val(cod_folder)
             modal_folder.find('.modal-body #num_folder').val(num_folder)
             modal_folder.find('.modal-body #note').val(note)
+            modal_folder.find('.modal-body #mod_id').val(mod_id)
             // console.log($('#mod_id').val(moda_id))
         });
         $('#eliminar').on('show.bs.modal', function (event) {
