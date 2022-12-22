@@ -44,7 +44,7 @@ use Muserpol\Helpers\ID;
 use Muserpol\Models\EconomicComplement\EcoComReceptionType;
 use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\FinancialEntity;
-
+use Muserpol\Models\Contribution\ContributionPassive;
 use Illuminate\Support\Facades\Storage;
 use Muserpol\Models\AffiliateDevice;
 use Muserpol\Models\AffiliateToken;
@@ -2005,7 +2005,7 @@ class EconomicComplementController extends Controller
     {
         try {
             $this->validate($request, [
-                'ecoComId' => 'required',
+                'idEcoCom' => 'required',
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -2013,7 +2013,7 @@ class EconomicComplementController extends Controller
                 'errors' => $exception->errors(),
             ], 422);
         }
-        $eco_com = EconomicComplement::find($request->ecoComId);
+        $eco_com = EconomicComplement::find($request->idEcoCom);
         $discount_id = $eco_com->discount_types->where('id',7)->first()->pivot->id;
         $amount = $eco_com->discount_types->where('id',7)->first()->pivot->amount;
         $contribution_number = ContributionPassive::where('contributionable_id',$discount_id)->where('contributionable_type','discount_type_economic_complement')->count();
@@ -2021,11 +2021,20 @@ class EconomicComplementController extends Controller
         if ($eco_com->discount_types->contains($discount_type_id)) {
             if($contribution_number === 0){
              $eco_com->discount_types()->detach($discount_type_id);
-             $record = new AffiliateRecord();
-             $record->user_id = Auth::user()->id;
-             $record->affiliate_id = $affiliate->id;
-             $record->message = "El usuario " . Auth::user()->username  . " eliminó el descuento de Bs.".$amount." para el Aporte de Auxilio Mortuorio.";
-             $record->save();
+             $total = $eco_com->total;
+             $last_total = $total + $amount;
+             $eco_com->total=$last_total;
+             $eco_com->save();
+             $eco_com->procedure_records()->create([
+                'user_id' => auth()->user()->id,
+                'record_type_id' => 7,
+                'wf_state_id' => Util::getRol()->wf_states->first()->id,
+                'date' => Carbon::now(),
+                'message' => "El usuario " . Auth::user()->username  . " eliminó el descuento del Aporte de Auxilio Mortuorio de Bs.".$amount." y se actualizo el monto total de Bs.".$total." a Bs.".$last_total.".",
+            ]);
+            }
+            else {
+                return response()->json(['errors' => ['Debe eliminar el aporte para eliminar el registro. ']], 422);
             }
         } else {
             return response()->json(['errors' => ['El Trámite no tiene descuento para el Aporte de Auxilio Mortuorio. ']], 422);
