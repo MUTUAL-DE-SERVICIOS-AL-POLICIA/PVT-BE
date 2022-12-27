@@ -321,7 +321,7 @@ export default {
       this.form.observationTypeId = o.id;
       this.method = "delete";
       await this.$swal({
-        title: "¿Está seguro de elimar la observacion?",
+        title: "¿Está seguro de elimar la observación?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#59B75C",
@@ -371,7 +371,7 @@ export default {
         })
         .catch(error => {
           flashErrors(
-            "Error al procesar la observacion: ",
+            "Error al procesar la observación",
             error.response.data.errors
           );
           console.log(error);
