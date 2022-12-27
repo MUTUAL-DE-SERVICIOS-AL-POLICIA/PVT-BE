@@ -192,7 +192,7 @@ class EcoComObservationController extends Controller
                         'message' => "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . "."
                     ]);
                 } else{
-                    return response()->json(['errors' => ['Para eliminar la observación, primero debe eliminar el descuento para el auxilio mortuorio']], 422);
+                    return response()->json(['errors' => ['Para eliminar la observación debe eliminar el Aporte para el Auxilio Mortuorio']], 422);
                 }
             }else{
             $eco_com->observations()->updateExistingPivot($observation->id, [

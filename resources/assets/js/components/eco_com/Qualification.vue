@@ -627,7 +627,7 @@ export default {
     },
       deleteDiscount() {
                 this.$swal({
-                    title: 'Está seguro de eliminar el Descueto?',
+                    title: 'Está seguro de eliminar el Aporte?',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -648,11 +648,7 @@ export default {
                         })
                         .catch(error => {
                             this.show_spinner = false;
-                            var resp = error.response.data;
-                            $.each(resp, function(index,value)
-                            {
-                                flash(value,'error',6000);
-                            });
+                            flashErrors("Error al procesar", error.response.data.errors);
                         })
                         }
                     })
