@@ -2027,7 +2027,7 @@ class EconomicComplementController extends Controller
              $eco_com->save();
              $eco_com->procedure_records()->create([
                 'user_id' => auth()->user()->id,
-                'record_type_id' => $discount_type_id,
+                'record_type_id' => 7,
                 'wf_state_id' => Util::getRol()->wf_states->first()->id,
                 'date' => Carbon::now(),
                 'message' => "El usuario " . Auth::user()->username  . " eliminó el descuento del Aporte de Auxilio Mortuorio de Bs.".$amount." y se actualizo el monto total de Bs.".$total." a Bs.".$last_total.".",
