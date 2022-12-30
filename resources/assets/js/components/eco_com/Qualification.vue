@@ -153,7 +153,9 @@
                   <td style="text-align: right;">{{ ecoCom.total_eco_com | currency }}</td>
                 </tr>
                 <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
-                  <td>{{ d.shortened }}</td>
+                  <td><button class="btn btn-danger" type="button" v-if="d.id===7 && roleId===4" title="Eliminar" @click="deleteDiscount()">
+               <i class="fa fa-trash"></i>
+                 </button> {{ d.shortened }}</td>
                   <td style="text-align: right;">{{ d.pivot.amount | currency}}</td>
                 </tr>
                 <tr class="success">
@@ -453,7 +455,9 @@ export default {
       ecoComModal: {},
       editing: false,
       loadingButton: false,
-      eco_com_state_type_id:0
+      eco_com_state_type_id:0,
+      idEcoCom:0,
+      show_spinner:false
     };
   },
   mounted() {
@@ -620,7 +624,35 @@ export default {
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);
         });
-    }
+    },
+      deleteDiscount() {
+                this.$swal({
+                    title: 'Está seguro de eliminar el Aporte?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirmar',
+                    cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.value) {
+                          console.log(result.value);
+                            this.show_spinner = true;
+                            axios.delete('/delete_quota_aid_mortuary',{
+                            params: { idEcoCom:this.ecoComId }
+                          })
+                        .then(response => {
+                            console.log(response.data);
+                            this.show_spinner = false;
+                            location.reload();
+                        })
+                        .catch(error => {
+                            this.show_spinner = false;
+                            flashErrors("Error al procesar", error.response.data.errors);
+                        })
+                        }
+                    })
+            }
   }
 };
 </script>

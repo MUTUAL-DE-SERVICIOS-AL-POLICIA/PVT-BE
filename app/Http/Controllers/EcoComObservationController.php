@@ -178,6 +178,23 @@ class EcoComObservationController extends Controller
         $eco_com = EconomicComplement::find($request->ecoComId);
         $observation = ObservationType::find($request->observationTypeId);
         if ($eco_com->observations->contains($observation->id)) {
+            if($observation->id == 31){//pago a futuro;
+                $eco_com_process = DB::table('discount_type_economic_complement')->select('discount_type_economic_complement.economic_complement_id')->join('economic_complements','discount_type_economic_complement.economic_complement_id','economic_complements.id')->where('discount_type_id',7)->where('economic_complements.id', $eco_com->id)->whereNull('economic_complements.deleted_at')->get();
+                if($eco_com_process->count() == 0){
+                    $eco_com->observations()->updateExistingPivot($observation->id, [
+                        'deleted_at' => Carbon::now(),
+                    ]);
+                    $eco_com->procedure_records()->create([
+                        'user_id' => Auth::user()->id,
+                        'record_type_id' => 9,
+                        'wf_state_id' => Util::getRol()->wf_states->first()->id ?? $eco_com->wf_current_state_id,
+                        'date' => Carbon::now(),
+                        'message' => "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . "."
+                    ]);
+                } else{
+                    return response()->json(['errors' => ['Para eliminar la observación debe eliminar el Aporte para el Auxilio Mortuorio']], 422);
+                }
+            }else{
             $eco_com->observations()->updateExistingPivot($observation->id, [
                 'deleted_at' => Carbon::now(),
             ]);
@@ -188,6 +205,7 @@ class EcoComObservationController extends Controller
                 'date' => Carbon::now(),
                 'message' => "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . "."
             ]);
+            }
         } else {
             return response()->json(['errors' => ['El Trámite no tiene esa observación']], 422);
         }

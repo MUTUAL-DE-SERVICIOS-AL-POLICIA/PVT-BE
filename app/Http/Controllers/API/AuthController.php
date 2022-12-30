@@ -42,7 +42,7 @@ class AuthController extends Controller
             'error' => false,
             'message' => 'Usuario actual',
             'data' => [
-                'api_token' => $request->affiliate->device->api_token,
+                'api_token' => $request->affiliate->affiliate_token->api_token,
                 'user' => [
                     'id' => $request->affiliate->id,
                     'full_name' => $eco_com_beneficiary->fullName(),
@@ -50,8 +50,8 @@ class AuthController extends Controller
                     'identity_card' => $eco_com_beneficiary->identity_card,
                     'pension_entity' => $request->affiliate->pension_entity->name,
                     'category' => $request->affiliate->category->name,
-                    'enrolled' => $request->affiliate->device->enrolled,
-                    'verified' => $request->affiliate->device->verified,
+                    'enrolled' => $request->affiliate->affiliate_token->affiliate_device->enrolled,
+                    'verified' => $request->affiliate->affiliate_token->affiliate_device->verified,
                 ],
             ]
         ], 200);
