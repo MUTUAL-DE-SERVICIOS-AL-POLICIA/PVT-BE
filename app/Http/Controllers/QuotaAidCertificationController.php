@@ -1051,7 +1051,7 @@ class QuotaAidCertificationController extends Controller
         Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio, Nº 76/2019 de 11 de diciembre de 2019 ';
     //if ($quota_aid->procedure_modality->procedure_type_id == 3) { }
 
-    $law .= 'en su Artículo 54 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“La Comisión de Beneficios Económicos es la instancia técnica y legal que consolida el procedimiento administrativo para la otorgación mediante la emisión de Resolución de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa N° 060/2021 del 7 de diciembre de 2021, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.<br><br>';
+    $law .= 'en su Artículo 54 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“La Comisión de Beneficios Económicos es la instancia técnica y legal que consolida el procedimiento administrativo para la otorgación mediante la emisión de Resolución de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa N° 002/2023 del 4 de enero de 2023, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.<br><br>';
 
     $law .= 'Que, según lo establecido en el ' . ($quota_aid->procedure_modality->procedure_type_id == 3 ? "Art. 42 del Reglamento de Cuota Mortuoria " : "Art. 43 del Reglamento de Auxilio Mortuorio ") . ', 
     al momento de la presentación de la documentación para acceder a los beneficios de Fondo 
