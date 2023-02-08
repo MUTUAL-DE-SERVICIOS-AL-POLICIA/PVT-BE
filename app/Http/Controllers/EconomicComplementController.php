@@ -2001,7 +2001,7 @@ class EconomicComplementController extends Controller
         return $e;
         }
     }
-    public function delete_quota_aid_mortuary(Request $request)
+    public function delete_discount_type_aid(Request $request)
     {
         try {
             $this->validate($request, [
@@ -2013,11 +2013,11 @@ class EconomicComplementController extends Controller
                 'errors' => $exception->errors(),
             ], 422);
         }
-        $eco_com = EconomicComplement::find($request->idEcoCom);
-        $discount_id = $eco_com->discount_types->where('id',7)->first()->pivot->id;
-        $amount = $eco_com->discount_types->where('id',7)->first()->pivot->amount;
-        $contribution_number = ContributionPassive::where('contributionable_id',$discount_id)->where('contributionable_type','discount_type_economic_complement')->count();
         $discount_type_id=7;
+        $eco_com = EconomicComplement::find($request->idEcoCom);
+        $discount_id = $eco_com->discount_types->where('id',$discount_type_id)->first()->pivot->id;
+        $amount = $eco_com->discount_types->where('id',$discount_type_id)->first()->pivot->amount;
+        $contribution_number = ContributionPassive::where('contributionable_id',$discount_id)->where('contributionable_type','discount_type_economic_complement')->count();
         if ($eco_com->discount_types->contains($discount_type_id)) {
             if($contribution_number === 0){
              $eco_com->discount_types()->detach($discount_type_id);

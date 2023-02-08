@@ -690,7 +690,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('eco_com_cambiar_estado', 'EconomicComplementController@cambioEstado');
     Route::delete('eco_com_cambiar_estado_individual/{eco_com_id}', 'EconomicComplementController@cambioEstadoIndividual');
     Route::get('eco_com_cambiar_habilitado/{eco_com_id}', 'EconomicComplementController@cambioEstadoObservados');
-    Route::delete('delete_quota_aid_mortuary', 'EconomicComplementController@delete_quota_aid_mortuary');
+    Route::delete('delete_discount_type_aid', 'EconomicComplementController@delete_discount_type_aid');
     
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
