@@ -412,7 +412,7 @@
                             </div>
                             <div id="tab-observations" class="tab-pane">
                                     {{-- @can('view',new Muserpol\Models\ObservationType)--}}
-                                    {{--  @include('ret_fun.observation', ['retirement_fund'=>$retirement_fund,'observations_delete'=>$retirement_fund->ret_fun_observations_delete])-}}
+                                    @include('ret_fun.observation', ['retirement_fund'=>$retirement_fund,'observations_delete'=>$retirement_fund->ret_fun_observations_delete])
                                     {{-- @endcan --}}
                             </div>
 
@@ -438,11 +438,11 @@
             var id=button.data('id')
             var cod_folder = button.data('codfile')
             var num_folder = button.data('folnum')
-            var moda_id =button.data('modid');
+            var mod_id =button.data('modid');
             var note = button.data('note');
             var is_paid = button.data('ispaid');
 
-            var modal = $(this)
+            var modal_folder = $(this)
             $('#id_folder').val(id)
             //revisar esta parte con el nuevo disenio
             //if(typeof(is_paid) === "boolean"){
@@ -454,21 +454,63 @@
                 }
             //}
 
-            modal.find('.modal-body #cod_folder').val(cod_folder)
-            modal.find('.modal-body #num_folder').val(num_folder)
-            modal.find('.modal-body #note').val(note)
+            modal_folder.find('.modal-body #cod_folder').val(cod_folder)
+            modal_folder.find('.modal-body #num_folder').val(num_folder)
+            modal_folder.find('.modal-body #note').val(note)
+            modal_folder.find('.modal-body #mod_id').val(mod_id)
             // console.log($('#mod_id').val(moda_id))
         });
         $('#eliminar').on('show.bs.modal', function (event) {
-            var modal = $(this)
+            var modal_folder = $(this)
             var button = $(event.relatedTarget)
             // console.log('metodo 2')
             var folder_id = button.data('elim')
             // console.log($('#cod_file_eli').val(cod_folder))
-            modal.find('.modal-header #folder_id').val(folder_id)
+            modal_folder.find('.modal-header #folder_id').val(folder_id)
         });
         // console.log( "del show... " );
-        
+        $('#editObservation').on('show.bs.modal', function (event) {
+            var button_obs = $(event.relatedTarget)
+            var id_obs=button_obs.data('id_obs')
+            var moda_id =button_obs.data('modid');
+            var message = button_obs.data('message');
+            var enabled = button_obs.data('enabled');
+            var name_obs = button_obs.data('name_obs');
+
+            var modal_obs = $(this)
+        $('#id_observation').val(id_obs)
+                if(enabled == true){
+                    $(".modal-body #is_enable").prop("checked", true);
+                }
+                if(enabled == false){
+                    $(".modal-body #no_enable").prop("checked", true);
+                }
+            modal_obs.find('.modal-body #message').val(message)
+            modal_obs.find('.modal-body #name_obs').val(name_obs)
+            modal_obs.find('.modal-body #id_obs').val(id_obs)
+            //console.log($('#mod_id').val(moda_id))
+        });
+        $('#eliminarObs').on('show.bs.modal', function (event) {
+            var modal_obs = $(this)
+            var button_obs = $(event.relatedTarget)
+            // console.log('metodo 2')
+            var id_observation = button_obs.data('elim')
+            // console.log($('#cod_file_eli').val(cod_folder))
+            modal_obs.find('.modal-header #id_observation').val(id_observation)
+        });
+
     });
+    var clic = 1;
+
+    function showContent() {
+        element = document.getElementById("content");
+        check = document.getElementById("check");
+        if (check.checked) {
+            element.style.display='block';
+        }
+        else {
+            element.style.display='none';
+        }
+    }
 </script>
 @endsection

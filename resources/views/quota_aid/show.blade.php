@@ -366,11 +366,11 @@
             var id=button.data('id')
             var cod_folder = button.data('codfile')
             var num_folder = button.data('folnum')
-            var moda_id =button.data('modid');
+            var mod_id =button.data('modid');
             var note = button.data('note');
             var is_paid = button.data('ispaid');
 
-            var modal = $(this)
+            var modal_folder = $(this)
             $('#id_folder').val(id)
             //revisar esta parte con el nuevo disenio
             //if(typeof(is_paid) === "boolean"){
@@ -382,21 +382,64 @@
                 }
             //}
 
-            modal.find('.modal-body #cod_folder').val(cod_folder)
-            modal.find('.modal-body #num_folder').val(num_folder)
-            modal.find('.modal-body #note').val(note)
+            modal_folder.find('.modal-body #cod_folder').val(cod_folder)
+            modal_folder.find('.modal-body #num_folder').val(num_folder)
+            modal_folder.find('.modal-body #note').val(note)
+            modal_folder.find('.modal-body #mod_id').val(mod_id)
             // console.log($('#mod_id').val(moda_id))
         });
         $('#eliminar').on('show.bs.modal', function (event) {
-            var modal = $(this)
+            var modal_folder = $(this)
             var button = $(event.relatedTarget)
             // console.log('metodo 2')
             var folder_id = button.data('elim')
             // console.log($('#cod_file_eli').val(cod_folder))
-            modal.find('.modal-header #folder_id').val(folder_id)
+            modal_folder.find('.modal-header #folder_id').val(folder_id)
         });
         // console.log( "del show... " );
-        
+        $('#quotaAideditObservation').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var id_obs=button.data('id_obs')
+            var moda_id =button.data('modid');
+            var message = button.data('message');
+            var enabled = button.data('enabled');
+            var name_obs = button.data('name_obs');
+
+            var modal = $(this)
+            $('#id_observation').val(id_obs)
+                if(enabled == true){
+                    $(".modal-body #is_enable").prop("checked", true);
+                }
+                if(enabled == false){
+                    $(".modal-body #no_enable").prop("checked", true);
+                }
+            modal.find('.modal-body #message').val(message)
+            modal.find('.modal-body #name_obs').val(name_obs)
+            modal.find('.modal-body #id_obs').val(id_obs)
+            //console.log($('#mod_id').val(moda_id))
+        });
+        $('#eliminarObs').on('show.bs.modal', function (event) {
+            var modal = $(this)
+            var button = $(event.relatedTarget)
+            // console.log('metodo 2')
+            var id_observation = button.data('elim')
+            // console.log($('#cod_file_eli').val(cod_folder))
+            modal.find('.modal-header #id_observation').val(id_observation)
+        });
+        var clic = 1;
+
+        function showContent() {
+            element = document.getElementById("content");
+            check = document.getElementById("check");
+            if (check.checked) {
+                element.style.display='block';
+            }
+            else {
+                element.style.display='none';
+            }
+        }
+
+
     });
 </script>
 @endsection
