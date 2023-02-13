@@ -38,8 +38,8 @@
                                 <th>Nro</th>
                                 <th>GESTIÓN</th>
                                 <th>MES</th>
-                                <th>TIPO</th>
-                                <th>RENTA</th>
+                                <th>TIPO DE RENTA</th>
+                                <th>RENTA/PENSIÓN</th>
                                 <th>RENTA DIGNIDAD</th>
                                 <th>COTIZABLE</th>
                                 <th>APORTE AUXILIO MORTUORIO</th>
@@ -104,8 +104,8 @@
                 {data: 'DT_Row_Index'},
                 {data: 'year'},
                 {data: 'month'},
-                {data: 'type'},
-                {data: 'rent'},
+                {data: 'affiliate_rent_class'},
+                {data: 'rent_pension'},
                 {data: 'dignity_rent'},
                 {data: 'quotable'},
                 {data: 'total'},
