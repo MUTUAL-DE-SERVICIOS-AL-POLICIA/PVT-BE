@@ -739,7 +739,8 @@ class QuotaAidMortuaryController extends Controller
       //
 
     //summary individual accounts
-    $quota_aid_dates = $affiliate->getContributionsWithTypeQuotaAid($id);
+    /*en el caso de la modalidad Fallecimiento del titular ID 13 y sea nulo date_last_contribution ya que es requerido para la modalidad */
+    $quota_aid_dates = $quota_aid->procedure_modality_id == 13 && is_null($affiliate->date_last_contribution)? []:$affiliate->getContributionsWithTypeQuotaAid($id);
     $quota_aid_contributions = $affiliate->getQuotaAidContributions($id);
     $total_dates = Util::sumTotalContributions($quota_aid_dates);
     $dates = array(
