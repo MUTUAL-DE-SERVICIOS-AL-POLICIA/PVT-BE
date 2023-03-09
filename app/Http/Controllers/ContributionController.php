@@ -1412,16 +1412,18 @@ class ContributionController extends Controller
                         if($count_contributions+$count_grace > 4){
                             break;
                         }
-                        if($count_grace>4)
+                        if($count_grace > 4)
                             $grace_period = false;
                     }
                 }
                 if($count_contributions >= 12){ // debe tener si o si al menos 12 para acceder al beneficio
                     $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $ret_fun->procedure_modality_id)->where('is_enabled',true)->select('id')->first();
                     $ret_fun->quota_aid_procedure_id = $procedure->id;
+                    $ret_fun->number_qualified_contributions = $count_contributions;
                     $ret_fun->save();
                 }else{
                     $ret_fun->quota_aid_procedure_id = null;
+                    $ret_fun->number_qualified_contributions = $count_contributions;
                     $ret_fun->save();
                 }
             }else{// por riesgo comun
@@ -1445,9 +1447,11 @@ class ContributionController extends Controller
                     $count_contributions = count($contributions);
                     $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $ret_fun->procedure_modality_id)->where('is_enabled',true)->where('months_min','<=', $count_contributions)->where('months_max','>=', $count_contributions)->select('id')->first();
                     $ret_fun->quota_aid_procedure_id = $procedure->id;
+                    $ret_fun->number_qualified_contributions = $count_contributions;
                     $ret_fun->save();
                 }else{
                     $ret_fun->quota_aid_procedure_id = null;
+                    $ret_fun->number_qualified_contributions = $count_contributions;
                     $ret_fun->save();
                 }
             }
@@ -1468,11 +1472,13 @@ class ContributionController extends Controller
             if($count_contributions > 0){ // debe tener si o si al menos 1 para acceder al beneficio
                 $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $ret_fun->procedure_modality_id)->where('is_enabled',true)->where('months_min','<=', $count_contributions)->where('months_max','>=', $count_contributions)->select('id')->first();
                 $ret_fun->quota_aid_procedure_id = $procedure->id;
+                $ret_fun->number_qualified_contributions = $count_contributions;
                 $ret_fun->save();
             }else{
                 $count_contributions = 1;// aquellos que firman carta de compromiso de pago
                 $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $ret_fun->procedure_modality_id)->where('is_enabled',true)->where('months_min','<=', $count_contributions)->where('months_max','>=', $count_contributions)->select('id')->first();
                 $ret_fun->quota_aid_procedure_id = $procedure->id;
+                $ret_fun->number_qualified_contributions = $count_contributions;
                 $ret_fun->save();
             }
         }
