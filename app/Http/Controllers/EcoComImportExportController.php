@@ -349,6 +349,7 @@ class EcoComImportExportController extends Controller
           ->whereNull('economic_complements.deleted_at')->get();
           foreach($affiliate_has_not_contributions as $affiliate_discontinued){
           $eco_com_disc_con = $eco_com_all->where('affiliate_id', $affiliate_discontinued->observable_id)->first();
+            if($eco_com_disc_con){
               if (!$eco_com_disc_con->hasObservationType($contribution_discontinued_id)) {
                   $eco_com_disc_con->observations()->save($observation_disc_con, [
                       'user_id' => Auth::user()->id,
@@ -357,6 +358,7 @@ class EcoComImportExportController extends Controller
                       'enabled' => true
                   ]);
               }
+            }
           }
         $affiliates = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
         $observation = ObservationType::find($pago_futuro_id);
