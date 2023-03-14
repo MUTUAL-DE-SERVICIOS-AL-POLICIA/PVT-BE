@@ -1101,98 +1101,437 @@ class QuotaAidCertificationController extends Controller
 
   public function printLegalResolution($quota_aid_id)
   {
+    $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+    $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
 
-    $quota_aid =  QuotaAidMortuary::find($quota_aid_id);
-    $affiliate = Affiliate::find($quota_aid->affiliate_id);
-    $art = [
-      8 => '2, 3, 5, 6, 10, 20, 21, 22, 24, 25, 26, 27, 28, 29, 42, 47, 48 y 51 ',
-      9 => '2, 3, 5, 6, 10, 20, 21, 23, 24, 25, 26, 27, 28, 29, 42, 47, 48 y 51 ',
-      13 => '2, 3, 5, 6, 10, 31, 32, 33, 36, 37, 38, 39, 40, 41, 43, 47, 48 y 52 ',
-      14 => '2, 3, 5, 6, 10, 31, 32, 34, 36, 37, 38, 39, 40, 41, 43, 47, 48 y 52 ',
-      15 => '2, 3, 5, 6, 10, 31, 32, 35, 36, 37, 38, 39, 40, 41, 43, 47, 48 y 52 '
-    ];
-
-    $law = 'Que, el Decreto Supremo N° 2829, de 06 de julio de 2016, modificatorio al Decreto Supremo Nº 1446 de 19 de diciembre de 2012, en su Artículo 2 de las MODIFICACIONES, Parágrafos I, II, III y IV señalan: <i>“I. Se modifica el inciso d) del Artículo 3 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “d) Otorgar el beneficio de Cuota Mortuoria y Auxilio Mortuorio a favor del sector activo y pasivo de la Policía Boliviana, de acuerdo a reglamentos emitidos por MUSERPOL”; “II. Se modifica el inciso b) del Parágrafo I del Artículo 14 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “b) Cuota Mortuoria y Auxilio Mortuorio”; “III. Se modifica el Parágrafo II del Artículo 14 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “II. El aporte y pago de los beneficios establecidos en los incisos a) y b) del parágrafo precedente, serán objeto de un estudio técnico financiero y estudio actuarial que asegure su sostenibilidad, en el marco del principio de solidaridad”; “IV. Se modifica el Artículo 16 del Decreto Supremo Nº1446, de 19 de diciembre de 2012, con el siguiente texto: “ARTÌCULO 16.- (CUOTA MORTUORIA Y AUXILIO MORTUORIO)
-            I. ' . ($quota_aid->procedure_modality->procedure_type_id == 3 ? "La " : "El ") . $quota_aid->procedure_modality->procedure_type->second_name . ' es un beneficio que se otorga a los derechohabientes de los afiliados a MUSERPOL de la Policía Boliviana del sector ';
-    if ($quota_aid->procedure_modality->procedure_type_id == 3) {
-      $law .= "activo, ";
-    } else {
-      $law .= "pasivo, tanto como al fallecimiento del titular como del c&oacute;nyuge, ";
+    if (!$applicant) {
+      return response('No existe solicitante', 404);
     }
-    $law .= 'que consiste en el pago de un monto único y por una sola vez”</i>.
-        <br> <br>
-        Que, la Mutual de Servicios al Policía al ser una institución pública descentralizada, bajo tuición del Ministerio de Gobierno, regula su actividad y procedimiento bajo los principios generales descritos en el Art. 232 de la Constitución Política del Estado, Art. 4 de la Ley 2341 y Art. 3 del Decreto Supremo N° 27113, cuya competencia para conocer asuntos administrativos suscitados tanto por la institución, así como por los administrados, se sujetan a lo determinado por el Art. 5 de la Ley de Procedimiento Administrativo.
-        <br> <br>
-        Que, el Estudio Matemático Actuarial 2016 – 2020, aprobado mediante Resolución de Directorio Nº 26/2017, de 11 de agosto de 2017, determina las cuantías para la otorgación del beneficio de ' . $quota_aid->procedure_modality->procedure_type->second_name . '.
-        <br><br>
-        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 76/2019 de 11 de diciembre de 2019, en sus Artículos
-        ' . $art[$quota_aid->procedure_modality_id] . ' reconocen el derecho de la otorgación del beneficio de <strong>' . $quota_aid->procedure_modality->procedure_type->second_name . '</strong>.
-        <br><br>
-        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 76/2019 de 11 de diciembre de 2019, en su Artículo 15 del RECONOCIMIENTO DE LOS APORTES, señala: <i>“La MUSERPOL reconoce la densidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la extinta Mutual de Seguros del Policía MUSEPOL”</i>.
-        <br><br>
-        Que, el Reglamento de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio, Nº 76/2019 de 11 de diciembre de 2019 ';
-    //if ($quota_aid->procedure_modality->procedure_type_id == 3) { }
+    if (count($applicant->testimonies) == 0) {
+      return response('No existen testimonios', 404);
+    }
 
-    $law .= 'en su Artículo 54 de la DEFINICIÓN Y CONFORMACIÓN, Parágrafo I refiere: <i>“La Comisión de Beneficios Económicos es la instancia técnica y legal que consolida el procedimiento administrativo para la otorgación mediante la emisión de Resolución de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>. Por consiguiente, mediante Resolución Administrativa N° 002/2023 del 4 de enero de 2023, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento aprobado y vigente.<br><br>';
+    $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id', $quota_aid->id)->orderByDesc('type')->orderBy('id')->get();
+    /** PERSON DATA */
+    $person = '';
+    $affiliate = Affiliate::find($quota_aid->affiliate_id);
+    $affiliate_full_name = '<b>' . $affiliate->fullNameWithDegree() . '</b> con C.I. N° <b>' . $affiliate->identity_card . ' ' . $affiliate->city_identity_card->first_shortened . '</b>';
+    $quota_aid_beneficiaries = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $applicant->id)->first();
+    $person .= '<br>Que, en fecha ' . Util::getStringDate($quota_aid->reception_date) . ', ';
+    $with_art = false;
+    $spouse_full_name = '';
+    if (isset($quota_aid_beneficiaries->id)) {
+      $legal_guardian = QuotaAidLegalGuardian::where('id', $quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
+      $person .= ($legal_guardian->gender == 'M' ? " el señor " : ", la señora ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación "; //.($affiliate->gender=='M'?"del señor ":"de la señora ");
+      $with_art = true;
+    } else {
+      $person .= " ";
+    }
+    if ($quota_aid->procedure_modality_id != 14) {
+      //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) .", a lo cual considera lo siguiente:";
 
-    $law .= 'Que, según lo establecido en el ' . ($quota_aid->procedure_modality->procedure_type_id == 3 ? "Art. 42 del Reglamento de Cuota Mortuoria " : "Art. 43 del Reglamento de Auxilio Mortuorio ") . ', 
-    al momento de la presentación de la documentación para acceder a los beneficios de Fondo 
-    de Retiro Policial Solidario, Cuota Mortuoria y Auxilio Mortuorio por parte del (los) 
-    solicitante (s), el Formulario de Solicitud adquiere carácter de Declaración Jurada 
-    Voluntaria a través de la cual, el (los) derechohabiente (s) que efectivizan el cobro 
-    del beneficio, se hacen responsables de reparar los daños que se origine por la 
-    vulneración de derechos de terceros que puedan acreditar igual o mejor derecho.
+      if ($with_art) {
+        $person .= ($applicant->gender == 'M' ? ' del Sr. ' : ' de la Sra. ');
+        $with_art = false;
+      } else {
+        $person .= ($applicant->gender == 'M' ? ' el Sr. ' : ' la Sra. ');
+      }
+      $person .= Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name;
+      $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
+      $beneficiaries = $testimony_applicant->quota_aid_beneficiaries;
+      $quantity = $beneficiaries->count();
+      $start_message = false;
+      if ($quantity > 2) {
+        $person .= ". Asimismo los derechohabiente ";
+        $start_message = true;
+      }
+      foreach ($beneficiaries as $beneficiary) {
+        if ($beneficiary->id != $applicant->id) {
+          if (!$start_message) {
+            $person = $person .= " y " . ($beneficiary->gender == "M" ? "del" : "de la") . " derechohabiente ";
+          }
+          $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . "." . ", en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 2 ? " y " : (($quantity == 1) ? '' : ', '));
+        }
+      }
+      $quantity = $beneficiaries->count();
+      if ($quantity > 1) {
+        $person .= " mediante " . $testimony_applicant->document_type . " Nº " . $testimony_applicant->number . " de fecha " . Util::getStringDate($testimony_applicant->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony_applicant->court . " de la ciudad " . $testimony_applicant->place . " a cargo del (la) " . $testimony_applicant->notary . "";
+      } else {
+        $person .= " como " . ($applicant->gender == "M" ? "heredero legal acreditado" : "heredera legal acreditada") . " mediante " . $testimony_applicant->document_type . " Nº " . $testimony_applicant->number . " de fecha " . Util::getStringDate($testimony_applicant->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony_applicant->court . " de la ciudad de " . $testimony_applicant->place . " a cargo del (la) " . $testimony_applicant->notary . "";
+      }
+      $testimonies_applicant = Testimony::where('affiliate_id', $affiliate->id)->where('id', '!=', $applicant->testimonies()->first()->id)->get();
+      foreach ($testimonies_applicant as $testimony) {
+        $beneficiaries = $testimony->quota_aid_beneficiaries;
+        $beneficiaries = $beneficiaries->where('state', true);
+        $quantity = $beneficiaries->count();
+        $start_message = false;
+        if ($quantity > 0) {
+          if ($quantity > 1) {
+            $person .= "; asimismo solicitan el beneficio los derechohabientes ";
+            $start_message = true;
+          }
+          $stored_quantity = $quantity;
+          foreach ($beneficiaries as $beneficiary) {
+            if (!$start_message) {
+              $person = $person .= ". Asimismo, solicita el beneficio " . ($beneficiary->gender == "M" ? "el" : "la") . " derechohabiente ";
+            }
+            $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . ". en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 1 ? " y " : (($quantity == 0) ? '' : ', '));
+          }
+          if ($stored_quantity > 1) {
+            $person .= " como herederos legales acreditados mediante " . $testimony->document_type . " Nº " . $testimony->number . " de fecha " . Util::getStringDate($testimony->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony->court . " de " . $testimony->place . " a cargo de " . $testimony->notary . "";
+          } else {
+            $person .= " como " . ($applicant->gender == "M" ? "heredero legal acreditado" : "heredera legal acreditada") . " mediante " . $testimony->document_type . " Nº " . $testimony->number . " de fecha " . Util::getStringDate($testimony->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony->court . " de la ciudad de " . $testimony->place . " a cargo de " . $testimony->notary . "";
+          }
+        }
+      }
+      $presents = " Presentando";
+    } else {
+      $presents = " presenta";
+    }
+    if ($quota_aid->procedure_modality_id == 15) {
+      $person .= ', solicita el pago del beneficio de ' . $quota_aid->procedure_modality->procedure_type->second_name . " en su modalidad de <b>" .mb_strtoupper($quota_aid->procedure_modality->name).'</b> ' . ($affiliate->spouse()->first()->gender == 'M' ? ' del Sr. fallecido: ' : 'de la Sra. fallecida: '). Util::fullName($affiliate->spouse()->first()) . "</b> con C.I. N° " . $affiliate->spouse()->first()->identity_card . " " . $affiliate->spouse()->first()->city_identity_card->first_shortened; 
+    } elseif ($quota_aid->procedure_modality_id == 14) {
+        $person .= $affiliate_full_name.', en calidad de ' . ($affiliate->gender == 'M' ? 'viudo de la fallecida: ' : 'viuda del fallecido: ');
+        $spouse_full_name.= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened . '</b>';
+        $person .= $spouse_full_name.', solicita el pago del beneficio de &nbsp;' . $quota_aid->procedure_modality->procedure_type->second_name . " en su modalidad de <strong>" .mb_strtoupper($quota_aid->procedure_modality->name).'</strong>' ;
+      } else {
+        $person .=  ". Solicita(n) el pago del  beneficio de " .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . " en su modalidad de " .mb_strtoupper($quota_aid->procedure_modality->name) . " del afiliado fallecido: ";
+      }
+    $person .= $presents.' la documentación en Ventanilla de Atención al Aﬁliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio en la Regional '.Util::ucw($quota_aid->city_start->name).'.';
+    $considering_one = 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
+    NATURALEZA JURÍDICA, Parágrafo I establece: <i>“Se crea la Mutual de Servicios al Policía –
+    MUSERPOL, como institución pública descentralizada, de duración indefinida y patrimonio
+    propio, con autonomía de gestión administrativa, financiera, legal y técnica, bajo tuición del
+    Ministerio de Gobierno.”</i> El Artículo 5 del ÁMBITO DE APLICACIÓN, Parágrafos I y II, refiere: <i>“I.
+    El presente Decreto Supremo es aplicable a todas y todos los afiliados activos y pasivos de la
+    Policía Boliviana, así como a sus beneficiarios de acuerdo a reglamento. II. Para los afiliados
+    activos y pasivos de la Policía Boliviana que hayan sido dados de baja, de forma voluntaria o
+    forzosa, los beneficios establecidos en el presente Decreto Supremo estarán sujetos a
+    reglamentación interna”</i>.
+    <br><br>';
+    $considering_one.='Que, el Decreto Supremo N° 2829, de 06 de julio de 2016, modificatorio al Decreto Supremo Nº
+    1446 de 19 de diciembre de 2012, en el Artículo 2 de las MODIFICACIONES, Parágrafos I, II, III y IV señalan:
+    <i>“I. Se modiﬁca el inciso d) del Artículo 3 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto:
+    “d) Otorgar el beneﬁcio de Cuota Mortuoria y Auxilio Mortuorio a favor del sector activo y pasivo de la Policía Boliviana,
+    de acuerdo a reglamentos emitidos por MUSERPOL”; “II. Se modiﬁca el inciso b) del Parágrafo I del Artículo 14 del Decreto
+    Supremo Nº 1446, de 19 de diciembre de 2012, con el siguiente texto: “b) Cuota Mortuoria y Auxilio Mortuorio”;
+    “III. Se modiﬁca el Parágrafo II del Artículo 14 del Decreto Supremo Nº 1446, de 19 de diciembre de 2012, con el
+    siguiente texto: “II. El aporte y pago de los beneﬁcios establecidos en los incisos a) y b) del parágrafo precedente,
+    serán objeto de un estudio técnico ﬁnanciero y estudio actuarial que asegure su sostenibilidad, en el marco del principio de solidaridad”; “IV.
+    Se modiﬁca el Artículo 16 del Decreto Supremo Nº1446, de 19 de diciembre de 2012, con el siguiente texto: “ARTÌCULO 16.- (CUOTA MORTUORIA Y AUXILIO MORTUORIO)
+    I. La Cuota Mortuoria es un beneﬁcio que  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al otorga a los derechohabientes de los aﬁliados a MUSERPOL de la Policía Boliviana del sector activo, que consiste
+    en el pago de un monto único y por una sola vez”</i>.
+    <br><br>';
+    $considering_one.='Que, la Mutual de Servicios al Policía al ser una institución pública descentralizada,
+    bajo tuición del Ministerio de Gobierno, regula su actividad y procedimiento bajo los principios
+    generales descritos en el Art. 232 de la Constitución Política del Estado, Art. 4 de la Ley 2341 y
+    Art. 3 del Decreto Supremo N° 27113, cuya competencia para conocer asuntos administrativos suscitados
+    tanto por la institución, así como por los administrados,  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al sujetan a lo determinado por el Art. 5
+    de la Ley de Procedimiento Administrativo.
+    <br><br>
+    Que, el Estudio Matemático Actuarial 2021 – 2025, aprobado mediante Resolución de Directorio Nº
+    77/2021, de 21 de octubre de 2021, determina las cuantías para la otorgación del beneﬁcio de Auxilio Mortuorio.
     <br><br>';
 
-    $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 33)->first();
-
-    $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
-    $quota_aid_beneficiary = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $applicant->id)->first();
-
-    $reception = '<br>Que, en fecha <b>' . Util::getStringDate($quota_aid->reception_date) . '</b>, ';
-
-    if (isset($quota_aid_beneficiary->id)) {
-      $legal_guardian = QuotaAidLegalGuardian::where('id', $quota_aid_beneficiary->quota_aid_legal_guardian_id)->first();
-      $reception .= ($legal_guardian->gender == "M" ? " el Sr. " : "la Sra. ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . "," . ($legal_guardian->gender == "M" ? " Apoderado " : " Apoderada ") . "Legal ";
-      $reception .= ($applicant->gender == 'M' ? 'del<strong> &nbsp;Sr' : 'de la Sra.<strong> &nbsp;') . ' ' . Util::fullName($applicant) . '</strong> con C.I. N° <b>' . $applicant->identity_card . ' ' . $applicant->city_identity_card->first_shortened . '</b>. en calidad de ' . $applicant->kinship->name; //.($applicant->gender=="M"?"del mismo":"de la misma");
-      $reception .= ($affiliate->gender == 'M' ? ' del afiliado fallecido: ' : ' de la afiliada fallecida: ');
-      $reception .= ' <b>' . $affiliate->fullNameWithDegree() . '</b> con C.I. N° <b>' . $affiliate->identity_card . ' ' . $affiliate->city_identity_card->first_shortened . '</b>';
-    } else {
-      if ($quota_aid->procedure_modality_id != 14) {
-        $reception .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. ') . ' <b>' . Util::fullName($applicant) . '</b> con C.I. N° <b>' . $applicant->identity_card . ' ' . $applicant->city_identity_card->first_shortened . '</b>, en calidad de ' . $applicant->kinship->name . " ";
-        if ($quota_aid->procedure_modality_id == 15) {
-          $reception .= ($affiliate->spouse()->first()->gender == 'M' ? 'del viudo fallecido: ' : 'de la viuda fallecida: ');
-        } else {
-          $reception .= ($affiliate->gender == 'M' ? 'del afiliado fallecido: ' : 'de la afiliada fallecida: ');
-        }
-      } else {
-
-        $reception .= "" . ($affiliate->gender == 'M' ? 'el' : 'la');
-      }
-      if ($quota_aid->procedure_modality_id == 15) {
-        $reception .= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened . '</b>';
-      } else {
+    $considering_two = 'Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución
+    de Directorio Nº 98/2021  de  01  de diciembre  de  2021,  en sus Artículos 1 y 2 refieren:  ARTICULO 1°.
+    <i>(OBJETO).- El presente Reglamento tiene por objeto definir y establecer las condiciones, cuantías, modalidades
+    y procedimientos para la administración y otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio.
+    Artículo 2°. (FINALIDAD).- El presente Reglamento, se constituye en una norma específica para los procedimientos
+    de la administración y otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio”</i>, se procede con la
+    otorgación del beneficio de '.($quota_aid->procedure_modality->procedure_type->second_name).', específicamente para todos los afiliados de la Mutual de Servicios
+    al Policía MUSERPOL.
+    <br><br>
+    Que, los Artículo 6 y 7 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio dispone: ARTÍCULO 6º. <i>(ÁMBITO DE APLICACIÓN).-
+    El presente Reglamento es de aplicación obligatoria, inmediata e irrenunciable, a partir de su aprobación, por los servidores
+    públicos dependientes de las estructuras organizacionales que forman parte de la Mutual de Servicios al Policía. ARTÍCULO 7°.
+    (ALCANCE DE LA NORMA).- I. El Reglamento se aplicará a los afiliados del sector activo y pasivo de la Policía Boliviana o sus derechohabientes en caso de fallecimiento del titular. II. También serán sujetos de aplicación del presente, los (las) beneficiarios(as) quienes deberán adecuar sus actuaciones a las previsiones contenidas en este Reglamento.”</i>  
+    se refiere al alcance y aplicación de este reglamento por los Servidores Públicos de la MUSERPOL para los afiliados del sector activo de la Policía Boliviana.
+    <br><br>
+    Que, los Artículos 10 y 11 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: ARTÍCULO 10. <i>“(FINANCIAMIENTO).- I. Los beneficios
+    de Cuota Mortuoria y Auxilio Mortuorio están financiados por:';
+    if ($quota_aid->procedure_modality->procedure_type_id == 4) {
+      $considering_two.=' II. Auxilio Mortuorio a) El pago del beneficio de Auxilio Mortuorio está
+      financiado por los aportes obligatorios a la Mutual de Servicios al Policía- MUSERPOL de los (las) afiliados (as) del sector pasivo de
+      la Policía Boliviana, que son sujetos de descuento mediante planilla de rentas del Servicio Nacional del Sistema de Reparto (SENASIR). b)
+      Los aportes obligatorios de los (las) afiliados (as) del sector pasivo de la Policía Boliviana, que son sujetos del descuento mediante
+      planilla de rentas del Servicio Nacional del Sistema de Reparto (SENASIR). b) Los aportes obligatorios de los (las) afiliados (as) del
+      sector pasivo de la Policía Boliviana, que cuentan con una Prestación de Vejez en curso de pago del Sistema Integral de Pensiones (SIP)
+      y los aportes de los (las) viudos (as) en caso de fallecimiento del (la) titular. ARTÍCULO 11°. (PRIMA DE FINANCIAMIENTO).- Es el porcentaje
+      de aportación determinado por el Estudio Matemático Actuarial sobre el cual los afiliados públicos policiales efectivizan su aporte para la
+      otorgación de los beneficios. V. El porcentaje de aportes obligatorio de los (las) afiliados (as) que son jubilados (as) del SENASIR o que
+      cuentan con una pensión de vejez (o por concurrencia de pensiones) en curso de pago del Sistema Integral de Pensiones (previo compromiso
+      de pago de aportes) determinado por el Estudio Matemático Actuarial 2021-2025, para el beneficio de Auxilio Mortuorio, es de 2.03% sobre
+      la totalidad de su renta o pensión mensual. VI. La Tasa de aportaciones para el beneficio del Auxilio Mortuorio, por parte de los (las)
+      viudos (as) que cuentan con una renta de viudedad del SENASIR o prestación de vejez en curso de pago del Sistema Integral de Pensiones
+      (previo compromiso de pago), es de 2,03% sobre la totalidad de su renta o pensión mensual”</i>,';
+    }else{
+      $considering_two.=' I. Cuota Mortuoria a) El pago del beneficio de Cuota Mortuoria, está financiado por los aportes obligatorios de los
+      afiliados(as) del sector activo, transferidos a la Mutual de Servicios al Policía - MUSERPOL por el Comando General de la Policía Boliviana,
+      información que deberá ser reportada por la Dirección de Beneficios Económicos y contrastada por la Dirección de Asuntos Administrativos. b)
+      Los aportes directos de los (las) afiliados (as) del servicio activo de la Policía Boliviana que se encuentren en comisión de servicio Ítem Cero (Ítem “0”)
+      y aquellos afiliados que se encuentren suspendidos o retirados temporalmente de sus funciones por procesos disciplinarios y/o penales siempre y cuando figuren
+      en planilla de haberes y/o lista de revista del Comando General de la Policía Boliviana(…). ARTÍCULO 11°. (PRIMA DE FINANCIAMIENTO).- Es el porcentaje de aportación
+      determinado por el Estudio Matemático Actuarial sobre el cual los afiliados públicos policiales efectivizan su aporte para la otorgación de los beneficios.
+      I. El porcentaje de aporte obligatorio de los funcionarios policiales activos de la Policía Boliviana, determinado por el Estudio Matemático Actuarial 2021 — 2025,
+      para el beneficio de Cuota Mortuoria es de 1,09% sobre la totalidad de los ingresos cotizables(…)”</i>,';
+    }
+    $considering_two.='son los parámetros que establece el rendimiento e inversiones para el beneficio de Auxilio Mortuorio, asimismo cuanto es el porcentaje de aportación
+    por parte del sector activo de sus ingresos cotizables mensuales.
+    <br><br>
+    Que, los Artículos 15, 16 y 17 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: <i>“ARTICULO 15. (APORTE MENSUAL).- Es el efectuado a la
+    Mutual de Servicios al Policía – MUSERPOL por:';
+    if ($quota_aid->procedure_modality->procedure_type_id == 4) {
+      $considering_two.='III. Los (las) afiliados (as) del sector pasivo o viudas (os) que cuentan con una renta por jubilación
+      en curso de pago, mediante descuentos mensuales por planilla de rentas del SENASIR. IV. Los (las) afiliados (as) del sector pasivo o viudas (os) que
+      cuentan con una prestación de vejez en curso de pago del Sistema Integral de Pensiones (SIP), mismo que deberán realizar sus aportes de manera
+      directa a la Mutual de Servicios al Policía- MUSERPOL (en las modalidades de APORTE DIRECTO y APORTE ANTICIPADO A TRAVES DE DESCUENTOS DEL COMPLEMENTO
+      ECONOMICO SEMESTRAL), previa firma de compromiso de pago de aportes. ARTÍCULO 16º. (OBLIGATORIEDAD).- III. Los (las) afiliados (as) del sector pasivo
+      de la Policía Boliviana o los (las) viudos (as) que cuenten con renta de jubilación del Sistema de Reparto, realizarán aportes a la Mutual de Servicios
+      al Policía- MUSERPOL, mediante descuentos mensuales por planilla del SENASIR, hasta el momento de su deceso. IV. Los (las) afiliados (as) del sector
+      pasivo de la Policía Boliviana o los (las) viudos (as) que cuenten con pensión  de  vejez  (o por concurrencia de pensiones)  del  Sistema  Integral
+      de  Pensiones, realizarán aportes directos a la Mutual de Servicios al Policía- MUSERPOL, sobre el total de su pensión mensual, hasta el momento de
+      su deceso.</i>';
+    }else{
+      $considering_two.='I. Los (las) afiliados (as) del sector activo a través del Comando General de la Policía Boliviana, mediante descuentos mensuales de las planillas de haberes.
+      II. Los (las) afiliados (as) del servicio activo de la Policía Boliviana, que no son objeto de descuentos mediante planillas de haberes del Comando General de la Policía Boliviana,
+      por estar destinados en comisión de servicio Ítem Cero (Ítem “0”), suspendidos o retirados temporalmente de sus funciones por procesos disciplinarios y/o penales, figurando en
+      planilla de haberes con Ítem Cero (Ítem “0” ), deberán realizar sus aportes directos a la Mutual de Servicios al Policía - MUSERPOL, previa firma de compromiso de pago de aportes.
+      Artículo 16º. (OBLIGATORIEDAD).- I. Los aportes efectuados a la Mutual de Servicios al Policía - MUSERPOL, por los (las) afiliados (as) del sector activo de la Policía Boliviana,
+      son de carácter obligatorio, desde su ingreso a la Institución Policial, hasta el momento de su desvinculación definitiva acreditada mediante Memorándum de Agradecimiento o Resolución
+      de baja definitiva (voluntaria o forzosa) emitidos por el Comando General de la Policía Boliviana(…).Artículo 17º. (RECONOCIMIENTO DE LOS APORTES).- La Mutual de Servicios al Policía - MUSERPOL
+      reconoce la cantidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la Ex Mutual de Seguros del Policía – MUSEPOL”</i>';
+    }
+    $considering_two.=',establece la forma y manera de como un afiliado de la Policía Boliviana realiza los aportes a la Mutual de Servicios al Policía MUSERPOL.
+    <br><br>';
+    if ($quota_aid->procedure_modality->procedure_type_id == 4) {
+      $considering_two.= 'Que, los Artículos 31, 32, 33, 34 y 35 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, refieren:<i> ARTÍCULO 31º. (DEFINICIÓN).- Para efectos del
+      presente Reglamento y conforme lo dispuesto por el inciso b) del Artículo 14 y el Artículo 16 del Decreto Supremo N° 1446 de 19 de diciembre de 2012;
+      modificado por los parágrafos II, III y IV del Artículo 2 del Decreto Supremo N° 2829 de 6 de julio de 2016,  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al entenderá por:<strong> Auxilio Mortuorio.- </strong>I.
+      Es aquel pago único que  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al otorga al (los) derechohabiente (s) de los miembros del sector pasivo de la Policía Boliviana afiliados a la Mutual de Servicios
+      al Policía - MUSERPOL, destinados a los gastos emergentes del fallecimiento del (la) titular, cónyuge o viudo(a) y que  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al hará efectivo con el pago de un
+      monto único y por una sola vez. II. Una vez generado el pago, en razón a la naturaleza y finalidad específica del mismo, no podrán generarse cuotas partes,
+      para aquellos derechohabientes que en forma posterior soliciten dicho pago. ARTÍCULO 32º. (MODALIDADES DE AUXILIO MORTUORIO).- El beneficio de Auxilio Mortuorio,
+      será otorgado en los siguientes casos: a) Auxilio Mortuorio al fallecimiento del (la) titular. b) Auxilio Mortuorio al fallecimiento del (la) Cónyuge. c) Auxilio
+      Mortuorio al fallecimiento del (la) Viudo (a). ARTÍCULO 33º. (AUXILIO MORTUORIO AL FALLECIMIENTO DEL (LA) TITULAR).- Será otorgado a los derechohabientes debidamente
+      acreditados del  afiliado del sector pasivo de la Policía Boliviana, que cumplan con lo determinado en el Artículo 38, en función al último grado que ostentaba el (la)
+      titular al momento de su desvinculación definitiva de la institución policial. ARTÍCULO 34º. (AUXILIO MORTUORIO AL FALLECIMIENTO DEL (LA) CÓNYUGE).-
+      Será otorgado al titular del sector pasivo de la Policía Boliviana, al fallecimiento de su cónyuge, que cumplan con lo determinado en el Artículo 38
+      del presente Reglamento, en función al último grado que ostentaba el titular al momento de su desvinculación definitiva de la institución policial.
+      ARTÍCULO 35º. (AUXILIO MORTUORIO AL FALLECIMIENTO DEL (LA) VIUDO (A). El beneficio de Auxilio Mortuorio, será otorgado a los (las) derechohabientes
+      del (la) viudo (a), que cumplan con lo determinado en el Artículo 38 del presente Reglamento, en función al último grado que ostentaba el (la) 
+      titular miembro de la Policía Boliviana al momento de su desvinculación definitiva.”</i>, establece la definición del beneficio de Auxilio Mortuoria y 
+      en que consiste las modalidades para la otorgación del mismo.
+      <br><br>
+      Que, el Artículo 37 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(COTIZACIONES NECESARIAS PARA ACCEDER AL BENEFICIO).- Según lo determinado
+      por el Estudio Matemático Actuarial 2021 – 2025, para la otorgación del beneficio de Auxilio Mortuorio el titular deberá contar al menos un aporte o con la
+      firma de Compromiso de Pago para dicho beneficio (en caso de encontrarse en trámite la pensión de vejez). II. El Auxilio Mortuorio, en las modalidades
+      detalladas en los Artículos 33, 34 y 35  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al cancelará previo cumplimiento de los requisitos establecidos en el Artículo 45 del presente Reglamento, previa
+      verificación de la continuidad de aportes anteriores al fallecimiento del (la) Titular, Cónyuge o Viudo (a)”</i>,  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al verifica que el presente tramite cuenta
+      con las cotizaciones necesarias para su procesamiento.
+      <br><br>';
+    }else{
+      $considering_two.='Que, los Artículos 22, 23, 24 y 25 del reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: “ARTÍCULO 22. (DEFINICIÓN).- Para efectos del presente Reglamento y conforme lo dispuesto por el inciso b) del Artículo 14 y el Artículo 16 del Decreto Supremo N° 1446 de 19 de diciembre de 2012;
+      modificado por los Parágrafos II y III del Artículo 2 del Decreto Supremo N° 2829 de 6 de julio de 2016, se entenderá por: Cuota Mortuoria.- Es un beneficio que se otorga a los (las) derechohabientes de los miembros del sector activo de la Policía Boliviana, afiliados a la Mutual de Servicios
+      al Policía - MUSERPOL, destinado a los gastos emergentes del fallecimiento del (la) titular,  que  se  hará  efectivo  con  el  pago  de  un  monto  único  y  por  una  sola  vez.  ARTÍCULO  23º. (MODALIDADES DE CUOTA MORTUORIA).- El beneficio de Cuota Mortuoria, será otorgado en los siguientes
+      casos: a) Cuota Mortuoria al fallecimiento del (la) titular en Cumplimiento de Funciones. b) Cuota Mortuoria al fallecimiento del (la) titular por Riesgo Común. ARTÍCULO 24º. (CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR EN CUMPLIMIENTO DE FUNCIONES).- I. Será otorgado a los (las)
+      derechohabientes debidamente acreditados(as), del (la) efectivo policial que hubiese fallecido en cumplimiento de sus funciones. II. La determinación del tipo de fallecimiento, deberá ser verificada a través del dictamen de calificación, emitido por la Entidad Encargada de Calificar o
+      certificación emitida por la Dirección Nacional de Salud y Bienestar Social de la Policía Boliviana. III. En caso de no presentar el Dictamen de Calificación o Certificación emitida por la Dirección Nacional de Salud y Bienestar Social de la Policía Boliviana, se considerará como
+      fallecimiento por riesgo común. ARTÍCULO 25º. (CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR POR RIESGO COMÚN).- La Cuota Mortuoria, será otorgada a los (las) derechohabientes debidamente acreditados, del (la) efectivo policial que hubiese fallecido por cualquier causa no
+      vinculada al cumplimiento de sus funciones ”, establece la definición del beneficio de Cuota Mortuoria y en que consiste las modalidades para la otorgación del mismo.
+      <br><br>
+      Que, el Artículo 27 del reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: “(COTIZACIONES NECESARIAS PARA ACCEDER AL BENEFICIO).- I. Para acceder a la otorgación del beneficio de Cuota Mortuoria, estipulado en los Artículos 24 y 25 del presente Reglamento, es necesario verificar una cantidad de al
+      menos 12 cotizaciones continuas anteriores al fallecimiento del (la) efectivo policial. II. El beneficio de Cuota Mortuoria, en las modalidades mencionadas anteriormente, se cancelará previo cumplimiento de los requisitos establecidos en el Artículo 44 del presente Reglamento. III.
+      En caso de no acreditarse las 12 cotizaciones continuas anteriores al deceso del afiliado, la Mutual de Servicios al Policía - MUSERPOL no dará curso al pago del beneficio”, se verifica que el presente tramite cuenta con las cotizaciones necesarias para su procesamiento.
+      <br><br>';
+    }
+    $considering_two.='Que, el Artículo 40 del Reglamento de  Cuota Mortuoria y Auxilio Mortuorio refiere: <i>”(PRESENTACIÓN DE TRÁMITES).- I. La recepción de solicitudes de los beneficios
+    de Cuota Mortuoria y Auxilio Mortuorio,  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al efectuarán en Ventanilla de Atención al Afiliado de la ciudad de La Paz u Oficinas Regionales en el interior,
+    verificándose que los documentos presentados estén completos de acuerdo a lo referido los Artículos 44 y 45 del presente Reglamento, en función a la modalidad
+    del beneficio; en caso de identificar algún documento faltante no  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al procederá a la recepción. II. La documentación presentada en fotocopias simples en el proceso
+    de trámite de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, deberá ser verificada con los originales por el profesional que realice el registro. III. Toda
+    documentación adjunta, debe estar debidamente foliada y será incorporada en el folder del beneficio, el que será denominado posteriormente como “Expediente”. IV.
+    Cuando el (la) solicitante no firme la declaración jurada (formulario de recepción), deberá imprimir sus huellas digitales en presencia de un (1) testigo mayor de
+    edad, quien firmará el documento en constancia de conformidad”</i>, establece los parámetros de presentación de los documentos para acceder a la otorgación del beneficio.
+    <br><br>';
+    if ($quota_aid->procedure_modality->procedure_type_id == 4) {
+        $considering_two.='Que el Artículo 45 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: “(REQUISITOS PARA SOLICITAR EL BENEFICIO DE AUXILIO MORTUORIO).-<i> ';
         if ($quota_aid->procedure_modality_id == 14) {
-          $reception .= ' <b>' . $affiliate->fullNameWithDegree() . '</b> con C.I. N° <b>' . $affiliate->identity_card . ' ' . $affiliate->city_identity_card->first_shortened . '</b>, en calidad de ' . ($affiliate->gender == 'M' ? 'viudo de la fallecida: ' : 'viuda del fallecido: ');
-          $reception .= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened . '</b>';
-        } else {
-          $reception .= ' <b>' . $affiliate->fullNameWithDegree() . '</b> con C.I. N° <b>' . $affiliate->identity_card . ' ' . $affiliate->city_identity_card->first_shortened . '</b>';
-        }
-      }
+        $considering_two.= ' b) Auxilio Mortuorio al fallecimiento de la o del Cónyuge. 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple y vigente de la Cédula de Identidad del (la) titular (verificada contra el original). 4. Certificado original de defunción del (la) Cónyuge. 6. Fotocopia simple de la Cédula de Identidad del (la) Cónyuge (verificada contra el original). 7. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI", o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad competente (…)”</i>.';
+        }elseif ($quota_aid->procedure_modality_id == 15) {
+             $considering_two.=' c) Auxilio Mortuorio al fallecimiento del (la) viudo (a). 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL, a momento de inicio del trámite. 3. Fotocopia simple de la Cédula de Identidad del (la) viudo (a) (verificada contra el original). 4. Certificado original de defunción del (la) viudo (a). 5. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI" o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad competente. (si corresponde). 6. Fotocopia simple y vigente de la Cédula de Identidad de los derechohabientes (verificada contra el original). 7. Declaratoria de herederos o Aceptación de Herencia, original o copia legalizada; en el caso de herederos por sucesión testamentaria presentar “Testamento” original o copia legalizada, dentro del cual señale expresamente la otorgación del beneficio (…)”</i>. ';
+          }else{
+             $considering_two.=' a) Auxilio Mortuorio al fallecimiento del (la) titular. 1.  Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple de la Cédula de Identidad del (la) titular (verificada contra el original). 4. Certificado original de defunción. 5. Fotocopia simple y vigente de la Cédula de Identidad de los derechohabientes (verificada contra el original). 6. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI" o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad  competente.  En caso que los efectivos policiales no hayan contraído nupcias, deberán adjuntar el certificado de inexistencia de partida matrimonial emitido por el SERECI en original. (si corresponde). 7. Declaratoria de herederos o Aceptación de Herencia, original o copia legalizada;  en  el  caso  de  herederos  por  sucesión  testamentaria presentar “Testamento” original o copia legalizada, dentro del cual señale expresamente la otorgación del beneficio (…)”</i>.';
+          }
+          $considering_two.=' Las solicitudes para el pago del beneficio de Auxilio Mortuorio, que ingresen a partir de la aprobación del presente Reglamento deberán contener los siguientes documentos: por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
+    }else{//cuota mortuoria
+          $considering_two.='Que, el Artículo 44 del reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(REQUISITOS PARA SOLICITAR EL BENEFICIO DE CUOTA MORTUORIA).-Las solicitudes para el pago del beneficio de Cuota Mortuoria,  que ingresen a partir de la aprobación del presente Reglamento deberán contener los siguientes documentos:';
+            if ($quota_aid->procedure_modality_id == 8) { //cumplimiento de susfunciones
+              $considering_two.='<b> a) Cuota Mortuoria al fallecimiento del (la) titular en Cumplimiento de Funciones:</b> 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL, a momento de inicio del trámite. 3. Fotocopia simple de la Cédula de Identidad del (la) titular. 4. Certificado original y actualizado de defunción. 5. Fotocopia simple y vigente de la Cédula de Identidad de los derechohabientes. 6. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI" o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad competente. En caso que los efectivos policiales no hayan contraído nupcias, deberán adjuntar el certificado de inexistencia de partida matrimonial emitido por el SERECI en original (si corresponde). 7. Certificado original y actualizado de descendencia del (la) titular fallecido (a), emitido por el SERECI. Este documento, al tener una validez de treinta (30) días, debe estar plenamente vigente a momento de la presentación y/o recepción de la documentación (si corresponde). 8. Declaratoria de herederos o Aceptación de Herencia, original o copia legalizada; en el caso de herederos por sucesión testamentaria presentar “Testamento” original o copia legalizada, dentro del cual señale expresamente la otorgación del beneficio. 9. Certificado de Años de Servicio desglosado, emitido por el Comando General de la Policía Boliviana 10. Dictamen de calificación original o copia legalizada emitido por la Entidad Encargada de Calificar o Certificación emitida por la Dirección Nacional de Salud y Bienestar Social de la Policía Boliviana”.';
+            }else{ //riesgo comun
+              $considering_two.='<b> b) Cuota Mortuoria al fallecimiento del (la) titular por Riesgo Común </b> 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL, a momento de inicio del trámite. 3. Fotocopia simple de la Cédula de Identidad del (la) titular. 4. Certificado original y actualizado de defunción. 5. Fotocopia simple y vigente de la Cédula de Identidad de los derechohabientes. 6. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI" o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad competente. En caso que los efectivos policiales no hayan contraído nupcias, deberán adjuntar el certificado de inexistencia de partida matrimonial emitido por el SERECI en original (si corresponde). 7. Certificado original y actualizado de descendencia del (la) titular fallecido (a), emitido por el SERECI. Este documento, al tener una validez de treinta (30) días, debe estar plenamente vigente a momento de la presentación y/o recepción de la documentación (si corresponde). 8. Declaratoria de herederos o Aceptación de Herencia, original o copia legalizada; en el caso de herederos por sucesión testamentaria presentar “Testamento” original o copia legalizada, dentro del cual señale expresamente la otorgación del beneficio. 9. Certificado de Años de Servicio desglosado, emitido por el Comando General de la Policía Boliviana”,';
+            }
+            $considering_two.='</i> por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
     }
 
+    $considering_two.='Que los Artículos 48 y 49 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: <i>“ARTICULO 48 (ROGACIÓN).- La actuación de la Mutual de
+    Servicios al Policía – MUSERPOL  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al inicia a partir de la presentación de la solicitud formal por parte del titular o derechohabiente para acceder a los beneficios
+    de Cuota Mortuoria y Auxilio Mortuorio. La MUSERPOL reconoce el derecho de los beneficiarios a partir de la fecha en la cual el (la) afiliado (a) o derechohabientes
+    presentan su solicitud formal por Ventanilla de Atención al Afiliado en la ciudad de La Paz u Oficinas Regionales en el interior para el correspondiente procesamiento del
+    trámite, cumpliendo con los requisitos de orden establecidos en el presente Reglamento. ARTÍCULO 49°. (PROCEDIMIENTO).- Para la otorgación de los beneficios de Cuota Mortuoria
+    y Auxilio Mortuorio, el plazo de procesamiento será de 15 días, de acuerdo al siguiente procedimiento: 1. Admitido el trámite en Ventanilla de Atención al Afiliado, con todos
+    los requisitos establecidos en el presente Reglamento,  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al derivará el expediente al Área de Archivo y Gestión Documental de Beneficios Económicos (…)”</i>, establece la
+    prosecución del trámite después de la recepción de la carpeta disponiendo el procesamiento de acuerdo a las funciones de cada Área que conforman la Unidad de Fondo de Retiro Policial Solidario.
+    <br><br>';
+    if ($quota_aid->procedure_modality->procedure_type_id == 4) {
+      $considering_two.='Que el Artículo 54 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere:<i>"(CUANTÍA DEL BENEFICIO DE AUXILIO MORTUORIO).- Los beneficiarios que inicien trámite de Auxilio Mortuorio según lo establecido en los
+      artículos 33, 34 y 35 del presente Reglamento, percibirán un pago correspondiente a la cuantía determinada por el Estudio Matemático Actuarial 2021 – 2025, tomando en cuenta el grado que ostentaba
+      el o la servidor público policial al momento de su desvinculación definitiva de la institución policial; la cuantía del beneficio será distribuida de acuerdo a lo establecido en el Código Civil y
+      normas conexas (…)”</i>, por tanto a través de la Certificación de Calificación  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al determina el monto de pago a favor del titular o derechohabientes.
+      <br><br>';
+    }else{
+      $considering_two.='Que, el Artículo 53 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere:<i>(CUANTÍA DEL BENEFICIO DE CUOTA MORTUORIA).- Los beneficiarios que inicien trámite de Cuota Mortuoria según lo establecido en los artículos 24 y 25 del presente Reglamento, percibirán un pago
+      único correspondiente a la cuantía determinada por el Estudio Matemático Actuarial 2021 – 2025, tomando en cuenta el grado que ostentaba el o la servidor público policial al momento del fallecimiento; la cuantía del beneficio será distribuida de acuerdo a lo establecido en
+      el Código Civil y normas conexas(…)”</i>, por tanto a través de la Certificación de Calificación se determina el monto de pago a favor del titular o derechohabientes.<br><br>';
+    }
+    $considering_two.='Que el Artículo 57 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere:<i> “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante
+    acto administrativo determina la otorgación del beneficio de Cuota Mortuoria. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL.”</i>.
+    Por consiguiente, la Resolución Administrativa  Nº 1-A/2022 del 05 de enero de 2022, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
+    <br><br>
+    Que, el Artículo 58 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: 1. Conocer y resolver los casos pendientes de acuerdo a lo
+    establecido en el parágrafo I de la Disposición Transitoria Única del Decreto Supremo No. 3231 de fecha 28 de junio de 2017:  a) Montos dejados en cuota parte en reserva. b) Recursos de Reclamación. c)
+    Carpetas en curso de Trámite. d) Casos especiales determinados por la Comisión”.”</i>, Es así que la comisión de  beneficios  económicos  en  consideración  de  todos   los antecedentes y la documentación
+    adjunta a la presentación del trámite y certificaciones de las diferentes áreas de la Unidad de Otorgación de Cuota Mortuoria,  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al emite la presente Resolución.
+    <br><br>';
+    $considering_three = 'Que, la Mutual de Servicios al Policía – MUSERPOL reconoce el derecho de los beneficiarios a
+    partir de la fecha en la cual el (la) afiliado (a) o derechohabientes presentan su solicitud formal por
+    Ventanilla de Atención al Afiliado en la Oficina Central u Oficinas Regionales, dando continuidad al
+    procedimiento previa verificación de antecedentes conforme a lo establecido en el Artículo 49 del Reglamento de Auxilio Mortuorio.<br><br>';
+
+    ///---FILE---///
+    $body_file = "";
+    $file_id = 34;
+    $file = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $file_id)->first();
+
+    $body_file .= "Que, mediante Certificación N° " . $file->code . ", de Archivo de la Dirección de Beneficios Económicos de fecha " . Util::getStringDate($file->date) . ",  se establece que el trámite signado con el N° " . $quota_aid->code . " ";
+    $discount = $quota_aid->discount_types();
+      $folder = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
+      if ($folder->count() > 0) {
+        $body_file .= "si ";
+      } else {
+        $body_file .= "no ";
+      }
+      $body_file .= "tiene expediente del referido titular. ";
+
+     /* switch ($quota_aid->procedure_modality_id) {
+        case 14:
+          $body_file .= "referido titular.";
+    
+          break;
+        case 15:
+          $body_file .= "titular fallecido.";
+          break;
+        default:
+          $body_file .= "referido titular fallecido.";
+      }
+    }*/
+    ///---ENDIFLE--////
+    /////----FINANCE----///revisar
+    $discount = $quota_aid->discount_types();
+    $finance = $discount->where('discount_type_id', '1')->first();
+    $body_finance = "";
+    $body_finance = "Que, mediante nota de respuesta " . ($finance->pivot->code ?? 'sin cite') . " de la Dirección de Asuntos Administrativos de fecha " . Util::getStringDate(($finance->pivot->date ?? '')) . ", refiere que " . ($affiliate->gender == 'M' ? "el" : "la") . " titular del beneficio ";
+    if (isset($finance->id) && $finance->amount > 0) {
+      $body_finance .= "si cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial en el monto de " . Util::formatMoneyWithLiteral(($finance->pivot->amount ?? 0)) . ".";
+    } else {
+      $body_finance .= "no cuenta con registro de pagos o anticipos por concepto de " . $quota_aid->procedure_modality->procedure_type->name . ", sin embargo se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.";
+    }
+    /////----END FINANCE---////
+    ////-----LEGAL REVIEW ----////
+    $body_legal_review   = "";
+    $legal_review_id = 35;
+    $legal_review = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_review_id)->first();
+    $body_legal_review .= "Que, mediante Certificación N° " . $legal_review->code . " del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($legal_review->date) . ", fue verificada y validada la documentación presentada por " . ($quota_aid->procedure_modality_id != 14 ? "los beneficiarios" : ($affiliate->gender == "M" ? "el titular" : "la titular")) . " del trámite signado con el N° " . $quota_aid->code . ", conforme al Artículo 44 del Reglamento Vigente y al Formulario de Recepción emitido en Ventanilla de Atención al Afiliado de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio.";
+    /////-----END LEGAL REVIEW----///
+    
+    ///------ INDIVIDUAL ACCCOUTNS ------////
+    $body_accounts = "";
+    $accounts_id = 36;
+    $accounts = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $accounts_id)->first();
+    $body_accounts = "Que, mediante Certificación de Aportes N° " . $accounts->code . " del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($accounts->date) . ", se verificó los aportes ";
+    
+    switch ($quota_aid->procedure_modality_id) {
+      case 14:
+        $body_accounts .= ' a favor del beneficiario de la';
+        break;
+      case 15:
+        $body_accounts .= ' de la viuda.';
+        break;
+      default:
+        $body_accounts .= ' del titular.';
+    }
+    ////-------END INDIVIDUAL ACCOUTNS ------////
+    //----- QUALIFICATION -----////
+    $body_qualification = "";
+    $qualification_id = 37;
+    $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $qualification_id)->first();
+    $months  = $affiliate->getTotalQuotes();
+    $body_qualification .=  "Que, mediante Calificación del beneﬁcio de " . $quota_aid->procedure_modality->procedure_type->second_name . " N° " . $qualification->code . " de fecha " . Util::getStringDate($qualification->date) . ",  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al <b>" . $quota_aid->procedure_modality->name."</b> ";
+      if ($quota_aid->procedure_modality_id == 14) {
+        $body_qualification.= $spouse_full_name;
+      } else {
+        $body_qualification.= $affiliate_full_name; //hacer
+      }
+      if($quota_aid->procedure_modality_id != 14 && $quota_aid->procedure_modality_id != 8 ){
+        $body_qualification.=' considerando que el afiliado cuenta con '.$quota_aid->number_qualified_contributions.' aportes realizados para dicho beneficio en la escala de '.($quota_aid->quota_aid_procedure->months_min??0).' – '.($quota_aid->quota_aid_procedure->months_max??0);
+      }
+    $body_qualification.=", corresponde el monto de <b> " . Util::formatMoneyWithLiteral($quota_aid->total) . "</b>.";
+    //-----END QUALIFICATION -----////
+    ////-----HEADSHIP ----////
+    $body_headship  = "";
+    $legal_review_id = 38;
+    $headship_review = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_review_id)->first();
+    $body_headship .= "Que, mediante Certificación de Revisión N° " . $headship_review->code . " de  " . Util::getStringDate($headship_review->date) ." emitido por la Jefatura de la Unidad de de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se verifica el cumplimiento de todos los procedimientos requeridos para la correcta determinación del beneficio de Cuota Mortuoria.";
+    ////-----END HEADSHIP----////
+     
+    $considering_three.=$body_file.'<br><br>'.$body_finance.'<br><br>'.$body_legal_review.'<br><br>'.$body_accounts.'<br><br>'.$body_qualification.'<br><br>'.$body_headship;
+    /////---------///
     $art = [
-      3 => 42,
-      4 => 43,
+      '8' => '44 inciso <b>a)</b> Cuota Mortuoria al fallecimiento del (la) titular en Cumplimiento de Funciones',
+      '9' => '44 inciso <b>b)</b> Cuota Mortuoria al fallecimiento del (la) titular por Riesgo Común',
+      '13' => '45 inciso <b>a)</b> Auxilio Mortuorio al fallecimiento del (la) titular',
+      '14' => '45 inciso <b>b)</b> Auxilio Mortuorio al fallecimiento de la o del Cónyuge',
+      '15' => '45 inciso <b>c)</b> Auxilio Mortuorio al fallecimiento del (la) viudo (a)',
     ];
-    $reception .= ', solicita el pago del beneficio de<strong> &nbsp;' . $quota_aid->procedure_modality->procedure_type->second_name . '</strong>, adjuntando documentación solicitada por la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, según el Reglamento. Por consiguiente, habiéndose cumplido con los requisitos de orden establecidos en el Artículo
-        ' . $art[$quota_aid->procedure_modality->procedure_type_id] . ' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se dio curso con el trámite.<br>';
+      switch ($quota_aid->procedure_modality_id) {
+        case 14:
+         $fallecido ='a favor del (los) beneficiario (s) '.($affiliate->spouse()->first()->gender == 'M' ? ' del ' : ' de la ').$spouse_full_name;///del / de
+         break;
+        case 15:
+         $fallecido = 'a favor del (los) derechohabiente (s) '.($affiliate->spouse()->first()->gender == 'M' ? ' del ' : ' de la ').$spouse_full_name;
+        break;
+        default:
+         $fallecido =' a los derechohabientes del titular Fallecido '.$affiliate_full_name;
+      }
+    /*$number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 33)->first();
+       if ($number->note != '') {
+        $considering_three.= $number->note . "<br><br>";
+      }*/
+    $considering_three.='<br><br>Que, al verificarse el cumplimiento de requisitos adjuntas a la carpeta según lo señalado en el Art. '.$art[$quota_aid->procedure_modality_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 98/2021 en fecha 01 de diciembre de 2021 y efectivizado el procesamiento del trámite y conforme el Art. 49  (Procedimiento) del referido Reglamento, corresponde dar curso al pago del beneficio
+    <b>' .strtoupper($quota_aid->procedure_modality->procedure_type->second_name).' - '.strtoupper($quota_aid->procedure_modality->name). '</b>'.$fallecido.'.';
+    /////---------///
+    //$quota_aid =  QuotaAidMortuary::find($quota_aid_id);
+    //$affiliate = Affiliate::find($quota_aid->affiliate_id);
+
+    //$applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
+   //$quota_aid_beneficiary = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $applicant->id)->first();
+    /*$reception ='';
 
     if ($number->note != "") {
       $reception = $number->note . "<br>";
-    }
+    }*/
     //----- QUALIFICATION -----////
-    $body_qualification = "";
+   /* $body_qualification = "";
     $qualification_id = 37;
     $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $qualification_id)->first();
     $months  = $affiliate->getTotalQuotes();
@@ -1208,18 +1547,15 @@ class QuotaAidCertificationController extends Controller
     }
     $body_qualification .= "</b>, determinando la cuant&iacute;a de<strong> " . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong>.";
 
-    ///----- END QUALIFICATION ----////
+    ///----- END QUALIFICATION ----////*/
 
     $legal_dictum_id = 40;//Se usara el mismo cod de la resolucion
     $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_dictum_id)->first();
     $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 40)->first();
     $body_legal_dictum = '';
     if ($number->note != '') {
-      $body_legal_dictum = $number->note . "<br><br>";
+      $body_legal_dictum = $number->note . "<br>";
     }
-
-    $body_legal_dictum .= 'Que, habiéndose verificado el procedimiento establecido en el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, se procedió con la emisión de DICTAMEN LEGAL <strong> Nº ' . $legal_dictum->code . '</strong> de ' . Util::getStringDate($legal_dictum->date) . ', para la otorgación del beneficio de ' . $quota_aid->procedure_modality->procedure_type->second_name . '.';
-
 
     $then = 'La Comisión de Beneficios Económicos de la Mutual de Servicios al Policía “MUSERPOL” en
         uso de sus facultades y en observancia al Reglamento de  Cuota Mortuoria y Auxilio Mortuorio:';
@@ -1229,7 +1565,11 @@ class QuotaAidCertificationController extends Controller
 
 
     $body_resolution = "<b>" . $cardinal[$cardinal_index++] . ".-</b> Reconocer el beneficio de<strong class='uppercase'>&nbsp;" . strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . "</strong> por <strong class='uppercase'>" . strtoupper($quota_aid->procedure_modality->name) . "</strong>, de
-        acuerdo a Calificación de fecha&nbsp; <strong>" . Util::getStringDate($qualification->date) . "</strong>, determinando el monto de <strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong>.";
+    acuerdo a Calificación de fecha&nbsp; <b>" . Util::getStringDate($qualification->date) . "</b>";
+        if($quota_aid->procedure_modality_id != 14 && $quota_aid->procedure_modality_id != 8 ){
+          $body_resolution.=' considerando que el afiliado cuenta con '.$quota_aid->number_qualified_contributions.' aportes realizados para dicho beneficio en la escala de '.($quota_aid->quota_aid_procedure->months_min??0).' – '.($quota_aid->quota_aid_procedure->months_max??0);
+        }
+    $body_resolution .=", determinando el monto de <b>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</b>.";
     $body_resolution .= "<br><br><b>" . $cardinal[$cardinal_index++] . ".-</b> El monto de la CUANT&Iacute;A a pagar de&nbsp; <strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong>, a favor ";
 
 
@@ -1264,22 +1604,23 @@ class QuotaAidCertificationController extends Controller
         }
         $body_resolution .= $beneficiary->fullName();
         if (Util::isChild($beneficiary->birth_date) && !$beneficiary->state) {
-          $body_resolution .= ", a través de tutora natural, tutor (a) legal o hasta que cumpla la mayoría de edad";
+          $body_resolution .= ', a través de su'.($affiliate->gender == 'F' ? ' padre' : ' madre').', tutor (a) o hasta que cumpla la mayoría de edad';
         }
         if ($beneficiary->identity_card)
           $body_resolution .= " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "sin extencion");
         $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $beneficiary->id)->first();
         if (isset($beneficiary_advisor->id)) {
           $advisor = QuotaAidAdvisor::where('id', $beneficiary_advisor->quota_aid_advisor_id)->first();
-          $body_resolution .= ", a través de su tutor" . ($advisor->gender == 'M' ? '' : 'a') . " natural " . ($advisor->gender == 'M' ? 'Sr.' : 'Sra.') . " " . Util::fullName($advisor) . " con C.I. N°" . $advisor->identity_card . " " . ($advisor->city_identity_card->first_shortened ?? "Sin Extencion") . ".";
-        }
-        $beneficiary_legal_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $beneficiary->id)->first();
-        if (false && isset($beneficiary_legal_guardian->id)) {
+          $body_resolution .= ', en el monto de<strong> ' . Util::formatMoneyWithLiteral($beneficiary->paid_amount) . '</strong> ' . 'en calidad de ' . $beneficiary->kinship->name.( $reserved?'':(' a través'. ($advisor->gender == 'M' ? ' del Sr.' : ' de la Sra.') . ' '  . Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card . ' ' . ($advisor->city_identity_card->first_shortened ?? 'Sin Extencion').($affiliate->gender == 'F' ? ' padre' : ' madre').' del menor') ).'.</li><br>';
+        }else{
+          $body_resolution .= ', en el monto de<strong> ' . Util::formatMoneyWithLiteral($beneficiary->paid_amount) . '</strong> ' . 'en calidad de ' . $beneficiary->kinship->name . ".</li><br>";}
+         $beneficiary_legal_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $beneficiary->id)->first();
+       /* if (false && isset($beneficiary_legal_guardian->id)) {
           $legal_guardian = QuotaAidLegalGuardian::where('id', $beneficiary_legal_guardian->quota_aid_legal_guardian_id)->first();
           $body_resolution .= " por si o representada legamente por " . ($legal_guardian->gender == 'M' ? "el Sr." : "la Sra. ") . " " . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . ($legal_guardian->city_identity_card->first_shortened ?? "sin extencion") . ".
                     conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° " . $legal_guardian->number_authority . " de " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " emitido por " . $legal_guardian->notary . ".";
-        }
-        $body_resolution .= ', en el monto de<strong> ' . Util::formatMoneyWithLiteral($beneficiary->paid_amount) . '</strong> ' . 'en calidad de ' . $beneficiary->kinship->name . ".</li><br>";
+        }*/
+
       }
     } else {
       $body_resolution .= "<li class='text-justify'>" . $affiliate->degree->shortened . " " . $affiliate->fullName() . " con C.I. N° " . $affiliate->identity_card . " " . ($affiliate->city_identity_card->first_shortened ?? "SIN CI") . "., el monto de &nbsp;<strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . ".</strong></li><br><br>";
@@ -1287,7 +1628,6 @@ class QuotaAidCertificationController extends Controller
 
     $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>";
 
-    // $number = Util::getNextAreaCode($quota_aid->id);
 
 
     $user = User::find($number->user_id);
@@ -1296,16 +1636,19 @@ class QuotaAidCertificationController extends Controller
     $users_commission = User::where('is_commission', true)->get();
     $data = [
       'quota_aid'   =>  $quota_aid,
-      'law'  =>  $law,
       'correlative'   =>  $number,
       'ret_fun' => $quota_aid,
       'affiliate' =>  $affiliate,
       'actual_city'  =>  Auth::user()->city->name,
       'actual_date'  =>  Util::getStringDate($number->date),
-      'reception' =>  $reception,
+      //'reception' =>  $reception,
       'body_qualification'    =>  $body_qualification,
       'then'  =>  $then,
       'user'  =>  $user,
+      'person'    =>  $person,
+      'considering_one'   =>$considering_one,
+      'considering_two'   =>$considering_two,
+      'considering_three' =>$considering_three,
       'body_resolution'   =>  $body_resolution,
       'users_commission'  =>  $users_commission,
       'body_legal_dictum' =>  $body_legal_dictum,
