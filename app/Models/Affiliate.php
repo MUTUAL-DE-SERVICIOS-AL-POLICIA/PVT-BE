@@ -588,8 +588,8 @@ class Affiliate extends Model
       if($quota_aid->procedure_modality_id == 14){//Conyugue
         $contributions = $this->aid_contributions()
         ->where('contribution_passives.affiliate_rent_class','ilike','%VEJEZ%')
-        // ->where('contribution_passives.month_year','>=',$min_limit)
-        // ->where('contribution_passives.month_year','<=',$max_limit)
+        //->where('contribution_passives.month_year','>=',$min_limit)
+        ->where('contribution_passives.month_year','<',$max_limit)
         ->where('total', '>', 0)
         ->orderByDesc('contribution_passives.month_year')
         ->take($number_contributions)
