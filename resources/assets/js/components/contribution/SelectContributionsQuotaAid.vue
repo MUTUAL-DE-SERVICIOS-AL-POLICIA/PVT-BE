@@ -211,10 +211,10 @@ export default {
 	  let color;
 	  switch (contribution_type_mortuary_id) {
 		case 1:
-		  color = "#e0ad7dfd";
+		  color = "#C5E1A5";
 		  break;
 		case 2:
-		  color = "#f7f097fd";
+		  color = "#FFCDD2";
 		  break;
 		case null:
 		  color = "#bbbaadfd";
