@@ -1227,17 +1227,18 @@ class ContributionController extends Controller
                 DB::table('contributions')->insert($months);
             else
                 DB::table('contribution_passives')->insert($months);
-        }elseif($max_limit < $last_contribution){
-            $month = Carbon::parse($max_limit);
-            $temp_ids = array();
-            foreach ($contributions->reverse() as $value) {
-                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > $date_max){
-                    array_push($temp_ids, $value->id);
-                }
-            }
-            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden. ".$max_limit .' < '. $last_contribution);
-            // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
         }
+        // elseif($max_limit < $last_contribution){
+        //     $month = Carbon::parse($max_limit);
+        //     $temp_ids = array();
+        //     foreach ($contributions->reverse() as $value) {
+        //         if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > $date_max){
+        //             array_push($temp_ids, $value->id);
+        //         }
+        //     }
+        //     dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden. ".$max_limit .' < '. $last_contribution);
+        //     // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
+        // }
          /*Comparación de entre primer aporte y limite inferior*/
          if ($min_limit < $first_contribution) {
              $month = Carbon::parse($min_limit);
