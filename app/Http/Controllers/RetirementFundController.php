@@ -1676,7 +1676,8 @@ class RetirementFundController extends Controller
         $retirement_fund->reception_date = $request->reception_date;
         $retirement_fund->ret_fun_state_id = $request->ret_fun_state_id;
         if ($retirement_fund->ret_fun_state_id == ID::state()->eliminado) {
-            $retirement_fund->code .= "A";
+            $count_delete = RetirementFund::where('code','like',$retirement_fund->code.'%')->count('code');
+            $retirement_fund->code .= str_repeat("A", $count_delete);
         }
         $retirement_fund->save();
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality' => $retirement_fund->procedure_modality, 'city_start' => $retirement_fund->city_start, 'city_end' => $retirement_fund->city_end);
