@@ -613,7 +613,7 @@ class Affiliate extends Model
 
     $data = [
       'is_continuous' => true,
-      'contributions_print' => $contributions,
+      'contributions_print' => $contributions->sortBy('month_year'),
       'contributions' => $contributions->toArray()
     ];
     return $data;

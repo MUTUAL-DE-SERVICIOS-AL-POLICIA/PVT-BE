@@ -634,7 +634,7 @@ class QuotaAidCertificationController extends Controller
       $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
       ->where('month_year','>=',$min_limit)
       ->where('month_year', '<',$max_limit)
-      ->orderByDesc('month_year')->get();
+      ->orderBy('month_year')->get();
     }
 
       if ($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {
