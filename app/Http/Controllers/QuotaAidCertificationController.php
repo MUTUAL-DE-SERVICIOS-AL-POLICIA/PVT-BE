@@ -1150,12 +1150,14 @@ class QuotaAidCertificationController extends Controller
           if (!$start_message) {
             $person = $person .= " y " . ($beneficiary->gender == "M" ? "del" : "de la") . " derechohabiente ";
           }
+          else{
           $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . "." . ", en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 2 ? " y " : (($quantity == 1) ? '' : ', '));
+          }
         }
       }
       $quantity = $beneficiaries->count();
       if ($quantity > 1) {
-        $person .= " mediante " . $testimony_applicant->document_type . " Nº " . $testimony_applicant->number . " de fecha " . Util::getStringDate($testimony_applicant->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony_applicant->court . " de la ciudad " . $testimony_applicant->place . " a cargo del (la) " . $testimony_applicant->notary . "";
+        $person .= " como herederos legales acreditados mediante " . $testimony_applicant->document_type . " Nº " . $testimony_applicant->number . " de fecha " . Util::getStringDate($testimony_applicant->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony_applicant->court . " de la ciudad " . $testimony_applicant->place . " a cargo del (la) " . $testimony_applicant->notary . "";
       } else {
         $person .= " como " . ($applicant->gender == "M" ? "heredero legal acreditado" : "heredera legal acreditada") . " mediante " . $testimony_applicant->document_type . " Nº " . $testimony_applicant->number . " de fecha " . Util::getStringDate($testimony_applicant->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony_applicant->court . " de la ciudad de " . $testimony_applicant->place . " a cargo del (la) " . $testimony_applicant->notary . "";
       }
@@ -1174,8 +1176,9 @@ class QuotaAidCertificationController extends Controller
           foreach ($beneficiaries as $beneficiary) {
             if (!$start_message) {
               $person = $person .= ". Asimismo, solicita el beneficio " . ($beneficiary->gender == "M" ? "el" : "la") . " derechohabiente ";
+            }else{
+              $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . ". en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 1 ? " y " : (($quantity == 0) ? '' : ', '));
             }
-            $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . ". en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 1 ? " y " : (($quantity == 0) ? '' : ', '));
           }
           if ($stored_quantity > 1) {
             $person .= " como herederos legales acreditados mediante " . $testimony->document_type . " Nº " . $testimony->number . " de fecha " . Util::getStringDate($testimony->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony->court . " de " . $testimony->place . " a cargo de " . $testimony->notary . "";
@@ -1184,18 +1187,19 @@ class QuotaAidCertificationController extends Controller
           }
         }
       }
-      $presents = " Presentando";
+      $presents = ", presentando";
     } else {
       $presents = " presenta";
     }
     if ($quota_aid->procedure_modality_id == 15) {
-      $person .= ', solicita el pago del beneficio de ' . $quota_aid->procedure_modality->procedure_type->second_name . " en su modalidad de <b>" .mb_strtoupper($quota_aid->procedure_modality->name).'</b> ' . ($affiliate->spouse()->first()->gender == 'M' ? ' del Sr. fallecido: ' : 'de la Sra. fallecida: '). Util::fullName($affiliate->spouse()->first()) . "</b> con C.I. N° " . $affiliate->spouse()->first()->identity_card . " " . $affiliate->spouse()->first()->city_identity_card->first_shortened; 
+      $spouse_full_name.= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened . '</b>';
+      $person .= ', solicita el pago del beneficio de ' . $quota_aid->procedure_modality->procedure_type->second_name . " en su modalidad de <b>" .mb_strtoupper($quota_aid->procedure_modality->name).'</b> ' . ($affiliate->spouse()->first()->gender == 'M' ? ' del Sr. fallecido: ' : 'de la Sra. fallecida: '). $spouse_full_name; 
     } elseif ($quota_aid->procedure_modality_id == 14) {
         $person .= $affiliate_full_name.', en calidad de ' . ($affiliate->gender == 'M' ? 'viudo de la fallecida: ' : 'viuda del fallecido: ');
         $spouse_full_name.= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened . '</b>';
         $person .= $spouse_full_name.', solicita el pago del beneficio de &nbsp;' . $quota_aid->procedure_modality->procedure_type->second_name . " en su modalidad de <strong>" .mb_strtoupper($quota_aid->procedure_modality->name).'</strong>' ;
       } else {
-        $person .=  ". Solicita(n) el pago del  beneficio de " .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . " en su modalidad de " .mb_strtoupper($quota_aid->procedure_modality->name) . " del afiliado fallecido: ";
+        $person .=  ". Solicita(n) el pago del  beneficio de " .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . " en su modalidad de " .mb_strtoupper($quota_aid->procedure_modality->name) . " del afiliado fallecido: ".$affiliate_full_name;
       }
     $person .= $presents.' la documentación en Ventanilla de Atención al Aﬁliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio en la Regional '.Util::ucw($quota_aid->city_start->name).'.';
     $considering_one = 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
@@ -1357,7 +1361,7 @@ class QuotaAidCertificationController extends Controller
     if ($quota_aid->procedure_modality->procedure_type_id == 4) {
         $considering_two.='Que el Artículo 45 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: “(REQUISITOS PARA SOLICITAR EL BENEFICIO DE AUXILIO MORTUORIO).-<i> ';
         if ($quota_aid->procedure_modality_id == 14) {
-        $considering_two.= ' b) Auxilio Mortuorio al fallecimiento de la o del Cónyuge. 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple y vigente de la Cédula de Identidad del (la) titular (verificada contra el original). 4. Certificado original de defunción del (la) Cónyuge. 6. Fotocopia simple de la Cédula de Identidad del (la) Cónyuge (verificada contra el original). 7. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI", o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad competente (…)”</i>.';
+        $considering_two.= ' b) Auxilio Mortuorio al fallecimiento de la o del Cónyuge. 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple y vigente de la Cédula de Identidad del (la) titular (verificada contra el original). 4. Certificado original de defunción del (la) Cónyuge. 5. Fotocopia simple de la Cédula de Identidad del (la) Cónyuge (verificada contra el original). 6. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI", o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad competente (…)”</i>.';
         }elseif ($quota_aid->procedure_modality_id == 15) {
              $considering_two.=' c) Auxilio Mortuorio al fallecimiento del (la) viudo (a). 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL, a momento de inicio del trámite. 3. Fotocopia simple de la Cédula de Identidad del (la) viudo (a) (verificada contra el original). 4. Certificado original de defunción del (la) viudo (a). 5. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI" o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad competente. (si corresponde). 6. Fotocopia simple y vigente de la Cédula de Identidad de los derechohabientes (verificada contra el original). 7. Declaratoria de herederos o Aceptación de Herencia, original o copia legalizada; en el caso de herederos por sucesión testamentaria presentar “Testamento” original o copia legalizada, dentro del cual señale expresamente la otorgación del beneficio (…)”</i>. ';
           }else{
@@ -1400,8 +1404,8 @@ class QuotaAidCertificationController extends Controller
     <br><br>
     Que, el Artículo 58 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: 1. Conocer y resolver los casos pendientes de acuerdo a lo
     establecido en el parágrafo I de la Disposición Transitoria Única del Decreto Supremo No. 3231 de fecha 28 de junio de 2017:  a) Montos dejados en cuota parte en reserva. b) Recursos de Reclamación. c)
-    Carpetas en curso de Trámite. d) Casos especiales determinados por la Comisión”.”</i>, Es así que la comisión de  beneficios  económicos  en  consideración  de  todos   los antecedentes y la documentación
-    adjunta a la presentación del trámite y certificaciones de las diferentes áreas de la Unidad de Otorgación de Cuota Mortuoria,  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al emite la presente Resolución.
+    Carpetas en curso de Trámite. d) Casos especiales determinados por la Comisión”.”</i>, Es así que la comisión de beneficios económicos en consideración de todos los antecedentes y la documentación
+    adjunta a la presentación del trámite y certificaciones de las diferentes áreas de la Unidad de Otorgación de Cuota Mortuoria, en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al emite la presente Resolución.
     <br><br>';
     $considering_three = 'Que, la Mutual de Servicios al Policía – MUSERPOL reconoce el derecho de los beneficiarios a
     partir de la fecha en la cual el (la) afiliado (a) o derechohabientes presentan su solicitud formal por
@@ -1451,25 +1455,14 @@ class QuotaAidCertificationController extends Controller
     $body_legal_review   = "";
     $legal_review_id = 35;
     $legal_review = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_review_id)->first();
-    $body_legal_review .= "Que, mediante Certificación N° " . $legal_review->code . " del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($legal_review->date) . ", fue verificada y validada la documentación presentada por " . ($quota_aid->procedure_modality_id != 14 ? "los beneficiarios" : ($affiliate->gender == "M" ? "el titular" : "la titular")) . " del trámite signado con el N° " . $quota_aid->code . ", conforme al Artículo 44 del Reglamento Vigente y al Formulario de Recepción emitido en Ventanilla de Atención al Afiliado de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio.";
+    $body_legal_review .= "Que, mediante Certificación N° " . $legal_review->code . " del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($legal_review->date) . ", fue verificada y validada la documentación presentada por " . ($quota_aid->procedure_modality_id != 14 ? "los beneficiarios" : ($affiliate->gender == "M" ? "el titular" : "la titular")) . " del trámite signado con el N° " . $quota_aid->code . ", conforme al Artículo ".($quota_aid->procedure_modality->procedure_type->id?'45':'44')." del Reglamento Vigente y al Formulario de Recepción emitido en Ventanilla de Atención al Afiliado de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio.";
     /////-----END LEGAL REVIEW----///
     
     ///------ INDIVIDUAL ACCCOUTNS ------////
     $body_accounts = "";
     $accounts_id = 36;
     $accounts = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $accounts_id)->first();
-    $body_accounts = "Que, mediante Certificación de Aportes N° " . $accounts->code . " del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($accounts->date) . ", se verificó los aportes ";
-    
-    switch ($quota_aid->procedure_modality_id) {
-      case 14:
-        $body_accounts .= ' a favor del beneficiario de la';
-        break;
-      case 15:
-        $body_accounts .= ' de la viuda.';
-        break;
-      default:
-        $body_accounts .= ' del titular.';
-    }
+    $body_accounts = "Que, mediante Certificación de Aportes N° " . $accounts->code . " del Área de Cuentas Individuales de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($accounts->date) . ", se verificó los aportes correspondientes, de acuerdo a la información obtenida en la base de datos que cuenta la Institución.";
     ////-------END INDIVIDUAL ACCOUTNS ------////
     //----- QUALIFICATION -----////
     $body_qualification = "";
@@ -1477,13 +1470,13 @@ class QuotaAidCertificationController extends Controller
     $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $qualification_id)->first();
     $months  = $affiliate->getTotalQuotes();
     $body_qualification .=  "Que, mediante Calificación del beneﬁcio de " . $quota_aid->procedure_modality->procedure_type->second_name . " N° " . $qualification->code . " de fecha " . Util::getStringDate($qualification->date) . ",  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al <b>" . $quota_aid->procedure_modality->name."</b> ";
-      if ($quota_aid->procedure_modality_id == 14) {
+      if ($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15 ) {
         $body_qualification.= $spouse_full_name;
       } else {
         $body_qualification.= $affiliate_full_name; //hacer
       }
       if($quota_aid->procedure_modality_id != 14 && $quota_aid->procedure_modality_id != 8 ){
-        $body_qualification.=' considerando que el afiliado cuenta con '.$quota_aid->number_qualified_contributions.' aportes realizados para dicho beneficio en la escala de '.($quota_aid->quota_aid_procedure->months_min??0).' – '.($quota_aid->quota_aid_procedure->months_max??0);
+        $body_qualification.=' considerando que el (la) afiliado (a) cuenta con '.$quota_aid->number_qualified_contributions.' aportes realizados para dicho beneficio en la escala de '.($quota_aid->quota_aid_procedure->months_min??0).' – '.($quota_aid->quota_aid_procedure->months_max??0);
       }
     $body_qualification.=", corresponde el monto de <b> " . Util::formatMoneyWithLiteral($quota_aid->total) . "</b>.";
     //-----END QUALIFICATION -----////
@@ -1491,7 +1484,7 @@ class QuotaAidCertificationController extends Controller
     $body_headship  = "";
     $legal_review_id = 38;
     $headship_review = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_review_id)->first();
-    $body_headship .= "Que, mediante Certificación de Revisión N° " . $headship_review->code . " de  " . Util::getStringDate($headship_review->date) ." emitido por la Jefatura de la Unidad de de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se verifica el cumplimiento de todos los procedimientos requeridos para la correcta determinación del beneficio de Cuota Mortuoria.";
+    $body_headship .= "Que, mediante Certificación de Revisión N° " . $headship_review->code . " de  " . Util::getStringDate($headship_review->date) ." emitido por la Jefatura de la Unidad de de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se verifica el cumplimiento de todos los procedimientos requeridos para la correcta determinación del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name;
     ////-----END HEADSHIP----////
      
     $considering_three.=$body_file.'<br><br>'.$body_finance.'<br><br>'.$body_legal_review.'<br><br>'.$body_accounts.'<br><br>'.$body_qualification.'<br><br>'.$body_headship;
@@ -1517,8 +1510,8 @@ class QuotaAidCertificationController extends Controller
        if ($number->note != '') {
         $considering_three.= $number->note . "<br><br>";
       }*/
-    $considering_three.='<br><br>Que, al verificarse el cumplimiento de requisitos adjuntas a la carpeta según lo señalado en el Art. '.$art[$quota_aid->procedure_modality_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 98/2021 en fecha 01 de diciembre de 2021 y efectivizado el procesamiento del trámite y conforme el Art. 49  (Procedimiento) del referido Reglamento, corresponde dar curso al pago del beneficio
-    <b>' .strtoupper($quota_aid->procedure_modality->procedure_type->second_name).' - '.strtoupper($quota_aid->procedure_modality->name). '</b>'.$fallecido.'.';
+    $considering_three.='<br><br>Que, al verificarse el cumplimiento de requisitos adjuntos a la carpeta según lo señalado en el Art. '.$art[$quota_aid->procedure_modality_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 98/2021 en fecha 01 de diciembre de 2021 y efectivizado el procesamiento del trámite y conforme el Art. 49  (Procedimiento) del referido Reglamento, corresponde dar curso al pago del beneficio
+    <b>' .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name).' - '.mb_strtoupper($quota_aid->procedure_modality->name). '</b>'.$fallecido.'.';
     /////---------///
     //$quota_aid =  QuotaAidMortuary::find($quota_aid_id);
     //$affiliate = Affiliate::find($quota_aid->affiliate_id);
