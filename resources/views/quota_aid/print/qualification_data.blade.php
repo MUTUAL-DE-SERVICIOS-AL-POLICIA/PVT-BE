@@ -55,6 +55,10 @@
                 <td class="text-center"><strong>{{ $contributions['years'] }}</strong></td>
                 <td class="text-center"><strong>{{ $contributions['months'] }}</strong></td>
             </tr>
+            <tr>
+                <td colspan='2'class="text-left px-10 py-3 uppercase font-bold">Densidad total de cotizaciones</td>
+                <td class="text-center py-2"><strong>{{ $quota_aid->number_qualified_contributions }}</strong></td>
+            </tr>
         </tbody>
     </table>
 </div>
@@ -99,7 +103,8 @@
             <tbody class="table-striped">
                 <tr>
                     <td class="w-40 text-center font-bold px-10 py-3 uppercase">
-                        nombre del {{($quota_aid->procedure_modality->id == 1 || $quota_aid->procedure_modality->id == 4) ? 'derechohabiente' : 'titular' }}
+                        nombre del beneficiario
+                        <!-- nombre del {{($quota_aid->procedure_modality->id == 1 || $quota_aid->procedure_modality->id == 4) ? 'derechohabiente' : 'titular' }} -->
                     </td>
                     <td class="w-20 text-center font-bold px-10 py-3 uppercase">% de asignacion</td>
                     <td class="w-20 text-center font-bold px-10 py-3 uppercase">monto</td>
