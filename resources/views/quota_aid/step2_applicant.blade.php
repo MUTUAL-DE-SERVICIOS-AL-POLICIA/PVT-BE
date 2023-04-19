@@ -428,7 +428,7 @@
     </div>
     <div class="ibox float-e-margins" v-if="canAddDataSpouse">
         <div class="ibox-content">
-            <legend>Datos del o de la Conyugue</legend>
+            <legend>Datos del o de la Cónyuge</legend>
             <div class="row">
                 <div class="col-md-6">
                     <div class="row m-b-md" :class="{ 'has-error': errors.has('spouse_identity_card')  }">
