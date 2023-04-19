@@ -337,7 +337,7 @@ class QuotaAidCertificationController extends Controller
     $contribution_types= ContributionTypeQuotaAid::where('operator','+')->first();
 
     $dates = $affiliate->getContributionsWithTypeQuotaAid($id);//aqui
-    $total_dates = count($dates);
+    $total_dates = $quota_aid->number_qualified_contributions;
 
     $contributions = array(
       'contribution_types' => $contribution_types->name,

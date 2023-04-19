@@ -390,7 +390,7 @@ class Affiliate extends Model
   public function getContributionsWithTypeQuotaAid($quota_aid_id = null)
   {
     $dates = [];
-    $contributions = $this->getQuotaAidContributions2($quota_aid_id)['contributions'];
+    $contributions = $this->getQuotaAidContributions2($quota_aid_id)['contributions_print'];
     if ($length = sizeof($contributions)) {
       $start = $contributions[0]['month_year'];
       for ($i = 0; $i < $length - 1; $i++) {
@@ -552,7 +552,7 @@ class Affiliate extends Model
     $number_contributions=12;
     $null_data = [
       'is_continuous' => false,
-      'contributions_print'=>[],
+      'contributions_print'=>collect(),
       'contributions' => [],
     ];
     if( is_null($date_min) || is_null($date_max) ){
@@ -565,7 +565,7 @@ class Affiliate extends Model
         ->where('contributions.contribution_type_mortuary_id',1)
         ->where('contributions.month_year','>=',$min_limit)
         ->where('contributions.month_year','<',$max_limit)
-        ->orderByDesc('contributions.month_year')
+        ->orderBy('contributions.month_year')
        // ->take($number_contributions)
         ->get();
         //->toArray();
@@ -580,7 +580,7 @@ class Affiliate extends Model
         ->where('contribution_passives.month_year','>=',$min_limit)
         ->where('contribution_passives.month_year','<',$max_limit)
         //->where('total', '>', 0)
-        ->orderByDesc('contribution_passives.month_year')
+        ->orderBy('contribution_passives.month_year')
         //->take($number_contributions)
         ->get();
         //->toArray();
@@ -591,7 +591,7 @@ class Affiliate extends Model
         //->where('contribution_passives.month_year','>=',$min_limit)
         ->where('contribution_passives.month_year','<',$max_limit)
         ->where('total', '>', 0)
-        ->orderByDesc('contribution_passives.month_year')
+        ->orderBy('contribution_passives.month_year')
         ->take($number_contributions)
         ->get();
         //->toArray();
@@ -604,16 +604,15 @@ class Affiliate extends Model
         ->where('contribution_passives.month_year','>=',$min_limit)
         ->where('contribution_passives.month_year','<',$max_limit)
         // ->where('total', '>', 0)
-        ->orderByDesc('contribution_passives.month_year')
+        ->orderBy('contribution_passives.month_year')
         // ->take($number_contributions)
         ->get();
         //->toArray();
       }
     }
-
     $data = [
       'is_continuous' => true,
-      'contributions_print' => $contributions->sortBy('month_year'),
+      'contributions_print' => $contributions,
       'contributions' => $contributions->toArray()
     ];
     return $data;
