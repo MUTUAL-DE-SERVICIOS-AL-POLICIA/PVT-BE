@@ -4,7 +4,7 @@
     <div class="font-bold uppercase m-b-5 counter">
         INFORMACIÓN TÉCNICA
     </div>
-    <!-- <div class="block">
+    <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
@@ -34,7 +34,7 @@
                 </tr>
             </tbody>
         </table>
-    </div> -->
+    </div>
     <div class="block">
     <table class="table-info w-100 m-b-10">
         <thead class="bg-grey-darker">
