@@ -214,7 +214,8 @@ class QuotaAidCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $modality = $quota_aid->procedure_modality->name;
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-    $title = "REQUISITOS DEL BENEFICIO DE " . $quota_aid->procedure_modality->procedure_type->name . ' - ' . mb_strtoupper($modality);
+    $separator = $quota_aid->isAid()? ' AL ':' ';
+    $title = "REQUISITOS PARA EL " . $quota_aid->procedure_modality->procedure_type->name . $separator . mb_strtoupper($modality);
 
     // $next_area_code = Util::getNextAreaCode($quota_aid->id);
     $next_area_code = Util::getNextAreaCodeQuotaAid($quota_aid->id);
@@ -259,6 +260,7 @@ class QuotaAidCertificationController extends Controller
       'quota_aid' => $quota_aid,
       'spouse'=>$spouse,
       'is_quota'=> $quota_aid->isQuota(),
+      'separator' => $separator
     ];
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {
