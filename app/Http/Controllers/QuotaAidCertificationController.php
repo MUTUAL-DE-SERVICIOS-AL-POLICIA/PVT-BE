@@ -1125,65 +1125,60 @@ class QuotaAidCertificationController extends Controller
       $person .= ($legal_guardian->gender == 'M' ? " el señor " : ", la señora ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación "; //.($affiliate->gender=='M'?"del señor ":"de la señora ");
       $with_art = true;
     } else {
-      $person .= " ";
+      if ($quota_aid->procedure_modality_id != 14)
+      $person .= Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name;
+      else{
+        $person .=' ';
+      }
     }
     if ($quota_aid->procedure_modality_id != 14) {
-      //$person .= " presenta la documentación para la otorgación del beneficio en fecha ". Util::getStringDate($quota_aid->reception_date) .", a lo cual considera lo siguiente:";
-
-      if ($with_art) {
-        $person .= ($applicant->gender == 'M' ? ' del Sr. ' : ' de la Sra. ');
-        $with_art = false;
-      } else {
-        $person .= ($applicant->gender == 'M' ? ' el Sr. ' : ' la Sra. ');
-      }
-      $person .= Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name;
-      $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
-      $beneficiaries = $testimony_applicant->quota_aid_beneficiaries;
-      $quantity = $beneficiaries->count();
-      $start_message = false;
-      if ($quantity > 2) {
-        $person .= ". Asimismo los derechohabiente ";
-        $start_message = true;
-      }
-      foreach ($beneficiaries as $beneficiary) {
-        if ($beneficiary->id != $applicant->id) {
-          if (!$start_message) {
-            $person = $person .= " y " . ($beneficiary->gender == "M" ? "del" : "de la") . " derechohabiente ";
-          }
-          else{
-          $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . "." . ", en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 2 ? " y " : (($quantity == 1) ? '' : ', '));
-          }
-        }
-      }
-      $quantity = $beneficiaries->count();
-      if ($quantity > 1) {
-        $person .= " como herederos legales acreditados mediante " . $testimony_applicant->document_type . " Nº " . $testimony_applicant->number . " de fecha " . Util::getStringDate($testimony_applicant->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony_applicant->court . " de la ciudad " . $testimony_applicant->place . " a cargo del (la) " . $testimony_applicant->notary . "";
-      } else {
-        $person .= " como " . ($applicant->gender == "M" ? "heredero legal acreditado" : "heredera legal acreditada") . " mediante " . $testimony_applicant->document_type . " Nº " . $testimony_applicant->number . " de fecha " . Util::getStringDate($testimony_applicant->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony_applicant->court . " de la ciudad de " . $testimony_applicant->place . " a cargo del (la) " . $testimony_applicant->notary . "";
-      }
-      $testimonies_applicant = Testimony::where('affiliate_id', $affiliate->id)->where('id', '!=', $applicant->testimonies()->first()->id)->get();
-      foreach ($testimonies_applicant as $testimony) {
-        $beneficiaries = $testimony->quota_aid_beneficiaries;
-        $beneficiaries = $beneficiaries->where('state', true);
+      if($applicant->testimonies()->first()){
+        $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
+        $beneficiaries = $testimony_applicant->quota_aid_beneficiaries;
         $quantity = $beneficiaries->count();
         $start_message = false;
-        if ($quantity > 0) {
-          if ($quantity > 1) {
-            $person .= "; asimismo solicitan el beneficio los derechohabientes ";
-            $start_message = true;
-          }
-          $stored_quantity = $quantity;
-          foreach ($beneficiaries as $beneficiary) {
+       if ($quantity > 2) {
+          $person .= ' y de los derechohabientes ';
+          $start_message = true;
+        }
+        foreach ($beneficiaries as $beneficiary) {
+          if ($beneficiary->id != $applicant->id) {
             if (!$start_message) {
-              $person = $person .= ". Asimismo, solicita el beneficio " . ($beneficiary->gender == "M" ? "el" : "la") . " derechohabiente ";
-            }else{
-              $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . ". en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 1 ? " y " : (($quantity == 0) ? '' : ', '));
+              $person = $person .= ' y ' . ($beneficiary->gender == 'M' ? 'del' : 'de la') . ' derechohabiente ';
             }
+            $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . "." . ", en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 2 ? " y " : (($quantity == 1) ? '' : ', '));
           }
-          if ($stored_quantity > 1) {
-            $person .= " como herederos legales acreditados mediante " . $testimony->document_type . " Nº " . $testimony->number . " de fecha " . Util::getStringDate($testimony->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony->court . " de " . $testimony->place . " a cargo de " . $testimony->notary . "";
-          } else {
-            $person .= " como " . ($applicant->gender == "M" ? "heredero legal acreditado" : "heredera legal acreditada") . " mediante " . $testimony->document_type . " Nº " . $testimony->number . " de fecha " . Util::getStringDate($testimony->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony->court . " de la ciudad de " . $testimony->place . " a cargo de " . $testimony->notary . "";
+        }
+        $quantity = $beneficiaries->count();
+        if ($quantity > 1) {
+          $person .= ' como herederos legales acreditados mediante ' .$testimony_applicant->document_type . ' Nº ' . $testimony_applicant->number .' de fecha '.Util::getStringDate($testimony_applicant->date).' sobre Declaratoria de Herederos, emitido por ' . $testimony_applicant->court . ' de ' . $testimony_applicant->place . ' a cargo de ' . $testimony_applicant->notary;
+        } else {
+          $person .= ' como ' . ($applicant->gender == 'M' ? 'heredero legal acreditado' : 'heredera legal acreditada') . ' mediante ' . $testimony_applicant->document_type . ' Nº ' . $testimony_applicant->number . ' de fecha ' . Util::getStringDate($testimony_applicant->date) . ' sobre Declaratoria de Herederos, emitido por ' . $testimony_applicant->court . ' de la ciudad de ' . $testimony_applicant->place . ' a cargo de ' . $testimony_applicant->notary;
+        }
+        $testimonies_applicant = Testimony::where('affiliate_id', $affiliate->id)->where('id', '!=', $applicant->testimonies()->first()->id)->get();
+        ///recorre los testimonios
+        foreach ($testimonies_applicant as $testimony) {
+          $beneficiaries = $testimony->ret_fun_beneficiaries;
+          $beneficiaries = $beneficiaries->where('state', true);
+          $quantity = $beneficiaries->count();
+          $start_message = false;
+          if ($quantity > 0) {
+            if ($quantity > 1) {
+              $person .= '. Asimismo los derechohabientes ';
+              $start_message = true;
+            }
+            $stored_quantity = $quantity;
+            foreach ($beneficiaries as $beneficiary) {
+              if (!$start_message) {
+                $person = $person .= '. Asimismo solicita el beneficio ' . ($beneficiary->gender == 'M' ? 'el' : 'la') . ' derechohabiente ';
+              }
+              $person .= Util::fullName($beneficiary) . ' con C.I. N° ' . $beneficiary->ciWithExt(). ' en calidad de ' . $beneficiary->kinship->name . ((--$quantity) == 1 ? ' y ' : (($quantity == 0) ? ' ' : ', '));
+            }
+            if ($stored_quantity > 1) {
+              $person .= ' mediante ' . $testimony->document_type . ' Nº ' . $testimony->number . ' de fecha ' . Util::getStringDate($testimony->date).' sobre Declaratoria de Herederos o Aceptación de Herencia, emitido por '.$testimony->court.' de la ciudad de '.$testimony->place.' a cargo de '.$testimony->notary. '';
+            } else {
+              $person .= ' como ' . ($applicant->gender == 'M' ? 'heredero legal acreditado' : 'heredera legal acreditada') . ' mediante ' . $testimony->document_type . ' Nº ' . $testimony->number .' de fecha '.Util::getStringDate($testimony->date). ' sobre Declaratoria de Herederos o Aceptación de Herencia, emitido por ' . $testimony->court . ' de la ciudad de ' . $testimony->place . ' a cargo de ' . $testimony->notary;
+            }
           }
         }
       }
