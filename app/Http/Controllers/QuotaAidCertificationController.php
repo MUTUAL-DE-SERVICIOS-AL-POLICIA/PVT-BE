@@ -1197,6 +1197,7 @@ class QuotaAidCertificationController extends Controller
         $person .=  ". Solicita(n) el pago del  beneficio de " .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . " en su modalidad de " .mb_strtoupper($quota_aid->procedure_modality->name) . " del afiliado fallecido: ".$affiliate_full_name;
       }
     $person .= $presents.' la documentación en Ventanilla de Atención al Aﬁliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio en la Regional '.Util::ucw($quota_aid->city_start->name).'.';
+    /** END PERSON DATA */
     $considering_one = 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
     NATURALEZA JURÍDICA, Parágrafo I establece: <i>“Se crea la Mutual de Servicios al Policía –
     MUSERPOL, como institución pública descentralizada, de duración indefinida y patrimonio
@@ -1421,19 +1422,6 @@ class QuotaAidCertificationController extends Controller
         $body_file .= "no ";
       }
       $body_file .= "tiene expediente del referido titular. ";
-
-     /* switch ($quota_aid->procedure_modality_id) {
-        case 14:
-          $body_file .= "referido titular.";
-    
-          break;
-        case 15:
-          $body_file .= "titular fallecido.";
-          break;
-        default:
-          $body_file .= "referido titular fallecido.";
-      }
-    }*/
     ///---ENDIFLE--////
     /////----FINANCE----///revisar
     $discount = $quota_aid->discount_types();
@@ -1471,7 +1459,7 @@ class QuotaAidCertificationController extends Controller
         $body_qualification.= $affiliate_full_name; //hacer
       }
       if($quota_aid->procedure_modality_id != 14 && $quota_aid->procedure_modality_id != 8 ){
-        $body_qualification.=' considerando que el (la) afiliado (a) cuenta con '.$quota_aid->number_qualified_contributions.' aportes realizados para dicho beneficio en la escala de '.($quota_aid->quota_aid_procedure->months_min??0).' – '.($quota_aid->quota_aid_procedure->months_max??0);
+        $body_qualification.=' considerando que el (la) afiliado (a) cuenta con '.$quota_aid->number_qualified_contributions.' aportes realizados para dicho beneficio en la escala de '.($quota_aid->quota_aid_procedure->months_min??0).' – '.(($quota_aid->quota_aid_procedure->months_max)==1200?'En adelante':($quota_aid->quota_aid_procedure->months_max??0));
       }
     $body_qualification.=", corresponde el monto de <b> " . Util::formatMoneyWithLiteral($quota_aid->total) . "</b>.";
     //-----END QUALIFICATION -----////
@@ -1507,36 +1495,8 @@ class QuotaAidCertificationController extends Controller
       }*/
     $considering_three.='<br><br>Que, al verificarse el cumplimiento de requisitos adjuntos a la carpeta según lo señalado en el Art. '.$art[$quota_aid->procedure_modality_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 98/2021 en fecha 01 de diciembre de 2021 y efectivizado el procesamiento del trámite y conforme el Art. 49  (Procedimiento) del referido Reglamento, corresponde dar curso al pago del beneficio
     <b>' .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name).' - '.mb_strtoupper($quota_aid->procedure_modality->name). '</b>'.$fallecido.'.';
-    /////---------///
-    //$quota_aid =  QuotaAidMortuary::find($quota_aid_id);
-    //$affiliate = Affiliate::find($quota_aid->affiliate_id);
-
-    //$applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
-   //$quota_aid_beneficiary = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $applicant->id)->first();
-    /*$reception ='';
-
-    if ($number->note != "") {
-      $reception = $number->note . "<br>";
-    }*/
-    //----- QUALIFICATION -----////
-   /* $body_qualification = "";
-    $qualification_id = 37;
-    $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $qualification_id)->first();
-    $months  = $affiliate->getTotalQuotes();
-    $body_qualification .= "Que, mediante Calificación del beneficio de " . $quota_aid->procedure_modality->procedure_type->second_name . " <b>N° " . $qualification->code . "</b> de fecha " . Util::getStringDate($qualification->date) . ", la Encargada de Calificación, realizó el cálculo de otorgación, correspondiente ";
-    if ($quota_aid->procedure_modality_id == 15) {
-      $body_qualification .= 'al fallecimiento ' . ($affiliate->spouse()->first()->gender == 'M' ? 'del<strong> &nbsp;Sr. ' : 'de la<strong> &nbsp;Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</strong> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened;
-    } else {
-      if ($quota_aid->procedure_modality_id == 14) {
-        $body_qualification .= 'al fallecimiento ' . ($affiliate->spouse()->first()->gender == 'M' ? 'del<strong> &nbsp;Sr. ' : 'de la<strong> &nbsp;Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</strong> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened . '</b>';
-      } else {
-        $body_qualification .= "al fallecimiento " . ($affiliate->gender == 'M' ? 'del' : 'de la') . "<strong> &nbsp;" . $affiliate->fullNameWithDegree() . "</strong> con C.I. N° <b>" . $affiliate->identity_card . ' ' . $affiliate->city_identity_card->first_shortened;
-      }
-    }
-    $body_qualification .= "</b>, determinando la cuant&iacute;a de<strong> " . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong>.";
-
+    
     ///----- END QUALIFICATION ----////*/
-
     $legal_dictum_id = 40;//Se usara el mismo cod de la resolucion
     $legal_dictum = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_dictum_id)->first();
     $number = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 40)->first();
@@ -1629,7 +1589,6 @@ class QuotaAidCertificationController extends Controller
       'affiliate' =>  $affiliate,
       'actual_city'  =>  Auth::user()->city->name,
       'actual_date'  =>  Util::getStringDate($number->date),
-      //'reception' =>  $reception,
       'body_qualification'    =>  $body_qualification,
       'then'  =>  $then,
       'user'  =>  $user,
