@@ -48,7 +48,8 @@
                   <h3>{{ wr.created_at | recordDate | uppercase }}</h3>
                   
                   <br>
-                  <small class="text-navy">{{ wr.user.username }}</small>
+                  <small v-if="wr.user != null" class="text-navy">{{ wr.user.username }}</small>
+                  <small v-else class="text-navy"></small>
                 </div>
                 <div class="col-md-9 content">
                   <p style="font-size:medium" class="p-sm">{{ wr.message }}</p>
@@ -116,7 +117,7 @@ export default {
       await axios
         .get(`/affiliate_record/${this.affiliate.id}`)
         .then(response => {
-          console.log(response.data);
+          // console.log(response.data);
           this.records = response.data.records;
           this.affiliateRecords = response.data.affiliate_records;
           this.affiliateActivities = response.data.affiliate_activities;
