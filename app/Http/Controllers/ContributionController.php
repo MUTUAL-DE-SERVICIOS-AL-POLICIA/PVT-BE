@@ -599,7 +599,7 @@ class ContributionController extends Controller
          return view('contribution.affiliate_contributions_edit', $data);
     }
     public function storeContributions(Request $request)
-    { //return $request;       
+    { 
         //*********START VALIDATOR************//
         $rules=[];
         $messages=[];
