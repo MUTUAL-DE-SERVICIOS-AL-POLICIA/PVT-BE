@@ -1124,11 +1124,11 @@ class QuotaAidCertificationController extends Controller
     $spouse_full_name = '';
     if (isset($quota_aid_beneficiaries->id)) {
       $legal_guardian = QuotaAidLegalGuardian::where('id', $quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-      $person .= ($legal_guardian->gender == 'M' ? " el señor " : ", la señora ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación "; //.($affiliate->gender=='M'?"del señor ":"de la señora ");
+      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : ", la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación "; //.($affiliate->gender=='M'?"del señor ":"de la señora ");
       $with_art = true;
     } else {
       if ($quota_aid->procedure_modality_id != 14)
-      $person .= Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name;
+      $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) .$applicant->gender. " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name;
       else{
         $person .=' ';
       }
@@ -1440,7 +1440,7 @@ class QuotaAidCertificationController extends Controller
     $body_legal_review   = "";
     $legal_review_id = 35;
     $legal_review = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_review_id)->first();
-    $body_legal_review .= "Que, mediante Certificación N° " . $legal_review->code . " del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($legal_review->date) . ", fue verificada y validada la documentación presentada por " . ($quota_aid->procedure_modality_id != 14 ? "los beneficiarios" : ($affiliate->gender == "M" ? "el titular" : "la titular")) . " del trámite signado con el N° " . $quota_aid->code . ", conforme al Artículo ".($quota_aid->procedure_modality->procedure_type->id?'45':'44')." del Reglamento Vigente y al Formulario de Recepción emitido en Ventanilla de Atención al Afiliado de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio.";
+    $body_legal_review .= "Que, mediante Certificación N° " . $legal_review->code . " del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha " . Util::getStringDate($legal_review->date) . ", fue verificada y validada la documentación presentada por " . ($quota_aid->procedure_modality_id != 14 ? "los beneficiarios" : ($affiliate->gender == "M" ? "el titular" : "la titular")) . " del trámite signado con el N° " . $quota_aid->code . ", conforme al Artículo ".($quota_aid->procedure_modality->procedure_type_id == 4?'45':'44')." del Reglamento Vigente y al Formulario de Recepción emitido en Ventanilla de Atención al Afiliado de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio.";
     /////-----END LEGAL REVIEW----///
     
     ///------ INDIVIDUAL ACCCOUTNS ------////
@@ -1454,7 +1454,7 @@ class QuotaAidCertificationController extends Controller
     $qualification_id = 37;
     $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $qualification_id)->first();
     $months  = $affiliate->getTotalQuotes();
-    $body_qualification .=  "Que, mediante Calificación del beneﬁcio de " . $quota_aid->procedure_modality->procedure_type->second_name . " N° " . $qualification->code . " de fecha " . Util::getStringDate($qualification->date) . ",  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de Auxilio Mortuorio que establecen la cuantía al <b>" . $quota_aid->procedure_modality->name."</b> ";
+    $body_qualification .=  'Que, mediante Calificación del beneﬁcio de ' . $quota_aid->procedure_modality->procedure_type->second_name . " N° " . $qualification->code . " de fecha " . Util::getStringDate($qualification->date) . ',  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de '.$quota_aid->procedure_modality->procedure_type->second_name.' que establecen la cuantía al <b>' . $quota_aid->procedure_modality->name.'</b> ';
       if ($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15 ) {
         $body_qualification.= $spouse_full_name;
       } else {
