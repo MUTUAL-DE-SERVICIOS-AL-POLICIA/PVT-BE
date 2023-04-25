@@ -1104,7 +1104,7 @@ class QuotaAidCertificationController extends Controller
   public function printLegalResolution($quota_aid_id)
   {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
+    $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();//solicitante
 
     if (!$applicant) {
       return response('No existe solicitante', 404);
@@ -1115,23 +1115,24 @@ class QuotaAidCertificationController extends Controller
 
     $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id', $quota_aid->id)->orderByDesc('type')->orderBy('id')->get();
     /** PERSON DATA */
-    $person = '';
     $affiliate = Affiliate::find($quota_aid->affiliate_id);
     $affiliate_full_name = '<b>' . $affiliate->fullNameWithDegree() . '</b> con C.I. N° <b>' . $affiliate->identity_card . ' ' . $affiliate->city_identity_card->first_shortened . '</b>';
     $quota_aid_beneficiaries = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $applicant->id)->first();
+    $person = '';
     $person .= '<br>Que, en fecha ' . Util::getStringDate($quota_aid->reception_date) . ', ';
     $with_art = false;
     $spouse_full_name = '';
     if (isset($quota_aid_beneficiaries->id)) {
       $legal_guardian = QuotaAidLegalGuardian::where('id', $quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : ", la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación "; //.($affiliate->gender=='M'?"del señor ":"de la señora ");
+      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : ", la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación ";
+      $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name; //solicitante
       $with_art = true;
     } else {
-      if ($quota_aid->procedure_modality_id != 14)
-      $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) .$applicant->gender. " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name;
-      else{
-        $person .=' ';
-      }
+        if ($quota_aid->procedure_modality_id != 14){
+          $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name;//solicitante
+        }else{
+          $person .=' ';
+        }
     }
     if ($quota_aid->procedure_modality_id != 14) {
       if($applicant->testimonies()->first()){
@@ -1140,7 +1141,7 @@ class QuotaAidCertificationController extends Controller
         $quantity = $beneficiaries->count();
         $start_message = false;
        if ($quantity > 2) {
-          $person .= ' y de los derechohabientes ';
+          $person .= '. Asimismo, los derechohabientes ';
           $start_message = true;
         }
         foreach ($beneficiaries as $beneficiary) {
@@ -1153,7 +1154,7 @@ class QuotaAidCertificationController extends Controller
         }
         $quantity = $beneficiaries->count();
         if ($quantity > 1) {
-          $person .= ' como herederos legales acreditados mediante ' .$testimony_applicant->document_type . ' Nº ' . $testimony_applicant->number .' de fecha '.Util::getStringDate($testimony_applicant->date).' sobre Declaratoria de Herederos, emitido por ' . $testimony_applicant->court . ' de ' . $testimony_applicant->place . ' a cargo de ' . $testimony_applicant->notary;
+          $person .= ' como herederos legales acreditados mediante ' .$testimony_applicant->document_type . ' Nº ' . $testimony_applicant->number .' de fecha '.Util::getStringDate($testimony_applicant->date).' sobre Declaratoria de Herederos o Aceptación de Herencia, emitido por ' . $testimony_applicant->court . ' de ' . $testimony_applicant->place . ' a cargo de ' . $testimony_applicant->notary;
         } else {
           $person .= ' como ' . ($applicant->gender == 'M' ? 'heredero legal acreditado' : 'heredera legal acreditada') . ' mediante ' . $testimony_applicant->document_type . ' Nº ' . $testimony_applicant->number . ' de fecha ' . Util::getStringDate($testimony_applicant->date) . ' sobre Declaratoria de Herederos, emitido por ' . $testimony_applicant->court . ' de la ciudad de ' . $testimony_applicant->place . ' a cargo de ' . $testimony_applicant->notary;
         }
@@ -1365,7 +1366,7 @@ class QuotaAidCertificationController extends Controller
           }else{
              $considering_two.=' a) Auxilio Mortuorio al fallecimiento del (la) titular. 1.  Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple de la Cédula de Identidad del (la) titular (verificada contra el original). 4. Certificado original de defunción. 5. Fotocopia simple y vigente de la Cédula de Identidad de los derechohabientes (verificada contra el original). 6. Certificado original y actualizado de matrimonio, o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI" o Resolución original o copia legalizada de reconocimiento de matrimonio de hecho ante autoridad  competente.  En caso que los efectivos policiales no hayan contraído nupcias, deberán adjuntar el certificado de inexistencia de partida matrimonial emitido por el SERECI en original. (si corresponde). 7. Declaratoria de herederos o Aceptación de Herencia, original o copia legalizada;  en  el  caso  de  herederos  por  sucesión  testamentaria presentar “Testamento” original o copia legalizada, dentro del cual señale expresamente la otorgación del beneficio (…)”</i>.';
           }
-          $considering_two.=' Las solicitudes para el pago del beneficio de Auxilio Mortuorio, que ingresen a partir de la aprobación del presente Reglamento deberán contener los siguientes documentos: por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
+          $considering_two.=' Las solicitudes para el pago del beneficio de Auxilio Mortuorio, que ingresen a partir de la aprobación del presente Reglamento deberán contener los referidos documentos: por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
     }else{//cuota mortuoria
           $considering_two.='Que, el Artículo 44 del reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(REQUISITOS PARA SOLICITAR EL BENEFICIO DE CUOTA MORTUORIA).-Las solicitudes para el pago del beneficio de Cuota Mortuoria,  que ingresen a partir de la aprobación del presente Reglamento deberán contener los siguientes documentos:';
             if ($quota_aid->procedure_modality_id == 8) { //cumplimiento de susfunciones
@@ -1398,7 +1399,7 @@ class QuotaAidCertificationController extends Controller
     }
     $considering_two.='Que el Artículo 57 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere:<i> “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante
     acto administrativo determina la otorgación del beneficio de Cuota Mortuoria. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL.”</i>.
-    Por consiguiente, la Resolución Administrativa  Nº 1-A/2022 del 05 de enero de 2022, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
+    Por consiguiente, la Resolución Administrativa Nº 032/2023 del 24 de abril de 2023, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
     Que, el Artículo 58 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: 1. Conocer y resolver los casos pendientes de acuerdo a lo
     establecido en el parágrafo I de la Disposición Transitoria Única del Decreto Supremo No. 3231 de fecha 28 de junio de 2017:  a) Montos dejados en cuota parte en reserva. b) Recursos de Reclamación. c)
