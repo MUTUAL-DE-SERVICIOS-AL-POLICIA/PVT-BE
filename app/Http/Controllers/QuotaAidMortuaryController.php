@@ -386,7 +386,11 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->code = $code;
     $quota_aid->uuid = Uuid::uuid1()->toString();
     $quota_aid->reception_date = date('Y-m-d');
-    $quota_aid->workflow_id = 5;
+    if($request->procedure_type_id == 3){
+       $quota_aid->workflow_id = 5;
+    }elseif ($request->procedure_type_id == 4){
+      $quota_aid->workflow_id = 6;
+    }
     $wf_state = WorkflowState::where('role_id', Util::getRol()->id)->whereIn('sequence_number', [0, 1])->first();
     if (!$wf_state) {
       return;
