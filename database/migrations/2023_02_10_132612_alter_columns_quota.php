@@ -21,8 +21,6 @@ class AlterColumnsQuota extends Migration
         DB::statement("update quota_aid_procedures set is_enabled = false where year = '2020-12-31';");
 
         DB::statement("update procedure_types set name = 'Pago del Beneficio Cuota Mortuoria' where id  = 3;");
-        DB::statement("update procedure_modalities set name  = 'por riesgo común'  where id  = 9;");
-        DB::statement("update procedure_modalities set name  = 'en cumplimiento de funciones'  where id  = 8");
         DB::statement("update procedure_types set name = 'Pago del Beneficio Auxilio Mortuorio' where id  = 4 ;");
     }
 
