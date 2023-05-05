@@ -41,7 +41,7 @@
                 </div>
                 <br>
                 <div class="row">
-                    <div class="col-md-2"><label class="control-label">Años de servicio {{$role}}</label></div>
+                    <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
                     <div class="col-md-4">
                         <input type="number" v-model="form.service_years" name="service_years" class="form-control" 
                         :disabled="!editing || !(editing && ( {{ intval($module == 2) }} && !( {{ intval($role == 22) }} || {{ intval($role == 23) }} || {{ intval($role == 24) }} || {{ intval($role == 25) }} || {{ intval($role == 26) }} || {{ intval($role == 27) }} || {{ intval($role == 52) }} || {{ intval($role == 68) }} ))  || ({{ intval($role == 28) }}  ||  {{ intval($role == 43) }} ) )" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
