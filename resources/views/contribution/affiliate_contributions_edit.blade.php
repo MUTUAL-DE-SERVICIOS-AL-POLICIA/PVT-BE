@@ -101,7 +101,7 @@
                                         @endif
                                     @endfor
                                     <td>
-                                        <button class="btn btn-default" type="button" data-toggle="tooltip" data-placement="top" title="Editar" onclick="toggleNestedComp(this)"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default" type="button" data-toggle="tooltip" data-placement="top" title="Editarr" onclick="toggleNestedComp(this)"><i class="fa fa-pencil"></i></button>
                                     </td>
                                 </tr>
                                 <tr class="tabl2" style="display:none;">
@@ -120,10 +120,13 @@
                                                 <td>Cotizable</td>
                                             </tr>
                                             <tr>
-                                                <td>Aporte</td>
+                                                <td>Total Aporte</td>
                                             </tr>
                                             <tr>
                                                 <td>Reintegro</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fondo de Retiro</td>
                                             </tr>
                                         </table>
                                     </td>
@@ -186,6 +189,12 @@
                                                                 {{$reims[$period]->total ?? '-'}}
                                                             </td>
                                                         </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->retirement_fund ?? '-'}} </div>
+                                                                <input type="hidden" disabled name="retirement_fund[{{$period}}]" value="{{$contributions[$period]->retirement_fund ??'-'}}">
+                                                            </td>
+                                                        </tr>
                                                     </table>
                                                 </td>
                                             @else
@@ -238,6 +247,12 @@
                                                         <tr>
                                                             <td id="reim{{$period}}}">-</td>
                                                         </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="false" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="retirement_fund[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
                                                     </table>
                                                 </td>
                                             @endif
@@ -247,7 +262,7 @@
                                     @endfor
                                         <td>
                                             <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Reintegro" onclick="createReimbursement({{$year_start}})"><i class="fa fa-dollar"></i></button>                                            
-                                            <button class="btn btn-default" data-toggle="tooltip" data-placement="left" type="button" title="Guardar" onclick="storeData(this)"><i class="fa fa-save"></i></button>
+                                            <button class="btn btn-default" data-toggle="tooltip" data-placement="top" type="button" title="Guardar" onclick="storeData(this)"><i class="fa fa-save"></i></button>
                                         </td>
                                 </tr>
                             @endfor
@@ -377,9 +392,10 @@
                 //console.log(result);
                 
                  $.each(result, function(index,value){
-                    $('#main'+value.month_year).html(value.total);                    
+                    $('#main'+value.month_year).html(value.total);
                  });                                  
                  flash('exito');
+                 window.location.reload();
             },
             error: function(xhr, status, error) {
                 console.log(xhr.responseText);
