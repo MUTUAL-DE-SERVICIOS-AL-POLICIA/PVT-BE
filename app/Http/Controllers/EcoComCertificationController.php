@@ -370,7 +370,7 @@ class EcoComCertificationController extends Controller
             'with_padding' => $with_padding,
         ];
         $pages = [];
-        $number_pages = Util::isRegionalRole() ? 3 : 2;
+        $number_pages = Util::isRegionalRole() ? 3 : 1;
         for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('eco_com.print.qualification', $data)->render();
         }

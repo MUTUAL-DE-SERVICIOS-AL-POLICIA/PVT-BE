@@ -402,6 +402,20 @@ class AffiliateController extends Controller
             $fotoCIAnverso=base64_encode(Storage::get($path.'/ci_anverso.jpg'));
         if (Storage::exists($path.'/ci_reverso.jpg')) 
             $fotoCIReverso=base64_encode(Storage::get($path.'/ci_reverso.jpg'));
+        /**** */
+        $fotosBoletas = array();
+
+        $path_eco_com = 'eco_com/'.$affiliate->id;
+        $files = Storage::files($path_eco_com); //obtiene la lista de todos los archivos en la carpeta
+
+        foreach($files as $file) {
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            if($extension == 'jpg') {
+                $foto = base64_encode(Storage::get($file));
+                $fotosBoletas[] = $foto; //agrega la fotografía al array
+            }
+        }
+        //************ */
 
         $affiliateToken = AffiliateToken::where('affiliate_id','=',$affiliate->id)->first();
 
@@ -455,7 +469,7 @@ class AffiliateController extends Controller
             'is_editable'   =>  $is_editable,
             'pension_entities' => $pension_entities,
             'has_direct_contribution' => isset($direct_contribution)?true:false,
-            'direct_contribution'   =>  $direct_contribution,            
+            'direct_contribution'   =>  $direct_contribution,
             'payment_types' =>  $payment_types,
             'voucher_types' =>  $voucher_types,
             'vouchers'  =>  $vouchers,
@@ -483,6 +497,8 @@ class AffiliateController extends Controller
             'fotofrenteViudedad' =>  $fotoFrenteViudedad,
             'fotoizquierdaViudedad' =>  $fotoIzquierdaViudedad,
             'fotoderechaViudedad' =>  $fotoDerechaViudedad,
+
+            'fotosBoletas' => $fotosBoletas,
 
             'affiliatetoken' => $affiliateToken,
             'affiliatedevice' =>  $affiliateDevice,
