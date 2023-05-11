@@ -433,8 +433,10 @@ class EconomicComplementController extends Controller
         $subtitle = $economic_complement->eco_com_procedure->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
 
         $code = $economic_complement->code;
-        $area = $economic_complement->wf_state->first_shortened;
-        $user = $economic_complement->user;
+        // $area = $economic_complement->wf_state->first_shortened;
+        // $user = $economic_complement->user;
+        $area = $economic_complement->wf_records->sortBy('id')->first()->wf_state->first_shortened;
+        $user = $economic_complement->wf_records->sortBy('id')->first()->user;
         $date = Util::getDateFormat($economic_complement->reception_date);
         $number = $code;
         if($economic_complement->eco_com_modality->procedure_modality->name != 'Vejez')

@@ -731,6 +731,13 @@ class AffiliateController extends Controller
         $affiliateToken->api_token = null;
         $affiliateToken->firebase_token = null;
         $affiliateToken->save();
+
+        $message = 'El usuario '.Auth::user()->username.' realizó la acción de desenrolar al Afiliado.';
+        $affiliate_record = new AffiliateRecord;
+        $affiliate_record->user_id = Auth::user()->id;
+        $affiliate_record->affiliate_id = $affiliate_id;
+        $affiliate_record->message = $message;
+        $affiliate_record->save();
     }
 
 
