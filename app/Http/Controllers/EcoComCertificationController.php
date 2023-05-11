@@ -10,6 +10,7 @@ use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\Affiliate;
 use DB;
+
 class EcoComCertificationController extends Controller
 {
     public function printReception($id)
@@ -43,8 +44,11 @@ class EcoComCertificationController extends Controller
             $size_down = 80;
         }
         $code = $eco_com->code;
-        $area = $eco_com->wf_state->first_shortened;
-        $user = $eco_com->user;
+        //$area = $eco_com->wf_state->first_shortened;
+        //$user = $eco_com->user;
+        $area = $eco_com->wf_records->sortBy('id')->first()->wf_state->first_shortened;
+        $user = $eco_com->wf_records->sortBy('id')->first()->user;
+
         $date = Util::getDateFormat($eco_com->reception_date);
         $number = $code;
 

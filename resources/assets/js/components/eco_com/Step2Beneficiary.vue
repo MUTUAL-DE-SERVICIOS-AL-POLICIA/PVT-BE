@@ -1366,6 +1366,71 @@
         </div>
       </div>
     </div>
+    <div class="ibox float-e-margins" v-if="modalityId == 30 && receptionType.id == 2">
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-md-12">
+            <legend>Datos SERECI</legend>
+            <div class="row">
+              <div class="col-md-6" :class="{'has-error': errors.has('eco_com_beneficiary_official') }">
+                <div class="col-md-4">
+                  <label class="control-label">Oficialia</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="eco_com_beneficiary_official"
+                    v-model.trim="ecoComBeneficiary.official"
+                    class="form-control"
+                  >
+                </div>
+              </div>
+              <div class="col-md-6" :class="{'has-error': errors.has('eco_com_beneficiary_book') }">
+                <div class="col-md-4">
+                  <label class="control-label">Libro</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="eco_com_beneficiary_book"
+                    v-model.trim="ecoComBeneficiary.book"
+                    class="form-control"
+                  >
+                </div>
+              </div>
+              <div class="col-md-6" :class="{'has-error': errors.has('eco_com_beneficiary_departure') }">
+                <div class="col-md-4">
+                  <label class="control-label">Partida</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="eco_com_beneficiary_departure"
+                    v-model.trim="ecoComBeneficiary.departure"
+                    class="form-control"
+                  >
+                </div>
+              </div>
+              <div class="col-md-6" :class="{'has-error': errors.has('eco_com_beneficiary_marriage_date') }">
+                <div class="col-md-4">
+                  <label class="control-label">Fecha de Matrimonio</label>
+                </div>
+                <div class="col-md-8">
+                  <input
+                    type="text"
+                    name="eco_com_beneficiary_marriage_date"
+                    v-model.trim="ecoComBeneficiary.marriage_date"
+                    class="form-control"
+                    v-validate="'date_format:dd/MM/yyyy'"
+                    v-date
+                  >
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>

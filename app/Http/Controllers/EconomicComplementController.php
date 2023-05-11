@@ -527,6 +527,10 @@ class EconomicComplementController extends Controller
                 if ($request->eco_com_beneficiary_is_duedate_undefined == 'on') {
                     $spouse->due_date = null;
                 }
+                $spouse->official = $request->eco_com_beneficiary_official?? $request->eco_com_beneficiary_official;
+                $spouse->book = $request->eco_com_beneficiary_book ?? $request->eco_com_beneficiary_book;
+                $spouse->departure = $request->eco_com_beneficiary_departure ?? $request->eco_com_beneficiary_departure;
+                $spouse->marriage_date = $request->eco_com_beneficiary_marriage_date ?? $request->eco_com_beneficiary_marriage_date;
                 $spouse->save();
 
                 /**
