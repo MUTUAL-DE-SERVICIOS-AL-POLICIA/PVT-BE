@@ -56,6 +56,14 @@ export default {
             this.form.procedure_modality_id = this.procedure_modality.id; 
         }
 		  },
+      print: async function () {
+        try {
+          printJS({printable:'ret_fun/'+this.retirement_fund.id+'/print/all_qualification',modalMessage:
+              "Generando documentos de impresión, por favor espere un momento.", type:'pdf', showModal:true});
+        } catch (error) {
+          console.error('Ocurrió un error al imprimir:', error);
+        }
+      },
       getState: function(state_id){
           var i;
           for(i =0; i<this.states.length;i++){
@@ -63,7 +71,7 @@ export default {
                 return this.states[i].name;
           }
       },
-      update: function () {  
+      update: function () {
         let uri = `/update_information_rf`;
         this.show_spinner=true;
         axios.patch(uri,this.form)
