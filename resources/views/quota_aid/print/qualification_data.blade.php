@@ -35,6 +35,7 @@
             </tbody>
         </table>
     </div>
+    @if($quota_aid->procedure_modality->id !=14)
     <div class="block">
     <table class="table-info w-100 m-b-10">
         <thead class="bg-grey-darker">
@@ -61,7 +62,8 @@
             </tr>
         </tbody>
     </table>
-</div>
+    </div>
+    @endif
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
