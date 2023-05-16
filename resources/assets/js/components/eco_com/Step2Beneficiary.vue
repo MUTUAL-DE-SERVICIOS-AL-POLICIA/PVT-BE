@@ -738,7 +738,7 @@
                       @change="calculateCategory()"
                       max="100"
                       min="0"
-                      :disabled="isHabitual"
+                      :disabled="isHabitual || (roleId == 22) || (roleId == 23) || (roleId == 24) || (roleId == 25) || (roleId == 26) || (roleId == 27) || (roleId == 52) || (roleId == 68)"
                     >
                     <div v-show="errors.has('affiliate_service_years')">
                       <i class="fa fa-warning text-danger"></i>
@@ -763,7 +763,7 @@
                       @change="calculateCategory()"
                       max="11"
                       min="0"
-                      :disabled="isHabitual"
+                      :disabled="isHabitual || (roleId == 22) || (roleId == 23) || (roleId == 24) || (roleId == 25) || (roleId == 26) || (roleId == 27) || (roleId == 52) || (roleId == 68)"
                     >
                     <div v-show="errors.has('affiliate_service_months')">
                       <i class="fa fa-warning text-danger"></i>
@@ -1371,7 +1371,7 @@
 <script>
 import { mapGetters, mapMutations, mapState } from "vuex";
 export default {
-  props: ["cities", "degrees", "categories", "ecoComLegalGuardianTypes", "financialEntities"],
+  props: ["cities", "degrees", "categories", "ecoComLegalGuardianTypes", "financialEntities","roleId"],
   data() {
     return {
       civilStatus: [
