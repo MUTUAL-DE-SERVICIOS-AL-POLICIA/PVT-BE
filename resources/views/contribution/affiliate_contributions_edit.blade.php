@@ -101,7 +101,7 @@
                                         @endif
                                     @endfor
                                     <td>
-                                        <button class="btn btn-default" type="button" data-toggle="tooltip" data-placement="top" title="Editarr" onclick="toggleNestedComp(this)"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-default" type="button" data-toggle="tooltip" data-placement="top" title="Editar" onclick="toggleNestedComp(this)"><i class="fa fa-pencil"></i></button>
                                     </td>
                                 </tr>
                                 <tr class="tabl2" style="display:none;">
