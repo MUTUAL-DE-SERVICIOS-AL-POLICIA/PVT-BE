@@ -647,7 +647,7 @@ class QuotaAidMortuaryController extends Controller
     $procedures_modalities = ProcedureModality::whereIn('procedure_type_id', $procedures_modalities_ids)->get();
     $file_modalities = ProcedureModality::get();
 
-    $requirements = ProcedureRequirement::where('procedure_modality_id', $quota_aid->procedure_modality_id)->get();
+    $requirements = ProcedureRequirement::where('procedure_modality_id', $quota_aid->procedure_modality_id)->whereNull('deleted_at')->get();
 
     $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
     $cities = City::get();
@@ -1196,6 +1196,7 @@ class QuotaAidMortuaryController extends Controller
 
     $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
       ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+      ->whereNull('procedure_requirements.deleted_at')
       //->where('procedure_requirements.number','!=','0')
       ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
       ->orderBy('procedure_requirements.number', 'ASC')
