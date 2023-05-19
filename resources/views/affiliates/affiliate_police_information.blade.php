@@ -1,4 +1,5 @@
 @php($role = \Muserpol\Helpers\Util::getRol()->id)
+@php($module = \Muserpol\Helpers\Util::getRol()->module_id)
 <div class="col-lg-12">
         <div class="ibox">
             <div class="ibox-content">
@@ -26,13 +27,14 @@
                 <br>
                 <div class="row">
                     <div class="col-md-2"><strong>Fecha de Ingreso a la Institucional Policial:</strong></div>
-                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_entry" v-month-year :disabled="!editing"></div>
+                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_entry" v-month-year :disabled="!editing || !(editing && ({{ intval($module == 3) }} || {{ intval($module == 4) }} || {{ intval($role == 5) }} ) )"></div>
                 </div>
                 <br>
                 <div class="row">
                     <div class="col-md-2"><strong>Categor&iacute;a:</strong></div>
                     <div class="col-md-4">{!! Form::select('category_id', $categories, null, ['placeholder' => 'Seleccione una categoria',
-                            'class' => 'form-control', 'v-model' => 'form.category_id' ,':disabled' => '!editing']) !!}</div>
+                            'class' => 'form-control', 'v-model' => 'form.category_id' ,':disabled'
+                            => '!editing || !((editing && ('.$module.' == 2) && !('.$role.' == 22 || '.$role.' == 23 || '.$role.' == 24 || '.$role.' == 25 || '.$role.' == 26 || '.$role.' == 27 || '.$role.' == 52 || '.$role.' == 68 )) || ('.$role.' == 28 || '.$role.' == 43 ))']) !!}</div>
                     <div class="col-md-2"><strong>Grado:</strong></div>
                     <div class="col-md-4">{!! Form::select('degree_id', $degrees, null, ['placeholder' => 'Seleccione un Grado', 'class' => 'form-control' , 'v-model'
                         => 'form.degree_id' ,':disabled' => '!editing || !((editing && '.$role .' == 5) || (editing && '.$role.' == 28) || (editing && '.$role.' == 43))' ]) !!}</div>
@@ -41,7 +43,8 @@
                 <div class="row">
                     <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
                     <div class="col-md-4">
-                        <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
+                        <input type="number" v-model="form.service_years" name="service_years" class="form-control" 
+                        :disabled="!editing || !(editing && ( {{ intval($module == 2) }} && !( {{ intval($role == 22) }} || {{ intval($role == 23) }} || {{ intval($role == 24) }} || {{ intval($role == 25) }} || {{ intval($role == 26) }} || {{ intval($role == 27) }} || {{ intval($role == 52) }} || {{ intval($role == 68) }} ))  || ({{ intval($role == 28) }}  ||  {{ intval($role == 43) }} ) )" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
                         <div v-show="errors.has('service_years') && editing" >
                             <i class="fa fa-warning text-danger"></i>
                             <span class="text-danger">@{{ errors.first('service_years') }}</span>

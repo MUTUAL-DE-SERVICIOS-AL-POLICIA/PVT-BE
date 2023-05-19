@@ -1,12 +1,27 @@
 <div class="col-md-12">
     <div class="ibox">
         <div class="ibox-content">
-                <div  class="pull-left">
+            <div class="row">
+                <div  class="pull-left col-md-6">
                     <legend>Fondo de Retiro</legend>
                 </div>
+            @if(Session::get('rol_id') == 13 || Session::get('rol_id') == 28)
+                <div class="text-right col-md-6">
+                    <button
+                        data-animation="flip"
+                        data-toggle="tooltip"
+                        title="Form calificación"
+                        class="btn btn-primary"
+                        @click="print"
+                    >
+                        <i class="fa fa-print"></i> Imprimir calificación
+                    </button>
+                </div>
+            @endif
+            </div>
                 @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
                 <div class="text-right" v-if="!read">
-                    <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
+                        <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
                 </div>
                 <div class="text-right" v-if="read">
                 <a href="{{ url('ret_fun/'.$retirement_fund->id)}}" class="btn btn-primary"> <i class="fa fa-eye"></i> Ver</a>
@@ -17,8 +32,7 @@
                 <br>
                     @endcan
                 <br>
-                
-                   
+        
                 <div class="row">
                     {{-- <div class="col-md-1"></div> --}}
                     <div class="col-md-2">
@@ -94,7 +108,7 @@
                     </div>
                 </div>
                 <br>
-        </div>        
+        </div>
     </div>
 
     <!-- <div class="ibox">
