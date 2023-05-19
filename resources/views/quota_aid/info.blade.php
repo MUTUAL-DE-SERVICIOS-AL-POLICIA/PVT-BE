@@ -17,7 +17,7 @@
                         <i class="fa fa-print"></i> Imprimir calificación
                     </button>
                 </div>
-                @endcan
+                @endif
             </div>
                 {{-- @can('update',new Muserpol\Models\RetirementFund\RetirementFund) --}}
                 <div class="text-right" v-if="!read">
