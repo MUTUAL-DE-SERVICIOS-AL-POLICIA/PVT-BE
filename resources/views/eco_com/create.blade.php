@@ -35,7 +35,7 @@
                                 </eco-com-step1-requirements>
                             </tab-content>
                             <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep" key="dos">
-                                <eco-com-step2-beneficiary :cities="{{ $cities }}" :degrees="{{ $degrees }}" :categories="{{ $categories }}" :eco-com-legal-guardian-types="{{ $eco_com_legal_guardian_types }}" :financial-entities="{{ $financial_entities }}">
+                                <eco-com-step2-beneficiary :cities="{{ $cities }}" :degrees="{{ $degrees }}" :categories="{{ $categories }}" :eco-com-legal-guardian-types="{{ $eco_com_legal_guardian_types }}" :financial-entities="{{ $financial_entities }}" :role-id="{{ Util::getRol()->id }}">
                                 </eco-com-step2-beneficiary>
                             </tab-content>
                             <tab-content title="Registro de rentas" ref="tres" icon="mdi mdi-currency-usd" :before-change="validateThirdStep" key="tres">
