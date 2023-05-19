@@ -52,6 +52,7 @@ use Validator;
 use Muserpol\Models\EconomicComplement\EcoComModality;
 
 use Muserpol\Models\BaseWage;
+use Ramsey\Uuid\Uuid;
 
 class EconomicComplementController extends Controller
 {
@@ -323,6 +324,7 @@ class EconomicComplementController extends Controller
         $economic_complement->inbox_state = true;
         // $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
+        $economic_complement->uuid = Uuid::uuid1()->toString();
         /*
         if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
