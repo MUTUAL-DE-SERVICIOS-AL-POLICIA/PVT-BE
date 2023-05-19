@@ -1,9 +1,24 @@
 <div class="col-md-12">
     <div class="ibox">
         <div class="ibox-content">
-                <div  class="pull-left">
+            <div class="row">
+                <div  class="pull-left col-md-6">
                     <legend>Cuota Mortuoria y Auxilio Mortuorio</legend>
                 </div>
+                @if(Session::get('rol_id') == 43 || Session::get('rol_id') == 37)
+                <div class="text-right col-md-6">
+                    <button
+                        data-animation="flip"
+                        data-toggle="tooltip"
+                        title="Form calificación"
+                        class="btn btn-primary"
+                        @click="print"
+                    >
+                        <i class="fa fa-print"></i> Imprimir calificación
+                    </button>
+                </div>
+                @endif
+            </div>
                 {{-- @can('update',new Muserpol\Models\RetirementFund\RetirementFund) --}}
                 <div class="text-right" v-if="!read">
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
