@@ -17,6 +17,7 @@ use Muserpol\Models\Address;
 use Muserpol\Helpers\Util;
 use Muserpol\Helpers\ID;
 use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
 
 class EconomicComplementController extends Controller
 {
@@ -163,6 +164,7 @@ class EconomicComplementController extends Controller
             $economic_complement->reception_date = now();
             $economic_complement->inbox_state = false;
             $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
+            $economic_complement->uuid = Uuid::uuid1()->toString();
             /*
             if ($affiliate->pension_entity_id == ID::pensionEntity()->senasir) {
                 $economic_complement->sub_total_rent = Util::parseMoney($last_eco_com->sub_total_rent);
@@ -321,6 +323,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->reception_date = now();
                     $economic_complement->inbox_state = false;
                     $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
+                    $economic_complement->uuid = Uuid::uuid1()->toString();
                     $economic_complement->save();
                     /**
                      ** Save eco com beneficiary
@@ -482,5 +485,14 @@ class EconomicComplementController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="file.pdf"'
         ]);
+    }
+    //funcion para agregar uuid a los registros que tienen null
+    public static function add_uuid(){//aqui
+        $eco_coms=EconomicComplement::withTrashed()->get();
+        foreach ($eco_coms as $eco_com) {
+            $eco_com->uuid=Uuid::uuid1()->toString();
+            $eco_com->save();
+       }
+       return $eco_com;
     }
 }

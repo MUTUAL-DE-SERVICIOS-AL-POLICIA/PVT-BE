@@ -13,6 +13,13 @@ use DB;
 
 class EcoComCertificationController extends Controller
 {
+    public static function get_module_eco_com($eco_com_id)
+    {
+      $eco_com = EconomicComplement::find($eco_com_id);
+      $module_id= 2;//modulo complemento economico
+      $file_name =$module_id.'/'.$eco_com->uuid;//aqui
+      return $file_name;
+    }
     public function printReception($id)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
@@ -53,7 +60,8 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
 
-        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        //$bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        $bar_code = \DNS2D::getBarcodePNG($this->get_module_eco_com($eco_com->id), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
         $data = [
