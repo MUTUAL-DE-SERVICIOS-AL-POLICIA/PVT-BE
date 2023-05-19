@@ -56,7 +56,7 @@ export default {
             this.form.procedure_modality_id = this.procedure_modality.id; 
         }
 		  },
-      print: async function () {
+      print: function () {
         try {
           printJS({printable:'ret_fun/'+this.retirement_fund.id+'/print/all_qualification',modalMessage:
               "Generando documentos de impresión, por favor espere un momento.", type:'pdf', showModal:true});

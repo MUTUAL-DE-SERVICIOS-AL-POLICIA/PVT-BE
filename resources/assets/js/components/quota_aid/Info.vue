@@ -53,7 +53,7 @@ export default {
                 return this.states[i].name;
           }
       },
-      print: async function () {
+      print: function () {
         try {
           printJS({printable:'quota_aid/'+this.quota_aid.id+'/print/qualification',modalMessage:
               "Generando documentos de impresión, por favor espere un momento.", type:'pdf', showModal:true});
