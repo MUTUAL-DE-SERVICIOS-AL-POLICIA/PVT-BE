@@ -16,6 +16,7 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Hashids\Hashids;
 use Muserpol\Models\AffiliateToken;
+use Illuminate\Support\Facades\Storage;
 class Affiliate extends Model
 {
   use SoftDeletes;
@@ -950,4 +951,19 @@ class Affiliate extends Model
     {
       return (sizeOf($this->getContributionsWithType(12)) > 0) || (sizeOf($this->getContributionsWithType(13)) > 0);
     }
+
+  public function hasDocumentScan(){
+    $file_name = $this->id.'.PDF';
+    $base_path = env('FTP_DIRECTORY');
+    $file = false;
+    if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
+        $file = true;
+    }else{
+      $file_name = $this->id.'.pdf';
+      if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
+        $file = true;
+      }
+    }
+    return $file;
+  }
 }
