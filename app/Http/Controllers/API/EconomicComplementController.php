@@ -143,6 +143,7 @@ class EconomicComplementController extends Controller
         $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
         $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();        
         $now = Carbon::now()->toDateString();
+        $verified = $affiliate->affiliate_token->affiliate_device->verified;
 
         $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
         if (!$has_economic_complement) {
@@ -156,7 +157,7 @@ class EconomicComplementController extends Controller
             $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
             $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
-            $economic_complement->wf_current_state_id = 60;
+            $economic_complement->wf_current_state_id = $verified ? 1 : 60;
             $economic_complement->city_id = $last_eco_com->city_id;
             $economic_complement->degree_id = $affiliate->degree->id;
             $economic_complement->category_id = $affiliate->category->id;
@@ -293,7 +294,7 @@ class EconomicComplementController extends Controller
             $economic_complement->procedure_records()->create([
                 'user_id' => 171,
                 'record_type_id' => 7,
-                'wf_state_id' => 60,
+                'wf_state_id' =>  $verified? 1 : 60,
                 'date' => Carbon::now(),
                 'message' => 'Se creó el trámite mediante aplicación móvil.'
             ]);
@@ -315,7 +316,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
                     $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
                     $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
-                    $economic_complement->wf_current_state_id = 60;
+                    $economic_complement->wf_current_state_id = $verified? 1 : 60;
                     $economic_complement->city_id = $last_eco_com->city_id;
                     $economic_complement->degree_id = $affiliate->degree->id;
                     $economic_complement->category_id = $affiliate->category->id;
@@ -400,7 +401,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->procedure_records()->create([
                         'user_id' => 171,
                         'record_type_id' => 7,
-                        'wf_state_id' => 60,
+                        'wf_state_id' => $verified ? 1 : 60,
                         'date' => Carbon::now(),
                         'message' => 'Se creó el trámite mediante aplicación móvil.'
                     ]);
