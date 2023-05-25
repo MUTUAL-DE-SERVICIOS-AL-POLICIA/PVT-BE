@@ -1072,7 +1072,7 @@ class QuotaAidCertificationController extends Controller
     array_push($documents, 'CERTIFICACIÓN DE APORTES EN EL SERVICIO ACTIVO');
     array_push($documents, 'CERTIFICACIÓN DE PAGOS ANTERIORES (DIRECCIÓN DE ASUNTOS ADMINISTRATIVOS)');
     // array_push($documents,'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
-    array_push($documents, 'CALIFICACIÓN DE FONDO DE RETIRO');//ojo
+    array_push($documents,($quota_aid->isAid()?'CALIFICACIÓN DE AUXILIO MORTUORIO':'CALIFICACIÓN DE CUOTA MORTUORIA'));//ojo
     //array_push($documents, 'DICTAMEN LEGAL');
 
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
