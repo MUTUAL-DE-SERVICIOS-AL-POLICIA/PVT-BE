@@ -1156,7 +1156,7 @@ class QuotaAidCertificationController extends Controller
         if ($quantity > 1) {
           $person .= ' como herederos legales acreditados mediante ' .$testimony_applicant->document_type . ' Nº ' . $testimony_applicant->number .' de fecha '.Util::getStringDate($testimony_applicant->date).' sobre Declaratoria de Herederos o Aceptación de Herencia, emitido por ' . $testimony_applicant->court . ' de ' . $testimony_applicant->place . ' a cargo de ' . $testimony_applicant->notary;
         } else {
-          $person .= ' como ' . ($applicant->gender == 'M' ? 'heredero legal acreditado' : 'heredera legal acreditada') . ' mediante ' . $testimony_applicant->document_type . ' Nº ' . $testimony_applicant->number . ' de fecha ' . Util::getStringDate($testimony_applicant->date) . ' sobre Declaratoria de Herederos, emitido por ' . $testimony_applicant->court . ' de la ciudad de ' . $testimony_applicant->place . ' a cargo de ' . $testimony_applicant->notary;
+          $person .= ' como ' . ($applicant->gender == 'M' ? 'heredero legal acreditado' : 'heredera legal acreditada') . ' mediante ' . $testimony_applicant->document_type . ' Nº ' . $testimony_applicant->number . ' de fecha ' . Util::getStringDate($testimony_applicant->date) . ' sobre Declaratoria de Herederos o Aceptación de Herencia, emitido por ' . $testimony_applicant->court . ' de la ciudad de ' . $testimony_applicant->place . ' a cargo de ' . $testimony_applicant->notary;
         }
         $testimonies_applicant = Testimony::where('affiliate_id', $affiliate->id)->where('id', '!=', $applicant->testimonies()->first()->id)->get();
         ///recorre los testimonios
