@@ -64,7 +64,7 @@ class AidContributionController extends Controller
         $month = $array_date[0];
         $type = $commitment->type;
         $quotable = $commitment->quotable;
-        $rent = $commitment->rent;
+        $rent = $commitment->rent_pension;
         $dignity_rent = $commitment->dignity_rent;
         $total = $commitment->total;
         $data = [
@@ -107,7 +107,7 @@ class AidContributionController extends Controller
         $month = Carbon::parse($aid_contributions->month_year)->month;
         $type = $aid_contributions->type;
         $quotable = $aid_contributions->quotable;
-        $rent = $aid_contributions->rent;
+        $rent = $aid_contributions->rent_pension;
         $dignity_rent = $aid_contributions->dignity_rent;
         $total = $aid_contributions->total;
         $data = [
@@ -309,7 +309,7 @@ class AidContributionController extends Controller
                 $input_data['dignity_rent'][$key]= strip_tags($request->dignity_rent[$key]);
                 $input_data['total'][$key]= strip_tags($request->total[$key]);
                 $array_rules = [
-                    'rent.'.$key =>  'numeric',
+                    'rent_pension.'.$key =>  'numeric',
                     'dignity_rent.'.$key =>  'numeric|min:0',
                     'total.'.$key =>  'required|numeric|min:1'
                 ];
@@ -327,16 +327,16 @@ class AidContributionController extends Controller
             if (isset($contribution->id)) {
                 $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
                 if(!isset($request->rent[$key]) || $request->rent[$key] == ""){
-                    $contribution->rent = 0;
+                    $contribution->rent_pension = 0;
                 }else{
-                    $contribution->rent = strip_tags($request->rent[$key]) ?? $contribution->rent;
+                    $contribution->rent_pension = strip_tags($request->rent[$key]) ?? $contribution->rent_pension;
                 }
                 if(!isset($request->dignity_rent[$key]) || $contribution->dignity_rent == ""){
                     $contribution->dignity_rent = 0;
                 }else{
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
                 }
-                $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
+                $contribution->quotable = $contribution->rent_pension-$contribution->dignity_rent;
                 $contribution->interest = 0;
                 $contribution->save();
             } else {
@@ -344,9 +344,9 @@ class AidContributionController extends Controller
                 $contribution->user_id = Auth::user()->id;
                 $contribution->affiliate_id = $request->affiliate_id;
                 if(!isset($request->rent[$key]) || $request->rent[$key] == "") {
-                    $contribution->rent = 0;
+                    $contribution->rent_pension = 0;
                 } else {
-                    $contribution->rent = strip_tags($request->rent[$key]) ?? 0;
+                    $contribution->rent_pension = strip_tags($request->rent[$key]) ?? 0;
                 }
                 $contribution->month_year = $key;
                 if(!(isset($request->dignity_rent[$key])) || $contribution->dignity_rent == ""){
@@ -355,8 +355,9 @@ class AidContributionController extends Controller
                     $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
                 }
                 $contribution->total = strip_tags($request->total[$key]) ?? 0;
-                $contribution->quotable = $contribution->rent-$contribution->dignity_rent;
-                $contribution->type = 'PLANILLA';
+                $contribution->quotable = $contribution->rent_pension-$contribution->dignity_rent;
+                //$contribution->type = 'PLANILLA';
+                $contribution->contribution_state_id = 2;
                 $contribution->interest = 0;
                 $contribution->save();
             }
@@ -467,7 +468,7 @@ class AidContributionController extends Controller
                 $aid_contribution->dignity_rent = 0;
                 $aid_contribution->quotable = $aporte->sueldo;
             }
-            $aid_contribution->rent = $aporte->sueldo;
+            $aid_contribution->rent_pension = $aporte->sueldo;
             $aid_contribution->total = $aporte->subtotal;
             $aid_contribution->interest = $aporte->interes;
             $aid_contribution->save();

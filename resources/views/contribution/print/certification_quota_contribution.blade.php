@@ -55,9 +55,13 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>
+                    @if($contribution->total>0)
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain > 0 ? Util::formatMoney($contribution->gain) : Util::formatMoney($contribution->base_wage) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>                    
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>
+                    @else
+                    <td colspan="3" class="text-center uppercase font-bold px-5 py-3">CERTIFICACIÓN CON APORTE</td>
+                    @endif
                 </tr> 
                 @foreach($reimbursements as $reimbursement)
                     @if($contribution->month_year == $reimbursement->month_year)       
@@ -74,7 +78,7 @@
                 @endforeach                                                
         @endforeach    
         <tr class="text-sm">
-            <td colspan="7" class="text-center uppercase font-bold px-5 py-3">TOTAL 12 &Uacute;LTIMOS APORTES</td>      
+            <td colspan="7" class="text-center uppercase font-bold px-5 py-3">TOTAL {{$contributions_number}} APORTES</td>      
         </tr>
     </tbody>
 </table>
