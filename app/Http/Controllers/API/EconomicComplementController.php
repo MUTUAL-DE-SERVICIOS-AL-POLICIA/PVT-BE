@@ -17,6 +17,7 @@ use Muserpol\Models\Address;
 use Muserpol\Helpers\Util;
 use Muserpol\Helpers\ID;
 use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
 
 class EconomicComplementController extends Controller
 {
@@ -142,6 +143,7 @@ class EconomicComplementController extends Controller
         $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
         $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();        
         $now = Carbon::now()->toDateString();
+        $verified = $affiliate->affiliate_token->affiliate_device->verified;
 
         $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
         if (!$has_economic_complement) {
@@ -155,7 +157,7 @@ class EconomicComplementController extends Controller
             $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
             $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
-            $economic_complement->wf_current_state_id = 60;
+            $economic_complement->wf_current_state_id = $verified ? 1 : 60;
             $economic_complement->city_id = $last_eco_com->city_id;
             $economic_complement->degree_id = $affiliate->degree->id;
             $economic_complement->category_id = $affiliate->category->id;
@@ -163,6 +165,7 @@ class EconomicComplementController extends Controller
             $economic_complement->reception_date = now();
             $economic_complement->inbox_state = false;
             $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
+            $economic_complement->uuid = Uuid::uuid1()->toString();
             /*
             if ($affiliate->pension_entity_id == ID::pensionEntity()->senasir) {
                 $economic_complement->sub_total_rent = Util::parseMoney($last_eco_com->sub_total_rent);
@@ -291,7 +294,7 @@ class EconomicComplementController extends Controller
             $economic_complement->procedure_records()->create([
                 'user_id' => 171,
                 'record_type_id' => 7,
-                'wf_state_id' => 60,
+                'wf_state_id' =>  $verified? 1 : 60,
                 'date' => Carbon::now(),
                 'message' => 'Se creó el trámite mediante aplicación móvil.'
             ]);
@@ -313,7 +316,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
                     $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
                     $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
-                    $economic_complement->wf_current_state_id = 60;
+                    $economic_complement->wf_current_state_id = $verified? 1 : 60;
                     $economic_complement->city_id = $last_eco_com->city_id;
                     $economic_complement->degree_id = $affiliate->degree->id;
                     $economic_complement->category_id = $affiliate->category->id;
@@ -321,6 +324,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->reception_date = now();
                     $economic_complement->inbox_state = false;
                     $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
+                    $economic_complement->uuid = Uuid::uuid1()->toString();
                     $economic_complement->save();
                     /**
                      ** Save eco com beneficiary
@@ -397,7 +401,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->procedure_records()->create([
                         'user_id' => 171,
                         'record_type_id' => 7,
-                        'wf_state_id' => 60,
+                        'wf_state_id' => $verified ? 1 : 60,
                         'date' => Carbon::now(),
                         'message' => 'Se creó el trámite mediante aplicación móvil.'
                     ]);
@@ -433,8 +437,10 @@ class EconomicComplementController extends Controller
         $subtitle = $economic_complement->eco_com_procedure->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
 
         $code = $economic_complement->code;
-        $area = $economic_complement->wf_state->first_shortened;
-        $user = $economic_complement->user;
+        // $area = $economic_complement->wf_state->first_shortened;
+        // $user = $economic_complement->user;
+        $area = $economic_complement->wf_records->sortBy('id')->first()->wf_state->first_shortened;
+        $user = $economic_complement->wf_records->sortBy('id')->first()->user;
         $date = Util::getDateFormat($economic_complement->reception_date);
         $number = $code;
         if($economic_complement->eco_com_modality->procedure_modality->name != 'Vejez')
@@ -480,5 +486,14 @@ class EconomicComplementController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="file.pdf"'
         ]);
+    }
+    //funcion para agregar uuid a los registros que tienen null
+    public static function add_uuid(){//aqui
+        $eco_coms=EconomicComplement::withTrashed()->get();
+        foreach ($eco_coms as $eco_com) {
+            $eco_com->uuid=Uuid::uuid1()->toString();
+            $eco_com->save();
+       }
+       return $eco_com;
     }
 }

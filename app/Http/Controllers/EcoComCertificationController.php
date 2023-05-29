@@ -10,8 +10,16 @@ use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\Affiliate;
 use DB;
+
 class EcoComCertificationController extends Controller
 {
+    public static function get_module_eco_com($eco_com_id)
+    {
+      $eco_com = EconomicComplement::find($eco_com_id);
+      $module_id= 2;//modulo complemento economico
+      $file_name =$module_id.'/'.$eco_com->uuid;//aqui
+      return $file_name;
+    }
     public function printReception($id)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
@@ -43,13 +51,17 @@ class EcoComCertificationController extends Controller
             $size_down = 80;
         }
         $code = $eco_com->code;
-        $area = $eco_com->wf_state->first_shortened;
-        $user = $eco_com->user;
+        //$area = $eco_com->wf_state->first_shortened;
+        //$user = $eco_com->user;
+        $area = $eco_com->wf_records->sortBy('id')->first()->wf_state->first_shortened;
+        $user = $eco_com->wf_records->sortBy('id')->first()->user;
+
         $date = Util::getDateFormat($eco_com->reception_date);
         $number = $code;
 
 
-        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        //$bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        $bar_code = \DNS2D::getBarcodePNG($this->get_module_eco_com($eco_com->id), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
         $data = [
@@ -370,7 +382,7 @@ class EcoComCertificationController extends Controller
             'with_padding' => $with_padding,
         ];
         $pages = [];
-        $number_pages = Util::isRegionalRole() ? 3 : 2;
+        $number_pages = Util::isRegionalRole() ? 3 : 1;
         for ($i = 1; $i <= $number_pages; $i++) {
             $pages[] = \View::make('eco_com.print.qualification', $data)->render();
         }

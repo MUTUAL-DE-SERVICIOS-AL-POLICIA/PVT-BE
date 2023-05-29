@@ -145,11 +145,16 @@ class EcoComDashboardController extends Controller
         if (!$years) {
             $years = 5;
         }
+        $sum_total_discounts = 0;
         $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take($years)->get()->reverse();
         $results = collect([]);
         foreach ($eco_com_procedures as $e) {
+            $sum_total_discounts = 0;
+            $sum_total_discounts = $e->economic_complements->sum(function ($eco_com) {
+                return $eco_com->discount_types()->sum('amount');
+            });
             $results->push([
-                'quantity' => $e->economic_complements->sum('total'),
+                'quantity' => $e->economic_complements->sum('total') + $sum_total_discounts,
                 'name' => $e->getTextName(),
             ]);
         }
