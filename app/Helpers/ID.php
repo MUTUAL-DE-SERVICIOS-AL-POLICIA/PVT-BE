@@ -236,6 +236,7 @@ class ID
 			'orphanhood' => 31,
 			'habitual' => 1,
 			'inclusion' => 2,
+			'rehabilitacion'=>3,
 		];
 		return ((object)$ids);
 	}

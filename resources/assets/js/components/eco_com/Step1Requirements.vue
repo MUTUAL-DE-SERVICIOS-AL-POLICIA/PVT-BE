@@ -181,7 +181,8 @@ export default {
     "pensionEntities",
     "affiliate",
     "ecoComProcedureId",
-    "ecoComReceptionTypes"
+    "ecoComReceptionTypes",
+    "ecoComConsecutivo"
   ],
   data() {
     return {
@@ -259,6 +260,7 @@ export default {
         this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id)
       );
       await this.findBeneficiary();
+      this.getRequirements();
     },
     async findBeneficiary() {
       let last_eco_com_id = !!this.lastEcoCom ? this.lastEcoCom.id : null;

@@ -37,7 +37,7 @@ class EcoComCertificationController extends Controller
         $subtitle = $eco_com->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
         $text = "";
         $habitual = false;
-        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual)
+        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual || $eco_com->eco_com_reception_type_id == ID::ecoCom()->rehabilitacion)
         {
             $text = "La presente solicitud es generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
             $habitual = true;
@@ -133,7 +133,7 @@ class EcoComCertificationController extends Controller
     public function printSwornDeclaration($id, $only_data = true)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
-        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual) {
+        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual || $eco_com->eco_com_reception_type_id == ID::ecoCom()->rehabilitacion) {
             return 'error';
         }
         $affiliate = $eco_com->affiliate;
@@ -232,7 +232,7 @@ class EcoComCertificationController extends Controller
     public function printPaymentCommitment($id, $only_data = true)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
-        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual) {
+        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual || $eco_com->eco_com_reception_type_id == ID::ecoCom()->rehabilitacion) {
             return 'error';
         }
         $affiliate = $eco_com->affiliate;
@@ -284,7 +284,7 @@ class EcoComCertificationController extends Controller
     public function printPaymentCommitmentBeneficiary($id, $only_data = true)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
-        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual) {
+        if ($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual || $eco_com->eco_com_reception_type_id == ID::ecoCom()->rehabilitacion) {
             return 'error';
         }
         $affiliate = $eco_com->affiliate;

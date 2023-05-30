@@ -48,7 +48,7 @@
             </div>
         @endif
         @if(sizeof($eco_com_submitted_documents) > 0)
-        <div class="font-bold uppercase m-b-5 counter">DOCUMENTOS RECEPCIONADOS</div>
+        <div class="font-bold uppercase m-b-5  m-t-5 counter">DOCUMENTOS RECEPCIONADOS</div>
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm">
