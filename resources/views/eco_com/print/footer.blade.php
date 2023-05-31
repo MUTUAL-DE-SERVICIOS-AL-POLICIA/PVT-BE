@@ -16,7 +16,7 @@
             <table class="w-100 table-collapse ">
                 <tr>
                     <th class="no-padding no-margins align-middle" style="width:63px; border-top: 2px solid; ">
-                        <div class="text-right no-padding no-margins">
+                        <div style="margin: 10px">
                             <img src="data:image/png;base64, {{ $bar_code }}" />
                         </div>
                     </th>
