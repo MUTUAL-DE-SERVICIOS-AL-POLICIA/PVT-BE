@@ -40,7 +40,7 @@ class ScannedDocumentController extends Controller
         if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
             return $file = Storage::disk('ftp')->download($base_path.'/'.$file_name);
         }else{
-            $file_name = $affiliate->id.'.pdf';
+            $file_name = $id.'.pdf';
             if(Storage::disk('ftp')->has($base_path.'/'.$file_name)){
                 return $file = Storage::disk('ftp')->download($base_path.'/'.$file_name);
             }
