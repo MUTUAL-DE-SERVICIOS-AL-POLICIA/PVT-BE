@@ -783,7 +783,7 @@
                     v-model="affiliate.date_derelict"
                     v-month-year
                     class="form-control"
-                    v-validate.initial="'required|max_current_date_month_year'"
+                    v-validate.initial="'max_current_date_month_year'"
                     :disabled="isHabitual"
                   >
                   <div v-show="errors.has('affiliate_date_derelict')">
