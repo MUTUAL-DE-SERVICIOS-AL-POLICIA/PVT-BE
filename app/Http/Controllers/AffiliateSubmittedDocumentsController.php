@@ -12,7 +12,7 @@ class AffiliateSubmittedDocumentsController extends Controller
     public function getRequirements(Request $request)
     {
         $affiliate = Affiliate::find($request->affiliate_id);
-        if ($request->reception_type_id == 2) {
+        if ($request->reception_type_id == 2 || $request->reception_type_id == 3) {
             $procedure_requirements_original = ProcedureRequirement::with('procedure_document')->where('procedure_modality_id', $request->procedure_modality_id)->where('number', '<>', 0)->orderBy('number')->get();
             $additional_requirements = ProcedureRequirement::with('procedure_document')->where('procedure_modality_id', $request->procedure_modality_id)->where('number', '=', 0)->orderBy('number')->get();
             

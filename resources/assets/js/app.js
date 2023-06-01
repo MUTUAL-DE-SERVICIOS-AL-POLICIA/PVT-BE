@@ -395,6 +395,8 @@ Vue.component('quota-aid-beneficiaries-show', require('./components/quota_aid/Sh
 Vue.component('quota-aid-step1-requirements-edit', require('./components/quota_aid/Step1RequirementsEdit.vue'));
 Vue.component('quota-aid-certification-button', require('./components/quota_aid/CertificationButton.vue'));
 Vue.component('quota-aid-qualification', require('./components/quota_aid/Qualification.vue'));
+Vue.component('quota-aid-qualification-group', require('./components/quota_aid/QualificationGroup.vue'));
+Vue.component('quota-aid-date-interval', require('./components/quota_aid/DateInterval.vue'));
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 //permission
@@ -404,6 +406,7 @@ Vue.component('nom-module', require('./components/permission/NomModule.vue'));
 Vue.component('contribution-create', require('./components/contribution/CreateContribution.vue'));
 Vue.component('contribution-commitment', require('./components/contribution/Commitment.vue'));
 Vue.component('contribution-select', require('./components/contribution/SelectContributions.vue'));
+Vue.component('contribution-select-quota-aid', require('./components/contribution/SelectContributionsQuotaAid.vue'));
 Vue.component('buttons-print-contributions', require('./components/contribution/ButtonsPrintContributions.vue'));
 
 // direct contribution

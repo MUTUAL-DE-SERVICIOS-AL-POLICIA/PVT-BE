@@ -148,8 +148,12 @@ class EcoComDashboardController extends Controller
         $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->take($years)->get()->reverse();
         $results = collect([]);
         foreach ($eco_com_procedures as $e) {
+            $sum_total_semester = 0;
+            $sum_total_semester = $e->economic_complements->sum(function ($eco_com) {
+                return round($eco_com->total_amount_semester * round($eco_com->complementary_factor/100,3),2);
+            });
             $results->push([
-                'quantity' => $e->economic_complements->sum('total'),
+                'quantity' => $sum_total_semester,
                 'name' => $e->getTextName(),
             ]);
         }

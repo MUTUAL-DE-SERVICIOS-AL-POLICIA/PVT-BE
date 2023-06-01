@@ -23,6 +23,7 @@ use Muserpol\Exports\EcoComPromedioReport;
 
 use Muserpol\Exports\EcoComPlanillaGeneralPagos;
 use Muserpol\Exports\EcoComOverpaymentsSheet;
+use Muserpol\Exports\AffiliateNoScanner;
 
 class EcoComReportController extends Controller
 {
@@ -111,6 +112,9 @@ class EcoComReportController extends Controller
                 break;
             case 28:
                 return Excel::download(new EcoComOverpaymentsSheet(), 'Pagos en Demasia.xlsx');
+                break;
+            case 29:
+                return Excel::download(new AffiliateNoScanner(), 'Afiliados documentos no escaneados.xlsx');
                 break;
             default:
                 # code...

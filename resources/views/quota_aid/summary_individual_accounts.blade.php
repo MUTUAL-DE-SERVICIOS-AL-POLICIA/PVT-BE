@@ -15,8 +15,8 @@
                     <div class="col-md-5">
                         <h4></h4>
                     </div>
-                    <ret-fun-qualification-group :dates-child="{{ json_encode($dates['dates']) }}">
-                    </ret-fun-qualification-group>
+                    <quota-aid-qualification-group :dates-child="{{ json_encode($dates['dates']) }}">
+                    </quota-aid-qualification-group>
                 </div>
             </div>
         </div>

@@ -347,7 +347,8 @@ th.ellipsis-text {
                         @include('affiliates.deceased',
                         ['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents,
                         'fotofrentevejez'=>$fotofrenteVejez,'fotoizquierdavejez'=>$fotoizquierdaVejez,'fotoderechavejez'=>$fotoderechaVejez,
-                        'fotofrenteviudedad'=>$fotofrenteViudedad,'fotoizquierdaviudedad'=>$fotoizquierdaViudedad,'fotoderechaviudedad'=>$fotoderechaViudedad
+                        'fotofrenteviudedad'=>$fotofrenteViudedad,'fotoizquierdaviudedad'=>$fotoizquierdaViudedad,'fotoderechaviudedad'=>$fotoderechaViudedad,
+                        'fotosBoletas'=>$fotosBoletas
                         ])
                     </div>
                 </div>

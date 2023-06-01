@@ -30,7 +30,7 @@ class EconomicComplementObserver
             ]);
         } else {
             $eco_com->wf_records()->create([
-                'user_id' => 1,
+                'user_id' => 171,
                 'record_type_id' => 7,
                 'wf_state_id' => $eco_com->wf_current_state_id,
                 'date' => Carbon::now(),
