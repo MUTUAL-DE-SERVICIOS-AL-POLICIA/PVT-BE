@@ -22,17 +22,48 @@
                 <tr class="text-sm">
                     <td class="text-left px-10 py-3 uppercase">PERIODO DE APORTES CONSIDERADOS PARA EL CÁLCULO DEL BENEFICIO</td>
                     <td colspan="2">
-                        <table class="no-border" style="border:none">
+                    <table class="no-border" style="border:none">
+                            @foreach ($dates as $d)
                             <tr class="no-border" style="border:none">
-                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($start_date) ?? 'error' }} </td>
-                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($end_date) ?? 'error' }} </td>
+                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($d->start) ?? 'error' }} </td>
+                                <td class="text-center uppercase font-bold px-5 py-3" style="border:none"> {{ Util::formatMonthYear($d->end) ?? 'error' }} </td>
                             </tr>
+                            @endforeach
                         </table>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+    @if($quota_aid->procedure_modality->id !=14)
+    <div class="block">
+    <table class="table-info w-100 m-b-10">
+        <thead class="bg-grey-darker">
+            <tr class="font-medium text-white text-sm uppercase">
+                <td class="px-15 text-center">Tipo de contribución</td>
+                <td class="px-15 text-center">Años</td>
+                <td class="px-15 text-center">Meses</td>
+            </tr>
+        </thead>
+        <tbody class="table-striped">
+            <tr class="text-sm">
+                <td class="text-left px-10 py-3 uppercase">{{ $contributions['contribution_types'] }}</td><!--aqui-->
+                <td class="text-center px-10 py-3 uppercase">{{ $contributions['years'] }}</td>
+                <td class="text-center px-10 py-3 uppercase">{{ $contributions['months'] }}</td>
+            </tr>
+            <tr>
+                <td class="text-left px-10 py-3 uppercase font-bold">Total de cotizaciones para Calificación</td>
+                <td class="text-center"><strong>{{ $contributions['years'] }}</strong></td>
+                <td class="text-center"><strong>{{ $contributions['months'] }}</strong></td>
+            </tr>
+            <tr>
+                <td colspan='2'class="text-left px-10 py-3 uppercase font-bold">Densidad total de cotizaciones</td>
+                <td class="text-center py-2"><strong>{{ $quota_aid->number_qualified_contributions }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    @endif
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
@@ -74,7 +105,8 @@
             <tbody class="table-striped">
                 <tr>
                     <td class="w-40 text-center font-bold px-10 py-3 uppercase">
-                        nombre del {{($quota_aid->procedure_modality->id == 1 || $quota_aid->procedure_modality->id == 4) ? 'derechohabiente' : 'titular' }}
+                        nombre del beneficiario
+                        <!-- nombre del {{($quota_aid->procedure_modality->id == 1 || $quota_aid->procedure_modality->id == 4) ? 'derechohabiente' : 'titular' }} -->
                     </td>
                     <td class="w-20 text-center font-bold px-10 py-3 uppercase">% de asignacion</td>
                     <td class="w-20 text-center font-bold px-10 py-3 uppercase">monto</td>

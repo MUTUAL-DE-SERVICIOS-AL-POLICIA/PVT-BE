@@ -52,6 +52,7 @@ use Validator;
 use Muserpol\Models\EconomicComplement\EcoComModality;
 
 use Muserpol\Models\BaseWage;
+use Ramsey\Uuid\Uuid;
 
 class EconomicComplementController extends Controller
 {
@@ -252,12 +253,17 @@ class EconomicComplementController extends Controller
             abort(500, "ERROR");
         }
         $affiliate = Affiliate::find($request->affiliate_id);
-        /* */
-        if($request->reception_type == ID::ecoCom()->inclusion) {
+        /* Se ingresa guardar modalidad del ultimo tramite para el guardado de historial fotografias*/
+        if($request->reception_type == ID::ecoCom()->inclusion){
             if(AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()){
-            $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
+                $affiliate_tokens= AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first();
+                if($affiliate_tokens->affiliate_device){
+                    if($affiliate_tokens->affiliate_device->eco_com_procedure_id != null)
+                       $last_process = EconomicComplement::where('affiliate_id',$affiliate->id)->latest()->first()->eco_com_modality_id;
+                }
             }
         }
+        /* */
         $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $request->eco_com_procedure_id)->first()->id]);
@@ -323,6 +329,7 @@ class EconomicComplementController extends Controller
         $economic_complement->inbox_state = true;
         // $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
+        $economic_complement->uuid = Uuid::uuid1()->toString();
         /*
         if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
             $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
@@ -527,6 +534,10 @@ class EconomicComplementController extends Controller
                 if ($request->eco_com_beneficiary_is_duedate_undefined == 'on') {
                     $spouse->due_date = null;
                 }
+                $spouse->official = $request->eco_com_beneficiary_official?? $request->eco_com_beneficiary_official;
+                $spouse->book = $request->eco_com_beneficiary_book ?? $request->eco_com_beneficiary_book;
+                $spouse->departure = $request->eco_com_beneficiary_departure ?? $request->eco_com_beneficiary_departure;
+                $spouse->marriage_date = $request->eco_com_beneficiary_marriage_date ?? $request->eco_com_beneficiary_marriage_date;
                 $spouse->save();
 
                 /**
@@ -980,8 +991,14 @@ class EconomicComplementController extends Controller
         }
         if ($request->last_eco_com_id) {
             $eco_com = EconomicComplement::find($request->last_eco_com_id);
+            $affiliate = Affiliate::find($eco_com->affiliate_id);
             if ($eco_com->eco_com_modality->procedure_modality_id == $request->modality_id) {
-                $reception_type_id = ID::ecoCom()->habitual;
+                if($affiliate->stop_eco_com_consecutively()) {
+                    $reception_type_id = ID::ecoCom()->rehabilitacion;;
+                } else {
+                    $reception_type_id = ID::ecoCom()->habitual;
+                }
+
             }
         }
         return $reception_type_id;
