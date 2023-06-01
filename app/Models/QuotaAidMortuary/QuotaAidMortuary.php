@@ -121,4 +121,8 @@ class QuotaAidMortuary extends Model
     {
         return $this->morphMany('Muserpol\Models\ProcedureRecord', 'recordable');
     }
+    public function contribution_types()
+    {
+        return $this->belongsToMany('Muserpol\Models\Contribution\ContributionTypeQuotaAid')->withPivot(['message'])->withTimestamps();
+    }
 }

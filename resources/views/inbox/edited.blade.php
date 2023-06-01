@@ -161,7 +161,7 @@
                                         </div>
                                         <div class="col-md-6 text-right" >
                                             <button class="btn btn-default" @click="switchShow()" data-toggle="tooltip" data-placement="top " title="Actualizar">
-                                                Mostart todo
+                                                Mostrar todo
                                             </button>
                                         </div>
                                     </div>

@@ -25,34 +25,37 @@
               </span>
         </div>
         <div class="block">
-            
-
-                <div>
-                    
-                    <div >
+                    <div>
+                      <b><u>VISTOS:</u></b>
+                    </div>
+                        <p class="text-justify">
+                        {!! $person !!}
+                        </p>
+                    <div>
+                       <b><u>CONSIDERANDO:</u></b>
+                    </div>
+                        <p class="text-justify">
+                        {!! $considering_one !!}
+                        </p>
+                    <div>
                       <b><u>CONSIDERANDO:</u></b>
                     </div>
-                    <p class="text-justify">
-                        {!! $law !!}
-                    </p>
-                    <div >
-                        <b><u>CONSIDERANDO:</u></b>
-                    </div>                    
-                    <div class="text-justify">
-                        {!! $reception !!}
-                        <br>
+                        <p class="text-justify">
+                        {!! $considering_two !!}
+                        </p>
+                    <div>
+                      <b><u>CONSIDERANDO:</u></b>
                     </div>
+                        <p class="text-justify">
+                        {!! $considering_three !!}
+                        </p>
                     <div class="text-justify">
-                        {!! $body_qualification !!}
-                        <br>
-                    </div>
-                    <div class="text-justify">
-                        <br>
+                        <p class="text-justify">
                         {!! $body_legal_dictum !!}
-                        <br>
+                        </p>
                     </div>
                     <div class="text-justify">
-                    <br>
+                        <br>
                         <b><u>POR TANTO:</u></b>
                         <br><br>
                     </div>

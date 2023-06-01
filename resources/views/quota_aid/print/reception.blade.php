@@ -42,7 +42,7 @@
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
             <div class="text-right block">
-                <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD DEL BENEFICIO DE {!! strtoupper($quota_aid->procedure_modality->procedure_type->name) !!} POR {!! $modality !!}</span></span>
+                <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD DE {!! strtoupper($quota_aid->procedure_modality->procedure_type->name) !!} {!!$separator!!} {!! $modality !!}</span></span>
             </div>
             <div class="m-b-5">Distinguido Director:</div>
             <div class="m-b-10">Para tal efecto, adjunto folder con los requisitos exigidos de acuerdo al siguiente detalle:</div>
