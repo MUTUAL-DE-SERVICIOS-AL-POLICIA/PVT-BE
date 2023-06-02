@@ -22,13 +22,13 @@ class VersionController extends Controller
         switch($store) {
             case 'playstore':
                 $url_store = 'https://play.google.com/store/apps/details?id=com.muserpol.pvt';
-                return ($version == "2.2.1" || $version == "2.2.0" || $version == "2.2.2" || $version == "3.0.0" || $version == "3.0.2" || $version == "3.0.3")? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
+                return ($version == "2.2.1" || $version == "2.2.0" || $version == "2.2.2" || $version == "3.0.0" || $version == "3.0.2" || $version == "3.0.3" || $version == "3.0.5")? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
             case 'appstore':
                 $url_store = 'https://apps.apple.com/app/id284815942';
                 return $version == "2.2.1" ? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
             case 'appgallery':
                 $url_store = 'https://appgallery.huawei.com/app/C106440831';
-                return ($version == "2.2.1" || $version == "2.2.2" || $version == "3.0.0" || $version == "3.0.2" || $version == "3.0.3")? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
+                return ($version == "2.2.1" || $version == "2.2.2" || $version == "3.0.0" || $version == "3.0.2" || $version == "3.0.3" || $version = "3.0.4" || $version = "3.0.5")? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
             default:
                 return response()->json([
                     'error' => true,
