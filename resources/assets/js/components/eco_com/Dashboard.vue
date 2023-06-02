@@ -55,13 +55,21 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <!-- <div class="col-md-6">
         <pie-bar
           title="Estado de los Tramites General"
           url="chart_eco_com_state_types"
           type="doughnut"
           :eco-com-procedures="ecoComProcedures"
         ></pie-bar>
+      </div> -->
+      <div class="col-md-6">
+        <pie-bar
+          title="Creación de trámites"
+          url="chart_eco_com_creation"
+          type="doughnut"
+          :eco-com-procedures="ecoComProcedures">
+        </pie-bar>
       </div>
       <div class="col-md-6">
         <multiple

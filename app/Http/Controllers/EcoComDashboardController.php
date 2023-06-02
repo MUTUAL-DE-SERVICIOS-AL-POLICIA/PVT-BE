@@ -95,20 +95,43 @@ class EcoComDashboardController extends Controller
             ->get();
         return $eco_coms;
     }
-    public function stateTypes()
+    // Estado de los Tramites General
+    // public function stateTypes()
+    // {
+    //     $eco_com_procedure = EcoComProcedure::find(request()->id);
+    //     if (!$eco_com_procedure) {
+    //         return [];
+    //     }
+    //     $eco_coms = EconomicComplement::leftJoin('eco_com_states', 'economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
+    //         ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+    //         ->whereIn('economic_complements.eco_com_procedure_id', [$eco_com_procedure->id])
+    //         ->select(DB::raw('count(*) as quantity,eco_com_state_types.name as name'))
+    //         ->groupBy('eco_com_state_types.name')
+    //         ->get();
+    //     return $eco_coms;
+    // }
+
+    public function creationEcoCom()
     {
         $eco_com_procedure = EcoComProcedure::find(request()->id);
         if (!$eco_com_procedure) {
             return [];
         }
-        $eco_coms = EconomicComplement::leftJoin('eco_com_states', 'economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
-            ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+        $eco_coms = EconomicComplement::selectRaw('COUNT(*) AS quantity,
+            CASE
+                WHEN procedure_records.message ILIKE \'%Se creó el trámite mediante aplicación móvil.%\' THEN \'APP-Móvil\'
+                ELSE \'Recepción\'
+            END AS name')
+            ->leftJoin('procedure_records', 'economic_complements.id', '=', 'procedure_records.recordable_id')
+            ->leftJoin('users as u', 'economic_complements.user_id', '=', 'u.id')
             ->whereIn('economic_complements.eco_com_procedure_id', [$eco_com_procedure->id])
-            ->select(DB::raw('count(*) as quantity,eco_com_state_types.name as name'))
-            ->groupBy('eco_com_state_types.name')
-            ->get();
-        return $eco_coms;
-    }
+            ->where('procedure_records.record_type_id', 7)
+            ->where('procedure_records.message', 'ilike', '%creó%')
+            ->whereNull('economic_complements.deleted_at')
+            ->groupBy('name')
+            ->get();   
+        return $eco_coms;    
+    }    
     public function wfStates()
     {
         $eco_com_procedure = EcoComProcedure::find(request()->id);
