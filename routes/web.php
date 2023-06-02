@@ -795,7 +795,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('chart_eco_com_reception_type', 'EcoComDashboardController@receptionType');
     Route::get('chart_eco_com_pension_entity', 'EcoComDashboardController@pensionEntity');
     Route::get('chart_eco_com_states', 'EcoComDashboardController@states');
-    Route::get('chart_eco_com_state_types', 'EcoComDashboardController@stateTypes');
+    //Route::get('chart_eco_com_state_types', 'EcoComDashboardController@stateTypes');
+    Route::get('chart_eco_com_creation', 'EcoComDashboardController@creationEcoCom');
     Route::get('chart_eco_com_wf_states', 'EcoComDashboardController@wfStates');
     Route::get('chart_eco_com_last_eco_com', 'EcoComDashboardController@lastEcoCom');
     Route::get('chart_eco_com_total_amount_last_eco_com', 'EcoComDashboardController@totalAmountLastEcoCom');
