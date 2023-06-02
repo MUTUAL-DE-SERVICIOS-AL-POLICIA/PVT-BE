@@ -591,7 +591,7 @@ class Affiliate extends Model
         ->where('contribution_passives.affiliate_rent_class','ilike','%VEJEZ%')
         //->where('contribution_passives.month_year','>=',$min_limit)
         ->where('contribution_passives.month_year','<',$max_limit)
-        //->where('total', '>', 0)
+        ->where('total', '>', 0)
         ->orderBy('contribution_passives.month_year','desc')
         ->take($number_contributions)
         ->get()
