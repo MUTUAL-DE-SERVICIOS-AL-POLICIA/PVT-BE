@@ -1518,7 +1518,7 @@ class QuotaAidCertificationController extends Controller
     $body_resolution = "<b>" . $cardinal[$cardinal_index++] . ".-</b> Reconocer el beneficio de<strong class='uppercase'>&nbsp;" . strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . "</strong> por <strong class='uppercase'>" . strtoupper($quota_aid->procedure_modality->name) . "</strong>, de
     acuerdo a Calificación de fecha&nbsp; <b>" . Util::getStringDate($qualification->date) . "</b>";
         if($quota_aid->procedure_modality_id != 14 && $quota_aid->procedure_modality_id != 8 ){
-          $body_resolution.=' considerando que el afiliado cuenta con '.$quota_aid->number_qualified_contributions.' aportes realizados para dicho beneficio en la escala de '.($quota_aid->quota_aid_procedure->months_min??0).' – '.($quota_aid->quota_aid_procedure->months_max??0);
+          $body_resolution.=' considerando que el afiliado cuenta con '.$quota_aid->number_qualified_contributions.' aportes realizados para dicho beneficio en la escala de '.($quota_aid->quota_aid_procedure->months_min??0).' – '.(($quota_aid->quota_aid_procedure->months_max)==1200?'En adelante':($quota_aid->quota_aid_procedure->months_max??0));
         }
     $body_resolution .=", determinando el monto de <b>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</b>.";
     $body_resolution .= "<br><br><b>" . $cardinal[$cardinal_index++] . ".-</b> El monto de la CUANT&Iacute;A a pagar de&nbsp; <strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong>, a favor ";
