@@ -865,6 +865,7 @@ class QuotaAidMortuaryController extends Controller
               $ben_advisor->second_name = strtoupper(trim($new_ben['advisor_second_name'] ?? null));
               $ben_advisor->surname_husband = strtoupper(trim($new_ben['advisor_surname_husband'] ?? null));
               $ben_advisor->gender = strtoupper(trim($new_ben['advisor_gender'] ?? null));
+              $ben_advisor->birth_date = Util::verifyBarDate($new_ben['advisor_birth_date']) ? Util::parseBarDate($new_ben['advisor_birth_date']) : $new_ben['advisor_birth_date'];
               // $ben_advisor->phone_number = trim(implode(",", $new_ben['advisor_phone_number'] ?? []));
               // $ben_advisor->cell_phone_number = trim(implode(",", $new_ben['advisor_cell_phone_number'] ?? []));
               $ben_advisor->name_court = $new_ben['advisor_name_court'] ?? null;
@@ -1024,6 +1025,7 @@ class QuotaAidMortuaryController extends Controller
             $ben_advisor->second_name = strtoupper(trim($new_ben['advisor_second_name']));
             $ben_advisor->surname_husband = strtoupper(trim($new_ben['advisor_surname_husband']));
             $ben_advisor->gender = strtoupper(trim($new_ben['advisor_gender']));
+            $ben_advisor->birth_date = Util::verifyBarDate($new_ben['advisor_birth_date']) ? Util::parseBarDate($new_ben['advisor_birth_date']) : $new_ben['advisor_birth_date'];
             // $ben_advisor->phone_number = trim(implode(",", $new_ben['advisor_phone_number'] ?? []));
             // $ben_advisor->cell_phone_number = trim(implode(",", $new_ben['advisor_cell_phone_number'] ?? []));
             $ben_advisor->name_court = $new_ben['advisor_name_court'];
@@ -1100,7 +1102,7 @@ class QuotaAidMortuaryController extends Controller
         $b->advisor_last_name = $beneficiary_advisor->last_name;
         $b->advisor_mothers_last_name = $beneficiary_advisor->mothers_last_name;
         $b->advisor_surname_husband = $beneficiary_advisor->surname_husband;
-        $b->advisor_birth_date = $beneficiary_advisor->birth_date;
+        $b->advisor_birth_date = $beneficiary_advisor->birth_date;        
         $b->advisor_gender = $beneficiary_advisor->gender;
         $b->advisor_name_court = $beneficiary_advisor->name_court;
         $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;

@@ -44,6 +44,13 @@ class QuotaAidAdvisor extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getBirthDateAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     /**
      * Methods
      */
