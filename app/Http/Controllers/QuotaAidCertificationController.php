@@ -1397,9 +1397,9 @@ class QuotaAidCertificationController extends Controller
       único correspondiente a la cuantía determinada por el Estudio Matemático Actuarial 2021 – 2025, tomando en cuenta el grado que ostentaba el o la servidor público policial al momento del fallecimiento; la cuantía del beneficio será distribuida de acuerdo a lo establecido en
       el Código Civil y normas conexas(…)”</i>, por tanto a través de la Certificación de Calificación se determina el monto de pago a favor del titular o derechohabientes.<br><br>';
     }
-    $considering_two.='Que el Artículo 57 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere:<i> “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante
-    acto administrativo determina la otorgación del beneficio de Cuota Mortuoria. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL.”</i>.
-    Por consiguiente, la Resolución Administrativa Nº 032/2023 del 24 de abril de 2023, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
+    $considering_two.='Que, el Artículo 57 del Reglamento del Beneficio de Auxilio Mortuorio refiere:<i> “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante
+    acto administrativo determina la otorgación del beneficio de Auxilio Mortuorio. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL.”</i>.
+    Por consiguiente, la Resolución Administrativa Nº 038/2023 del 14 de junio de 2023, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
     Que, el Artículo 58 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: 1. Conocer y resolver los casos pendientes de acuerdo a lo
     establecido en el parágrafo I de la Disposición Transitoria Única del Decreto Supremo No. 3231 de fecha 28 de junio de 2017:  a) Montos dejados en cuota parte en reserva. b) Recursos de Reclamación. c)
