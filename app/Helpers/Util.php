@@ -1210,4 +1210,55 @@ class Util
         break;
     }
   }
+  public static function determineRelationshipSex($gender, $kinkship) {
+    $kinkship_name = "";
+    if($gender == 'F') {
+      switch($kinkship->id) {
+        case 2:
+          $kinkship_name = 'Viuda';
+          break;
+        case 3:
+          $kinkship_name = 'Hija';
+          break;
+        case 6:
+          $kinkship_name = 'Hermana';
+          break;
+        case 7:
+          $kinkship_name = 'Otra';
+          break;
+        case 8:
+          $kinkship_name = 'Nieta';
+          break;
+        case 9:
+          $kinkship_name = 'Sobrina';
+          break;
+        default:
+          $kinkship_name = $kinkship->name;
+      }
+    } else {
+      switch($kinkship->id) {
+        case 2:
+          $kinkship_name = 'Viudo';
+          break;
+        case 3:
+          $kinkship_name = 'Hijo';
+          break;
+        case 6:
+          $kinkship_name = 'Hermano';
+          break;
+        case 7:
+          $kinkship_name = 'Otro';
+          break;
+        case 8:
+          $kinkship_name = 'Nieto';
+          break;
+        case 9:
+          $kinkship_name = 'Sobrino';
+          break;
+        default:
+          $kinkship_name = $kinkship->name;
+      }
+    }
+    return $kinkship_name;
+  }
 }

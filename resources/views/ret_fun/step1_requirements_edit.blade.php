@@ -50,7 +50,7 @@
                     <div class="row">
                         <div class="pull-left"> <legend > Documentos Presentados</legend></div>
                         <div class="pull-right">
-                            <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar</button>
+                            <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editay</button>
                         </div>
                     </div>
                 <form id="brianytati">

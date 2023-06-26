@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kinship extends Model
 {
+    public $fillable = ['name'];
+
     public function ret_fun_beneficiaries()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetFunBeneficiary');
