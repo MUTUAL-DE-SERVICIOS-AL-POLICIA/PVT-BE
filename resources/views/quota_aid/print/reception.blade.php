@@ -3,7 +3,7 @@
 <div>
     <div style="min-height:900px;height:900px; max-height:900px;">
         <div class="font-bold uppercase m-b-5 counter m-t-15">
-            Datos del Trámites
+            Datos del Trámite
         </div>
     @include('quota_aid.print.info',['quota_aid'=>$quota_aid])
         <div class="font-bold uppercase m-b-5 counter">
