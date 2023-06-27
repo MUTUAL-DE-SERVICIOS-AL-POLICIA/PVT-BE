@@ -2,7 +2,7 @@
 @section('content')
 <div>
     <div style="min-height:900px;height:900px; max-height:900px;">
-        <div class="font-bold uppercase m-b-5 counter">
+        <div class="font-bold uppercase m-b-5 counter m-t-15">
             Datos del Trámite
         </div>
     @include('quota_aid.print.info',['quota_aid'=>$quota_aid])
@@ -33,7 +33,7 @@
             @include('print_global.spouse_info', ['spouse' => $spouse])
          </div>
     @endif -->
-        <div>
+        <div class="m-t-15">
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
                 <span>CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS</span><br>

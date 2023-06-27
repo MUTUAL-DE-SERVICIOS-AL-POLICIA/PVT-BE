@@ -2,7 +2,7 @@
 @section('content')
 <div>
     <div style="min-height:900px;height:900px; max-height:900px;">
-        <div class="font-bold uppercase m-b-5 counter">
+        <div class="font-bold uppercase m-b-5 counter m-t-15">
             Datos del Trámite
         </div>
         @include('ret_fun.print.info',['retirement_fund'=>$retirement_fund])
@@ -20,7 +20,7 @@
             Datos Policiales del Titular
         </div>
         @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate,'procedure_modality'=>$retirement_fund->procedure_modality])
-        <div>
+        <div class="m-t-15">
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
                 <span>CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS</span><br>
@@ -97,7 +97,7 @@
         <div class="text-justify text-xxs">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidario.</div>
         <div class="text-justify text-xxs">{{$legend_ret_fun}}</div>
         <br>
-        <table class="m-t-35">
+        <table class="m-t-33">
             <tr>
                 <td class="no-border text-center text-base w-50 align-top">
                     <br><br><br>
