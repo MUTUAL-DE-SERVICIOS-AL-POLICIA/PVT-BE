@@ -7,11 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProcedureDocument extends Model
 {
-    use SoftDeletes;
-
     public $timestamps = true;
     public $fillable = ['name'];
-    protected $dates = ['deleted_at'];
 
     public function procedure_requirements()
     {
