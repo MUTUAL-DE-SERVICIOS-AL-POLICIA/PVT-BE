@@ -12,8 +12,6 @@ class AddAditionalDocumentSeeder extends Seeder
      */
     public function run()
     {
-        $current_sequence = DB::select("SELECT nextval(pg_get_serial_sequence('procedure_documents','id'))")[0]->nextval;
-        DB::statement(DB::raw("ALTER SEQUENCE procedure_documents_id_seq RESTART WITH $current_sequence"));
         $procedure_documents = [
             ['name' => 'Certificado de estado civil del o los derechohabientes fallecidos, habiendo cumplido la mayoría de edad en original y actualizado, emitido por el SERECI.'],
             ['name' => 'Certificado de matrimonio original y actualizado del o los derechohabientes fallecidos, emitido por el SERECI.'],
