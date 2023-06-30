@@ -12,15 +12,8 @@ class UpdateTextRegisterSeeder extends Seeder
      */
     public function run()
     {
-        ProcedureDocument::whereIn('id', [18, 225, 224])
-            ->update([
-                'name'
-                    => DB::raw("CASE
-                                    WHEN id = 18  THEN 'Certificado de Haberes en original, considerando los últimos sesenta (60) meses antes del fallecimiento del Titular, emitido por el Comando General de la Policía Boliviana.'
-                                    WHEN id = 225 THEN 'Poder Notarial conferido por el (la) o (los) y (las) derechohabientes del Titular en original, emitido por Autoridad Competente.'
-                                    WHEN id = 224 THEN 'Poder Notarial conferido por el (la) o (los) y (las) derechohabientes del Titular en copia legalizada, emitido por Autoridad Competente.'
-                                    ELSE name
-                                END")
-            ]);
+        $procedure_document = ProcedureDocument::find(18);
+        $procedure_documnet->name = 'Certificado de Haberes en original, considerando los últimos sesenta (60) meses antes del fallecimiento del Titular, emitido por el Comando General de la Policía Boliviana.';
+        $procedure_document->save();
     }
 }

@@ -12,52 +12,63 @@ class AditionalDocumentRequirementsSeeder extends Seeder
      */
     public function run()
     {
-        $procedure_requirements = [
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '5', 'number' => '0'],
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '88', 'number' => '0'],
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '374', 'number' => '0'],
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '375', 'number' => '0'],
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '376', 'number' => '0'],
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '377', 'number' => '0'],
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '378', 'number' => '0'],
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '379', 'number' => '0'],
-            ['procedure_modality_id' => '1', 'procedure_document_id' => '380', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '5', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '88', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '374', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '375', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '376', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '377', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '378', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '379', 'number' => '0'],
-            ['procedure_modality_id' => '4', 'procedure_document_id' => '380', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '5', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '19', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '83', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '88', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '374', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '375', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '376', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '377', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '378', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '379', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '380', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '381', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '382', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '383', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '384', 'number' => '0'],
-            ['procedure_modality_id' => '63', 'procedure_document_id' => '45', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '19', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '83', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '381', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '382', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '383', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '384', 'number' => '0'],
-            ['procedure_modality_id' => '62', 'procedure_document_id' => '45', 'number' => '0'],
+        $procedure_documents = [
+            ['name' => 'Memorándum de Agradecimiento por servicios en original, emitido por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Memorándum de Agradecimiento por servicios en copia legalizada, emitido por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Certificado de estado civil del o los derechohabientes fallecidos, habiendo cumplido la mayoría de edad en original y actualizado, emitido por el SERECI.'],
+            ['name' => 'Certificado de matrimonio original y actualizado del o los derechohabientes fallecidos, emitido por el SERECI.'], //hay
+            ['name' => 'Certificado de descendencia del o los derechohabientes fallecidos, habiendo cumplido la mayoría de edad en original y actualizado, emitido por el SERECI.'],
+            ['name' => 'Copia simple del Certificado de Nacimiento del Titular, emitido por el SERECI.'],
+            ['name' => 'Certificado de defunción de la cónyuge del Titular en original y actualizado, emitido por el SERECI.'], // Hay
+            ['name' => 'Copia simple de la Cédula de Identidad de la Cónyuge del Titular.'], // hay
+            ['name' => 'Informe incluyendo el grado del (la) Titular en original, emitido por el Comando General de la Policía Boliviana.'],
         ];
 
-        foreach($procedure_requirements as $procedure_requirement) {
-            ProcedureRequirement::firstOrCreate($procedure_requirement);
+        foreach($procedure_documents as $procedure_document) {
+            $model = ProcedureDocument::firstOrCreate($procedure_document);
+            // Pago global de aportes
+            ProcedureRequirement::create([
+                'procedure_modality_id' => 1, // Fallecimiento
+                'procedure_document_id'  => $model->id,
+                'number' => 0
+            ]);
+            // Pago del Beneficio Fondo de Retiro Policíal
+            ProcedureRequirement::create([
+                'procedure_modality_id' => 4, // Fallecimiento
+                'procedure_document_id'  => $model->id,
+                'number' => 0
+            ]);
+            // Devolución de Aportes
+            ProcedureRequirement::create([
+                'procedure_modality_id' => 63, // Fallecimiento
+                'procedure_document_id'  => $model->id,
+                'number' => 0
+            ]);
         }
+
+        $procedure_documents = [
+            ['name' => 'Resolución de Baja Definitiva en original, emitida por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Resolución de Baja Definitiva en copia legalizada, emitida por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Memorándum de Baja Definitiva en original, emitida por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Memorándum de Baja Definitiva en copia legalizada, emitida por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Memorándum de Baja Definitiva en original, emitida por el Comando Departamental de la Policía Boliviana.'],
+            ['name' => 'Memorándum de Baja Definitiva en copia legalizada, emitida por el Comando Departamental de la Policía Boliviana.'],
+            ['name' => 'Certificación de Baja Definitiva en original, emitida por el Comando General de la Policía Boliviana.']
+        ];
+        foreach($procedure_documents as $procedure_document) {
+            $model = ProcedureDocument::firstOrCreate($procedure_document);
+            // Devolución de aportes
+            ProcedureRequirement::create([
+                'procedure_modality_id' => 62, // Titular
+                'procedure_document_id' => $model->id,
+                'number' => 0
+            ]);
+            ProcedureRequirement::create([
+                'procedure_modality_id' => 63, // Fallecimiento
+                'procedure_document_id' => $model->id,
+                'number' => 0
+            ]);
+        }
+
     }
 }
