@@ -19,7 +19,6 @@ class AffiliateObservationsReport implements WithMultipleSheets
         ->select(
             'affiliates.id',
             'identity_card',
-            'affiliate_city.first_shortened',
             'affiliates.first_name as affiliate_primer_nombre',
             'affiliates.second_name as affiliate_segundo_nombre',
             'affiliates.last_name as affiliate_paterno',
@@ -28,7 +27,6 @@ class AffiliateObservationsReport implements WithMultipleSheets
             'affiliates.birth_date as affiliate_fecha_nacimiento',
             'affiliates.nua as affiliate_codigo_nua_cua'
         )
-        ->leftJoin('cities as affiliate_city','affiliates.city_identity_card_id','=','affiliate_city.id')
         ->has('observations')
         ->get();
         foreach ($observation_types as $o) {

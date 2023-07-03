@@ -89,32 +89,6 @@
                 >{{ errors.first('legal_guardian_identity_card') }}</span>
               </div>
             </div>
-            <div
-              class="col-md-6"
-              :class="{'has-error': errors.has('legal_guardian_city_identity_card_id') }"
-            >
-              <div class="col-md-4">
-                <label class="control-label">Ciudad de Expedición</label>
-              </div>
-              <div class="col-md-8">
-                <select
-                  class="form-control"
-                  name="legal_guardian_city_identity_card_id"
-                  v-model.trim="legalGuardian.city_identity_card_id"
-                  v-validate="'required'"
-                  :disabled="editable"
-                >
-                  <option :value="null"></option>
-                  <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
-                </select>
-                <div v-show="errors.has('legal_guardian_city_identity_card_id')">
-                  <i class="fa fa-warning text-danger"></i>
-                  <span
-                    class="text-danger"
-                  >{{ errors.first('legal_guardian_city_identity_card_id') }}</span>
-                </div>
-              </div>
-            </div>
           </div>
           <br>
           <div class="row">
