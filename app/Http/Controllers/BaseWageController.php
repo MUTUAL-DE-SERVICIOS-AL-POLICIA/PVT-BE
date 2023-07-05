@@ -11,6 +11,7 @@ use Yajra\Datatables\DataTables;
 use Carbon\Carbon;
 use Muserpol\Helpers\Util;
 use Validator;
+use Auth;
 
 class BaseWageController extends Controller
 {
@@ -316,11 +317,12 @@ class BaseWageController extends Controller
         ];
         $level = $request->level;
         $year = $request->year;
-        $base_wages = $request->except(['year', 'level']);
+        $base_wages = $request->except(['year', 'level', '_token']);
         $validator = Validator::make($request->all(), $rules, $messages);
         $date = Carbon::now();
         $month_year = Carbon::create($year,$date->month, $date->day,0,0,0)->toDateString();
         $message = false;
+        $user = $user = Auth::User();
         if (!$validator->fails()) {
             switch($level){
                 case 1:
@@ -330,7 +332,7 @@ class BaseWageController extends Controller
                         foreach($base_wages as $base_wage)
                         {
                             $base_wage_object = new BaseWage();
-                            $base_wage_object->user_id = 1;
+                            $base_wage_object->user_id = $user->id;
                             $base_wage_object->degree_id = $degrees[$c]->id;
                             $base_wage_object->month_year = $month_year;
                             $base_wage_object->amount = $base_wage;
@@ -347,7 +349,7 @@ class BaseWageController extends Controller
                         foreach($base_wages as $base_wage)
                         {
                             $base_wage_object = new BaseWage();
-                            $base_wage_object->user_id = 1;
+                            $base_wage_object->user_id = $user->id;
                             $base_wage_object->degree_id = $degrees[$c]->id;
                             $base_wage_object->month_year = $month_year;
                             $base_wage_object->amount = $base_wage;
@@ -364,7 +366,7 @@ class BaseWageController extends Controller
                         foreach($base_wages as $base_wage)
                         {
                             $base_wage_object = new BaseWage();
-                            $base_wage_object->user_id = 1;
+                            $base_wage_object->user_id = $user->id;
                             $base_wage_object->degree_id = $degrees[$c]->id;
                             $base_wage_object->month_year = $month_year;
                             $base_wage_object->amount = $base_wage;
@@ -381,7 +383,7 @@ class BaseWageController extends Controller
                         foreach($base_wages as $base_wage)
                         {
                             $base_wage_object = new BaseWage();
-                            $base_wage_object->user_id = 1;
+                            $base_wage_object->user_id = $user->id;
                             $base_wage_object->degree_id = $degrees[$c]->id;
                             $base_wage_object->month_year = $month_year;
                             $base_wage_object->amount = $base_wage;
