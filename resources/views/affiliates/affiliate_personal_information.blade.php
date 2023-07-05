@@ -28,16 +28,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row m-b-md" :class="{ 'has-error': errors.has('city_identity_card_id') && editing }">
-                                <div class="col-md-4"><label class="control-label">Lugar de expedición:</label></div>
-                                <div class="col-md-8">
-                                    {!! Form::select('city_identity_card_id', $cities, null, ['placeholder' => 'Seleccione la expedición del ci', 'class' => 'form-control','v-model'=> 'form.city_identity_card_id',':disabled'=>'!editing', 'v-validate.initial'=>"'required'" ]) !!}
-                                    <div v-show="errors.has('city_identity_card_id') && editing" >
-                                        <i class="fa fa-warning text-danger"></i>
-                                        <span class="text-danger">@{{ errors.first('city_identity_card_id') }}</span>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row m-b-md" :class="{ 'has-error': errors.has('first_name') && editing }">
                                 <div class="col-md-4"><label class="control-label">Primer Nombre:</label></div>
                                 <div class="col-md-8"><input type="text" name="first_name" v-model="form.first_name" class="form-control" :disabled="!editing" v-validate.initial="'required|alpha_space_quote'">

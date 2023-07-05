@@ -34,9 +34,6 @@
             <td class="px-15 text-center">
                 C.I
             </td>
-            <td class="px-15 text-center ">
-                expedido
-            </td>
             <td class="px-15 text-center">
                 matrícula
             </td>
@@ -51,7 +48,6 @@
     <tbody>
         <tr class="text-sm">
             <td class="text-center uppercase font-bold px-5 py-3">{!! $affiliate->identity_card !!} </td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{$affiliate->expedition_card ?? ''}}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->registration }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>
             {{-- <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->category->name }}</td> --}}

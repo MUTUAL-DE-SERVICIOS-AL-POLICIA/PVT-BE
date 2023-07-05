@@ -326,7 +326,6 @@ class RetirementFundController extends Controller
 
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;
-        $beneficiary->city_identity_card_id = mb_strtoupper(trim($request->applicant_city_identity_card));
         $beneficiary->kinship_id = $request->applicant_kinship;
         $beneficiary->identity_card = mb_strtoupper($request->applicant_identity_card);
         $beneficiary->last_name = mb_strtoupper(trim($request->applicant_last_name));
@@ -350,7 +349,6 @@ class RetirementFundController extends Controller
         if ($account_type == ID::applicant()->advisor_id) {
             $advisor = new RetFunAdvisor();
             //$advisor->retirement_fund_id = $retirement_fund->id;
-            $advisor->city_identity_card_id = $request->applicant_city_identity_card;
             $advisor->kinship_id = null;
             $advisor->identity_card = $request->applicant_identity_card;
             $advisor->last_name = strtoupper(trim($request->applicant_last_name));
@@ -376,7 +374,6 @@ class RetirementFundController extends Controller
         if ($account_type == ID::applicant()->legal_guardian_id) {
             $legal_guardian = new RetFunLegalGuardian();
             $legal_guardian->retirement_fund_id = $retirement_fund->id;
-            $legal_guardian->city_identity_card_id = $request->legal_guardian_identity_card_id;
             $legal_guardian->identity_card = strtoupper(trim($request->legal_guardian_identity_card));
             $legal_guardian->last_name = strtoupper(trim($request->legal_guardian_last_name));
             $legal_guardian->mothers_last_name = strtoupper(trim($request->legal_guardian_mothers_last_name));
@@ -423,7 +420,6 @@ class RetirementFundController extends Controller
             if ($first_name[$i] != "" && ($last_name[$i] != "" || $mothers_last_name[$i] != "")) {
                 $beneficiary = new RetFunBeneficiary();
                 $beneficiary->retirement_fund_id = $retirement_fund->id;
-                $beneficiary->city_identity_card_id = $city_id[$i];
                 $beneficiary->kinship_id = $kinship[$i] ?? null;
                 $beneficiary->identity_card = $identity_card[$i];
                 $beneficiary->last_name = strtoupper(trim($last_name[$i]));
@@ -442,7 +438,6 @@ class RetirementFundController extends Controller
                     case 1:
                         $advisor = new RetFunAdvisor();
                         //$advisor->retirement_fund_id = $retirement_fund->id;
-                        $advisor->city_identity_card_id = $request->beneficiary_advisor_city_identity_card[$advisor_count];
                         $advisor->kinship_id = null;
                         $advisor->identity_card = $request->beneficiary_advisor_identity_card[$advisor_count];
                         $advisor->last_name = strtoupper(trim($request->beneficiary_advisor_last_name[$advisor_count]));
@@ -469,7 +464,6 @@ class RetirementFundController extends Controller
                         $legal_guardian = new RetFunLegalGuardian();
                         $legal_guardian->retirement_fund_id = $retirement_fund->id; // is necessary?
                         $legal_guardian->identity_card = strtoupper(trim($request->beneficiary_legal_guardian_identity_card[$legal_guardian_count]));
-                        $legal_guardian->city_identity_card_id = $request->beneficiary_legal_guardian_city_identity_card[$legal_guardian_count];
                         $legal_guardian->first_name = strtoupper(trim($request->beneficiary_legal_guardian_first_name[$legal_guardian_count]));
                         $legal_guardian->second_name = strtoupper(trim($request->beneficiary_legal_guardian_second_name[$legal_guardian_count]));
                         $legal_guardian->last_name = strtoupper(trim($request->beneficiary_legal_guardian_last_name[$legal_guardian_count]));
@@ -610,7 +604,6 @@ class RetirementFundController extends Controller
             if ($beneficiary_advisor = $b->ret_fun_advisors->first()) {
                 $b->legal_representative = 1;
                 $b->advisor_identity_card = $beneficiary_advisor->identity_card;
-                $b->advisor_city_identity_card_id = $beneficiary_advisor->city_identity_card_id;
                 $b->advisor_first_name = $beneficiary_advisor->first_name;
                 $b->advisor_second_name = $beneficiary_advisor->second_name;
                 $b->advisor_last_name = $beneficiary_advisor->last_name;
@@ -625,7 +618,6 @@ class RetirementFundController extends Controller
             if ($beneficiary_legal_guardian =  $b->legal_guardian->first()) {
                 $b->legal_representative = 2;
                 $b->legal_guardian_identity_card = $beneficiary_legal_guardian->identity_card;
-                $b->legal_guardian_city_identity_card_id = $beneficiary_legal_guardian->city_identity_card_id;
                 $b->legal_guardian_first_name = $beneficiary_legal_guardian->first_name;
                 $b->legal_guardian_second_name = $beneficiary_legal_guardian->second_name;
                 $b->legal_guardian_last_name = $beneficiary_legal_guardian->last_name;

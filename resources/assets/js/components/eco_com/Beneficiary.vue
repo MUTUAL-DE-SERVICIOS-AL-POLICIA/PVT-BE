@@ -62,34 +62,6 @@
                   </div>
                 </div>
               </div>
-              <div
-                class="col-md-6"
-                :class="{'has-error': errors.has('eco_com_beneficiary_city_identity_card_id') }"
-              >
-                <div class="col-md-4">
-                  <label class="control-label">Ciudad de Expedición</label>
-                </div>
-                <div class="col-md-8">
-                  <select
-                    class="form-control"
-                    name="eco_com_beneficiary_city_identity_card_id"
-                    v-model.trim="ecoComBeneficiary.city_identity_card_id"
-                    v-validate="'required'"
-                    :disabled="editable"
-                  >
-                    <option :value="null"></option>
-                    <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
-                  </select>
-                  <i
-                    v-show="errors.has('eco_com_beneficiary_city_identity_card_id')"
-                    class="fa fa-warning text-danger"
-                  ></i>
-                  <span
-                    v-show="errors.has('eco_com_beneficiary_city_identity_card_id')"
-                    class="text-danger"
-                  >{{ errors.first('eco_com_beneficiary_city_identity_card_id') }}</span>
-                </div>
-              </div>
             </div>
             <br>
             <div class="row">

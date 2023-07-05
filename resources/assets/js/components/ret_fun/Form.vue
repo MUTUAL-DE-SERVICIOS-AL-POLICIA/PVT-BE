@@ -74,9 +74,6 @@ export default {
       if (!this.$refs.dos.$children[0].applicant_kinship_id) {
         return false;
       }
-      if (!this.$refs.dos.$children[0].applicant_city_identity_card_id) {
-        return false;
-      }
       if (!this.$refs.dos.$children[0].applicant_gender) {
         return false;
       }
@@ -122,8 +119,6 @@ export default {
           .applicant_mothers_last_name,
         surname_husband: this.$refs.dos.$children[0].applicant_surname_husband,
         identity_card: this.$refs.dos.$children[0].applicant_identity_card,
-        city_identity_card_id: this.$refs.dos.$children[0]
-          .applicant_city_identity_card_id,
         kinship_id: this.$refs.dos.$children[0].applicant_kinship_id,
         birth_date: this.$refs.dos.$children[0].applicant_birth_date,
         gender: this.$refs.dos.$children[0].applicant_gender,

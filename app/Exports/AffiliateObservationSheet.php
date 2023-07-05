@@ -53,7 +53,6 @@ class AffiliateObservationSheet implements FromCollection, WithTitle, WithHeadin
             // 'NRO',
             'NUP',
             'CI',
-            'CI Exp ',
             // 'CI COMPLETO ',
             "Primer Nombre ",
             "Segundo Nombre ",

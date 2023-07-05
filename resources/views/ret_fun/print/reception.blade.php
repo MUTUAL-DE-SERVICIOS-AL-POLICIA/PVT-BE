@@ -105,7 +105,7 @@
                         ----------------------------------------------------
                     </span>
                     <span class="font-bold block">{!! strtoupper($applicant->fullName()) !!}</span>
-                    <span class="font-bold">C.I. {!! $applicant->identity_card !!} {!! strtoupper($applicant->city_identity_card->first_shortened)!!}</span>
+                    <span class="font-bold">C.I. {!! $applicant->identity_card !!} </span>
                 </td>
                 <td class="no-border text-center text-base w-50 align-top">
                     <br><br><br>
