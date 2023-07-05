@@ -360,7 +360,7 @@ class BaseWageController extends Controller
                     }
                     break;
                 case 3:
-                    $degrees = Degree::where('hierarchy_id',4)->orWhere('hierarchy_id',2)->orderBy('id')->get();
+                    $degrees = Degree::where('hierarchy_id',4)->orderBy('id')->get();
                     $c = 0;
                     if($degrees->count() == count($base_wages)){
                         foreach($base_wages as $base_wage)
