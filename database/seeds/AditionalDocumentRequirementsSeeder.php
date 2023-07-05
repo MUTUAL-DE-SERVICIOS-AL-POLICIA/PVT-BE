@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Muserpol\Models\ProcedureRequirement;
+use Muserpol\Models\ProcedureDocument;
 
 class AditionalDocumentRequirementsSeeder extends Seeder
 {
