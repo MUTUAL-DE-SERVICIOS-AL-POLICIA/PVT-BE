@@ -2,12 +2,15 @@
 
 namespace Muserpol\Http\Controllers;
 
-use Muserpol\BaseWage;
+use Muserpol\Models\BaseWage;
+use Muserpol\Models\Hierachy;
+use Muserpol\Models\Degree;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\DataTables;
 use Carbon\Carbon;
 use Muserpol\Helpers\Util;
+use Validator;
 
 class BaseWageController extends Controller
 {
@@ -299,5 +302,106 @@ class BaseWageController extends Controller
     public function destroy(BaseWage $baseWage)
     {
         //
+    }
+
+    public function base_wage_create(Request $request)
+    {
+        $rules = [
+            'year' => 'required|numeric',
+            'level' => 'required',
+        ];
+        $messages = [
+            'year.required' => 'el campo año es requerido',
+            'level.required' => 'el campo año es requerido',
+        ];
+        $level = $request->level;
+        $year = $request->year;
+        $base_wages = $request->except(['year', 'level']);
+        $validator = Validator::make($request->all(), $rules, $messages);
+        $date = Carbon::now();
+        $month_year = Carbon::create($year,$date->month, $date->day,0,0,0)->toDateString();
+        $message = false;
+        if (!$validator->fails()) {
+            switch($level){
+                case 1:
+                    $degrees = Degree::where('hierarchy_id',1)->orWhere('hierarchy_id',2)->orderBy('id')->get();
+                    $c = 0;
+                    if($degrees->count() == count($base_wages)){
+                        foreach($base_wages as $base_wage)
+                        {
+                            $base_wage_object = new BaseWage();
+                            $base_wage_object->user_id = 1;
+                            $base_wage_object->degree_id = $degrees[$c]->id;
+                            $base_wage_object->month_year = $month_year;
+                            $base_wage_object->amount = $base_wage;
+                            $base_wage_object->save();
+                            $c++;
+                        }
+                        $message = true;
+                    }
+                    break;
+                case 2:
+                    $degrees = Degree::where('hierarchy_id',3)->orderBy('id')->get();
+                    $c = 0;
+                    if($degrees->count() == count($base_wages)){
+                        foreach($base_wages as $base_wage)
+                        {
+                            $base_wage_object = new BaseWage();
+                            $base_wage_object->user_id = 1;
+                            $base_wage_object->degree_id = $degrees[$c]->id;
+                            $base_wage_object->month_year = $month_year;
+                            $base_wage_object->amount = $base_wage;
+                            $base_wage_object->save();
+                            $c++;
+                        }
+                        $message = true;
+                    }
+                    break;
+                case 3:
+                    $degrees = Degree::where('hierarchy_id',4)->orWhere('hierarchy_id',2)->orderBy('id')->get();
+                    $c = 0;
+                    if($degrees->count() == count($base_wages)){
+                        foreach($base_wages as $base_wage)
+                        {
+                            $base_wage_object = new BaseWage();
+                            $base_wage_object->user_id = 1;
+                            $base_wage_object->degree_id = $degrees[$c]->id;
+                            $base_wage_object->month_year = $month_year;
+                            $base_wage_object->amount = $base_wage;
+                            $base_wage_object->save();
+                            $c++;
+                        }
+                        $message = true;
+                    }
+                    break;
+                case 4:
+                    $degrees = Degree::where('hierarchy_id',5)->orderBy('id')->get();
+                    $c = 0;
+                    if($degrees->count() == count($base_wages)){
+                        foreach($base_wages as $base_wage)
+                        {
+                            $base_wage_object = new BaseWage();
+                            $base_wage_object->user_id = 1;
+                            $base_wage_object->degree_id = $degrees[$c]->id;
+                            $base_wage_object->month_year = $month_year;
+                            $base_wage_object->amount = $base_wage;
+                            $base_wage_object->save();
+                            $c++;
+                        }
+                        $message = true;
+                    }
+                    break;
+                default:
+                    $message = false;
+                    break;
+            }
+            if($message)
+                return redirect()->route('eco_com_qualification_parameters');
+            else
+                return response()->json($validator->errors(), 406);
+        }
+        else{
+            return response()->json($validator->errors(), 406);
+        }
     }
 }
