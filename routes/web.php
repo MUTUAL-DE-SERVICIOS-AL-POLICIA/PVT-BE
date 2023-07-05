@@ -730,6 +730,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('get_second_level_base_wage', 'BaseWageController@SecondLevelData')->name('get_second_level_base_wage');
     Route::get('get_third_level_base_wage', 'BaseWageController@ThirdLevelData')->name('get_third_level_base_wage');
     Route::get('get_fourth_level_base_wage', 'BaseWageController@FourthLevelData')->name('get_fourth_level_base_wage');
+    Route::post('base_wage_create', 'BaseWageController@base_wage_create');
 
     // Complementary Factor
     Route::resource('complementary_factor', 'ComplementaryFactorController');
