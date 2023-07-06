@@ -17,7 +17,7 @@
                         <tbody>
                             <tr>
                                 <td class="font-bold">Cédula de identidad:</td>
-                                <td>{{ $affiliate->identity_card }} {{-- {{ !!$affiliate->city_identity_card ? $affiliate->city_identity_card->first_shortened                                     : '' }} --}}</td>
+                                <td>{{ $affiliate->identity_card }}
                                 <td class="font-bold">Matr&iacute;cula:</td>
                                 <td>{{ $affiliate->registration }}</td>
                                 <td class="font-bold">Primer Nombre:</td>

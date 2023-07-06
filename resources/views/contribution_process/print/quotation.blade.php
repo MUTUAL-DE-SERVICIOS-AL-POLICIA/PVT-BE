@@ -83,7 +83,7 @@
                                 {{ $applicant->fullName() }}
                             </td>
                             <td class="text-center uppercase font-bold px-10 py-3">
-                                {{ $applicant->ciWithExt() }}
+                                {{ $applicant->identity_card }}
                             </td>
                             <td class="text-center uppercase font-bold px-10 py-3">
                                 {{ $applicant instanceof Muserpol\Models\Affiliate ?  $applicant->id : $applicant->affiliate_id }}

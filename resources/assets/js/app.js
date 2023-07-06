@@ -69,10 +69,6 @@ Vue.use(VeeValidate, {
         date_last_contribution: {
           required: "Debe ingresar fecha del último aporte."
         },
-        applicant_city_identity_card: {
-          required:
-            "Debe seleccionar la ciudad de expedición del ci del solicitante."
-        },
         applicant_kinship: {
           required: "Debe seleccionar el parentesco del solicitante."
         },
@@ -81,9 +77,6 @@ Vue.use(VeeValidate, {
         },
         nup: {
           required: "Debe ingresar el Número único policial."
-        },
-        city_identity_card_id: {
-          required: "Debe seleccionar la ciudad de expedición."
         },
         first_name: {
           required: "Debe ingresar el primer nombre.",

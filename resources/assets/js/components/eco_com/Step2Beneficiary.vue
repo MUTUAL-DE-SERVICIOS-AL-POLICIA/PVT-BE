@@ -467,29 +467,6 @@
                   </div>
                 </div>
               </div>
-              <div
-                class="col-md-6"
-                :class="{'has-error': errors.has('affiliate_city_identity_card_id') }"
-              >
-                <div class="col-md-4">
-                  <label class="control-label">Ciudad de Expedición</label>
-                </div>
-                <div class="col-md-8">
-                  <select
-                    class="form-control"
-                    name="affiliate_city_identity_card_id"
-                    v-model.trim="affiliate.city_identity_card_id"
-                    v-validate="'required'"
-                  >
-                    <option :value="null"></option>
-                    <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
-                  </select>
-                  <div v-show="errors.has('affiliate_city_identity_card_id')">
-                    <i class="fa fa-warning text-danger"></i>
-                    <span class="text-danger">{{ errors.first('affiliate_city_identity_card_id') }}</span>
-                  </div>
-                </div>
-              </div>
             </div>
             <br>
             <div class="row">

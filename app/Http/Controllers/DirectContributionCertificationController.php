@@ -48,7 +48,7 @@ class DirectContributionCertificationController extends Controller
 
         $head = 'En aplicación del Artículo 18 del Reglamento de '.($direct_contribution->isActiveSector() ? 'Fondo de Retiro Policial Solidario ': 'Cuota Mortuoria y Auxilio Mortuorio').' y a solicitud expresa voluntaria, se suscribe el presente compromiso de pago, al tenor de lo siguiente:';
 
-        $one = 'Yo, <strong class="uppercase">'.$applicant->fullName().'</strong>, con C.I. N° <strong class="uppercase">'.$applicant->ciWithExt().'</strong> ';
+        $one = 'Yo, <strong class="uppercase">'.$applicant->fullName().'</strong>, con C.I. N° <strong class="uppercase">'.$applicant->identity_card.'</strong> ';
         if ($direct_contribution->isActiveSector()) {
             $one.= 'como funcionario de público de la Policía Boliviana, DECLARO encontrarme en la siguiente situación de:';
         }else{

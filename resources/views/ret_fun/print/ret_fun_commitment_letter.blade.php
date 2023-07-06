@@ -5,7 +5,7 @@
             En aplicación del Artículo 18 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio y a solicitud expresa, se suscribe el presente compromiso de pago, al tenor de lo siguiente:<br>
             <br>
             <strong>PRIMERA.- </strong>
-            Yo, <span class="uppercase font-bold">{!! $affiliate->fullName() !!}</span>, con C.I. N° <b>{!! $affiliate->identity_card !!} {!! $affiliate->city_identity_card->first_shortened ?? " "!!}</b>, como funcionario de público de la Policía Boliviana, DECLARO encontrarme en la siguiente situación de:
+            Yo, <span class="uppercase font-bold">{!! $affiliate->fullName() !!}</span>, con C.I. N° <b>{!! $affiliate->identity_card !!}</b>, como funcionario de público de la Policía Boliviana, DECLARO encontrarme en la siguiente situación de:
         </span> 
         <ul>
             <li>
@@ -45,7 +45,7 @@
             <td class="no-border text-center text-base w-50 align-top">
                 <span class="font-bold">{!! strtoupper($affiliate->fullName()) !!}</span>
                 <br/>
-                <span class="font-bold">C.I. {!! $affiliate->identity_card !!} {!! strtoupper($affiliate->city_identity_card->first_shortened)!!}</span>
+                <span class="font-bold">C.I. {!! $affiliate->identity_card !!}</span>
             </td>
             <td class="no-border text-center text-base w-50">
                 <span class="font-bold block">{!! strtoupper($user->fullName()) !!}</span>

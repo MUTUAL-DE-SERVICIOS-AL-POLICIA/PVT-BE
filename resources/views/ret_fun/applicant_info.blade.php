@@ -11,7 +11,7 @@
             <div class="col-md-6">
                 <dl class="dl-">
                     <dt>Cédula de identidad:</dt>
-                    <dd>{{ $affiliate->identity_card }} {{ !!$affiliate->city_identity_card ? $affiliate->city_identity_card->first_shortened : '' }}</dd>
+                    <dd>{{ $affiliate->identity_card }}</dd>
                     <dt>Primer Nombre:</dt>
                     <dd>{{ $affiliate->first_name }}</dd>
                     <dt>Segundo Nombre:</dt>
@@ -48,7 +48,7 @@
             <div class="col-md-6">
                 <dl class="dl-">
                     <dt>Cédula de identidad:</dt>
-                    <dd>{{ $applicant->identity_card }} {{ !!$applicant->city_identity_card ? $applicant->city_identity_card->first_shortened : '' }}</dd>
+                    <dd>{{ $applicant->identity_card }}</dd>
                     <dt>Primer Nombre:</dt>
                     <dd>{{ $applicant->first_name }}</dd>
                     <dt>Segundo Nombre:</dt>
