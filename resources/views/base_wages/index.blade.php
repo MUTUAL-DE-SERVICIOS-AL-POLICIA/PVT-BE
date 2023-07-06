@@ -2,7 +2,19 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margings">
             <div class="ibox-title">
-                <h2>Primer Nivel</h2>
+                <div class="pull-left">
+                    <h2>Primer Nivel</h2>
+                </div>
+                @can('update', $complementary_factor)
+                <div class="pull-right">
+                    <span data-toggle="tooltip" title="Cargar sueldo">
+                        <a href="" data-target="#first-level" class="btn btn-raised btn-primary dropdown-toggle"
+                            data-toggle="modal">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </span>
+                </div>
+                @endcan
             </div>
             <div class="ibox-content">
                 <div class="row">
@@ -66,7 +78,19 @@
         </div>
         <div class="ibox float-e-margings">
             <div class="ibox-title">
-                <h2>Segundo Nivel</h2>
+                <div class="pull-left">
+                    <h2>Segundo Nivel</h2>
+                </div>
+                @can('update', $complementary_factor)
+                <div class="pull-right">
+                    <span data-toggle="tooltip" title="Cargar sueldo">
+                        <a href="" data-target="#second-level" class="btn btn-raised btn-primary dropdown-toggle"
+                            data-toggle="modal">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </span>
+                </div>
+                @endcan
             </div>
             <div class="ibox-content">
                 <div class="row">
@@ -106,8 +130,21 @@
         </div>
         <div class="ibox float-e-margings">
             <div class="ibox-title">
-                <h2>Tercer Nivel</h2>
+                <div class="pull-left">
+                    <h2>Tercer Nivel</h2>
+                </div>
+                @can('update', $complementary_factor)
+                <div class="pull-right">
+                    <span data-toggle="tooltip" title="Cargar sueldo">
+                        <a href="" data-target="#third-level" class="btn btn-raised btn-primary dropdown-toggle"
+                            data-toggle="modal">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </span>
+                </div>
+                @endcan
             </div>
+
             <div class="ibox-content">
                 <div class="row">
                     <table class="table table-bordered table-hover" id="third_level_base_wage-table">
@@ -154,7 +191,19 @@
         </div>
         <div class="ibox float-e-margings">
             <div class="ibox-title">
-                <h2>Cuarto Nivel</h2>
+                <div class="pull-left">
+                    <h2>Cuarto Nivel</h2>
+                </div>
+                @can('update', $complementary_factor)
+                <div class="pull-right">
+                    <span data-toggle="tooltip" title="Cargar sueldo">
+                        <a href="" data-target="#fourth-level" class="btn btn-raised btn-primary dropdown-toggle"
+                            data-toggle="modal">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </span>
+                </div>
+                @endcan
             </div>
             <div class="ibox-content">
                 <div class="row">
@@ -264,3 +313,514 @@
 @endsection
 
  --}}
+ <!-- first level  -->
+ <div id="first-level" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="ibox-title">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title text-center">Añadir Sueldos</h4>
+            </div>
+            <div class="modal-body">
+                {!! Form::open(['method' => 'POST', 'url' =>'/base_wage_create', 'class' =>
+                'form-horizontal']) !!}
+                <br>
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::hidden('level', '1')!!}
+                            {!! Form::label('year', 'Año', ['class' => 'col-md-5 control-label']) !!}
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="year"
+                                        value="{!! $year !!}" disabled>
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('1', 'CMTE. GRAL. SUP.', ['class' => 'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('1', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('2', 'GRAL. SUP.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('2', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('3', 'GRAL. SUP.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('3', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('4', 'GRAL. MAY.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('4', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('5', 'GRAL. 1RO.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('5', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('6', 'CNL. Art.133', ['class' =>
+                            'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('6', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('7', 'CNL.', ['class' => 'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('7', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('8', 'TCNL.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('8', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('9', 'MY.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('9', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('10', 'CAP.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('10', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('11', 'TTE.', ['class' =>
+                            'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('11', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('12', 'SBTTE.', ['class' =>
+                            'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('12', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <a href="{!! url('/eco_com_qualification_parameters') !!}" class="btn btn-raised btn-danger"
+                                data-toggle="tooltip" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
+                                    class="glyphicon glyphicon-remove"></i>&nbsp;</a> &nbsp;&nbsp;
+                            <button type="submit" class="btn btn-raised btn-primary" data-toggle="tooltip"
+                                data-placement="bottom" data-original-title="Guardar">&nbsp;<i
+                                    class="glyphicon glyphicon-floppy-disk"></i>&nbsp;</button>
+                        </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Second level -->
+ <div id="second-level" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="ibox-title">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title text-center">Añadir Sueldos</h4>
+            </div>
+            <div class="modal-body">
+                {!! Form::open(['method' => 'POST', 'url' =>'/base_wage_create', 'class' =>
+                'form-horizontal']) !!}
+                <br>
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::hidden('level', '2')!!}
+                            {!! Form::label('year', 'Año', ['class' => 'col-md-5 control-label']) !!}
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="year"
+                                        value="{!! $year !!}" disabled>
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('1', 'CNL. SERV.', ['class' => 'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('1', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('2', 'TCNL. SERV.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('2', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('3', 'MY. SERV.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('3', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('4', 'CAP. SERV.', ['class' => 'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('4', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('5', 'TTE. SERV.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('5', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('6', 'SBTTE. SERV.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('6', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <a href="{!! url('eco_com_qualification_parameters') !!}" class="btn btn-raised btn-danger"
+                                data-toggle="tooltip" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
+                                    class="glyphicon glyphicon-remove"></i>&nbsp;</a> &nbsp;&nbsp;
+                            <button type="submit" class="btn btn-raised btn-primary" data-toggle="tooltip"
+                                data-placement="bottom" data-original-title="Guardar">&nbsp;<i
+                                    class="glyphicon glyphicon-floppy-disk"></i>&nbsp;</button>
+                        </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+<!--  third level -->
+ <div id="third-level" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="ibox-title">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title text-center">Añadir Sueldos</h4>
+            </div>
+            <div class="modal-body">
+                {!! Form::open(['method' => 'POST', 'url' =>'/base_wage_create', 'class' =>
+                'form-horizontal']) !!}
+                <br>
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::hidden('level', '3')!!}
+                            {!! Form::label('year', 'Año', ['class' => 'col-md-5 control-label']) !!}
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="year"
+                                        value="{!! $year !!}" disabled>
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('1', 'SOF. SUP.', ['class' => 'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('1', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('2', 'SOF. MY.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('2', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('3', 'SOF. 1RO.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('3', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('4', 'SOF. 2DO.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('4', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('5', 'SGTO. MY.', ['class' => 'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('5', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('6', 'SGTO. 1RO.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('6', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('7', 'SGTO. 2DO.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('7', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('8', 'SGTO.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('8', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <a href="{!! url('/eco_com_qualification_parameters') !!}" class="btn btn-raised btn-danger"
+                                data-toggle="tooltip" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
+                                    class="glyphicon glyphicon-remove"></i>&nbsp;</a> &nbsp;&nbsp;
+                            <button type="submit" class="btn btn-raised btn-primary" data-toggle="tooltip"
+                                data-placement="bottom" data-original-title="Guardar">&nbsp;<i
+                                    class="glyphicon glyphicon-floppy-disk"></i>&nbsp;</button>
+                        </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
+<!--  fourth level -->
+ <div id="fourth-level" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="ibox-title">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title text-center">Añadir Sueldos</h4>
+            </div>
+            <div class="modal-body">
+                {!! Form::open(['method' => 'POST', 'url' =>'/base_wage_create', 'class' =>
+                'form-horizontal']) !!}
+                <br>
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::hidden('level', '4')!!}
+                            {!! Form::label('year', 'Año', ['class' => 'col-md-5 control-label']) !!}
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control datepicker" name="year"
+                                        value="{!! $year !!}" disabled>
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('1', 'SOF. SUP. SERV.', ['class' => 'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('1', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('2', 'SOF. MY. SERV.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('2', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('3', 'SOF. 1RO. SERV.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('3', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('4', 'SOF. 2DO. SERV.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('4', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('5', 'SGTO. MY. SERV.', ['class' => 'col-md-8 control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('5', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('6', 'SGTO. 14O. SERV.', ['class' => 'col-md-8 control-label'])
+                            !!}
+                            <div class="col-md-3">
+                                {!! Form::number('6', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('7', 'SGTO. 2DO. SERV.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::text('7', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('8', 'SGTO. SERV.', ['class' => 'col-md-8
+                            control-label']) !!}
+                            <div class="col-md-3">
+                                {!! Form::number('8', null, ['class'=> 'form-control', 'required' =>
+                                'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <a href="{!! url('/eco_com_qualification_parameters') !!}" class="btn btn-raised btn-danger"
+                                data-toggle="tooltip" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
+                                    class="glyphicon glyphicon-remove"></i>&nbsp;</a> &nbsp;&nbsp;
+                            <button type="submit" class="btn btn-raised btn-primary" data-toggle="tooltip"
+                                data-placement="bottom" data-original-title="Guardar">&nbsp;<i
+                                    class="glyphicon glyphicon-floppy-disk"></i>&nbsp;</button>
+                        </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+</div>
