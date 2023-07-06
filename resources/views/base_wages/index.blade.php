@@ -24,23 +24,23 @@
                                 <th>AÑO</th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 00 - COMANDANTE GENERAL SUPERIOR">CMTE. GRAL. SUP.</div>
+                                        data-original-title="00 00 - COMANDANTE GENERAL SUPERIOR">CMTE. GRAL.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 01 - GENERAL SUPERIOR">GRAL. SUP.</div>
+                                        data-original-title="00 01 - GENERAL SUPERIOR">INSP. GRAL./SUPERVISOR</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 02 - GENERAL SUPERIOR">GRAL. SUP.</div>
+                                        data-original-title="00 02 - GENERAL SUPERIOR">SBCMTE. GRAL./EXCMDTE</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 03 - GENERAL MAYOR">GRAL. MAY.</div>
+                                        data-original-title="00 03 - GENERAL MAYOR">GRAL. SUP.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 04 - GENERAL PRIMERO">GRAL. 1RO.</div>
+                                        data-original-title="00 04 - GENERAL PRIMERO">GRAL.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
