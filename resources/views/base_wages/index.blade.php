@@ -494,7 +494,7 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <input type="text" class="form-control datepicker" name="year"
-                                        value="{!! $year !!}">
+                                        value="{!! $year !!}" disabled>
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
@@ -599,7 +599,7 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <input type="text" class="form-control datepicker" name="year"
-                                        value="{!! $year !!}">
+                                        value="{!! $year !!}" disabled>
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
@@ -722,7 +722,7 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <input type="text" class="form-control datepicker" name="year"
-                                        value="{!! $year !!}">
+                                        value="{!! $year !!}" disabled>
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
