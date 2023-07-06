@@ -19,7 +19,6 @@
                         <tr>
                             <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
@@ -60,7 +59,6 @@
                             <th># de Trámite</th>
                             <th>Fecha de Recepción</th>
                             <th>C.I</th>
-                            <th>Exp</th>
                             <th>Primer Nombre</th>
                             <th>Segundo Nombre</th>
                             <th>Apellido Paterno</th>
@@ -172,7 +170,6 @@
                 { data: 'code' },
                 { data: 'reception_date' },
                 { data: 'affiliate.identity_card' },
-                { data: 'affiliate.city_identity_card_id' },
                 { data: 'affiliate.first_name' },
                 { data: 'affiliate.second_name' },
                 { data: 'affiliate.last_name' },

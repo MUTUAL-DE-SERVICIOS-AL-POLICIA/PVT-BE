@@ -5,7 +5,7 @@
             En aplicación del Artículo 18 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio y a solicitud expresa, se suscribe el presente compromiso de pago, al tenor de lo siguiente:<br>
             <br>
             <strong>PRIMERA.- </strong>
-            Yo, .....{!! $bene->last_name." ".$bene->first_name !!}....., con C.I. N° ....{!! $bene->identity_card !!} {!! $bene->city_identity_card->first_shortened ?? " "!!}...., {{ $beneficiary }}, DECLARO que:
+            Yo, .....{!! $bene->last_name." ".$bene->first_name !!}....., con C.I. N° ....{!! $bene->identity_card !!}...., {{ $beneficiary }}, DECLARO que:
         </span>
         <ul>
             <li>

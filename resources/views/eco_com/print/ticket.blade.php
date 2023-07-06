@@ -58,8 +58,7 @@
                 <strong><em>CEDULA DE IDENTIDAD:</em></strong>
             </td>
             <td class="no-border" style="width:65%">
-            <em>{!!$eco_com->eco_com_beneficiary->identity_card !!}
-            {{$eco_com->eco_com_beneficiary->city_identity_card ? $eco_com->eco_com_beneficiary->city_identity_card->first_shortened.'.' : ''}}<br>
+            <em>{!!$eco_com->eco_com_beneficiary->identity_card !!}<br>
             </em></td>
         </tr>
         <tr>
