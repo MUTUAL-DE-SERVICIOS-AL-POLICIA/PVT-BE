@@ -346,7 +346,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            {!! Form::label('1', 'CMTE. GRAL. SUP.', ['class' => 'col-md-8 control-label']) !!}
+                            {!! Form::label('1', 'CMTE. GRAL.', ['class' => 'col-md-8 control-label']) !!}
                             <div class="col-md-3">
                                 {!! Form::number('1', null, ['class'=> 'form-control', 'required' =>
                                 'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
@@ -354,7 +354,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            {!! Form::label('2', 'GRAL. SUP.', ['class' => 'col-md-8 control-label'])
+                            {!! Form::label('2', 'INSP. GRAL./SUPERVISOR', ['class' => 'col-md-8 control-label'])
                             !!}
                             <div class="col-md-3">
                                 {!! Form::number('2', null, ['class'=> 'form-control', 'required' =>
@@ -363,7 +363,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            {!! Form::label('3', 'GRAL. SUP.', ['class' => 'col-md-8 control-label'])
+                            {!! Form::label('3', 'SBCMTE. GRAL./EXCMDTE', ['class' => 'col-md-8 control-label'])
                             !!}
                             <div class="col-md-3">
                                 {!! Form::number('3', null, ['class'=> 'form-control', 'required' =>
@@ -373,7 +373,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            {!! Form::label('4', 'GRAL. MAY.', ['class' => 'col-md-8
+                            {!! Form::label('4', 'GRAL. SUP.', ['class' => 'col-md-8
                             control-label']) !!}
                             <div class="col-md-3">
                                 {!! Form::number('4', null, ['class'=> 'form-control', 'required' =>
@@ -382,7 +382,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            {!! Form::label('5', 'GRAL. 1RO.', ['class' => 'col-md-8
+                            {!! Form::label('5', 'GRAL.', ['class' => 'col-md-8
                             control-label']) !!}
                             <div class="col-md-3">
                                 {!! Form::number('5', null, ['class'=> 'form-control', 'required' =>
