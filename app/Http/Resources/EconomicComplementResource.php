@@ -27,7 +27,7 @@ class EconomicComplementResource extends Resource
                 'value' => $this->eco_com_beneficiary->fullName(),
             ], [
                 'key' => 'C.I.',
-                'value' => $this->eco_com_beneficiary->ciWithExt(),
+                'value' => $this->eco_com_beneficiary->identity_card,
             ], [
                 'key' => 'Semestre',
                 'value' => $this->eco_com_procedure->fullName(),

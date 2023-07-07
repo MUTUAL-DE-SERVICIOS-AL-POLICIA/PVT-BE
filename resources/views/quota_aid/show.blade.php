@@ -254,7 +254,7 @@
                         <h2 class="font-bold no-margins" data-toggle="tooltip" data-placement="top" title="Ver Afiliado ">
                         <a  href="{{route('affiliate.show', $affiliate->id)}}"  style="color: #fff"> {{ $quota_aid->affiliate->fullNameWithDegree() }}</a>
                         </h2>
-                            <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $quota_aid->affiliate->ciWithExt() }}</strong></h3>
+                            <h3 class="text-center" data-toggle="tooltip" data-placement="top" title="Cédula de Identidad"><strong>{{  $quota_aid->affiliate->identity_card }}</strong></h3>
                             <h4 class="text-center" data-toggle="tooltip" data-placement="top" title="Matricula"><strong>{{  $quota_aid->affiliate->registration }}</strong></h4>
                         </div>
                     </div>
