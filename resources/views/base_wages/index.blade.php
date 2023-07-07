@@ -783,7 +783,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            {!! Form::label('6', 'SGTO. 14O. SERV.', ['class' => 'col-md-8 control-label'])
+                            {!! Form::label('6', 'SGTO. 1RO. SERV.', ['class' => 'col-md-8 control-label'])
                             !!}
                             <div class="col-md-3">
                                 {!! Form::number('6', null, ['class'=> 'form-control', 'required' =>
