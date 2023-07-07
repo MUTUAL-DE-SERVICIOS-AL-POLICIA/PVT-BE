@@ -24,7 +24,7 @@
     </thead>
     <tbody>
         <tr class="text-sm">
-             <td class="text-center font-bold">{!! $spouse->identity_card !!} {{$spouse->city_identity_card->first_shortened ?? ''}}</td> 
+             <td class="text-center font-bold">{!! $spouse->identity_card !!} </td> 
             <td class="text-center uppercase font-bold px-5 py-3">{{ $spouse->first_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $spouse->second_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $spouse->last_name }}</td>

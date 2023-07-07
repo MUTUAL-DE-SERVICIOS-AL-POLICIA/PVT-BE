@@ -19,9 +19,6 @@
             <td class="px-15 py text-center">
                 C.I.
             </td>
-            <td class="px-15 py text-center">
-                EXP.
-            </td>
         </tr>
     </thead>  
     <tbody> 
@@ -32,7 +29,6 @@
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->mothers_last_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->surname_husband }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->identity_card }}</td>
-            <td class="text-center uppercase font-bold px-5 py-3">{{ $exp ?? $affiliate->city_identity_card->first_shortened ?? '' }}</td>
         </tr>
     </tbody>
 </table>

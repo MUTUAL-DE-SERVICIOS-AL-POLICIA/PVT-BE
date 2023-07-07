@@ -731,9 +731,9 @@ class QuotaAidCertificationController extends Controller
       $person .= ($affiliate->gender == 'M' ? "El señor " : "La señora ");
     }
     if ($quota_aid->procedure_modality_id == 15) {
-      $person .= Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . " " . $affiliate->spouse()->first()->city_identity_card->first_shortened;
+      $person .= Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card;
     } else {
-      $person .= $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->ciWithExt();
+      $person .= $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card;
     }
 
     if ($quota_aid->procedure_modality_id == 15) {
@@ -749,7 +749,7 @@ class QuotaAidCertificationController extends Controller
     $with_art = false;
     if (isset($quota_aid_beneficiaries->id)) {
       $legal_guardian = QuotaAidLegalGuardian::where('id', $quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-      $person .= ($legal_guardian->gender == 'M' ? " el señor " : ", la señora ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación "; //.($affiliate->gender=='M'?"del señor ":"de la señora ");
+      $person .= ($legal_guardian->gender == 'M' ? " el señor " : ", la señora ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación "; //.($affiliate->gender=='M'?"del señor ":"de la señora ");
       $with_art = true;
     } else {
       $person .= " ";
@@ -764,7 +764,7 @@ class QuotaAidCertificationController extends Controller
         $person .= ($applicant->gender == 'M' ? ' el Sr. ' : ' la Sra. ');
       }
 
-      $person .= Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". solicita el beneficio a favor suyo en calidad de " . $applicant->kinship->name;
+      $person .= Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . ". solicita el beneficio a favor suyo en calidad de " . $applicant->kinship->name;
       $testimony_applicant = Testimony::find($applicant->testimonies()->first()->id);
 
 
@@ -782,7 +782,7 @@ class QuotaAidCertificationController extends Controller
           if (!$start_message) {
             $person = $person .= " y " . ($beneficiary->gender == "M" ? "del" : "de la") . " derechohabiente ";
           }
-          $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . "." . " en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 2 ? " y " : (($quantity == 1) ? '' : ', '));
+          $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . "." . " en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 2 ? " y " : (($quantity == 1) ? '' : ', '));
         }
       }
       $quantity = $beneficiaries->count();
@@ -810,7 +810,7 @@ class QuotaAidCertificationController extends Controller
             if (!$start_message) {
               $person = $person .= " asimismo solicita el beneficio " . ($beneficiary->gender == "M" ? "el" : "la") . " derechohabiente ";
             }
-            $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . ". en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 1 ? " y " : (($quantity == 0) ? '' : ', '));
+            $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . ". en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 1 ? " y " : (($quantity == 0) ? '' : ', '));
           }
           if ($stored_quantity > 1) {
             $person .= " como herederos legales acreditados mediante " . $testimony->document_type . " Nº " . $testimony->number . " de fecha " . Util::getStringDate($testimony->date) . " sobre Declaratoria de Herederos o Aceptaci&oacute;n de Herencia, emitido por " . $testimony->court . " de " . $testimony->place . " a cargo de " . $testimony->notary . "";
@@ -960,9 +960,9 @@ class QuotaAidCertificationController extends Controller
     if ($quota_aid->procedure_modality_id != 14) {
 
       if ($quota_aid->procedure_modality_id == 15) {
-        $payment .= " de " . ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender ? "del Viudo " : "de la Viuda ")) . ($affiliate->spouse()->first()->gender == 'M' ? "del Sr. " : "de la Sra. ") . Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . " " . ($affiliate->spouse()->first()->city_identity_card->first_shortened ?? 'Sin extencion') . "., en el monto de <strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong> de la siguiente manera: <br><br>";
+        $payment .= " de " . ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender ? "del Viudo " : "de la Viuda ")) . ($affiliate->spouse()->first()->gender == 'M' ? "del Sr. " : "de la Sra. ") . Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . "., en el monto de <strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong> de la siguiente manera: <br><br>";
       } else {
-        $payment .= ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender == 'M' ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->gender == 'M' ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . " " . ($affiliate->city_identity_card->first_shortened ?? 'Sin extencion') . "., en el monto de <strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong> de la siguiente manera: <br><br>";
+        $payment .= ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender == 'M' ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->gender == 'M' ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . "., en el monto de <strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . "</strong> de la siguiente manera: <br><br>";
       }
     } else {
       $payment .= " de: ";
@@ -981,9 +981,9 @@ class QuotaAidCertificationController extends Controller
           $payment .= "Mediante certificación " . $certification->document_type . "-N° " . $certification->number . " de " . Util::getStringDate($certification->date) . " emitido en la ciudad de " . $certification->place . ", se evidencia
                     la descendencia del titular fallecido; por lo que, se mantiene en reserva" . ($reserved_quantity > 1 ? " las Cuotas Partes  salvando los derechos de los beneficiarios " : " la Cuota Parte salvando los derechos del (de la) beneficiario (a) ");
           if ($quota_aid->procedure_modality_id == 15) {
-            $payment .= ($spouse->gender == "M" ? "del Sr. " : "de la Sra. ") . Util::fullName($spouse) . " con C.I. N° " . $spouse->identity_card . " " . ($spouse->city_identity_card->first_shortened ?? "SIN CI");
+            $payment .= ($spouse->gender == "M" ? "del Sr. " : "de la Sra. ") . Util::fullName($spouse) . " con C.I. N° " . $spouse->identity_card;
           } else {
-            $payment .= ($affiliate->gender == "M" ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . " " . ($affiliate->city_identity_card->first_shortened ?? "SIN CI");
+            $payment .= ($affiliate->gender == "M" ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card;
           }
           $payment .= ". conforme establece el Art. 1094 del Código Civil, hasta que presenten la correspondiente Declaratoria de Herederos o Aceptación de Herencia y demás requisitos establecidos de conformidad con los Arts. " . $art[$quota_aid->procedure_modality_id] . " del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio N° 76/2019 en fecha 11 de diciembre de 2019, de la siguiente manera:<br><br>";
         }
@@ -996,7 +996,7 @@ class QuotaAidCertificationController extends Controller
         $payment .= $beneficiary->fullName();
 
         if ($beneficiary->identity_card) {
-          $payment .= " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "sin extencion");
+          $payment .= " con C.I. N° " . $beneficiary->identity_card;
         }
         $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $beneficiary->id)->first();
         if (Util::isChild($beneficiary->birth_date) && !$beneficiary->state && !isset($beneficiary_advisor->id)) {
@@ -1004,18 +1004,18 @@ class QuotaAidCertificationController extends Controller
         }
         if (isset($beneficiary_advisor->id)) {
           $advisor = QuotaAidAdvisor::where('id', $beneficiary_advisor->quota_aid_advisor_id)->first();
-          $payment .= ", a través de su tutor" . ($advisor->gender == 'F' ? 'a' : '') . " natural " . ($advisor->gender == 'M' ? 'Sr.' : 'Sra.') . " " . Util::fullName($advisor) . " con C.I. N°" . $advisor->identity_card . " " . ($advisor->city_identity_card->first_shortened ?? "Sin Extencion") . ".";
+          $payment .= ", a través de su tutor" . ($advisor->gender == 'F' ? 'a' : '') . " natural " . ($advisor->gender == 'M' ? 'Sr.' : 'Sra.') . " " . Util::fullName($advisor) . " con C.I. N°" . $advisor->identity_card".";
         }
         $beneficiary_legal_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $beneficiary->id)->first();
         if (isset($beneficiary_legal_guardian->id)) {
           $legal_guardian = QuotaAidLegalGuardian::where('id', $beneficiary_legal_guardian->quota_aid_legal_guardian_id)->first();
-          $payment .= " por si o representada legamente por " . ($legal_guardian->gender == 'M' ? "el Sr." : "la Sra. ") . " " . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . ($legal_guardian->city_identity_card->first_shortened ?? "sin extencion") . ".
+          $payment .= " por si o representada legamente por " . ($legal_guardian->gender == 'M' ? "el Sr." : "la Sra. ") . " " . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card".
                     conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° " . $legal_guardian->number_authority . " de " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " emitido por " . $legal_guardian->notary . ".";
         }
         $payment .= ', en el monto de<strong> ' . Util::formatMoneyWithLiteral($beneficiary->paid_amount) . '</strong> ' . 'en calidad de ' . $beneficiary->kinship->name . ".<br><br>";
       }
     } else {
-      $payment .= "<br><br>" . $affiliate->degree->shortened . " " . $affiliate->fullName() . " con C.I. N° " . $affiliate->identity_card . " " . ($affiliate->city_identity_card->first_shortened ?? "SIN CI") . "., el monto de &nbsp;<strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . ".</strong>";
+      $payment .= "<br><br>" . $affiliate->degree->shortened . " " . $affiliate->fullName() . " con C.I. N° " . $affiliate->identity_card . "., el monto de &nbsp;<strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . ".</strong>";
     }
 
 
@@ -1117,7 +1117,7 @@ class QuotaAidCertificationController extends Controller
     $beneficiaries = QuotaAidBeneficiary::where('quota_aid_mortuary_id', $quota_aid->id)->orderByDesc('type')->orderBy('id')->get();
     /** PERSON DATA */
     $affiliate = Affiliate::find($quota_aid->affiliate_id);
-    $affiliate_full_name = '<b>' . $affiliate->fullNameWithDegree() . '</b> con C.I. N° <b>' . $affiliate->identity_card . ' ' . $affiliate->city_identity_card->first_shortened . '</b>';
+    $affiliate_full_name = '<b>' . $affiliate->fullNameWithDegree() . '</b> con C.I. N° <b>' . $affiliate->identity_card . '</b>';
     $quota_aid_beneficiaries = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $applicant->id)->first();
     $person = '';
     $person .= '<br>Que, en fecha ' . Util::getStringDate($quota_aid->reception_date) . ', ';
@@ -1125,12 +1125,12 @@ class QuotaAidCertificationController extends Controller
     $spouse_full_name = '';
     if (isset($quota_aid_beneficiaries->id)) {
       $legal_guardian = QuotaAidLegalGuardian::where('id', $quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : ", la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . $legal_guardian->city_identity_card->first_shortened . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación ";
-      $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name; //solicitante
+      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : ", la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación ";
+      $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . ". en calidad de " . $applicant->kinship->name; //solicitante
       $with_art = true;
     } else {
         if ($quota_aid->procedure_modality_id != 14){
-          $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " " . $applicant->city_identity_card->first_shortened . ". en calidad de " . $applicant->kinship->name;//solicitante
+          $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . ". en calidad de " . $applicant->kinship->name;//solicitante
         }else{
           $person .=' ';
         }
@@ -1150,7 +1150,7 @@ class QuotaAidCertificationController extends Controller
             if (!$start_message) {
               $person = $person .= ' y ' . ($beneficiary->gender == 'M' ? 'del' : 'de la') . ' derechohabiente ';
             }
-            $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "SIN CI") . "." . ", en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 2 ? " y " : (($quantity == 1) ? '' : ', '));
+            $person .= Util::fullName($beneficiary) . " con C.I. N° " . $beneficiary->identity_card . " " . "." . ", en calidad de " . $beneficiary->kinship->name . ((--$quantity) == 2 ? " y " : (($quantity == 1) ? '' : ', '));
           }
         }
         $quantity = $beneficiaries->count();
@@ -1176,7 +1176,7 @@ class QuotaAidCertificationController extends Controller
               if (!$start_message) {
                 $person = $person .= '. Asimismo solicita el beneficio ' . ($beneficiary->gender == 'M' ? 'el' : 'la') . ' derechohabiente ';
               }
-              $person .= Util::fullName($beneficiary) . ' con C.I. N° ' . $beneficiary->ciWithExt(). ' en calidad de ' . $beneficiary->kinship->name . ((--$quantity) == 1 ? ' y ' : (($quantity == 0) ? ' ' : ', '));
+              $person .= Util::fullName($beneficiary) . ' con C.I. N° ' . $beneficiary->identity_card. ' en calidad de ' . $beneficiary->kinship->name . ((--$quantity) == 1 ? ' y ' : (($quantity == 0) ? ' ' : ', '));
             }
             if ($stored_quantity > 1) {
               $person .= ' mediante ' . $testimony->document_type . ' Nº ' . $testimony->number . ' de fecha ' . Util::getStringDate($testimony->date).' sobre Declaratoria de Herederos o Aceptación de Herencia, emitido por '.$testimony->court.' de la ciudad de '.$testimony->place.' a cargo de '.$testimony->notary. '';
@@ -1191,11 +1191,11 @@ class QuotaAidCertificationController extends Controller
       $presents = " presenta";
     }
     if ($quota_aid->procedure_modality_id == 15) {
-      $spouse_full_name.= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened . '</b>';
+      $spouse_full_name.= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . '</b>';
       $person .= ', solicita el pago del beneficio de ' . $quota_aid->procedure_modality->procedure_type->second_name . " en su modalidad de <b>" .mb_strtoupper($quota_aid->procedure_modality->name).'</b> ' . ($affiliate->spouse()->first()->gender == 'M' ? ' del Sr. fallecido: ' : 'de la Sra. fallecida: '). $spouse_full_name; 
     } elseif ($quota_aid->procedure_modality_id == 14) {
         $person .= $affiliate_full_name.', en calidad de ' . ($affiliate->gender == 'M' ? 'viudo de la fallecida: ' : 'viuda del fallecido: ');
-        $spouse_full_name.= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . ' ' . $affiliate->spouse()->first()->city_identity_card->first_shortened . '</b>';
+        $spouse_full_name.= ' <b>' . ($affiliate->spouse()->first()->gender == 'M' ? ' Sr. ' : 'Sra. ') . Util::fullName($affiliate->spouse()->first()) . '</b> con C.I. N° <b>' . $affiliate->spouse()->first()->identity_card . '</b>';
         $person .= $spouse_full_name.', solicita el pago del beneficio de &nbsp;' . $quota_aid->procedure_modality->procedure_type->second_name . " en su modalidad de <strong>" .mb_strtoupper($quota_aid->procedure_modality->name).'</strong>' ;
       } else {
         $person .=  ". Solicita(n) el pago del  beneficio de " .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name) . " en su modalidad de " .mb_strtoupper($quota_aid->procedure_modality->name) . " del afiliado fallecido: ".$affiliate_full_name;
@@ -1530,12 +1530,12 @@ class QuotaAidCertificationController extends Controller
     if ($quota_aid->procedure_modality_id != 14) {
 
       if ($quota_aid->procedure_modality_id == 15) {
-        $body_resolution .= " de " . ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender ? "del Viudo " : "de la Viuda ")) . ($affiliate->spouse()->first()->gender == 'M' ? "del Sr. " : "de la Sra. ") . Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . " " . ($affiliate->spouse()->first()->city_identity_card->first_shortened ?? 'Sin extencion') . "., en el siguiente tenor: <br><br>";
+        $body_resolution .= " de " . ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender ? "del Viudo " : "de la Viuda ")) . ($affiliate->spouse()->first()->gender == 'M' ? "del Sr. " : "de la Sra. ") . Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . "., en el siguiente tenor: <br><br>";
       } else {
-        $body_resolution .= " de " . ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->gender == 'M' ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . " " . ($affiliate->city_identity_card->first_shortened ?? 'Sin extencion') . "., en el siguiente tenor: <br><br>";
+        $body_resolution .= " de " . ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->gender == 'M' ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . "., en el siguiente tenor: <br><br>";
       }
     } else {
-      $body_resolution .= ($applicant->gender == 'M' ? "del beneficiario de la <strong> &nbsp;Sra. " : "de la beneficiaria del <strong> &nbsp;Sr. ") . Util::fullName($affiliate->spouse()->first()) . "</strong> con C.I. N° <strong>" . $affiliate->spouse()->first()->identity_card . " " . ($affiliate->spouse()->first()->city_identity_card->first_shortened ?? 'Sin extencion') . ".</strong>, en el siguiente tenor: <br><br>";
+      $body_resolution .= ($applicant->gender == 'M' ? "del beneficiario de la <strong> &nbsp;Sra. " : "de la beneficiaria del <strong> &nbsp;Sr. ") . Util::fullName($affiliate->spouse()->first()) . "</strong> con C.I. N° <strong>" . $affiliate->spouse()->first()->identity_card . ".</strong>, en el siguiente tenor: <br><br>";
     }
     $reserved = false;
     if ($quota_aid->procedure_modality_id != 14) {
@@ -1559,23 +1559,23 @@ class QuotaAidCertificationController extends Controller
           $body_resolution .= ', a través de su'.($affiliate->gender == 'F' ? ' padre' : ' madre').', tutor (a) o hasta que cumpla la mayoría de edad';
         }
         if ($beneficiary->identity_card)
-          $body_resolution .= " con C.I. N° " . $beneficiary->identity_card . " " . ($beneficiary->city_identity_card->first_shortened ?? "sin extencion");
+          $body_resolution .= " con C.I. N° " . $beneficiary->identity_card;
         $beneficiary_advisor = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $beneficiary->id)->first();
         if (isset($beneficiary_advisor->id)) {
           $advisor = QuotaAidAdvisor::where('id', $beneficiary_advisor->quota_aid_advisor_id)->first();
-          $body_resolution .= ', en el monto de<strong> ' . Util::formatMoneyWithLiteral($beneficiary->paid_amount) . '</strong> ' . 'en calidad de ' . $beneficiary->kinship->name.( $reserved?'':(' a través'. ($advisor->gender == 'M' ? ' del Sr.' : ' de la Sra.') . ' '  . Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card . ' ' . ($advisor->city_identity_card->first_shortened ?? 'Sin Extencion').($affiliate->gender == 'F' ? ' padre' : ' madre').' del menor') ).'.</li><br>';
+          $body_resolution .= ', en el monto de<strong> ' . Util::formatMoneyWithLiteral($beneficiary->paid_amount) . '</strong> ' . 'en calidad de ' . $beneficiary->kinship->name.( $reserved?'':(' a través'. ($advisor->gender == 'M' ? ' del Sr.' : ' de la Sra.') . ' '  . Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card . ($affiliate->gender == 'F' ? ' padre' : ' madre').' del menor') ).'.</li><br>';
         }else{
           $body_resolution .= ', en el monto de<strong> ' . Util::formatMoneyWithLiteral($beneficiary->paid_amount) . '</strong> ' . 'en calidad de ' . $beneficiary->kinship->name . ".</li><br>";}
          $beneficiary_legal_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $beneficiary->id)->first();
        /* if (false && isset($beneficiary_legal_guardian->id)) {
           $legal_guardian = QuotaAidLegalGuardian::where('id', $beneficiary_legal_guardian->quota_aid_legal_guardian_id)->first();
-          $body_resolution .= " por si o representada legamente por " . ($legal_guardian->gender == 'M' ? "el Sr." : "la Sra. ") . " " . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " " . ($legal_guardian->city_identity_card->first_shortened ?? "sin extencion") . ".
+          $body_resolution .= " por si o representada legamente por " . ($legal_guardian->gender == 'M' ? "el Sr." : "la Sra. ") . " " . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . 
                     conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° " . $legal_guardian->number_authority . " de " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " emitido por " . $legal_guardian->notary . ".";
         }*/
 
       }
     } else {
-      $body_resolution .= "<li class='text-justify'>" . $affiliate->degree->shortened . " " . $affiliate->fullName() . " con C.I. N° " . $affiliate->identity_card . " " . ($affiliate->city_identity_card->first_shortened ?? "SIN CI") . "., el monto de &nbsp;<strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . ".</strong></li><br><br>";
+      $body_resolution .= "<li class='text-justify'>" . $affiliate->degree->shortened . " " . $affiliate->fullName() . " con C.I. N° " . $affiliate->identity_card . "., el monto de &nbsp;<strong>" . Util::formatMoneyWithLiteral($quota_aid->total) . ".</strong></li><br><br>";
     }
 
     $body_resolution .= "<b>REGISTRESE, NOTIFIQUESE Y ARCHIVESE.</b><br><br><br><br><br>";

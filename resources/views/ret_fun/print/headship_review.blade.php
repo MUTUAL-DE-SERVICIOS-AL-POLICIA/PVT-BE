@@ -35,7 +35,7 @@
                             </tr>
                             <tr class="text-sm">
                                 <td class="text-left px-10 py-3 uppercase">cédula de identidad</td>
-                                <td class="text-left uppercase font-bold px-5 py-3">{!! $affiliate->identity_card !!} {{$affiliate->city_identity_card->first_shortened ?? ''}}</td>
+                                <td class="text-left uppercase font-bold px-5 py-3">{!! $affiliate->identity_card !!}</td>
                             </tr>
                             <tr class="text-sm">
                                 <td class="text-left px-10 py-3 uppercase">fecha de Nacimiento</td>

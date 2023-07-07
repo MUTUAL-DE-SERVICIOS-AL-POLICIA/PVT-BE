@@ -32,7 +32,7 @@
                         style="border-right:1px solid #5d6975!important; border-radius:0 !important">
                         <span class="font-bold uppercase">{!! $eco_com_beneficiary->fullName() !!}</span>
                         <br />
-                        <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
+                        <span class="font-bold">C.I. {{ $eco_com_beneficiary->identity_card }}</span>
                      </td>
                 </tr>
             </tfoot>
