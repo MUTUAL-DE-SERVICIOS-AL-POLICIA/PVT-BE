@@ -335,6 +335,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control datepicker" name="year"
                                         value="{!! $year !!}" disabled>
+                                    {!! Form::hidden('year', $year) !!}
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
@@ -495,6 +496,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control datepicker" name="year"
                                         value="{!! $year !!}" disabled>
+                                    {!! Form::hidden('year', $year)!!}
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
@@ -600,6 +602,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control datepicker" name="year"
                                         value="{!! $year !!}" disabled>
+                                    {!! Form::hidden('year', $year)!!}
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
@@ -723,6 +726,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control datepicker" name="year"
                                         value="{!! $year !!}" disabled>
+                                    {!! Form::hidden('year', $year)!!}
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
@@ -824,3 +828,9 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        ip
+    })
+</script>
