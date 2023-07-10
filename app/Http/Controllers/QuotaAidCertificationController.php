@@ -1004,12 +1004,12 @@ class QuotaAidCertificationController extends Controller
         }
         if (isset($beneficiary_advisor->id)) {
           $advisor = QuotaAidAdvisor::where('id', $beneficiary_advisor->quota_aid_advisor_id)->first();
-          $payment .= ", a través de su tutor" . ($advisor->gender == 'F' ? 'a' : '') . " natural " . ($advisor->gender == 'M' ? 'Sr.' : 'Sra.') . " " . Util::fullName($advisor) . " con C.I. N°" . $advisor->identity_card".";
+          $payment .= ", a través de su tutor" . ($advisor->gender == 'F' ? 'a' : '') . " natural " . ($advisor->gender == 'M' ? 'Sr.' : 'Sra.') . " " . Util::fullName($advisor) . " con C.I. N°" . $advisor->identity_card. ".";
         }
         $beneficiary_legal_guardian = QuotaAidBeneficiaryLegalGuardian::where('quota_aid_beneficiary_id', $beneficiary->id)->first();
         if (isset($beneficiary_legal_guardian->id)) {
           $legal_guardian = QuotaAidLegalGuardian::where('id', $beneficiary_legal_guardian->quota_aid_legal_guardian_id)->first();
-          $payment .= " por si o representada legamente por " . ($legal_guardian->gender == 'M' ? "el Sr." : "la Sra. ") . " " . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card".
+          $payment .= " por si o representada legamente por " . ($legal_guardian->gender == 'M' ? "el Sr." : "la Sra. ") . " " . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card.".
                     conforme establece la Escritura Pública sobre Testimonio de Poder especial, amplio y suficiente N° " . $legal_guardian->number_authority . " de " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " emitido por " . $legal_guardian->notary . ".";
         }
         $payment .= ', en el monto de<strong> ' . Util::formatMoneyWithLiteral($beneficiary->paid_amount) . '</strong> ' . 'en calidad de ' . $beneficiary->kinship->name . ".<br><br>";
