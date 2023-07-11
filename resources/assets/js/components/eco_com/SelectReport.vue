@@ -4,7 +4,7 @@
     <select v-model="form.reportTypeId" :disabled="loadingButton">
       <option v-for="r in reportsType" :value="r.id" :key="r.id">{{r.name}}</option>
     </select>
-    <div v-if="form.reportTypeId != 9 && form.reportTypeId != 21 && form.reportTypeId != 22 && form.reportTypeId != 29">
+    <div v-if="form.reportTypeId != 9 && form.reportTypeId != 21 && form.reportTypeId != 22 && form.reportTypeId != 29 && form.reportTypeId != 30">
       <label>Gestion</label>
       <select v-model="form.ecoComProcedureId" :disabled="loadingButton" @change="cargarplanilla()">
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
@@ -261,6 +261,10 @@ export default {
         {
           id: 29,
           name: "Afiliados con documentos no escaneados"
+        },
+        {
+          id: 30,
+          name: "Afiliados con doble percepción del ultimo periodo"
         }
       ],
       form: {
