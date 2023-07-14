@@ -20,18 +20,18 @@ class AddAditionalDocumentSeeder extends Seeder
         foreach($documents_for_quota_aid as $document) {
             $model = ProcedureDocument::firstOrCreate($document);
             // Cuota Mortuoria
-            ProcedureRequirement::create([
+            ProcedureRequirement::firstOrCreate([
                 'procedure_modality_id' => 8, // Fallecimiento del (la) titular en cumplimiento de funciones
                 'procedure_document_id' => $model->id,
                 'number'                => 0
             ]);
-            ProcedureRequirement::create([
+            ProcedureRequirement::firstOrCreate([
                 'procedure_modality_id' => 9, // Fallecimiento del (la) titular por riesgo común
                 'procedure_document_id' => $model->id,
                 'number'                => 0
             ]);
             // Auxilio Morturio
-            ProcedureRequirement::create([
+            ProcedureRequirement::firstOrCreate([
                 'procedure_modality_id' => 13, // Fallecimiento del (la) titular
                 'procedure_document_id' => $model->id,
                 'number'                => 0
@@ -47,7 +47,7 @@ class AddAditionalDocumentSeeder extends Seeder
         foreach($new_documents_for_quota_aid as $new_document) {
             $model = ProcedureDocument::firstOrCreate($new_document);
             // Auxilio Mortuorio
-            ProcedureRequirement::create([
+            ProcedureRequirement::firstOrCreate([
                 'procedure_modality_id' => 15, // Fallecimiento del (la) viudo(a)
                 'procedure_document_id' => $model->id,
                 'number' => 0
