@@ -24,6 +24,7 @@ use Muserpol\Exports\EcoComPromedioReport;
 use Muserpol\Exports\EcoComPlanillaGeneralPagos;
 use Muserpol\Exports\EcoComOverpaymentsSheet;
 use Muserpol\Exports\AffiliateNoScanner;
+use Muserpol\Exports\AffiliateDoublePerception;
 
 class EcoComReportController extends Controller
 {
@@ -115,6 +116,9 @@ class EcoComReportController extends Controller
                 break;
             case 29:
                 return Excel::download(new AffiliateNoScanner(), 'Afiliados documentos no escaneados.xlsx');
+                break;
+            case 30:
+                return Excel::download(new AffiliateDoublePerception(), 'Afiliados doble percepcion.xlsx');
                 break;
             default:
                 # code...
