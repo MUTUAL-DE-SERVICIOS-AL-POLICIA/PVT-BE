@@ -47,7 +47,7 @@
                     {{ $eco->eco_com_procedure->getTextName()}}
                 </td>
                 <td class="text-left px-10 py-5">
-                <span class="font-bold">Bs. {{ Util::formatMoney($eco->getOnlyTotalEcoCom())}}</span> (<span class="italic lowercase">{{Util::convertir($eco->total) }}</span> Bolivianos)
+                <span class="font-bold">Bs. {{ Util::formatMoney($eco->getOnlyTotalEcoCom())}}</span> (<span class="italic lowercase">{{Util::convertir($eco->getOnlyTotalEcoCom()) }}</span> Bolivianos)
                 </td>
             </tr>
             @endforeach
