@@ -116,7 +116,7 @@ class ComplementaryFactorController extends Controller
                 return $complementary_factor->semester;
             })
             ->editColumn('cf1', function ($complementary_factor) {
-                return $complementary_factor->cf1;
+                return Util::formatPercentage($complementary_factor->cf1);
             })
             ->editColumn('cf2', function ($complementary_factor) {
                 return Util::formatPercentage($complementary_factor->cf2);
