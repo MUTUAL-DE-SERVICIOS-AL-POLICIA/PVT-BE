@@ -27,3 +27,4 @@ yarn-error.log
 storage/.DS_Store
 .DS_Store
 .DS_Store
+*.code-workspace
