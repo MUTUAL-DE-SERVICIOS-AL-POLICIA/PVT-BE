@@ -26,9 +26,17 @@ class DeleteRegisterProcedureRequirementsSeeder extends Seeder
         ProcedureRequirement::where('procedure_modality_id', 15) // Modalidad Fallecimiento del (la) viudo(a)
             ->whereIn('procedure_document_id', [224, 225, 14, 78])
             ->delete();
-        ProcedureRequirement::where('procedure_modality_id', 4)   //Fondo de Reito Modalidad Fallecimiento
+        // Fondo de retiro
+        ProcedureRequirement::where('procedure_modality_id', 4)  // Modalidad Fallecimiento
             ->whereIn('procedure_document_id', [119, 120])
             ->delete();
-        
+        // Devolución de Aportes
+        ProcedureRequirement::where('procedure_modality_id', 62) // Modalidad Titular
+            ->whereIn('procedure_document_id', [361])
+            ->delete();
+        ProcedureRequirement::where('procedure_modality_id', 63) // Modalidad Fallecimiento
+            ->whereIn('procedure_document_id', [361])
+            ->delete();
+
     }
 }

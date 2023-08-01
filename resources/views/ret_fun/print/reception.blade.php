@@ -29,7 +29,7 @@
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
             @php($article_by = $retirement_fund->procedure_modality->id==62 ? 'AL': 'POR')
-            <div class="text-right block">
+            <div class="text-right block m-t-5 m-b-5">
                 <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD {{$article}} {{ $retirement_fund->procedure_modality->procedure_type->name }} {{$article_by}} {!! $modality !!}</span></span>
             </div>
             <div class="m-b-5">Distinguido Director:</div>
@@ -96,11 +96,10 @@
         @endif
         <div class="text-justify text-xxs">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidario.</div>
         <div class="text-justify text-xxs">{{$legend_ret_fun}}</div>
-        <br>
-        <table class="m-t-33">
+        <table class="m-t-5">
             <tr>
                 <td class="no-border text-center text-base w-50 align-top">
-                    <br><br><br>
+                    <br><br>
                     <span class="font-bold">
                         ----------------------------------------------------
                     </span>
@@ -108,7 +107,7 @@
                     <span class="font-bold">C.I. {!! $applicant->identity_card !!} </span>
                 </td>
                 <td class="no-border text-center text-base w-50 align-top">
-                    <br><br><br>
+                    <br><br>
                     <span class="font-bold">
                         ----------------------------------------------------
                     </span>
