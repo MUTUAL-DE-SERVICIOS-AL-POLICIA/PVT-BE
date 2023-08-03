@@ -18,7 +18,17 @@ class ChangeOfNameSubmodalitiesQuotaAidSeeder extends Seeder
         foreach($sub_modalities as $index => $modality) {
             if(isset($changes[$index])) {
                 $modality->name = $changes[$index];
-                $modality->save();
+                if($modality->isDirty()) $modality->save();
+            }
+        }
+
+        $sub_modalities = ProcedureModality::whereProcedureTypeId(3)->orderBy('id')->get(); // Obtener las submodalidades de Cuota Mortuoria
+        $changes = ['Fallecimiento del (la) Titular en Cumplimiento Funciones', 'Fallecimiento del (la) Titular Riesgo Común'];
+
+        foreach($sub_modalities as $index => $modality) {
+            if(isset($changes[$index])) {
+                $modality->name = $changes[$index];
+                if($modality->isDirty()) $modality->save();
             }
         }
     }
