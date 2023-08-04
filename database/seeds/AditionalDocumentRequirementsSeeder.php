@@ -167,5 +167,24 @@ class AditionalDocumentRequirementsSeeder extends Seeder
                 'number' => 0
             ]);
         }
+
+        $procedure_documents = [
+            ['name' => 'Informe determinando la priorización al proceso del trámite porque el o la Titular adolece de una enfermedad grave y/o terminal, emitido por el Área de Trabajo Social de la MUSERPOL.'],
+            ['name' => 'Informe determinando la priorización al proceso del trámite porque el o la Titular o sus familiares de primer grado están pasando una situación de extrema necesidad, emitido por el Área de Trabajo Social de la MUSERPOL.'],
+        ];
+        foreach($procedure_documents as $procedure_document) {
+            $model = ProcedureDocument::firstOrCreate($procedure_document);
+            // Beneficio de Pago de Fondo de Retiro Policial Solidario
+            ProcedureRequirement::firstOrCreate([
+                'procedure_modality_id' => 5, // Retiro forzoso
+                'procedure_document_id' => $model->id,
+                'number' => 0
+            ]);
+            ProcedureRequirement::firstOrCreate([
+                'procedure_modality_id' => 7, // Retiro voluntario
+                'procedure_document_id' => $model->id,
+                'number' => 0
+            ]);
+        }
     }
 }
