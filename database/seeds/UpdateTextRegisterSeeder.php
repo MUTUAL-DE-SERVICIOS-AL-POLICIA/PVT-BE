@@ -16,14 +16,6 @@ class UpdateTextRegisterSeeder extends Seeder
         $procedure_document->name = 'Certificado de Haberes en original, considerando los últimos sesenta (60) meses antes del fallecimiento del Titular, emitido por el Comando General de la Policía Boliviana.';
         if($procedure_document->isDirty()) $procedure_document->save();
 
-        $procedure_document = ProcedureDocument::find(8);
-        $procedure_document->name = 'Calificación de Años de Servicio desglosado en original y actualizado, emitido por el Comando General de la Policía Boliviana.';
-        if($procedure_document->isDirty()) $procedure_document->save();
-
-        $procedure_document = ProcedureDocument::find(323);
-        $procedure_document->name = 'Calificación de Años de Servicio desglosado en copia legalizado y actualizado, emitido por el Comando General de la Policía Boliviana.';
-        if($procedure_document->isDirty()) $procedure_document->save();
-
         $procedure_document = ProcedureDocument::find(355);
         $procedure_document->name = 'Informe determinando la recepción del trámite porque los derechohabientes del titular adolecen de una enfermedad grave y/o terminal, emitido por el Área de Trabajo Social de la MUSERPOL.';
         if($procedure_document->isDirty()) $procedure_document->save();

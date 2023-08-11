@@ -32,10 +32,10 @@ class DeleteRegisterProcedureRequirementsSeeder extends Seeder
             ->delete();
         // Devolución de Aportes
         ProcedureRequirement::where('procedure_modality_id', 62) // Modalidad Titular
-            ->whereIn('procedure_document_id', [361])
+            ->whereIn('procedure_document_id', [361, 8, 323])
             ->delete();
         ProcedureRequirement::where('procedure_modality_id', 63) // Modalidad Fallecimiento
-            ->whereIn('procedure_document_id', [361])
+            ->whereIn('procedure_document_id', [361, 8, 323])
             ->delete();
 
     }
