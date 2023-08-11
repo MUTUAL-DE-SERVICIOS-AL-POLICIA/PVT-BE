@@ -54,7 +54,7 @@ class AditionalDocumentRequirementsSeeder extends Seeder
             ['name' => 'Memorándum de Baja Definitiva en copia legalizada, emitida por el Comando General de la Policía Boliviana.'],
             ['name' => 'Memorándum de Baja Definitiva en original, emitida por el Comando Departamental de la Policía Boliviana.'],
             ['name' => 'Memorándum de Baja Definitiva en copia legalizada, emitida por el Comando Departamental de la Policía Boliviana.'],
-            ['name' => 'Certificación de Baja Definitiva en original, emitida por el Comando General de la Policía Boliviana.']
+            ['name' => 'Certificación de Baja Definitiva en original, emitida por el Comando General de la Policía Boliviana.'],
         ];
         foreach($procedure_documents as $procedure_document) {
             $model = ProcedureDocument::firstOrCreate($procedure_document);
@@ -184,6 +184,24 @@ class AditionalDocumentRequirementsSeeder extends Seeder
                 'procedure_modality_id' => 7, // Retiro voluntario
                 'procedure_document_id' => $model->id,
                 'number' => 0
+            ]);
+        }
+        $procedure_documents = [
+            ['name' => 'Calificación de Años de Servicio desglosado en copia legalizada y actualizado, emitido por el Comando General de la Policía Boliviana.'],
+            ['name' => 'Calificación de Años de Servicio desglosado en original y actualizado, emitido por el Comando General de la Policía Boliviana.'],
+        ];
+        foreach($procedure_documents as $procedure_document) {
+            $model = ProcedureDocument::firstOrCreate($procedure_document);
+            // Devolución de aportes
+            ProcedureRequirement::firstOrCreate([
+                'procedure_modality_id' => 62, // Titular
+                'procedure_document_id' => $model->id,
+                'number' => 4
+            ]);
+            ProcedureRequirement::firstOrCreate([
+                'procedure_modality_id' => 63, // Fallecimiento
+                'procedure_document_id' => $model->id,
+                'number' => 7
             ]);
         }
     }
