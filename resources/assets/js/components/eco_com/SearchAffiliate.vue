@@ -121,7 +121,7 @@
                       data-toggle="tooltip"
                       data-placement="top"
                       title="Cedula de Identidad"
-                    >{{ ecoComBeneficiary.ci_with_ext }}</h3>
+                    >{{ ecoComBeneficiary.identity_card }}</h3>
                   </div>
                 </div>
               </div>
@@ -157,7 +157,7 @@
                       data-toggle="tooltip"
                       data-placement="top"
                       title="Cedula de Identidad"
-                    >{{ affiliate.ci_with_ext }}</h3>
+                    >{{ affiliate.identity_card }}</h3>
                     <h3
                       data-toggle="tooltip"
                       data-placement="top"

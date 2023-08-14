@@ -2,7 +2,7 @@
 @section('content')
 <div>
     <div style="min-height:900px;height:900px; max-height:900px;">
-        <div class="font-bold uppercase m-b-5 counter">
+        <div class="font-bold uppercase m-b-5 counter m-t-15">
             Datos del Trámite
         </div>
     @include('quota_aid.print.info',['quota_aid'=>$quota_aid])
@@ -33,7 +33,7 @@
             @include('print_global.spouse_info', ['spouse' => $spouse])
          </div>
     @endif -->
-        <div>
+        <div class="m-t-15">
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
                 <span>CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS</span><br>
@@ -41,7 +41,7 @@
                 <span class="uppercase font-bold">MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</span><br>
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
-            <div class="text-right block">
+            <div class="text-right block m-t-10 m-b-10">
                 <span class="font-bold uppercase">REF: <span class="underline">SOLICITUD DE {!! strtoupper($quota_aid->procedure_modality->procedure_type->name) !!} {!!$separator!!} {!! $modality !!}</span></span>
             </div>
             <div class="m-b-5">Distinguido Director:</div>
@@ -107,14 +107,16 @@
             </table>
         @endif
         <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, y en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario Cuota y Auxilio Mortuorio procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme el artículo 50 del Reglamento de Cuota y Auxilio Mortuorio.</div>
-        <table class="m-t-35">
+        <table class="m-t-5">
             <tr>
                 <td class="no-border text-center text-base w-50 align-bottom">
+                    <br><br>
                     <span class="font-bold">
                         ----------------------------------------------------
                     </span>
                 </td>
                 <td class="no-border text-center text-base w-50 align-bottom">
+                    <br><br>
                     <span class="font-bold">
                         ----------------------------------------------------
                     </span>
@@ -124,7 +126,7 @@
                 <td class="no-border text-center text-base w-50 align-top">
                     <span class="font-bold">{!! strtoupper($applicant->fullName()) !!}</span>
                     <br/>
-                    <span class="font-bold">C.I. {!! $applicant->identity_card !!} {!! strtoupper($applicant->city_identity_card->first_shortened)!!}</span>
+                    <span class="font-bold">C.I. {!! $applicant->identity_card !!}</span>
                 </td>
                 <td class="no-border text-center text-base w-50">
                     <span class="font-bold block">{!! strtoupper($user->fullName()) !!}</span>

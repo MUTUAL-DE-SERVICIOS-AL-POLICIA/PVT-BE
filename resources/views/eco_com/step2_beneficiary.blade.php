@@ -43,17 +43,6 @@
                             <span v-show="errors.has('legal_guardian_identity_card')" class="text-danger">@{{ errors.first('legal_guardian_identity_card') }}</span>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="col-md-4">
-                            <label class="control-label">Ciudad de Expedición</label>
-                        </div>
-                        <div class="col-md-8">
-                            <select class="form-control" name="legal_guardian_city_identity_card" v-model.trim="legal_guardian_city_identity_card">
-                                                    <option :value="null"></option>
-                                                    <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
-                                                </select>
-                        </div>
-                    </div>
                 </div>
                 <br>
                 <div class="row">
@@ -200,20 +189,6 @@
                                     <i v-show="errors.has('ecoComBeneficiary.identity_card')" class="fa fa-warning text-danger"></i>
                                     <span v-show="errors.has('ecoComBeneficiary.identity_card')" class="text-danger">@{{ errors.first('ecoComBeneficiary.identity_card') }}</span>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6" :class="{'has-error': errors.has('ecoComBeneficiary.city_identity_card_id') }">
-                            <div class="col-md-4">
-                                <label class="control-label">Ciudad de Expedición</label>
-                            </div>
-                            <div class="col-md-8">
-                                <select class="form-control" disabled name="ecoComBeneficiary.city_identity_card_id" v-model.trim="ecoComBeneficiary.city_identity_card_id"
-                                    v-validate.initial="'required'">
-                                            <option :value="null"></option>
-                                            <option v-for="city in cities" :value="city.id">@{{ city.name }}</option>
-                                        </select>
-                                <i v-show="errors.has('ecoComBeneficiary.city_identity_card_id')" class="fa fa-warning text-danger"></i>
-                                <span v-show="errors.has('ecoComBeneficiary.city_identity_card_id')" class="text-danger">@{{ errors.first('ecoComBeneficiary.city_identity_card_id') }}</span>
                             </div>
                         </div>
                     </div>

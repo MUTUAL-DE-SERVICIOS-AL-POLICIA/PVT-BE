@@ -545,7 +545,6 @@ return [
         'last_name'             => 'apellido paterno',
         'mothers_last_name'     => 'apellido materno',
         'identity_card'         => 'cédula de identidad',
-        'city_identity_card_id' => 'ciudad de expedición cédula de identidad',
         'birth_date'            => 'fecha de nacimiento',
         'service_years'         => 'años de servicio',
         'service_months'        => 'meses de servicio',

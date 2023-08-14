@@ -1,4 +1,5 @@
 <script>
+import Swal from "sweetalert2"
 export default {
     data(){
         return{
@@ -44,6 +45,12 @@ export default {
             return true;
         },
          validateSecondStep() {
+            if(this.$refs.two.$children[0].quotaAid.modality_id == 15) {
+                if (!this.$refs.two.$children[0].date_death) {
+                    Swal("Hubo un error", "Introduzca el campo 'Fecha de Fallecimiento del Titular'", "error")
+                    return false;
+                }
+            }
             if (!this.$refs.two.$children[0].applicant_type) {
                 return false;
             }
@@ -54,9 +61,6 @@ export default {
                 return false;
             }
             if (!this.$refs.two.$children[0].applicant_kinship_id) {
-                return false;
-            }
-            if (!this.$refs.two.$children[0].applicant_city_identity_card_id) {
                 return false;
             }
             if (!this.$refs.two.$children[0].applicant_gender) {
@@ -86,7 +90,6 @@ export default {
             mothers_last_name: this.$refs.two.$children[0].applicant_mothers_last_name,
             surname_husband: this.$refs.two.$children[0].applicant_surname_husband,
             identity_card: this.$refs.two.$children[0].applicant_identity_card,
-            city_identity_card_id: this.$refs.two.$children[0].applicant_city_identity_card_id,
             kinship_id: this.$refs.two.$children[0].applicant_kinship_id,
             birth_date: this.$refs.two.$children[0].applicant_birth_date,
             gender: this.$refs.two.$children[0].applicant_gender,

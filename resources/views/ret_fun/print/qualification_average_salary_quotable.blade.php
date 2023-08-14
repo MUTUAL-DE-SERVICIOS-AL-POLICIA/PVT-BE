@@ -31,7 +31,7 @@
                 <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->second_name }}</td>
                 <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->last_name }}</td>
                 <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->mothers_last_name }}</td>
-                <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->identity_card }} {{ $affiliate->city_identity_card->first_shortened ?? null }}</td>
+                <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->identity_card }}</td>
             </tr>
         </tbody>
     </table>

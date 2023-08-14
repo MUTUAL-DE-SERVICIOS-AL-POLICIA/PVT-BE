@@ -152,7 +152,6 @@ class AffiliateController extends Controller
         $due_date = null;
         $rules = [
             'identity_card' => 'required|unique:affiliates',
-            'city_identity_card_id' => 'required|min:1',
             'first_name' => 'required|min:1',
             'gender' => 'required',
             'birth_date' => 'required',
@@ -167,7 +166,6 @@ class AffiliateController extends Controller
         $messages = [
             'identity_card.required' => 'Se requiere llenar este campo',
             'identity_card.unique' => 'El carnet introducido ya existe',
-            'city_identity_card_id.required' => 'Debe seleccionar una opción',
             'first_name.required' => 'Se requiere llenar este campo',
             'gender.required' => 'Debe seleccionar una opción',
             'birth_date.required' => 'Debe seleccionar una opción',
@@ -538,7 +536,6 @@ class AffiliateController extends Controller
         */
         $rules = [
             'identity_card' => 'required|min:1',
-            'city_identity_card_id' => 'required|min:1',
             'first_name' => 'required|min:1',
             'last_name' => '',
             'mothers_last_name' => '',
