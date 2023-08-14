@@ -162,7 +162,7 @@ class AditionalDocumentRequirementsSeeder extends Seeder
             $model = ProcedureDocument::firstOrCreate($procedure_document);
             // Beneficio de Pago de Fondo de Retiro Policial Solidario
             ProcedureRequirement::firstOrCreate([
-                'procedure_modality_id' => 3,  // Jubilación
+                'procedure_modality_id' => 4,  // Fallecimiento
                 'procedure_document_id' => $model->id,
                 'number' => 0
             ]);
