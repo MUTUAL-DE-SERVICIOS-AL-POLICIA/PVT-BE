@@ -811,7 +811,7 @@ class ContributionController extends Controller
                 }
             }
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
-            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
+            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden1.");
         }
 
         /* last contributions and date derelict comparision */
@@ -853,7 +853,7 @@ class ContributionController extends Controller
                     array_push($temp_ids, $value->id);
                 }
             }
-            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
+            dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.2");
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
         }
 
@@ -1318,7 +1318,7 @@ class ContributionController extends Controller
                  }
              }
              // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
-             dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.");
+             dd("error: Se eliminaran Varias contribuciones porque las fechas no coinciden.3");
         }
         if($ret_fun->isQuota()){
             $contributions = $affiliate->contributions()->where('month_year','<',"$max_limit")->orderBy('month_year')->get()->pluck('month_year');;

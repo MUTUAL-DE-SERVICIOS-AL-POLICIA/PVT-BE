@@ -25,7 +25,7 @@
     </thead>
     <tbody>
         <tr class="text-sm">
-            <td class="text-center font-bold">{!! $applicant->ciWithExt() !!}</td>
+            <td class="text-center font-bold">{!! $applicant->identity_card !!}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->first_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->second_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->last_name }}</td>

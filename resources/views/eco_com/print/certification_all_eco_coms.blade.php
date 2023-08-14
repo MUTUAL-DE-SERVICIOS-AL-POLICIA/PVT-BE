@@ -11,7 +11,7 @@
     </p>
     <p class="text-justify">
         El Sr. (a) {{ $eco_com_beneficiary->fullName() }}. con Cédula de Identidad N°
-        {{ $eco_com_beneficiary->ciWithExt()}} se benefició con el pago
+        {{ $eco_com_beneficiary->identity_card}} se benefició con el pago
         del Complemento Económico como {{ $type }}, de acuerdo al siguiente detalle:
     </p>
 

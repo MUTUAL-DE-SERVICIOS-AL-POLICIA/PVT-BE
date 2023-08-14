@@ -44,7 +44,6 @@ class EcoComBeneficiaryController extends Controller
             ], 403);
         }
         $rules = [
-            'city_identity_card_id' => 'required',
             'identity_card' => 'required',
             'first_name' => 'required',
         ];
