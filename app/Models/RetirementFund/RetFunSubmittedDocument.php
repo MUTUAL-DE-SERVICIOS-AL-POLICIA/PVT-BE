@@ -16,8 +16,7 @@ class RetFunSubmittedDocument extends Model
 
     public function procedure_requirement()
     {
-        return $this->belongsTo('Muserpol\Models\ProcedureRequirement');
+        return $this->belongsTo('Muserpol\Models\ProcedureRequirement')->withTrashed();
     }
-    
 
 }
