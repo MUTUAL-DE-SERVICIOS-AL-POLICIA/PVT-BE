@@ -27,7 +27,6 @@ class AffiliateSpouseReport implements FromCollection, WithHeadings, ShouldAutoS
                 $data = Affiliate::select(
                     'affiliates.id',
                     'affiliates.identity_card', 
-                    'affiliate_city.first_shortened',
                     'affiliates.first_name',
                     'affiliates.second_name',
                     'affiliates.last_name',
@@ -38,10 +37,8 @@ class AffiliateSpouseReport implements FromCollection, WithHeadings, ShouldAutoS
                     'affiliate_birth_city.name',
                     'affiliates.date_death',
                     'affiliates.reason_death',
-                    'affiliates.death_certificate_number',
-                    
+                    'affiliates.death_certificate_number',                   
                     'spouses.identity_card as IdentityCard',
-                    'spouse_city.first_shortened as FirstShortened ',
                     'spouses.first_name as FirstName',
                     'spouses.second_name as SecondName',
                     'spouses.last_name as LastName',
@@ -61,7 +58,6 @@ class AffiliateSpouseReport implements FromCollection, WithHeadings, ShouldAutoS
                     ->leftJoin('cities as affiliate_city','affiliates.city_identity_card_id','=','affiliate_city.id')
                     ->leftJoin('cities as affiliate_birth_city','affiliates.city_birth_id','=','affiliate_birth_city.id')
                     ->join('spouses','affiliates.id','=','spouses.affiliate_id')
-                    ->leftJoin('cities as spouse_city','spouses.city_identity_card_id','=','spouse_city.id')
                     ->leftJoin('cities as spouse_birth_city','spouses.city_birth_id','=','spouse_birth_city.id')
                     //->wherein('affiliates.id', [1,2,3])
                     ->get();
@@ -70,7 +66,6 @@ class AffiliateSpouseReport implements FromCollection, WithHeadings, ShouldAutoS
                 $data = Affiliate::select(
                     'affiliates.id',
                     'affiliates.identity_card', 
-                    'affiliate_city.first_shortened',
                     'affiliates.first_name',
                     'affiliates.second_name',
                     'affiliates.last_name',
@@ -83,7 +78,6 @@ class AffiliateSpouseReport implements FromCollection, WithHeadings, ShouldAutoS
                     'affiliates.reason_death',
                     'affiliates.death_certificate_number'
                     )
-                    ->leftJoin('cities as affiliate_city','affiliates.city_identity_card_id','=','affiliate_city.id')
                     ->leftJoin('cities as affiliate_birth_city','affiliates.city_birth_id','=','affiliate_birth_city.id')
                     ->whereNotNull('affiliates.date_death')
                     ->orderBy('affiliates.date_death', 'DESC')
@@ -105,7 +99,6 @@ class AffiliateSpouseReport implements FromCollection, WithHeadings, ShouldAutoS
             case 21:
                 $new_columns = [
                     "CI conyugue ",
-                    "CI Exp conyugue ",
                     "Primer Nombre",
                     "Segundo Nombre",
                     "Paterno ",
@@ -128,7 +121,6 @@ class AffiliateSpouseReport implements FromCollection, WithHeadings, ShouldAutoS
         $default = [
             'NUP',
             'CI',
-            'CI Exp ',
             "Primer Nombre ",
             "Segundo Nombre ",
             "Paterno ",

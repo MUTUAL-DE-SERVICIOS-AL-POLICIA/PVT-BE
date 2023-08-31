@@ -46,8 +46,6 @@ class AffiliateTagSheet implements FromCollection, WithTitle, WithHeadings, Shou
             // 'NRO',
             'NUP',
             'CI',
-            'CI Exp ',
-            // 'CI COMPLETO ',
             "Primer Nombre ",
             "Segundo Nombre ",
             "Paterno ",

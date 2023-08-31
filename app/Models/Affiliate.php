@@ -984,8 +984,6 @@ class Affiliate extends Model
         row_number() OVER () AS NRO,
         affiliates.id as NUP,
         affiliates.identity_card as ci_causa,
-        affiliate_city.first_shortened as exp_causa,
-        concat_ws(' ', affiliates.identity_card,affiliate_city.first_shortened) as ci_completo_causa,
         affiliates.first_nam    //     return $this->hasOne(AffiliateDevice::class, 'affiliate_id', 'id', 'affiliate_devices');
         e as fecha_nacimiento,
         affiliates.nua as codigo_nua_cua";
