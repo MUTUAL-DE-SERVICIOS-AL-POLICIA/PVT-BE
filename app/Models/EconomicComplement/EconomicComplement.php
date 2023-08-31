@@ -653,8 +653,7 @@ class EconomicComplement extends Model
     public static function basic_info_beneficiary()
     {
         return "
-        beneficiary.identity_card as ci_ben, beneficiary_city.first_shortened as ext_ben,
-        concat_ws(' ', beneficiary.identity_card,beneficiary_city.first_shortened) as ci_completo_ben,
+        beneficiary.identity_card as ci_ben,
         beneficiary.first_name as primer_nombre_ben,
         beneficiary.second_name as segundo_nombre_ben,
         beneficiary.last_name as apellido_paterno_ben,
@@ -701,8 +700,6 @@ class EconomicComplement extends Model
     {
         return "
         affiliates.identity_card as ci_causa,
-        affiliate_city.first_shortened as exp_causa,
-        concat_ws(' ', affiliates.identity_card,affiliate_city.first_shortened) as ci_completo_causa,
         affiliates.first_name as primer_nombre_causahabiente,
         affiliates.second_name as segundo_nombre_causahabiente,
         affiliates.last_name as ap_paterno_causahabiente,

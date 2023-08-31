@@ -18,7 +18,6 @@ class AffiliateTagsReport implements WithMultipleSheets
             ->select(
                 'affiliates.id',
                 'identity_card',
-                'affiliate_city.first_shortened',
                 'affiliates.first_name as affiliate_primer_nombre',
                 'affiliates.second_name as affiliate_segundo_nombre',
                 'affiliates.last_name as affiliate_paterno',
@@ -27,7 +26,6 @@ class AffiliateTagsReport implements WithMultipleSheets
                 'affiliates.birth_date as affiliate_fecha_nacimiento',
                 'affiliates.nua as affiliate_codigo_nua_cua'
             )
-            ->leftJoin('cities as affiliate_city', 'affiliates.city_identity_card_id', '=', 'affiliate_city.id')
             ->has('tags')
             ->get();
         foreach ($tags as $t) {
