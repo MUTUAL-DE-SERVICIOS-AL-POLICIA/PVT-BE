@@ -1424,18 +1424,8 @@ class ContributionController extends Controller
         if($ret_fun->isQuota()){
             if($ret_fun->procedure_modality_id == 8){//en cumplimiento de funciones
                 foreach($request_contributions as $index =>$cont){
-                    if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
-                        if($cont['contribution_type_mortuary_id'] == 1){
-                            $count_contributions++;
-                        }else
-                            break;
-                    }else{
-                        $count_grace++;
-                        if($count_contributions+$count_grace > 4){
-                            break;
-                        }
-                        if($count_grace > 4)
-                            $grace_period = false;
+                    if($cont['contribution_type_mortuary_id'] == 1){
+                        $count_contributions++;
                     }
                 }
                 if($count_contributions >= 12){ // debe tener si o si al menos 12 para acceder al beneficio
@@ -1450,18 +1440,8 @@ class ContributionController extends Controller
                 }
             }else{// por riesgo comun
                 foreach($request_contributions as $index =>$cont){
-                    if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
-                        if($cont['contribution_type_mortuary_id'] == 1){
-                            $count_contributions++;
-                        }else
-                            break;
-                    }else{
-                        $count_grace++;
-                        if($count_contributions+$count_grace > 4){
-                            break;
-                        }
-                        if($count_grace>4)
-                            $grace_period = false;
+                    if($cont['contribution_type_mortuary_id'] == 1){
+                        $count_contributions++;
                     }
                 }
                 if($count_contributions >= 12){ // debe tener si o si al menos 12 para acceder al beneficio
