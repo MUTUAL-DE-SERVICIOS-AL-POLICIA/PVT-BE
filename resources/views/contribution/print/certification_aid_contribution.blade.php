@@ -78,7 +78,7 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->rent_pension) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->total }}</td>
                 </tr> 
                 <!-- @foreach($reimbursements as $reimbursement)
