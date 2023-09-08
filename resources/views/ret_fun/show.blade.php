@@ -236,7 +236,12 @@
     </div>
 
 @endif
-
+<!---Alerta de pago garantes----->
+<ret-fun-alert
+        :affiliate-id="{{$affiliate->id}}"
+    >
+    </ret-fun-alert>
+<!-------->
 
     <div class="row">
 
