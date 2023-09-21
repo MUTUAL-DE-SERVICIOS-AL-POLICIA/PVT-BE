@@ -128,6 +128,9 @@
                                             <tr>
                                                 <td>Fondo de Retiro</td>
                                             </tr>
+                                            <tr>
+                                                <td>Cuota Mortuoria</td>
+                                            </tr>
                                         </table>
                                     </td>
                                     @for($i=1;$i<13;$i++)
@@ -191,8 +194,14 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->retirement_fund ?? '-'}} </div>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}" class="editcontent numberformat">{{$contributions[$period]->retirement_fund ?? '-'}} </div>
                                                                 <input type="hidden" disabled name="retirement_fund[{{$period}}]" value="{{$contributions[$period]->retirement_fund ??'-'}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">{{$contributions[$period]->mortuary_quota ?? '-'}} </div>
+                                                                <input type="hidden" disabled name="mortuary_quota[{{$period}}]" value="{{$contributions[$period]->mortuary_quota ??'-'}}">
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -249,8 +258,14 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="false" class="editcontent numberformat">0</div>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">0</div>
                                                                 <input type="hidden" disabled name="retirement_fund[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="mortuary_quota[{{$period}}]" value="0">
                                                             </td>
                                                         </tr>
                                                     </table>
