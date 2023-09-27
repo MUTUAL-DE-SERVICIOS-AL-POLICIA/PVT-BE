@@ -86,10 +86,10 @@ class ReimbursementController extends Controller
         $reim->public_security_bonus = 0;
         $reim->gain = $request->gain;
         $reim->payable_liquid = 0;
-        $reim->quotable = 0;
-        $reim->retirement_fund = 0;
-        $reim->mortuary_quota = 0;        
-        $reim->total = $request->total;
+        $reim->quotable = $request->quotable ?? 0;
+        $reim->retirement_fund = $request->retirement_fund ?? 0;
+        $reim->mortuary_quota = $request->mortuary_quota ?? 0;        
+        $reim->total = $request->total ?? 0;
         $reim->subtotal = 0;        
         $reim->save();        
         return $reim;        
