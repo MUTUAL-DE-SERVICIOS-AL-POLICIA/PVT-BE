@@ -379,6 +379,7 @@
         $(button).closest('tr').prev().toggleClass('warning');
         var formdata = $('form').serialize();
         console.log(formdata);
+        // return "hola";
         $.ajax({
             url: "{{asset('store_contributions')}}",
             method: "POST",
@@ -419,11 +420,19 @@ $('.editcontent').blur(function() {
     $(this).closest('table').find('tr:first').find('td:first').find('input').removeAttr('disabled');
 });
 function createReimbursement(year){
-    //alert(year);
     this.clearModal();
     this.actual_year = year;
     $('#modal_year').val(year);
     $('#reimbursement_modal').modal('show');
+}
+function clearModal(){    
+    console.log("dentro del modal");
+    month = $('#month').val('');
+    salary = $('#reim_salary').val('');
+    category = $('#reim_category').val('');
+    gain = $('#reim_gain').val('');    
+    total =  $('#reim_amount').val('');
+    reim_seniority_bonus = $('#reim_seniority_bonus').val('');
 }
 function storeReimbursement(){
     year = this.actual_year;
@@ -431,8 +440,6 @@ function storeReimbursement(){
     salary = $('#reim_salary').val();
     salary = salary.replace(/,/g, "");
 
-    //category = $('#reim_category').val();    
-    
     seniority_bonus = $('#reim_seniority_bonus').val();
     seniority_bonus = seniority_bonus.replace(/,/g, "");
 
@@ -451,12 +458,10 @@ function storeReimbursement(){
             if (settings.url.indexOf(document.domain) >= 0) {
                 xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
             }
-            //console.log($(button).closest('form').serialize());
         },
         success: function(result){
             $("#reim"+result.month_year).html(result.total);
             $("#main"+result.month_year).css('background-color', '#ffe6b3');
-            this.clearModal();
         },
         error: function(xhr, status, error) {                        
             console.log(xhr.responseText);
@@ -509,28 +514,21 @@ $(document).ready(function() {
     $('.sk-folding-cube').hide();
     $('.my-content').removeClass('sk-loading')
 });
-function clearModal(){    
-    month = $('#month').val('');
-    salary = $('#reim_salary').val('');
-    category = $('#reim_category').val('');
-    gain = $('#reim_gain').val('');    
-    total =  $('#reim_amount').val('');
-    reim_seniority_bonus = $('#reim_seniority_bonus').val('');
-}
-    $('#month').change(function(){
 
-        //console.log($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html());
-        if(parseFloat($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()) > 0) {
-            $('.delete_reimbursement').show();
-            $('#store_reimbursement').hide();
-            $('#on_deleted').hide();
-        } else {
-            $('#on_deleted').show();
-            $('.delete_reimbursement').hide();
-            $('#store_reimbursement').show();
-        }
-        //if({{ $("#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()" == '0')
-          //  console.log('cero');    
-    });    
+$('#month').change(function(){
+
+    //console.log($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html());
+    if(parseFloat($('#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()) > 0) {
+        $('.delete_reimbursement').show();
+        $('#store_reimbursement').hide();
+        $('#on_deleted').hide();
+    } else {
+        $('#on_deleted').show();
+        $('.delete_reimbursement').hide();
+        $('#store_reimbursement').show();
+    }
+    //if({{ $("#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()" == '0')
+        //  console.log('cero');    
+});    
 </script>
 @endsection
