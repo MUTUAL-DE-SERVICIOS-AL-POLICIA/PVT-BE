@@ -689,13 +689,13 @@ class EconomicComplement extends Model
     public static function basic_info_discount()
     {
         return " 
-        sum(case when (discount.shortened='Amortización por Préstamo') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
-        sum(case when (discount.shortened='Amortización Reposición de Fondos') then  ecocomdiscount.amount else 0 end)  as Amortización_Reposición_de_Fondos,
-        sum(case when (discount.shortened='Aporte Auxilio Mortuorio') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
-        sum(case when (discount.shortened='Amortización Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar";
+        sum(DISTINCT case when (discount.shortened='Amortización por Préstamo') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
+        sum(DISTINCT case when (discount.shortened='Amortización Reposición de Fondos') then  ecocomdiscount.amount else 0 end)  as Amortización_Reposición_de_Fondos,
+        sum(DISTINCT case when (discount.shortened='Aporte Auxilio Mortuorio') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
+        sum(DISTINCT case when (discount.shortened='Amortización Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar";
     } 
 
-
+    
     public static function basic_info_affiliates()
     {
         return "
@@ -779,6 +779,14 @@ class EconomicComplement extends Model
         return $query->leftJoin('affiliate_tokens', 'economic_complements.affiliate_id', '=', 'affiliate_tokens.affiliate_id')
                ->leftJoin('affiliate_devices', 'affiliate_tokens.id', '=', 'affiliate_devices.affiliate_token_id');
     }
+    public function scopeWfRecords($query)
+    {
+        return $query->leftJoin('wf_records', function($join) {
+            $join->on('wf_records.recordable_id', '=', 'economic_complements.id')
+                ->where('wf_records.recordable_type', '=', 'economic_complements');
+        })->leftJoin('users', 'wf_records.user_id', '=', 'users.id');
+    }
+
     public function getEcoComBeneficiaryBank()
     {
         $beneficiary = $this->eco_com_beneficiary;

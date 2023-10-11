@@ -21,6 +21,10 @@ use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Observers\EcoComBeneficiaryObserver;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
 use Muserpol\Observers\EcoComLegalGuardianObserver;
+use Muserpol\Models\Contribution\Contribution;
+use Muserpol\Observers\ContributionObserver;
+use Muserpol\Models\Contribution\Reimbursement;
+use Muserpol\Observers\ReimbursementObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +44,9 @@ class AppServiceProvider extends ServiceProvider
         EconomicComplement::observe(EconomicComplementObserver::class);
         EcoComBeneficiary::observe(EcoComBeneficiaryObserver::class);
         EcoComLegalGuardian::observe(EcoComLegalGuardianObserver::class);
+        Contribution::observe(ContributionObserver::class);
+        Reimbursement::observe(ReimbursementObserver::class);
+
         Relation::morphMap([
             'retirement_funds' => 'Muserpol\Models\RetirementFund\RetirementFund',
             'quota_aid_mortuaries' => 'Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary',
