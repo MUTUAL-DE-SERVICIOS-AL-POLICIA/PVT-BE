@@ -106,7 +106,7 @@
                 </tbody>
             </table>
         @endif
-        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, y en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario Cuota y Auxilio Mortuorio procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme el artículo 50 del Reglamento de Cuota y Auxilio Mortuorio.</div>
+        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme el Artículo 53 del Reglamento de Cuota y Auxilio Mortuorio.</div>
         <table class="m-t-5">
             <tr>
                 <td class="no-border text-center text-base w-50 align-bottom">
