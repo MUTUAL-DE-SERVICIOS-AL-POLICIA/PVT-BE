@@ -216,9 +216,9 @@
                 </div>
             </div>
 
-            <div class="col-md-4"> <label for="is_paid_spouse">PAGO POR UNICA VEZ VIUDA </label> </div>
+            <div class="col-md-4"> <label for="is_paid">PAGO POR UNICA VEZ</label> </div>
             <div class="col-md-2">
-              <input class ="mediumCheckbox" type="checkbox" id="is_paid_spouse" v-model="form.is_paid_spouse" :disabled="!editing || (roleId != 4)">
+              <input class ="mediumCheckbox" type="checkbox" id="is_paid" v-model="form.is_paid" :disabled="!editing || (roleId != 4)">
             </div>
             <!-- <div class="col-md-2"><label class="control-label">Ente gestor:</label></div>
             <div class="col-md-4">
@@ -392,7 +392,7 @@ export default {
         category_id: this.ecoCom.category_id,
         service_years: this.affiliate.service_years,
         service_months: this.affiliate.service_months,
-        is_paid_spouse: this.ecoCom.is_paid_spouse,
+        is_paid: this.ecoCom.is_paid,
         months_of_payment: this.ecoCom.months_of_payment,
         eco_com_state_id: this.ecoCom.eco_com_state_id,
       },
