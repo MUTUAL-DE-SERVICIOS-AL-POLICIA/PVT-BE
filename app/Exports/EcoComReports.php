@@ -168,7 +168,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                         ->spouseInfo()
                         // ->order()
                         ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_spouse() . $columns))
-                        ->where('economic_complements.is_paid_spouse',true)
+                        ->where('economic_complements.is_paid',true)
                         //->has('eco_com_legal_guardian')
                         ->get();
                         
