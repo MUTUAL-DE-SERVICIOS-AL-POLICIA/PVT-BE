@@ -807,4 +807,8 @@ class EconomicComplement extends Model
     {
         return $this->workflow_id == ID::workflow()->eco_com_lagging;
     }
+    public function eco_com_review_procedures()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComReviewProcedure');
+    }
 }
