@@ -808,5 +808,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Cargar promedios
     Route::post('eco_com_load_promedio', 'EconomicComplementController@loadPromedio');
+
+    // certificado de revision
+    Route::get('review_show/{eco_com_id}', 'EcoComReviewProcedureController@show')->name('show');
+   
   });
 });
