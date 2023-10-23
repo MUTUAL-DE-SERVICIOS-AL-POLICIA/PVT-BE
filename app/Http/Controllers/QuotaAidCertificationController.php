@@ -1314,25 +1314,25 @@ class QuotaAidCertificationController extends Controller
       realizarán aportes directos a la Mutual de Servicios al Policía- MUSERPOL, sobre el total de su pensión mensual, sin considerar la Renta Dignidad 
       hasta el momento de su deceso.”,</i> ';
     }else{
-      $considering_two.='Que, los Artículos 15, 16 y 17 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: “ARTICULO 15. (APORTE MENSUAL).- Es el efectuado 
+      $considering_two.='Que, los Artículos 15, 16 y 17 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: “ARTICULO 15. <i>(APORTE MENSUAL).- Es el efectuado 
       a la Mutual de Servicios al Policía – MUSERPOL por: I. Los (las) afiliados (as) del sector activo a través del Comando General de la Policía Boliviana, mediante 
       descuentos mensuales de las planillas de haberes. II. Los (las) afiliados (as) del servicio activo de la Policía Boliviana, que no son objeto de descuentos mediante 
       planillas de haberes del Comando General de la Policía Boliviana, por estar destinados en comisión de servicio Ítem Cero (Ítem “0”), suspendidos o retirados temporalmente 
       de sus funciones por procesos disciplinarios y/o penales, figurando en planilla de haberes con Ítem Cero (Ítem “0” ), deberán realizar sus aportes directos a la Mutual 
-      de Servicios al Policía - MUSERPOL, previa firma de compromiso de pago de aportes(…) Artículo 16º. (OBLIGATORIEDAD).- I. Los aportes efectuados a la Mutual de Servicios 
+      de Servicios al Policía - MUSERPOL, previa firma de compromiso de pago de aportes(…)</i> ARTÍCULO 16º. <i>(OBLIGATORIEDAD).- I. Los aportes efectuados a la Mutual de Servicios 
       al Policía - MUSERPOL, por los (las) afiliados (as) del sector activo de la Policía Boliviana, son de carácter obligatorio, desde su ingreso a la Institución Policial, 
       hasta el momento de su desvinculación definitiva acreditada mediante Memorándum de Agradecimiento o Resolución de baja definitiva (voluntaria o forzosa) emitidos por el 
       Comando General de la Policía Boliviana emitidos por el Comando General de la Policía Boliviana o Certificado de Defunción en caso del deceso del (la) Titular Policía. 
       II. Los (as) efectivos Policiales que se encuentren en comisión de servicio Ítem Cero (Ítem “0”) o que hubieran sido suspendidos (as) de sus funciones por procesos 
       disciplinarios y/o penales, figurando en planilla de haberes con Ítem Cero (Ítem “0”) y otros, deberán continuar aportando de manera directa a la Mutual de Servicios 
       al Policía - MUSERPOL, para poder acceder al beneficio de Cuota Mortuoria; a excepción de los que no figuran en listas de revista y planillas de haberes del Comando 
-      General de la Policía Boliviana(…). Artículo 17º. (RECONOCIMIENTO DE LOS APORTES).- La Mutual de Servicios al Policía - MUSERPOL reconoce la cantidad de aportes 
+      General de la Policía Boliviana(…)</i>. ARTÍCULO 17º. <i>(RECONOCIMIENTO DE LOS APORTES).- La Mutual de Servicios al Policía - MUSERPOL reconoce la cantidad de aportes 
       efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la Ex Mutual de Seguros del Policía – MUSEPOL”,</i>';
     }
     $considering_two.=' establece la forma y manera de cómo un afiliado de la Policía Boliviana realiza los aportes a la Mutual de Servicios al Policía MUSERPOL.
     <br><br>';
     if ($quota_aid->procedure_modality->procedure_type_id == 4) {
-      $considering_two.= 'Que, los Artículos 32, 33, 34, 35 y 36 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, refieren: ARTÍCULO 32º. (DEFINICIÓN).- 
+      $considering_two.= 'Que, los Artículos 32, 33, 34, 35 y 36 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio, refieren: ARTÍCULO 32º. <i>(DEFINICIÓN).- 
       Para efectos del presente Reglamento y conforme lo dispuesto por el inciso b) parágrafo I del Artículo 14 y el Artículo 16 del Decreto Supremo N° 1446 de 
       19 de diciembre de 2012; modificado por los parágrafos II, III y IV del Artículo 2 del Decreto Supremo N° 2829 de 6 de julio de 2016, se define el beneficio 
       de la siguiente manera: Auxilio Mortuorio.- Es el beneficio económico que se otorga a los (las) derechohabiente (s) de los miembros del sector pasivo de la 
@@ -1346,34 +1346,34 @@ class QuotaAidCertificationController extends Controller
       cumplan con lo determinado en el inciso b) del Artículo 47 del presente Reglamento, en función al último grado que ostentaba  el Titular al momento de su 
       desvinculación definitiva de la Institución Policial. ARTÍCULO 36º. (AUXILIO MORTUORIO AL FALLECIMIENTO DEL (LA) VIUDO (A). Será otorgado a los (las) 
       derechohabientes del (la) Viudo (a), que cumplan con lo determinado en el inciso c) del Artículo 47 del presente Reglamento, en función al último grado que 
-      ostentaba el (la) Titular miembro de la Policía Boliviana al momento de su desvinculación definitiva.”, establece la definición del beneficio de Auxilio Mortuorio 
+      ostentaba el (la) Titular miembro de la Policía Boliviana al momento de su desvinculación definitiva.”</i>, establece la definición del beneficio de Auxilio Mortuorio 
       y en que consiste las modalidades para la otorgación del mismo.
       <br><br>
-      Que, el Artículo 38 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: “(COTIZACIONES NECESARIAS PARA ACCEDER AL AUXILIO MORTUORIO).- I. Según 
+      Que, el Artículo 38 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(COTIZACIONES NECESARIAS PARA ACCEDER AL AUXILIO MORTUORIO).- I. Según 
       lo determinado por el Estudio Matemático Actuarial 2021 – 2025, para la otorgación del beneficio del Auxilio Mortuorio, el Titular deberá contar al menos un 
       (1) aporte anterior al fallecimiento o con la firma de Compromiso de Pago de aportes para dicho beneficio (en caso de encontrarse en trámite la pensión de vejez).
       II. En caso de no acreditarse cotizaciones continuas anteriores al deceso del (la) Titular, de su Cónyuge o Viuda o a la inexistencia del compromiso de pago de aportes, 
-      no corresponderá la otorgación del beneficio”, se verifica que el presente tramite cuenta con las cotizaciones necesarias para su procesamiento.
+      no corresponderá la otorgación del beneficio”</i>, se verifica que el presente tramite cuenta con las cotizaciones necesarias para su procesamiento.
       <br><br>';
     }else{
-      $considering_two.='Que, los Artículos 22, 23, 24, 25 y 26 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: “ARTÍCULO 22. (DEFINICIÓN).- Para efectos del presente Reglamento y conforme lo dispuesto por el Decreto Supremo N°5007 de 23 de agosto de 2023, 
+      $considering_two.='Que, los Artículos 22, 23, 24, 25 y 26 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: “ARTÍCULO 22. <i>(DEFINICIÓN).- Para efectos del presente Reglamento y conforme lo dispuesto por el Decreto Supremo N°5007 de 23 de agosto de 2023, 
       que modifica el parágrafo I del Artículo 16 del Decreto Supremo N°1446 de 19 de diciembre de 2012, se define el beneficio de la siguiente manera: Cuota Mortuoria.- Es el beneficio económico que se otorga a los (las) derechohabientes de los miembros del sector activo 
-      de la Policía Boliviana, Afiliados (as) a la Mutual de Servicios al Policía - MUSERPOL, destinado a cubrir los gastos emergentes del fallecimiento del (la) Titular y de su Cónyuge, que se hará efectivo con el pago de un monto único y por una sola vez. ARTÍCULO 23º. 
-      (MODALIDADES DE CUOTA MORTUORIA).- El beneficio de Cuota Mortuoria, será otorgado en las siguientes modalidades: a) Cuota Mortuoria al Fallecimiento del (la) Titular en Cumplimiento de Funciones. b) Cuota Mortuoria al Fallecimiento del (la) Titular por Riesgo Común. 
-      c) Cuota Mortuoria al Fallecimiento del (la) Cónyuge. ARTÍCULO 24º. (CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR EN CUMPLIMIENTO DE FUNCIONES).- I. Será otorgado a los (las) derechohabientes debidamente acreditados (as), del (la) Efectivo Policial que hubiese 
+      de la Policía Boliviana, Afiliados (as) a la Mutual de Servicios al Policía - MUSERPOL, destinado a cubrir los gastos emergentes del fallecimiento del (la) Titular y de su Cónyuge, que se hará efectivo con el pago de un monto único y por una sola vez.</i> ARTÍCULO 23º. 
+      <i>(MODALIDADES DE CUOTA MORTUORIA).- El beneficio de Cuota Mortuoria, será otorgado en las siguientes modalidades: a) Cuota Mortuoria al Fallecimiento del (la) Titular en Cumplimiento de Funciones. b) Cuota Mortuoria al Fallecimiento del (la) Titular por Riesgo Común. 
+      c) Cuota Mortuoria al Fallecimiento del (la) Cónyuge.</i> ARTÍCULO 24º. <i>(CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR EN CUMPLIMIENTO DE FUNCIONES).- I. Será otorgado a los (las) derechohabientes debidamente acreditados (as), del (la) Efectivo Policial que hubiese 
       fallecido en cumplimiento de sus funciones, que cumplan con lo determinado en el inciso a) del Artículo 46 del presente reglamento. II. La determinación del tipo de fallecimiento, deberá ser verificada a través del dictamen de calificación emitido por la Entidad 
       Encargada de Calificar o certificación emitida por la Dirección Nacional de Salud y Bienestar Social de la Policía Boliviana. III. En caso de no presentar el Dictamen de Calificación o Certificación emitida por la Dirección Nacional de Salud y Bienestar Social de 
-      la Policía Boliviana, se determinará la modalidad como fallecimiento del (la) Titular por Riesgo Común. ARTÍCULO 25º. (CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR POR RIESGO COMÚN).- Este beneficio, será otorgado a los (las) derechohabientes debidamente 
+      la Policía Boliviana, se determinará la modalidad como fallecimiento del (la) Titular por Riesgo Común.<7i> ARTÍCULO 25º. <i>(CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR POR RIESGO COMÚN).- Este beneficio, será otorgado a los (las) derechohabientes debidamente 
       acreditados (as), del (la) Efectivo Policial que hubiese fallecido por cualquier causa no vinculada al cumplimiento de sus funciones, que cumplan con lo determinado en el inciso b) del Artículo 46 del presente reglamento. ARTÍCULO 26º. (CUOTA MORTUORIA AL FALLECIMIENTO 
       DEL (LA) CÓNYUGE). - Este beneficio, será otorgado al Titular Policía del sector activo de la Policía Boliviana, al fallecimiento de su Cónyuge previo cumplimiento de lo determinado en el inciso c) del Artículo 46 del presente reglamento”, establece la definición del 
-      beneficio de Cuota Mortuoria y en que consiste las modalidades para la otorgación del mismo.
+      beneficio de Cuota Mortuoria y en que consiste las modalidades para la otorgación del mismo.</i>
       <br><br>
-      Que, el Artículo 28 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: “(COTIZACIONES NECESARIAS PARA ACCEDER AL BENEFICIO).- I. Para acceder a la otorgación del beneficio de la Cuota Mortuoria, según las modalidades determinadas en los Artículos 24, 25 y 26 
+      Que, el Artículo 28 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(COTIZACIONES NECESARIAS PARA ACCEDER AL BENEFICIO).- I. Para acceder a la otorgación del beneficio de la Cuota Mortuoria, según las modalidades determinadas en los Artículos 24, 25 y 26 
       del presente Reglamento, es necesario verificar una cantidad de al menos doce (12) cotizaciones continuas anteriores al fallecimiento del (la) Efectivo Policial o de su Cónyuge. II. En caso de no acreditarse las doce (12) cotizaciones continuas anteriores al deceso del (la) 
-      Efectivo Policial o de su Cónyuge, no corresponderá la otorgación del beneficio”, se verifica que el presente tramite cuenta con las cotizaciones necesarias para su procesamiento.
+      Efectivo Policial o de su Cónyuge, no corresponderá la otorgación del beneficio”, se verifica que el presente tramite cuenta con las cotizaciones necesarias para su procesamiento.</i>
       <br><br>';
     }
-    $considering_two.='Que, el Artículo 42 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: ”(PRESENTACIÓN DE TRÁMITES).- I. Previo a la presentación de requisitos 
+    $considering_two.='Que, el Artículo 42 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>”(PRESENTACIÓN DE TRÁMITES).- I. Previo a la presentación de requisitos 
     para el inicio de la solicitud de otorgación de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio, el personal encargado de la recepción deberá verificar la existencia de 
     aportes según lo determinado en los Artículos 28 y 38 del presente reglamento. II. La recepción de solicitudes de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, se 
     efectuará en Ventanilla de Atención al Afiliado de la ciudad de La Paz u Oficinas Regionales, verificándose la presentación de la documentación integra y legible de acuerdo a 
@@ -1381,7 +1381,7 @@ class QuotaAidCertificationController extends Controller
     con la recepción. III. La documentación presentada en fotocopias simples en el proceso de trámite de los beneficios de Cuota Mortuoria y Auxilio Mortuorio, deberá ser verificada 
     con los originales por el profesional que realice el registro. IV. Toda documentación adjunta, debe estar debidamente foliada y será incorporada en el folder del beneficio, el que 
     será denominado posteriormente como “Expediente”. V. Cuando el (la) solicitante no firme el Formulario de Recepción con carácter de Declaración Jurada, deberá imprimir sus huellas 
-    digitales en presencia de un (1) testigo mayor de edad, quien firmará el documento en constancia de conformidad”, establece los parámetros de presentación de los documentos para 
+    digitales en presencia de un (1) testigo mayor de edad, quien firmará el documento en constancia de conformidad”</i>, establece los parámetros de presentación de los documentos para 
     acceder a la otorgación del beneficio.
     <br><br>';
     if ($quota_aid->procedure_modality->procedure_type_id == 4) {
@@ -1407,7 +1407,7 @@ class QuotaAidCertificationController extends Controller
 
     $considering_two.='</i> por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
 
-    $considering_two.='Que los Artículos 51 y 52 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: “ARTICULO 51 (ROGACIÓN).- La actuación de la Mutual de Servicios al Policía – MUSERPOL 
+    $considering_two.='Que los Artículos 51 y 52 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refieren: <i>“ARTICULO 51 (ROGACIÓN).- La actuación de la Mutual de Servicios al Policía – MUSERPOL 
     se inicia a partir de la presentación de la solicitud formal por parte del Titular o derechohabiente (s) para acceder a los beneficios de Cuota Mortuoria y Auxilio Mortuorio. La Mutual de Servicios 
     al Policía - MUSERPOL reconoce el derecho del (los) beneficiario (s) a partir de la fecha en la cual el (la) Afiliado (a) o derechohabiente (s) presenta (n) su solicitud formal por Ventanilla de Atención 
     al Afiliado en la ciudad de La Paz u Oficinas Regionales, para el correspondiente procesamiento del trámite, cumpliendo con los requisitos de orden establecidos en el presente Reglamento. ARTÍCULO 52°. 
@@ -1415,30 +1415,30 @@ class QuotaAidCertificationController extends Controller
     Admitido el trámite en Ventanilla de Atención al Afiliado, con todos los requisitos establecidos en el presente Reglamento, se derivará el expediente al Área de Archivo y Gestión Documental de Beneficios 
     Económicos. 2. El Área de Archivo y Gestión Documental de Beneficios Económicos, emitirá la certificación de existencia de antecedentes o expediente del (la) Titular e iniciará la foliación de la documentación 
     que debe ser continuada por cada una de las áreas intervinientes en el procedimiento. 3. Con la certificación de Archivo, el trámite será remitido al Área Legal, para verificar y validar la documentación presentada 
-    por el (la) solicitante, conforme lo establecido en el presente Reglamento. (…)”, establece la prosecución del trámite después de la recepción de la carpeta disponiendo el procesamiento de acuerdo a las funciones 
+    por el (la) solicitante, conforme lo establecido en el presente Reglamento. (…)”</i>, establece la prosecución del trámite después de la recepción de la carpeta disponiendo el procesamiento de acuerdo a las funciones 
     de cada Área que conforman la Unidad de Fondo de Retiro Policial Solidario.
     <br><br>';
     if ($quota_aid->procedure_modality->procedure_type_id == 4) {
-      $considering_two.='Que, el Artículo 57 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere:”(CUANTÍA DEL BENEFICIO DE AUXILIO MORTUORIO).- 
+      $considering_two.='Que, el Artículo 57 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>”(CUANTÍA DEL BENEFICIO DE AUXILIO MORTUORIO).- 
       Los beneficiarios que inicien trámite de Auxilio Mortuorio, según lo establecido en los artículos 34, 35, 36 y 37 del presente Reglamento, percibirán 
       un pago correspondiente a la cuantía determinada por el Estudio Matemático Actuarial 2021 – 2025, tomando en cuenta el grado que ostentaba el o la servidor 
       (a) público policial al momento de su desvinculación definitiva de la institución policial; la cuantía del beneficio será distribuido de acuerdo a lo establecido 
-      en el Código Civil y normas conexas. (…)”, por tanto a través de la Certificación de Calificación se determina el monto de pago a favor del titular o derechohabientes.
+      en el Código Civil y normas conexas. (…)”</i>, por tanto a través de la Certificación de Calificación se determina el monto de pago a favor del titular o derechohabientes.
       <br><br>';
     }else{
-      $considering_two.='Que, el Artículo 56 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere:(CUANTÍA DEL BENEFICIO DE CUOTA MORTUORIA).- Los beneficiarios que inicien trámite de Cuota Mortuoria 
+      $considering_two.='Que, el Artículo 56 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>(CUANTÍA DEL BENEFICIO DE CUOTA MORTUORIA).- Los beneficiarios que inicien trámite de Cuota Mortuoria 
       según lo establecido en los artículos 24, 25 y 26 del presente Reglamento, percibirán un pago único correspondiente a la cuantía determinada por el Estudio Matemático Actuarial 2021 – 2025, tomando en cuenta 
-      el grado que ostentaba el o la servidor público policial al momento del fallecimiento; la cuantía del beneficio será distribuido de acuerdo a lo establecido en el Código Civil y normas conexas. (…)”, por tanto 
+      el grado que ostentaba el o la servidor público policial al momento del fallecimiento; la cuantía del beneficio será distribuido de acuerdo a lo establecido en el Código Civil y normas conexas. (…)”</i>, por tanto 
       a través de la Certificación de Calificación se determina el  monto de pago a favor del titular o derechohabientes. <br><br>';
     }
-    $considering_two.='Que el Artículo 59 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, 
+    $considering_two.='Que el Artículo 59 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, 
     es la instancia técnica y legal que mediante acto administrativo determina la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio. Es designada mediante Resolución Administrativa 
-    de la Dirección General Ejecutiva de la Mutual de Servicios al Policía – MUSERPOL”, por consiguiente, la Resolución Administrativa Nº 038/2023 del 14 de junio de 2023, conforma la Comisión de 
+    de la Dirección General Ejecutiva de la Mutual de Servicios al Policía – MUSERPOL”</i>, por consiguiente, la Resolución Administrativa Nº 038/2023 del 14 de junio de 2023, conforma la Comisión de 
     Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
-    Que el Artículo 60 del Reglamento de Auxilio Mortuorio refiere: “(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: a. Determinar la otorgación de los beneficios. 
+    Que el Artículo 60 del Reglamento de Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: a. Determinar la otorgación de los beneficios. 
     b. Determinar la otorgación de montos dejados en cuota parte en reserva. c. Resolver los Recursos de Revocatoria. d. Otros, atribuibles dentro de su competencia. Para efectivizar lo establecido, emitirá 
-    Resolución, Auto o informe según corresponda”, es así que la comisión de beneficios económicos en consideración de todos   los antecedentes y la documentación adjunta a la presentación del trámite y certificaciones 
+    Resolución, Auto o informe según corresponda”,</i> es así que la comisión de beneficios económicos en consideración de todos   los antecedentes y la documentación adjunta a la presentación del trámite y certificaciones 
     de las diferentes áreas de la Unidad de Otorgación de Cuota Mortuoria, se emite la presente Resolución.
     <br><br>';
     $considering_three = 'Que, la Mutual de Servicios al Policía – MUSERPOL reconoce el derecho de los beneficiarios a
@@ -1531,7 +1531,7 @@ class QuotaAidCertificationController extends Controller
        if ($number->note != '') {
         $considering_three.= $number->note . "<br><br>";
       }*/
-    $considering_three.='<br><br>Que, al verificarse el cumplimiento de requisitos adjuntos a la carpeta según lo señalado en el Artículo '.$art[$quota_aid->procedure_modality_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 98/2021 en fecha 01 de diciembre de 2021 y efectivizado el procesamiento del trámite y conforme el Art. 52  (Procedimiento) del referido Reglamento, corresponde dar curso al pago del beneficio
+    $considering_three.='<br><br>Que, al verificarse el cumplimiento de requisitos adjuntos a la carpeta según lo señalado en el Artículo '.$art[$quota_aid->procedure_modality_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 68/2023 en fecha 19 de septiembre de 2023 y efectivizado el procesamiento del trámite y conforme el Art. 52  (Procedimiento) del referido Reglamento, corresponde dar curso al pago del beneficio
     <b>' .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name).' - '.mb_strtoupper($quota_aid->procedure_modality->name). '</b>'.$fallecido.'.';
     
     ///----- END QUALIFICATION ----////*/
