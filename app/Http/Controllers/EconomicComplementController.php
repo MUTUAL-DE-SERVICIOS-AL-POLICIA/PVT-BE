@@ -46,12 +46,14 @@ use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\FinancialEntity;
 use Muserpol\Models\Contribution\ContributionPassive;
 use Illuminate\Support\Facades\Storage;
+use Muserpol\EconomicComplement\ReviewProcedure;
 use Muserpol\Models\AffiliateDevice;
 use Muserpol\Models\AffiliateToken;
 use Validator;
 use Muserpol\Models\EconomicComplement\EcoComModality;
 
 use Muserpol\Models\BaseWage;
+use Muserpol\Models\EconomicComplement\EcoComReviewProcedure;
 use Ramsey\Uuid\Uuid;
 
 class EconomicComplementController extends Controller
@@ -630,7 +632,27 @@ class EconomicComplementController extends Controller
                 }
             }
         }
+        $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
+
         return redirect()->action('EconomicComplementController@show', ['id' => $economic_complement->id]);
+    }
+
+    public function create_review($economic_complement_id, $reception_type)
+    {
+        $exist = EcoComReviewProcedure::where('economic_complement_id', $economic_complement_id)->first();
+        $review_procedures = ReviewProcedure::where('active', true)->get();
+        if($reception_type == ID::ecoCom()->inclusion || $reception_type == ID::ecoCom()->rehabilitacion) {
+            foreach($review_procedures as $review_procedure) {
+                if (!$exist) {
+                    $submit = new EcoComReviewProcedure();
+                    $submit->review_procedure_id = $review_procedure->id;
+                    $submit->economic_complement_id = $economic_complement_id;
+                    $submit->user_id = Auth::user()->id;
+                    $submit->is_valid = false;
+                    $submit->save();
+                }
+            }
+        }
     }
 
     /**
