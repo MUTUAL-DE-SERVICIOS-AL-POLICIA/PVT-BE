@@ -632,6 +632,7 @@ class EconomicComplementController extends Controller
                 }
             }
         }
+
         $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
 
         return redirect()->action('EconomicComplementController@show', ['id' => $economic_complement->id]);
@@ -1199,6 +1200,30 @@ class EconomicComplementController extends Controller
         }
         return $num;
     }
+    public function editReviewProcedures(Request $request, $id)
+    {
+        try {
+            $data = $request->all();
+            $review_procedures = $data['review_procedures'];
+
+            foreach ($review_procedures as $review) {
+                $review_procedure_id = $review['id'];
+                $isValid = $review['is_valid'];
+                $user_id = $review['user_id'];
+
+                EcoComReviewProcedure::where('review_procedure_id', $review_procedure_id)
+                    ->where('economic_complement_id', $id)
+                    ->update(['is_valid' => $isValid, 'user_id' => $user_id]);
+            }
+            return response()->json(['message' => 'Actualización exitosa']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al actualizar registros: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function getEcoCom($id)
     {
         try {
