@@ -139,13 +139,14 @@ class EcoComCertificationController extends Controller
         $affiliate = $eco_com->affiliate;
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
-        $eco_com_review_procedures = EcoComReviewProcedure::where('economic_complement_id', $id)->get();
+        $eco_com_review_procedures = EcoComReviewProcedure::where('economic_complement_id', $id)->orderBy('review_procedure_id','asc')->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
         $title = "BENEFICIO DEL COMPLEMENTO ECONÓMICO";
         $subtitle = $eco_com->eco_com_procedure->getTextName();
         $text = "CERTIFICACIÓN DE REVISIÓN";
+        $user = $eco_com_review_procedures->first()->user ?? $eco_com->user;
         $size = 400;
         $size_down = 200;
 
@@ -167,6 +168,7 @@ class EcoComCertificationController extends Controller
             'size' => $size,
             'size_down' => $size_down,
             'eco_com' => $eco_com,
+            'user' => $user,
             'affiliate' => $affiliate,
             'has_certificate' => $has_certificate,
             'eco_com_beneficiary' => $eco_com_beneficiary,

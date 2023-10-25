@@ -1200,11 +1200,12 @@ class EconomicComplementController extends Controller
         }
         return $num;
     }
-    public function editReviewProcedures(Request $request, $id)
+    public function editReviewProcedures(Request $request)
     {
         try {
             $data = $request->all();
             $review_procedures = $data['review_procedures'];
+            $economic_complement_id = $data['economic_complement_id'];
 
             foreach ($review_procedures as $review) {
                 $review_procedure_id = $review['id'];
@@ -1212,7 +1213,7 @@ class EconomicComplementController extends Controller
                 $user_id = $review['user_id'];
 
                 EcoComReviewProcedure::where('review_procedure_id', $review_procedure_id)
-                    ->where('economic_complement_id', $id)
+                    ->where('economic_complement_id', $economic_complement_id)
                     ->update(['is_valid' => $isValid, 'user_id' => $user_id]);
             }
             return response()->json(['message' => 'Actualización exitosa']);
