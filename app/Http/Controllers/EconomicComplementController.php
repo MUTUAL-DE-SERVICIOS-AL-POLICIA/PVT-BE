@@ -51,7 +51,7 @@ use Muserpol\Models\AffiliateDevice;
 use Muserpol\Models\AffiliateToken;
 use Validator;
 use Muserpol\Models\EconomicComplement\EcoComModality;
-
+use Muserpol\Models\EconomicComplement\EcoComOncePayment;
 use Muserpol\Models\BaseWage;
 use Muserpol\Models\EconomicComplement\EcoComReviewProcedure;
 use Ramsey\Uuid\Uuid;
@@ -672,7 +672,8 @@ class EconomicComplementController extends Controller
             'eco_com_reception_type:id,name',
             'eco_com_state:id,name,eco_com_state_type_id',
             'degree',
-            'category'
+            'category',
+            'eco_com_once_payment'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
@@ -846,7 +847,8 @@ class EconomicComplementController extends Controller
             'fotocireverso' =>  $fotoCIReverso,
             'fotoboleta' =>  $fotoBoleta,
             'affiliatedevice' =>  $affiliateDevice,
-            'affiliatetoken' => $affiliateToken?$affiliateToken:-1
+            'affiliatetoken' => $affiliateToken?$affiliateToken:-1,
+            'eco_com_once_payment' => $economic_complement->eco_com_once_payment
         ];
         return view('eco_com.show', $data);
     }
@@ -963,35 +965,47 @@ class EconomicComplementController extends Controller
             }
         }
         $affiliate->degree_id = $request->degree_id;
-        // $affiliate->pension_entity_id = $request->pension_entity_id;
-        // $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
-        //$affiliate->account_number = $request->account_number;
-       // $affiliate->financial_entity_id = $request->financial_entity_id;
-        //$affiliate->sigep_status = $request->sigep_status;
-        //is_paid_spouse
         $affiliate->save();
 
         $economic_complement->degree_id = $affiliate->degree_id;
         $economic_complement->category_id = $affiliate->category_id;
-        $economic_complement->is_paid_spouse = $request->is_paid_spouse;
+        $economic_complement->is_paid = $request->is_paid;
         $economic_complement->eco_com_state_id = $request->eco_com_state_id;
-
-        if ($request->is_paid_spouse==true)
+        if ($request->is_paid==true)
+        {
             $economic_complement->months_of_payment = $request->months_of_payment;
+            $request->validate([
+                'once_payment.identity_card' => 'required|string',
+                'once_payment.first_name' => 'required|string',
+                'once_payment.second_name' => 'nullable|string',
+                'once_payment.last_name' => 'nullable|string',
+                'once_payment.mothers_last_name' => 'nullable|string',
+                'once_payment.surname_husband' => 'nullable|string',
+                'once_payment.birth_date' => 'required|date_format:d/m/Y',
+                'once_payment.nua' => 'nullable',
+                'once_payment.gender' => 'required|string',
+                'once_payment.civil_status' => 'required|string',
+                'once_payment.phone_number' => 'nullable',
+                'once_payment.cell_phone_number' => 'required',
+                'once_payment.date_death' => 'required|date_format:d/m/Y',
+                'once_payment.reason_death' => 'required|string',
+                'once_payment.death_certificate_number' => 'required|string',
+                'once_payment.city_birth_id' => 'required|numeric',
+                'once_payment.due_date' => 'nullable|date_format:d/m/Y',
+                'once_payment.is_duedate_undefined' => 'required|boolean',
+            ]);
+            $this->save_once_payment($request->id,$request->once_payment);
+        }
         else
+        {
             $economic_complement->months_of_payment = null;
+            if($economic_complement->eco_com_once_payment)
+                $economic_complement->eco_com_once_payment->delete();
+        }
         $economic_complement->save();
         $user_id = auth()->id();
         //cambio de estado pagado a en proceso en la tabla contribution_passives
         $valid_payment_contribucion_passive = DB::select("SELECT change_state_contribution_process_eco_com($user_id,$request->id)");
-        /**
-         * update affiliate info
-         */
-        // $affiliate = $economic_complement->affiliate;
-        // $affiliate->degree_id = $request->degree_id;
-        // $affiliate->category_id = $request->category_id;
-        // $affiliate->pension_entity_id = $request->pension_entity_id;
-        // $affiliate->save();
         $economic_complement->service_years = $affiliate->service_years;
         $economic_complement->service_months = $affiliate->service_months;
         return $economic_complement;
@@ -1854,7 +1868,7 @@ class EconomicComplementController extends Controller
         $difference = $salary_quotable - $eco_com->total_rent_calc;
         $eco_com->difference = $difference;
         $months_of_payment = 6;
-        if ($eco_com->is_paid_spouse==true)
+        if ($eco_com->is_paid==true)
         {
             if (!empty($eco_com->months_of_payment))
                 $months_of_payment = $eco_com->months_of_payment;
@@ -2103,6 +2117,59 @@ class EconomicComplementController extends Controller
             }
         } else {
             return response()->json(['errors' => ['El Trámite no tiene descuento para el Aporte de Auxilio Mortuorio. ']], 422);
+        }
+    }
+
+    public function save_once_payment($eco_com_id, $once_payment)
+    {
+        $economic_complement = EconomicComplement::find($eco_com_id);
+        $beneficiary = $economic_complement->eco_com_once_payment;
+        if($beneficiary)
+        {
+            $beneficiary->type = $once_payment['type'];
+            $beneficiary->identity_card = $once_payment['identity_card'];
+            $beneficiary->last_name = $once_payment['last_name'];
+            $beneficiary->mothers_last_name = $once_payment['mothers_last_name'];
+            $beneficiary->first_name = $once_payment['first_name'];
+            $beneficiary->second_name = $once_payment['second_name'];
+            $beneficiary->surname_husband = $once_payment['surname_husband'];
+            $beneficiary->birth_date = $once_payment['birth_date'];
+            $beneficiary->nua = $once_payment['nua'];
+            $beneficiary->gender = $once_payment['gender'];
+            $beneficiary->civil_status = $once_payment['civil_status'];
+            $beneficiary->phone_number = $once_payment['phone_number'];
+            $beneficiary->cell_phone_number = $once_payment['cell_phone_number'];
+            $beneficiary->date_death = $once_payment['date_death'];
+            $beneficiary->reason_death = $once_payment['reason_death'];
+            $beneficiary->death_certificate_number = $once_payment['death_certificate_number'];
+            $beneficiary->city_birth_id = $once_payment['city_birth_id'];
+            $beneficiary->due_date = $once_payment['due_date'];
+            $beneficiary->is_duedate_undefined = $once_payment['is_duedate_undefined'];
+            $beneficiary->save();
+        }
+        else{
+            $beneficiary = EcoComOncePayment::updateOrCreate([
+                'economic_complement_id' => $eco_com_id,
+                'identity_card' => $once_payment['type'],
+                'identity_card' => $once_payment['identity_card'],
+                'last_name' => isset($once_payment['last_name']) ? $once_payment['last_name'] : null,
+                'mothers_last_name' => isset($once_payment['mothers_last_name']) ? $once_payment['mothers_last_name'] : null,
+                'first_name' => $once_payment['first_name'],
+                'second_name' => isset($once_payment['second_name']) ? $once_payment['second_name'] : null,
+                'surname_husband' => isset($once_payment['surname_husband']) ? $once_payment['surname_husband'] : null,
+                'birth_date' => $once_payment['birth_date'],
+                'nua' => isset($once_payment['nua']) ? $once_payment['nua'] : null,
+                'gender' => $once_payment['gender'],
+                'civil_status' => $once_payment['civil_status'],
+                'phone_number' => isset($once_payment['phone_number']) ? $once_payment['phone_number']: null,
+                'cell_phone_number' => $once_payment['cell_phone_number'],
+                'date_death' => $once_payment['date_death'],
+                'reason_death' => isset($once_payment['reason_death']) ? $once_payment['reason_death'] : 'prueba',
+                'death_certificate_number' => $once_payment['death_certificate_number'],
+                'city_birth_id' => $once_payment['city_birth_id'],
+                'due_date' => isset($once_payment['is_duedate_undefined']) && $once_payment['is_duedate_undefined'] ? null : $once_payment['due_date'],
+                'is_duedate_undefined' => isset($once_payment['is_duedate_undefined']) ? $once_payment['is_duedate_undefined'] : false
+            ]);
         }
     }
 }
