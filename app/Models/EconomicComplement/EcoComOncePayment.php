@@ -29,7 +29,7 @@ class EcoComOncePayment extends Model
         'phone_number',
         'cell_phone_number',
         'date_death',
-        'reason_date',
+        'reason_death',
         'death_certificate_number',
         'city_birth_id',
         'due_date',

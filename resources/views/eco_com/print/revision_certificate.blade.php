@@ -22,20 +22,23 @@
                     <span class="uppercase text-xs">
                         {{ $institution ?? 'MUTUAL DE SERVICIOS AL POLICÍA' }} <br>
                         {{ $direction ?? 'DIRECCIÓN DE BENEFICIOS ECONÓMICOS' }} <br>
-                        {{ $unit ?? 'UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO' }}
+                        {{ $unit ?? 'UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO' }} <br>
                     </span>
                 </th>
             </tr>
+
             <tr>
-                <td colspan="3" style="border-bottom: 1px solid #22292f;"></td>
+                <td colspan="3" class="font-bold text-center text-2xl uppercase">
+                    <br>{{ $title }}
+                    @if (isset($subtitle))
+                        <br>{{ $subtitle ?? '' }}
+                    @endif
+                    <br><br> <span class="font-bold text-center text-2xl underline uppercase"> {{ $text }}
+                    </span>
+                </td>
             </tr>
             <tr>
-                <td colspan="3" class="font-bold text-center text-xl uppercase">
-                    {{ $title }}
-                    @if (isset($subtitle))
-                        <br><span class="font-medium text-lg">{{ $subtitle ?? '' }}</span>
-                    @endif
-                </td>
+                <td colspan="3" class="font-bold text-right text-xl uppercase"><br>NUP: {{ $affiliate->id }}</td>
             </tr>
         </table>
     </div>
@@ -48,7 +51,8 @@
             <table class="table-info w-100 m-b-5">
                 <thead class="bg-grey-darker">
                     <tr class="font-medium text-white text-sm">
-                        <td class="text-center p-5" colspan = "2">I. DATOS PERSONALES DEL BENEFICIARIO (TITULAR)
+                        <td class="text-left font-bold px-10 py-10" colspan = "2">I. DATOS PERSONALES DEL BENEFICIARIO
+                            (TITULAR)
                             (VIUDA)
                             (HUÉRFANO ABSOLUTO)</td>
                     </tr>
@@ -68,11 +72,11 @@
                     </tr>
                 </tbody>
             </table>
-
+            <br>
             <table class="table-info w-100 m-b-5">
                 <thead class="bg-grey-darker">
                     <tr class="font-medium text-white text-sm">
-                        <td class="text-center p-5" colspan = "2">II. DATOS INSTITUCIONALES</td>
+                        <td class="text-left font-bold px-10 py-10" colspan = "2">II. DATOS INSTITUCIONALES</td>
                     </tr>
                 </thead>
                 <tbody class="text-sm">
@@ -90,8 +94,8 @@
                     </tr>
                     <tr>
                         <td class='text-left font-bold p-5 uppercase'>AÑOS DE SERVICIO</td>
-                        <td class="text-left uppercase">{{ $affiliate->service_years - $affiliate->service_months }}
-                        </td>
+                        <td class="text-left uppercase">{{ $affiliate->service_years }} AÑOS Y
+                            {{ $affiliate->service_months }} MESES </td>
                     </tr>
                     <tr>
                         <td class='text-left font-bold p-5 uppercase'>CATEGORÍA</td>
@@ -107,85 +111,73 @@
                     </tr>
                     <tr>
                         <td class='text-left font-bold p-5 uppercase'>MOTIVO DE LA DESVINCULACIÓN</td>
-                        <td class="text-left uppercase">{{ $affiliate->category->name }}</td>
+                        <td class="text-left uppercase">{{ $affiliate->reason_derelict }}</td>
                     </tr>
                     <tr>
                         <td class='text-left font-bold p-5 uppercase'>FECHA DE DESVINCULACIÓN</td>
-                        <td class="text-left uppercase">{{ $affiliate->category->name }}</td>
+                        <td class="text-left uppercase">{{ $affiliate->date_derelict }}</td>
                     </tr>
                 </tbody>
             </table>
-
-            {{-- @if (sizeof($eco_com_submitted_documents) > 0)
-                    <table class="table-info w-100 m-b-5">
-                        <thead class="bg-grey-darker">
-                            <tr class="font-medium text-white text-sm">
-                                <td class="text-center p-5" colspan = "2">III. PROCEDIMIENTOS DE REVISIÓN REALIZADOS</td>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm">
-                            @foreach ($eco_com_submitted_documents as $item)
-                                @if ($item->number > 0)
-                                    <tr>
-                                        <td class='text-justify p-5'>{{ $item->procedure_document->name }} </td>
-                                        @if (true)
-                                            <td class="text-center">
-                                                <img
-                                                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
-                                            </td>
-                                        @else
-                                        <td class="text-center">
-                                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEHSURBVEhL7ZVNCsIwEIXrz1HUYwiuBA8jbkU8h4ILxZ14J0X0DoKI+p5mIAzNJLZ1IfTBh3Uw81EzTbM6v0jbfaamCRqfy/SMwQ0sQIuFSLrgCA6gx0JKJuDpsQGWjJIzkN9fQAeYYcM78EUkJGNDXyIsQTQroBcSLQtJrqAPomEzNtUNiMgsyRAkx5LtQSUSiSXTFJZIUmSlJRLKdiBP8gAjUElCGy/IgJRKTCKUkuknXuDfpWukkCwk4cZzT9ZezecrmSWR6WKz0DQmyXjM8xTWi/NG2JLNgBm+U07AX2Q9JyHZFETD9wmP+phEomVbV0sKx5pH/eD9LR425l3M3XWdv0uWvQDq/6w9IEeDKwAAAABJRU5ErkJggg==">
-                                            </td>
-                                        @endif
-                                    </tr>
+            <br>
+            @if (sizeof($eco_com_review_procedures) > 0)
+                <table class="table-info w-100 m-b-5">
+                    <thead class="bg-grey-darker">
+                        <tr class="font-medium text-white text-sm">
+                            <td class="text-left font-bold px-10 py-10" colspan = "2">III. PROCEDIMIENTOS DE REVISIÓN
+                                REALIZADOS</td>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        @foreach ($eco_com_review_procedures as $item)
+                            <tr>
+                                <td class="w-90 text-left font-bold p-5 uppercase">{{ $item->review_procedure->name }}
+                                </td>
+                                @if ($item->is_valid == true)
+                                    <td class="w-10 text-center">
+                                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
+                                    </td>
+                                @else
+                                    <td class="w-10 text-center"> </td>
                                 @endif
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif --}}
-
-            @if ($eco_com->eco_com_reception_type_id == 2 || $eco_com->eco_com_reception_type_id == 3)
-                <table style="margin-top: {{ $size_down }}px;" class="m-t-50 table-info">
-                    <tbody>
-                        <tr>
-                            <td class="no-border text-center text-base w-50 align-bottom"
-                                style="border-radius: 0.5em 0 0 0!important;">
-                                <span class="font-bold">
-                                    ----------------------------------------------------
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="no-border text-center text-base w-50 align-top">
-                                <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
-                                <br />
-                                <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
-                                <span class="font-bold">TEL. CEL. {{ $eco_com_beneficiary->phone_number }}
-                                    {{ $eco_com_beneficiary->cell_phone_number }}</span>
-                            </td>
-                        </tr>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             @endif
+            <br>
+            <div class="text-left uppercase">
+                {{ $user->city->name ?? 'La Paz' }}, {{ Util::getTextDate() }}
+            </div>
         </div>
 
-        <tfoot>
-            <tr>
-                <td class="no-border text-center text-base py-10 w-33 align-top"
-                    style="border-right:1px solid #5d6975!important; border-radius:0 !important">
-                    <span class="font-bold uppercase">Revisado por:</span>
-                </td>
-
-                <td class="no-border text-center text-base py-10 w-33 align-top"
-                    style="border-right:1px solid #5d6975!important; border-radius:0 !important">
-                    <span class="font-bold uppercase">Verificado por:</span>
-                </td>
-            </tr>
-        </tfoot>
+        <div class="w-100 mx-auto">
+            <table class="m-t-25 border table-info w-100">
+                <tbody>
+                    <tr>
+                        <td class="no-border text-center text-base w-50 align-bottom py-50"
+                            style="border-bottom:1px solid #5d6975!important;border-right:1px solid #5d6975!important; border-radius:0 !important">
+                        </td>
+                        <td class="no-border text-center text-base w-50 align-bottom py-50"
+                            style="border-bottom:1px solid #5d6975!important;border-right:1px solid #5d6975!important; border-radius:0 !important">
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="no-border text-center text-base py-10 w-50 align-top"
+                            style="border-right:1px solid #5d6975!important; border-radius:0 !important">
+                            <span class="font-bold uppercase">Revisado por: <span class="font-bold lowercase">{{ $user->username }}</span> </span>
+                        </td>
+                        <td class="no-border text-center text-base py-10 w-50 align-top"
+                            style="border-right:1px solid #5d6975!important; border-radius:0 !important">
+                            <span class="font-bold uppercase">Verificado por:</span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
 
     </div>
-
 </body>
-
 </html>

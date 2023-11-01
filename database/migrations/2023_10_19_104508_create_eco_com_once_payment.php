@@ -30,12 +30,12 @@ class CreateEcoComOncePayment extends Migration
             $table->enum('civil_status', ['C', 'S', 'V', 'D'])->nullable();
             $table->string('phone_number')->nullable();
             $table->string('cell_phone_number')->nullable();
-            $table->dateTime('date_death')->nullable();
+            $table->date('date_death')->nullable();
             $table->string('reason_death')->nullable();
             $table->string('death_certificate_number')->nullable();
             $table->unsignedBigInteger('city_birth_id')->nullable();
             $table->foreign('city_birth_id')->references('id')->on('cities');
-            $table->dateTime('due_date')->nullable();
+            $table->date('due_date')->nullable();
             $table->boolean('is_duedate_undefined')->default(false);
             $table->timestamps();
             $table->softDeletes();
