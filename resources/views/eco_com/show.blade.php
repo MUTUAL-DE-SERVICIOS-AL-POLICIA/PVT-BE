@@ -76,6 +76,7 @@
                 <li class="list-group-item tab-eco-com-legal-guardian" data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
                 <li class="list-group-item tab-eco-com-summited-document" data-toggle="tab" href="#tab-eco-com-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                 <li class="list-group-item tab-eco-com-qualification" data-toggle="tab" href="#tab-eco-com-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
+                <li class="list-group-item tab-eco-com-review" data-toggle="tab" href="#tab-eco-com-review"><a href="#"><i class="fa fa-check"></i> Revisión</a></li>
                 <li class="list-group-item tab-eco-com-observations" data-toggle="tab" href="#tab-eco-com-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                 <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-record" ><a href="#"><i class="fa fa-history"></i> Historial</a></li>
                <!-- <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-boleta" ><a href="#"><i class="fa fa-camera-retro"></i> Boleta</a></li>-->
@@ -126,6 +127,10 @@
             <div id="tab-eco-com-qualification" class="tab-pane">
             <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
                 </eco-com-qualification>
+            </div>
+            <div id="tab-eco-com-review" class="tab-pane">
+                <eco-com-review :eco-com="{{ $economic_complement->id }}" :user="{{ $user }}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
+                </eco-com-review>
             </div>
             <div id="tab-eco-com-observations" class="tab-pane">
             <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>
