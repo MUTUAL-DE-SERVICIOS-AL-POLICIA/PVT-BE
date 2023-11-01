@@ -1,3 +1,6 @@
+show blade 
+
+
 @extends('layouts.app') 
 @section('title', 'Complemento economico Padre') 
 @section('content')
@@ -24,6 +27,15 @@
                     doc-id="{{ $economic_complement->id }}"
                     message="true"
                     url-print="{{ route('eco_com_print_qualification', [$economic_complement->id])}}">
+                </certification-button>
+            @endif
+            @if (Util::getRol()->id == 4)
+                <certification-button
+                    type="ecoCom"
+                    title="Imprimir Revisión"
+                    doc-id="{{ $economic_complement->id }}"
+                    message="false"
+                    url-print="{{ route('eco_com_print_revision_certificate', [$economic_complement->id])}}">
                 </certification-button>
             @endif
         </div>

@@ -119,30 +119,19 @@ export default {
 
     checked(index, i) {
       if (this.editing) {
-        console.log(index);
-        console.log(i);
-        index.is_valid
-          ? (this.reviewList.review_procedures[i].background = "")
-          : (this.reviewList.review_procedures[i].background =
-              "bg-success-green");
-        this.reviewList.review_procedures[i].is_valid =
-          !this.reviewList.review_procedures[i].is_valid;
+        index.is_valid ? (this.reviewList.review_procedures[i].background = ""): (this.reviewList.review_procedures[i].background ="bg-success-green");
+        this.reviewList.review_procedures[i].is_valid = !this.reviewList.review_procedures[i].is_valid;
 
-        this.reviewList.review_procedures[i].background == "bg-success-green"
-          ? ""
-          : "bg-success-green";
-        console.log(this.reviewList.review_procedures);
-        this.update_reviewList.review_procedures = JSON.parse(
-          JSON.stringify(this.reviewList.review_procedures)
-        );
+        this.reviewList.review_procedures[i].background == "bg-success-green" ? "": "bg-success-green";
+        this.update_reviewList.review_procedures = JSON.parse(JSON.stringify(this.reviewList.review_procedures));
 
         this.update_reviewList.review_procedures.forEach((item) => {
           delete item.background;
           delete item.active;
           delete item.name;
           delete item.created_at;
-          delete item.updated_at; // Elimina la propiedad "background"
-          item.user_id = user.id; // Agrega la propiedad "user" con el valor 10
+          delete item.updated_at; 
+          item.user_id = this.user.id; 
         });
       }
     },
@@ -174,7 +163,7 @@ export default {
         });
     },
     storeReview() {
-      let uri = `/eco_com/${this.ecoCom}/review_edit`;
+      let uri = `/eco_com/review_edit`;
       axios
         .post(uri, {
           economic_complement_id: this.ecoCom,
