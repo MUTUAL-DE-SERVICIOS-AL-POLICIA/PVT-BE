@@ -250,6 +250,9 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para crear el Trámite'],
             ], 403);
         }
+        $this->validate($request, [
+            'eco_com_beneficiary_nua' => 'nullable|numeric',
+        ]);
         $eco_com_procedure = EcoComProcedure::find($request->eco_com_procedure_id);
         if (!$eco_com_procedure) {
             abort(500, "ERROR");
