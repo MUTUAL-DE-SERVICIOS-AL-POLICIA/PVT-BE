@@ -9,6 +9,7 @@ show blade
         {!!Breadcrumbs::render('show_eco_com', $economic_complement)!!}
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
+  
         <div class="pull-left">
             @if(Util::isReceptionEcoCom()||Util::isRegionalRole())
                 @if ($economic_complement->isLagging())
@@ -29,7 +30,7 @@ show blade
                     url-print="{{ route('eco_com_print_qualification', [$economic_complement->id])}}">
                 </certification-button>
             @endif
-            @if (Util::getRol()->id == 4)
+            @if ((Util::getRol()->id == 4 ) and ($economic_complement->eco_com_reception_type->name =='Inclusión' or $economic_complement->eco_com_reception_type->name =='Habitual-Rehabilitacion'))
                 <certification-button
                     type="ecoCom"
                     title="Imprimir Revisión"
