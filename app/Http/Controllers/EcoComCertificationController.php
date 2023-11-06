@@ -11,6 +11,7 @@ use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\Affiliate;
 use DB;
+use Illuminate\Support\Facades\Auth;
 use Muserpol\Models\EconomicComplement\EcoComReviewProcedure;
 
 class EcoComCertificationController extends Controller
