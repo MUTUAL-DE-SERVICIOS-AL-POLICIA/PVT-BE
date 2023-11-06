@@ -146,7 +146,7 @@ class EcoComCertificationController extends Controller
         $title = "BENEFICIO DEL COMPLEMENTO ECONÓMICO";
         $subtitle = $eco_com->eco_com_procedure->getTextName();
         $text = "CERTIFICACIÓN DE REVISIÓN";
-        $user = $eco_com_review_procedures->first()->user ?? $eco_com->user;
+        $user = Auth::user() ?? $eco_com->user;
         $size = 400;
         $size_down = 200;
 

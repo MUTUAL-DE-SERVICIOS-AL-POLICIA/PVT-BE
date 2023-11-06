@@ -110,8 +110,8 @@
                         <td class="text-left uppercase">{{ $eco_com->eco_com_modality->procedure_modality->name }}</td>
                     </tr>
                     <tr>
-                        <td class='text-left font-bold p-5 uppercase'>MOTIVO DE LA DESVINCULACIÓN</td>
-                        <td class="text-left uppercase">{{ $affiliate->reason_derelict }}</td>
+                        <td class='text-left font-bold p-5 uppercase'>ESTADO</td>
+                        <td class="text-left uppercase">{{ $affiliate->affiliate_state->name }}</td>
                     </tr>
                     <tr>
                         <td class='text-left font-bold p-5 uppercase'>FECHA DE DESVINCULACIÓN</td>
