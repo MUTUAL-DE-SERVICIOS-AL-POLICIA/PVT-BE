@@ -421,7 +421,7 @@
                 <input class ="form-control" type="text" id="death_certificate_number" v-model="form.once_payment.death_certificate_number" :disabled="!editing || (roleId != 4)">
                 <span v-if="!form.once_payment.death_certificate_number" class="text-danger">(*) El campo 'Número de certificado de defunción' es obligatorio.</span>
               </div>
-          </div>{{ form.once_payment}}
+          </div>
         </div>
         <br>
          <div class="row" v-show="editing">
