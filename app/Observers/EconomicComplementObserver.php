@@ -131,24 +131,5 @@ class EconomicComplementObserver
             $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 2, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
         }
 
-        // review_procedures
-        $reviews = $eco_com->eco_com_review_procedures;
-        $countReview = ReviewProcedure::where('active', true)->count();
-        $count = 0;
-        foreach ($reviews as $review){
-            if($review == true)
-                $count = $count + 1;
-        }
-        if($countReview == $count)
-        {
-            $user = Auth::user();
-            $eco_com->wf_records()->create([
-                'user_id' => $user->id,
-                'record_type_id' => 7,
-                'wf_state_id' => $eco_com->wf_current_state_id,
-                'date' => Carbon::now(),
-                'message' => 'El usuario ' . $user->username . ' revisó el trámite.'
-            ]);
-        }
     }
 }

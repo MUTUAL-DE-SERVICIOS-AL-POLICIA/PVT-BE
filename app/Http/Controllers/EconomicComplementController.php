@@ -1233,6 +1233,7 @@ class EconomicComplementController extends Controller
                     ->where('economic_complement_id', $economic_complement_id)
                     ->update(['is_valid' => $isValid, 'user_id' => $user_id]);
             }
+            $this->record_review_procedures($economic_complement_id);
             return response()->json(['message' => 'Actualización exitosa']);
         } catch (\Exception $e) {
             return response()->json([
@@ -1240,6 +1241,29 @@ class EconomicComplementController extends Controller
                 'message' => 'Error al actualizar registros: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function record_review_procedures($economic_complement_id)
+    {
+        $eco_com = EconomicComplement::find($economic_complement_id);
+        $user = Auth::user();
+        $reviews = $eco_com->eco_com_review_procedures;
+        $countReview = ReviewProcedure::where('active', true)->count();
+        $count = 0;
+        
+        foreach ($reviews as $review) {
+            if ($review->is_valid) {
+                $count++;
+            }
+        }
+        $message = ($countReview == $count) ? 'revisó el trámite.' : 'revisó parcialmente el trámite';
+        $eco_com->wf_records()->create([
+            'user_id' => $user->id,
+            'record_type_id' => 7,
+            'wf_state_id' => $eco_com->wf_current_state_id,
+            'date' => Carbon::now(),
+            'message' => 'El usuario ' . $user->username . ' ' . $message,
+        ]);
     }
 
     public function getEcoCom($id)
