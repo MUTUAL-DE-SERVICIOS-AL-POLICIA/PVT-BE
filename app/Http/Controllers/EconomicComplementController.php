@@ -46,7 +46,7 @@ use Muserpol\Models\EconomicComplement\EconomicComplementRecord;
 use Muserpol\Models\FinancialEntity;
 use Muserpol\Models\Contribution\ContributionPassive;
 use Illuminate\Support\Facades\Storage;
-use Muserpol\EconomicComplement\ReviewProcedure;
+use Muserpol\Models\EconomicComplement\ReviewProcedure;
 use Muserpol\Models\AffiliateDevice;
 use Muserpol\Models\AffiliateToken;
 use Validator;
