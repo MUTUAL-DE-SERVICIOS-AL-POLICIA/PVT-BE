@@ -2,6 +2,7 @@
 
 namespace Muserpol\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Helpers\Util;
@@ -10,6 +11,7 @@ use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Helpers\ID;
 use Muserpol\Models\Affiliate;
 use DB;
+use Muserpol\Models\EconomicComplement\EcoComReviewProcedure;
 
 class EcoComCertificationController extends Controller
 {
@@ -130,6 +132,60 @@ class EcoComCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }
+    public function printRevisionCertificate($id)
+    {
+        $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
+        $has_certificate = false;
+        $affiliate = $eco_com->affiliate;
+        $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
+        $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
+        $eco_com_review_procedures = EcoComReviewProcedure::where('economic_complement_id', $id)->orderBy('review_procedure_id','asc')->get();
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
+        $title = "BENEFICIO DEL COMPLEMENTO ECONÓMICO";
+        $subtitle = $eco_com->eco_com_procedure->getTextName();
+        $text = "CERTIFICACIÓN DE REVISIÓN";
+        $user = $eco_com_review_procedures->first()->user ?? $eco_com->user;
+        $size = 400;
+        $size_down = 200;
+
+        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion || $eco_com->eco_com_reception_type_id == ID::ecoCom()->rehabilitacion)
+        {
+            $has_certificate = true;
+        }
+
+        $date = now();
+
+        $data = [
+            'direction' => $direction,
+            'institution' => $institution,
+            'unit' => $unit,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'date' => $date,
+            'text' => $text,
+            'size' => $size,
+            'size_down' => $size_down,
+            'eco_com' => $eco_com,
+            'user' => $user,
+            'affiliate' => $affiliate,
+            'has_certificate' => $has_certificate,
+            'eco_com_beneficiary' => $eco_com_beneficiary,
+            'eco_com_legal_guardian' => $eco_com_legal_guardian,
+            'eco_com_review_procedures' => $eco_com_review_procedures
+        ];
+        
+        $pages = [];
+        $pages[] = \View::make('eco_com.print.revision_certificate', $data)->render();
+
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '23mm')
+            ->stream("Certificacion" . $eco_com->id . '.pdf');
+    }
+
     public function printSwornDeclaration($id, $only_data = true)
     {
         $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);

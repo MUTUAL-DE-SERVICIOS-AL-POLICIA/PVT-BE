@@ -434,6 +434,7 @@ Vue.component('eco-com-legal-guardian', require('./components/eco_com/LegalGuard
 Vue.component('eco-com-step1-requirements-edit', require('./components/eco_com/Step1RequirementsEdit.vue'));
 Vue.component('eco-com-observations', require('./components/eco_com/Observations.vue'));
 Vue.component('eco-com-qualification', require('./components/eco_com/Qualification.vue'));
+Vue.component('eco-com-review', require('./components/eco_com/Review.vue'));
 Vue.component('eco-com-amortization', require('./components/eco_com/Amortization.vue'));
 
 Vue.component('eco-com-record', require('./components/eco_com/Record.vue'));

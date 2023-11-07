@@ -34,7 +34,15 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                 $columns_add = ",eco_com_states.name as Estado_de_tramite,
                 CASE WHEN  affiliate_devices.enrolled = true then 'Enrolado' ELSE 'No Enrolado' END as enrolled,
                 CASE WHEN  affiliate_devices.verified = true then 'Validado' ELSE 'Sin Validar' END as verified,
-                (CASE WHEN  (affiliate_tokens.api_token is not null and affiliate_tokens.firebase_token is not null) then 'Habilitado' ELSE 'No Habilitado' END) as notification";
+                (CASE WHEN  (affiliate_tokens.api_token is not null and affiliate_tokens.firebase_token is not null) then 'Habilitado' ELSE 'No Habilitado' END) as notification,
+                MAX(COALESCE(
+                    CASE
+                        WHEN wf_records.wf_state_id = 3 AND wf_records.message ilike '%validó%'
+                        THEN users.username
+                        ELSE ''
+                    END,
+                    ''
+                )) AS mensaje";
                 $data = EconomicComplement::where("economic_complements.eco_com_procedure_id",$this->eco_com_procedure_id)
                     ->groupBy("economic_complements.affiliate_id",
                     "economic_complements.code",
@@ -97,6 +105,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->wfstates()
                     ->ecocomstates()
                     ->affiliatetokens()
+                    ->wfrecords()
                     // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums().$columns.$columns_add))
                     ->get();
@@ -159,7 +168,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                         ->spouseInfo()
                         // ->order()
                         ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_spouse() . $columns))
-                        ->where('economic_complements.is_paid_spouse',true)
+                        ->where('economic_complements.is_paid',true)
                         //->has('eco_com_legal_guardian')
                         ->get();
                         
@@ -222,6 +231,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "Enrolamiento",
                     "Contraste C.I",
                     "Notificación",
+                    "Validado por",
                 ];
                 break;
             case 2:
