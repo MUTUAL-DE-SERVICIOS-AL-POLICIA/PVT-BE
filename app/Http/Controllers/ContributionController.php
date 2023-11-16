@@ -655,14 +655,19 @@ class ContributionController extends Controller
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             //if(isset($request->total[$key]) && $request->total[$key]>0) {
                 if (isset($contribution->id)) {
+                    //envia los parametros T,FR,QM
                     if(isset($request->total[$key]) && $request->total[$key] != ""){
                         $contribution->total = strip_tags($request->total[$key]);
+                    }
+                    if(isset($request->retirement_fund[$key]) && $request->retirement_fund[$key] != ""){
                         $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]);
+                    }
+                    if(isset($request->mortuary_quota[$key]) && $request->mortuary_quota[$key] != ""){
                         $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]);
                     }
+
                     $rate=ContributionRate::where('month_year', $key)->first();
-                        $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]);
-                    //dd($contribution->retirement_fund);
+                    //Verifica para casos anteriores a enero 1999
                     if($contribution->month_year <= '1999-01-01') {
                         if($contribution->month_year <='1987-04-01'){
                             $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
@@ -672,7 +677,7 @@ class ContributionController extends Controller
                             $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
                         }
                     }
-                        //dd($request->base_wage[$key]);
+                     //VErifica los otrso parametros
                     if(isset($request->base_wage[$key]) && $request->base_wage[$key] != "")
                         $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
                     else
@@ -686,12 +691,12 @@ class ContributionController extends Controller
                             $contribution->category_id = $category->id;
                         }                    
                         $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
-                    }
-                    
+                    }                    
                     if(isset($request->gain[$key]) && $request->gain[$key] != "")
                         $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
                     else
                         $contribution->gain = $contribution->gain;
+
                     $contribution->save();
                     array_push($contributions, $contribution);
                 } else {
