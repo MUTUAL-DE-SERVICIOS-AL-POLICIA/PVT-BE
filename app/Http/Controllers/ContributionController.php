@@ -611,7 +611,7 @@ class ContributionController extends Controller
         if(!empty($request->iterator))
         { 
             foreach ($request->iterator as $key => $iterator) 
-            {              
+            {  if(isset($request->total[$key]) && $request->total[$key]>0) {         
                 $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
                 if(!isset($contribution->id)) {
                     if(isset($request->base_wage[$key])) {
@@ -620,9 +620,15 @@ class ContributionController extends Controller
                     if(isset($request->gain[$key])) {
                         $input_data['gain'][$key]= strip_tags($request->gain[$key]);
                     }
-                    $input_data['total'][$key]= strip_tags($request->total[$key]);
-                    $input_data['retirement_fund'][$key]= strip_tags($request->retirement_fund[$key]);
-                    $input_data['mortuary_quota'][$key]= strip_tags($request->mortuary_quota[$key]);
+                    if(isset($request->total[$key])) {
+                        $input_data['total'][$key]= strip_tags($request->total[$key]);
+                    }
+                    if(isset($request->retirement_fund[$key])) {
+                        $input_data['retirement_fund'][$key]= strip_tags($request->retirement_fund[$key]);
+                    }
+                    if(isset($request->mortuary_quota[$key])) {
+                        $input_data['mortuary_quota'][$key]= strip_tags($request->mortuary_quota[$key]);
+                    }                    
 
                     $array_rules = [
                         'base_wage.'.$key =>  'numeric|min:0',
@@ -642,16 +648,20 @@ class ContributionController extends Controller
                     ];
                     $messages=array_merge($messages, $array_messages);
                 }
+            }
         }   
+
         $validator = Validator::make($input_data,$rules,$messages);
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
          //*********END VALIDATOR************//
-        //return ;
+   
         $this->authorize('update',new Contribution);
         $contributions = [];
+  
         foreach ($request->iterator as $key => $iterator) {
+
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             //if(isset($request->total[$key]) && $request->total[$key]>0) {
                 if (isset($contribution->id)) {
@@ -738,10 +748,22 @@ class ContributionController extends Controller
                             $contribution->gain = 0;
                         else
                             $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+
+                        if(!isset($request->total[$key]))
+                            $contribution->total = 0;
+                        else
+                            $contribution->total = strip_tags($request->total[$key]) ?? 0;
+
+                        if(!isset($request->retirement_fund[$key]))
+                            $contribution->retirement_fund = 0;
+                        else
+                            $contribution->retirement_fund = strip_tags($request->garetirement_fundin[$key]) ?? 0;
+                    
+                        if(!isset($request->mortuary_quota[$key]))
+                            $contribution->mortuary_quota = 0;
+                        else
+                            $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]) ?? 0;
                         
-                        $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]) ?? 0;
-                        $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]) ?? 0;
-                        $contribution->total = strip_tags($request->total[$key]) ?? 0;
 
                         $rate=ContributionRate::where('month_year', $key)->first();
 
