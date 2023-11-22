@@ -51,10 +51,21 @@
             <table class="table-info w-100 m-b-5">
                 <thead class="bg-grey-darker">
                     <tr class="font-medium text-white text-sm">
-                        <td class="text-left font-bold px-10 py-10" colspan = "2">I. DATOS PERSONALES DEL BENEFICIARIO
-                            (TITULAR)
-                            (VIUDA)
-                            (HUÉRFANO ABSOLUTO)</td>
+                        <td class="text-left uppercase font-bold px-10 py-10" colspan = "2">I. DATOS PERSONALES DEL BENEFICIARIO
+                            @switch($type)
+                            @case('Vejez')
+                                (Titular)
+                                @break
+                            @case('Viudedad')
+                                (Viuda(o))
+                                @break
+                            @case('Orfandad')
+                                (Huérfano absoluto)
+                                @break
+                            @default
+                                (Titular)
+                            @endswitch
+                        </td>
                     </tr>
                 </thead>
                 <tbody class="text-sm">
