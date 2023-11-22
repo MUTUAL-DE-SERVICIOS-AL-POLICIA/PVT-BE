@@ -2177,7 +2177,7 @@ class EconomicComplementController extends Controller
         else{
             $beneficiary = EcoComOncePayment::updateOrCreate([
                 'economic_complement_id' => $eco_com_id,
-                'identity_card' => $once_payment['type'],
+                'type' => $once_payment['type'],
                 'identity_card' => $once_payment['identity_card'],
                 'last_name' => isset($once_payment['last_name']) ? $once_payment['last_name'] : null,
                 'mothers_last_name' => isset($once_payment['mothers_last_name']) ? $once_payment['mothers_last_name'] : null,

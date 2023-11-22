@@ -254,8 +254,8 @@
                       v-validate="'required'"
                       :disabled="!editing || (roleId != 4)"
                     >
-                      <option value="V">Viuda</option>
-                      <option value="H">Hijo</option>
+                      <option value='V'>VIUDA</option>
+                      <option value='H'>HUERFANO ABSOLUTO</option>
                     </select>
             </div>
           </div>
