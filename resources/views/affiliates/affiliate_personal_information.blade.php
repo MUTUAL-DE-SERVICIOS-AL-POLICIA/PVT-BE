@@ -245,7 +245,7 @@
                     <div class="hr-line-dashed"></div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="col-md-4"><strong>Número de cuenta:</strong></div>
+                            <div class="col-md-4"><strong>Número de cuenta del beneficiario:</strong></div>
                             <div class="col-md-8"><input name="account_number" type="text" v-model="form.account_number" class="form-control" :disabled="!editing">
                                 <div v-show="errors.has('account_number') && editing">
                                     <i class="fa fa-warning text-danger"></i>
