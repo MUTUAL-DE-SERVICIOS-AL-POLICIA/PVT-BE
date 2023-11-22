@@ -1247,16 +1247,9 @@ class EconomicComplementController extends Controller
     {
         $eco_com = EconomicComplement::find($economic_complement_id);
         $user = Auth::user();
-        $reviews = $eco_com->eco_com_review_procedures;
-        $countReview = ReviewProcedure::where('active', true)->count();
-        $count = 0;
         
-        foreach ($reviews as $review) {
-            if ($review->is_valid) {
-                $count++;
-            }
-        }
-        $message = ($countReview == $count) ? 'revisó el trámite.' : 'revisó parcialmente el trámite';
+        $message = 'Revisó el trámite.';
+        
         $eco_com->wf_records()->create([
             'user_id' => $user->id,
             'record_type_id' => 7,
