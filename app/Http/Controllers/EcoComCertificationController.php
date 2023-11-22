@@ -139,6 +139,7 @@ class EcoComCertificationController extends Controller
         $has_certificate = false;
         $affiliate = $eco_com->affiliate;
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
+        $type = $eco_com->eco_com_modality->procedure_modality->name;
         $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
         $eco_com_review_procedures = EcoComReviewProcedure::where('economic_complement_id', $id)->orderBy('review_procedure_id','asc')->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
@@ -173,6 +174,7 @@ class EcoComCertificationController extends Controller
             'affiliate' => $affiliate,
             'has_certificate' => $has_certificate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
+            'type' => $type,
             'eco_com_legal_guardian' => $eco_com_legal_guardian,
             'eco_com_review_procedures' => $eco_com_review_procedures
         ];
