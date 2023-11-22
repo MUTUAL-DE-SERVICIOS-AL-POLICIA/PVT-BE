@@ -11,7 +11,7 @@
       <i v-if="loading" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
       <i v-else class="fa fa-print"></i>
       &nbsp;
-      {{ loading ? 'Generando...' : 'Imprimir' }}
+      {{ loading ? 'Generando...' : title =='Imprimir Revisión' ? 'Imprimir Revisión' : title == 'Imprimir Calificacion' ? 'Imprimir Hoja de Cálculo' : 'Imprimir'}}
   </button>
 </template>
 <script>
