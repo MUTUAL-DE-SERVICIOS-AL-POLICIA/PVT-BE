@@ -1125,8 +1125,8 @@ class QuotaAidCertificationController extends Controller
     $spouse_full_name = '';
     if (isset($quota_aid_beneficiaries->id)) {
       $legal_guardian = QuotaAidLegalGuardian::where('id', $quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : ", la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . ". a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación ";
-      $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . ". en calidad de " . $applicant->kinship->name; //solicitante
+      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : ", la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación de ";
+      $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " en calidad de " . $applicant->kinship->name; //solicitante
       $with_art = true;
     } else {
         if ($quota_aid->procedure_modality_id != 14){
@@ -1253,7 +1253,7 @@ class QuotaAidCertificationController extends Controller
     otorgación del beneficio de '.($quota_aid->procedure_modality->procedure_type->second_name).', específicamente para todos los afiliados de la Mutual de Servicios
     al Policía MUSERPOL.
     <br><br>
-    Que, los Artículo 6 y 7 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio dispone: ARTÍCULO 6º. <i>(ÁMBITO DE APLICACIÓN).-
+    Que, los Artículo 6 y 7 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio dispone: ARTÍCULO 6º. <i>"(ÁMBITO DE APLICACIÓN).-
     El presente Reglamento es de aplicación obligatoria, inmediata e irrenunciable, a partir de su aprobación, por los servidores
     públicos dependientes de las estructuras organizacionales que forman parte de la Mutual de Servicios al Policía. ARTÍCULO 7°.
     (ALCANCE DE LA NORMA).- I. El Reglamento se aplicará a los Afiliados del sector activo y pasivo de la Policía Boliviana o sus derechohabientes en caso de fallecimiento del titular o de (la) Cónyuge.
@@ -1363,14 +1363,14 @@ class QuotaAidCertificationController extends Controller
       c) Cuota Mortuoria al Fallecimiento del (la) Cónyuge.</i> ARTÍCULO 24º. <i>(CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR EN CUMPLIMIENTO DE FUNCIONES).- I. Será otorgado a los (las) derechohabientes debidamente acreditados (as), del (la) Efectivo Policial que hubiese 
       fallecido en cumplimiento de sus funciones, que cumplan con lo determinado en el inciso a) del Artículo 46 del presente reglamento. II. La determinación del tipo de fallecimiento, deberá ser verificada a través del dictamen de calificación emitido por la Entidad 
       Encargada de Calificar o certificación emitida por la Dirección Nacional de Salud y Bienestar Social de la Policía Boliviana. III. En caso de no presentar el Dictamen de Calificación o Certificación emitida por la Dirección Nacional de Salud y Bienestar Social de 
-      la Policía Boliviana, se determinará la modalidad como fallecimiento del (la) Titular por Riesgo Común.<7i> ARTÍCULO 25º. <i>(CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR POR RIESGO COMÚN).- Este beneficio, será otorgado a los (las) derechohabientes debidamente 
+      la Policía Boliviana, se determinará la modalidad como fallecimiento del (la) Titular por Riesgo Común.</i> ARTÍCULO 25º. <i>(CUOTA MORTUORIA AL FALLECIMIENTO DEL (LA) TITULAR POR RIESGO COMÚN).- Este beneficio, será otorgado a los (las) derechohabientes debidamente 
       acreditados (as), del (la) Efectivo Policial que hubiese fallecido por cualquier causa no vinculada al cumplimiento de sus funciones, que cumplan con lo determinado en el inciso b) del Artículo 46 del presente reglamento. ARTÍCULO 26º. (CUOTA MORTUORIA AL FALLECIMIENTO 
-      DEL (LA) CÓNYUGE). - Este beneficio, será otorgado al Titular Policía del sector activo de la Policía Boliviana, al fallecimiento de su Cónyuge previo cumplimiento de lo determinado en el inciso c) del Artículo 46 del presente reglamento”, establece la definición del 
-      beneficio de Cuota Mortuoria y en que consiste las modalidades para la otorgación del mismo.</i>
+      DEL (LA) CÓNYUGE). - Este beneficio, será otorgado al Titular Policía del sector activo de la Policía Boliviana, al fallecimiento de su Cónyuge previo cumplimiento de lo determinado en el inciso c) del Artículo 46 del presente reglamento”,</i> establece la definición del 
+      beneficio de Cuota Mortuoria y en que consiste las modalidades para la otorgación del mismo.
       <br><br>
       Que, el Artículo 28 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(COTIZACIONES NECESARIAS PARA ACCEDER AL BENEFICIO).- I. Para acceder a la otorgación del beneficio de la Cuota Mortuoria, según las modalidades determinadas en los Artículos 24, 25 y 26 
       del presente Reglamento, es necesario verificar una cantidad de al menos doce (12) cotizaciones continuas anteriores al fallecimiento del (la) Efectivo Policial o de su Cónyuge. II. En caso de no acreditarse las doce (12) cotizaciones continuas anteriores al deceso del (la) 
-      Efectivo Policial o de su Cónyuge, no corresponderá la otorgación del beneficio”, se verifica que el presente tramite cuenta con las cotizaciones necesarias para su procesamiento.</i>
+      Efectivo Policial o de su Cónyuge, no corresponderá la otorgación del beneficio”,</i> se verifica que el presente tramite cuenta con las cotizaciones necesarias para su procesamiento.
       <br><br>';
     }
     $considering_two.='Que, el Artículo 42 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>”(PRESENTACIÓN DE TRÁMITES).- I. Previo a la presentación de requisitos 
@@ -1433,7 +1433,7 @@ class QuotaAidCertificationController extends Controller
     }
     $considering_two.='Que el Artículo 59 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, 
     es la instancia técnica y legal que mediante acto administrativo determina la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio. Es designada mediante Resolución Administrativa 
-    de la Dirección General Ejecutiva de la Mutual de Servicios al Policía – MUSERPOL”</i>, por consiguiente, la Resolución Administrativa Nº 038/2023 del 14 de junio de 2023, conforma la Comisión de 
+    de la Dirección General Ejecutiva de la Mutual de Servicios al Policía – MUSERPOL (...)”</i>, por consiguiente, la Resolución Administrativa Nº 038/2023 del 14 de junio de 2023, conforma la Comisión de 
     Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
     Que el Artículo 60 del Reglamento de Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: a. Determinar la otorgación de los beneficios. 
@@ -1505,7 +1505,7 @@ class QuotaAidCertificationController extends Controller
     $body_headship  = "";
     $legal_review_id = 38;
     $headship_review = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $legal_review_id)->first();
-    $body_headship .= "Que, mediante Certificación de Revisión N° " . $headship_review->code . " de  " . Util::getStringDate($headship_review->date) ." emitido por la Jefatura de la Unidad de de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se verifica el cumplimiento de todos los procedimientos requeridos para la correcta determinación del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name;
+    $body_headship .= "Que, mediante Certificación de Revisión N° " . $headship_review->code . " de " . Util::getStringDate($headship_review->date) ." emitido por la Jefatura de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se verifica el cumplimiento de todos los procedimientos requeridos para la correcta determinación del beneficio de ".$quota_aid->procedure_modality->procedure_type->second_name.".";
     ////-----END HEADSHIP----////
      
     $considering_three.=$body_file.'<br><br>'.$body_finance.'<br><br>'.$body_legal_review.'<br><br>'.$body_accounts.'<br><br>'.$body_qualification.'<br><br>'.$body_headship;
@@ -1564,9 +1564,9 @@ class QuotaAidCertificationController extends Controller
     if ($quota_aid->procedure_modality_id != 14) {
 
       if ($quota_aid->procedure_modality_id == 15) {
-        $body_resolution .= " de " . ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender ? "del Viudo " : "de la Viuda ")) . ($affiliate->spouse()->first()->gender == 'M' ? "del Sr. " : "de la Sra. ") . Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . "., en el siguiente tenor: <br><br>";
+        $body_resolution .= ($beneficiaries_count > 1 ? "de los beneficiarios " : ($applicant->gender ? "del Viudo " : "de la Viuda ")) . ($affiliate->spouse()->first()->gender == 'M' ? "del Sr. " : "de la Sra. ") . Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . "., en el siguiente tenor: <br><br>";
       } else {
-        $body_resolution .= " de " . ($beneficiaries_count > 1 ? "los beneficiarios " : ($applicant->gender ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->gender == 'M' ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . "., en el siguiente tenor: <br><br>";
+        $body_resolution .= ($beneficiaries_count > 1 ? "de los beneficiarios " : ($applicant->gender ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->gender == 'M' ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . "., en el siguiente tenor: <br><br>";
       }
     } else {
       $body_resolution .= ($applicant->gender == 'M' ? "del beneficiario de la <strong> &nbsp;Sra. " : "de la beneficiaria del <strong> &nbsp;Sr. ") . Util::fullName($affiliate->spouse()->first()) . "</strong> con C.I. N° <strong>" . $affiliate->spouse()->first()->identity_card . ".</strong>, en el siguiente tenor: <br><br>";
