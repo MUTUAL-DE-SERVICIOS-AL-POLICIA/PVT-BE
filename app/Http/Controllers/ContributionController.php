@@ -775,7 +775,7 @@ class ContributionController extends Controller
                                 $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
                             }
                         }
-                        $contribution->type = 'Planilla';//return $contribution;//  $contribution->retirement_fund = 123456;
+                        $contribution->type = 'Planilla';
                         $contribution->save();
                         array_push($contributions, $contribution);
                     }
