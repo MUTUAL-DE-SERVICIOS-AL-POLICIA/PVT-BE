@@ -8,6 +8,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
+use Muserpol\Models\EconomicComplement\ReviewProcedure;
 
 class EconomicComplementObserver
 {
@@ -97,8 +98,8 @@ class EconomicComplementObserver
         if ($eco_com->comment != $old->comment) {
             $message = $message . ' Nota de Calificación: de ' . $old->comment . ' a ' . $eco_com->comment. ', ';
         }
-        if ($eco_com->is_paid_spouse != $old->is_paid_spouse) {
-            $message = $message . ' Pago de viuda por unica vez de ' . ($old->is_paid_spouse ? 'activo' : 'no activo')  . ' a ' . ($eco_com->is_paid_spouse ? 'activo' : 'no activo'). ', ';
+        if ($eco_com->is_paid != $old->is_paid) {
+            $message = $message . ' Pago por unica vez de ' . ($old->is_paid ? 'activo' : 'no activo')  . ' a ' . ($eco_com->is_paid ? 'activo' : 'no activo'). ', ';
         }
         if ($eco_com->eco_com_state_id != $old->eco_com_state_id) {
             $message = $message . ' el estado de ' . $old->eco_com_state->name . ' a ' . $eco_com->eco_com_state->name . ', ';
@@ -129,5 +130,6 @@ class EconomicComplementObserver
         if ($old->inbox_state == true && $eco_com->inbox_state == false && $eco_com->wf_current_state_id == $old->wf_current_state_id) {
             $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 2, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
         }
+
     }
 }

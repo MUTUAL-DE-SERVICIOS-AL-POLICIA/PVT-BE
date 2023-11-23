@@ -85,7 +85,8 @@ class User extends Authenticatable
         }
         return false;
     }
-    
-    
-
+    public function eco_com_review_procedures()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComReviewProcedure');
+    }
 }
