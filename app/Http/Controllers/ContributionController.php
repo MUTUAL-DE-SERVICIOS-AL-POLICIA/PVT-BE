@@ -602,14 +602,14 @@ class ContributionController extends Controller
          return view('contribution.affiliate_contributions_edit', $data);
     }
     public function storeContributions(Request $request)
-    { 
+    {
         //*********START VALIDATOR************//
 
         $rules=[];
         $messages=[];
         $input_data = $request->all();
         if(!empty($request->iterator))
-        { 
+        {
             foreach ($request->iterator as $key => $iterator) 
             {  if(isset($request->total[$key]) && $request->total[$key]>0) {         
                 $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
@@ -649,7 +649,7 @@ class ContributionController extends Controller
                     $messages=array_merge($messages, $array_messages);
                 }
             }
-        }   
+        }
 
         $validator = Validator::make($input_data,$rules,$messages);
         if($validator->fails()){
@@ -757,7 +757,7 @@ class ContributionController extends Controller
                         if(!isset($request->retirement_fund[$key]))
                             $contribution->retirement_fund = 0;
                         else
-                            $contribution->retirement_fund = strip_tags($request->garetirement_fundin[$key]) ?? 0;
+                            $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]) ?? 0;
                     
                         if(!isset($request->mortuary_quota[$key]))
                             $contribution->mortuary_quota = 0;
@@ -775,7 +775,7 @@ class ContributionController extends Controller
                                 $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
                             }
                         }
-                        $contribution->type = 'Planilla';
+                        $contribution->type = 'Planilla';//return $contribution;//  $contribution->retirement_fund = 123456;
                         $contribution->save();
                         array_push($contributions, $contribution);
                     }
