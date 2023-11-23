@@ -604,6 +604,7 @@ class ContributionController extends Controller
     public function storeContributions(Request $request)
     { 
         //*********START VALIDATOR************//
+
         $rules=[];
         $messages=[];
         $input_data = $request->all();
@@ -620,10 +621,15 @@ class ContributionController extends Controller
                         $input_data['gain'][$key]= strip_tags($request->gain[$key]);
                     }
                     $input_data['total'][$key]= strip_tags($request->total[$key]);
+                    $input_data['retirement_fund'][$key]= strip_tags($request->retirement_fund[$key]);
+                    $input_data['mortuary_quota'][$key]= strip_tags($request->mortuary_quota[$key]);
+
                     $array_rules = [
                         'base_wage.'.$key =>  'numeric|min:0',
                         'gain.'.$key =>  'numeric|min:0',
-                        'total.'.$key =>  'required|numeric|min:1'
+                        'total.'.$key =>  'required|numeric|min:1',
+                        'retirement_fund.'.$key =>  'numeric|min:0',
+                        'mortuary_quota.'.$key =>  'numeric|min:0',
                     ];
                     $rules=array_merge($rules,$array_rules);
                     $array_messages = [
@@ -649,19 +655,23 @@ class ContributionController extends Controller
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             //if(isset($request->total[$key]) && $request->total[$key]>0) {
                 if (isset($contribution->id)) {
-                    if(isset($request->total[$key]) && $request->total[$key] != "")
+                    if(isset($request->total[$key]) && $request->total[$key] != ""){
                         $contribution->total = strip_tags($request->total[$key]);
-
-                    $rate=ContributionRate::where('month_year', $key)->first();
-
-                    if($contribution->month_year <='1987-04-01'){
-                        $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
-                        $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
-                    }else{
-                        $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
-                        $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
+                        $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]);
+                        $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]);
                     }
-
+                    $rate=ContributionRate::where('month_year', $key)->first();
+                        $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]);
+                    //dd($contribution->retirement_fund);
+                    if($contribution->month_year <= '1999-01-01') {
+                        if($contribution->month_year <='1987-04-01'){
+                            $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
+                            $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
+                        }else{
+                            $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
+                            $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
+                        }
+                    }
                         //dd($request->base_wage[$key]);
                     if(isset($request->base_wage[$key]) && $request->base_wage[$key] != "")
                         $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
@@ -723,19 +733,21 @@ class ContributionController extends Controller
                             $contribution->gain = 0;
                         else
                             $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
-
-                        $contribution->mortuary_quota = 0;
+                        
+                        $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]) ?? 0;
+                        $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]) ?? 0;
                         $contribution->total = strip_tags($request->total[$key]) ?? 0;
 
                         $rate=ContributionRate::where('month_year', $key)->first();
 
-                        if($contribution->month_year <='1987-04-01'){
-                            $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
-                        }else{
-                            $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
-                            $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
+                        if($contribution->month_year <= '1999-01-01') {
+                            if($contribution->month_year <='1987-04-01'){
+                                $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
+                            }else{
+                                $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
+                                $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
+                            }
                         }
-
                         $contribution->type = 'Planilla';
                         $contribution->save();
                         array_push($contributions, $contribution);
