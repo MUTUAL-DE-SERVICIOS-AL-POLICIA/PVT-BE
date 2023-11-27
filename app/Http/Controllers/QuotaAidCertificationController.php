@@ -1125,7 +1125,7 @@ class QuotaAidCertificationController extends Controller
     $spouse_full_name = '';
     if (isset($quota_aid_beneficiaries->id)) {
       $legal_guardian = QuotaAidLegalGuardian::where('id', $quota_aid_beneficiaries->quota_aid_legal_guardian_id)->first();
-      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : ", la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación de ";
+      $person .= ($legal_guardian->gender == 'M' ? " el Sr " : " la Sra ") . Util::fullName($legal_guardian) . " con C.I. N° " . $legal_guardian->identity_card . " a través de Testimonio Notarial N° " . $legal_guardian->number_authority . " de fecha " . Util::getStringDate(Util::parseBarDate($legal_guardian->date_authority)) . " sobre poder especial, bastante y suficiente emitido por " . $legal_guardian->notary_of_public_faith . " a cargo del (la) Notario (a) " . $legal_guardian->notary . " en representación de ";
       $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . " en calidad de " . $applicant->kinship->name; //solicitante
       $with_art = true;
     } else {
@@ -1564,9 +1564,10 @@ class QuotaAidCertificationController extends Controller
     if ($quota_aid->procedure_modality_id != 14) {
 
       if ($quota_aid->procedure_modality_id == 15) {
-        $body_resolution .= ($beneficiaries_count > 1 ? "de los beneficiarios " : ($applicant->gender ? "del Viudo " : "de la Viuda ")) . ($affiliate->spouse()->first()->gender == 'M' ? "del Sr. " : "de la Sra. ") . Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . "., en el siguiente tenor: <br><br>";
+        logger($applicant->gender);
+        $body_resolution .= ($beneficiaries_count > 1 ? "de los beneficiarios " : ($applicant->gender == 'M' ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->spouse()->first()->gender == 'M' ? "del Sr. " : "de la Sra. ") . Util::fullName($affiliate->spouse()->first()) . " con C.I. N° " . $affiliate->spouse()->first()->identity_card . "., en el siguiente tenor: <br><br>";
       } else {
-        $body_resolution .= ($beneficiaries_count > 1 ? "de los beneficiarios " : ($applicant->gender ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->gender == 'M' ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . "., en el siguiente tenor: <br><br>";
+        $body_resolution .= ($beneficiaries_count > 1 ? "de los beneficiarios " : ($applicant->gender == 'M' ? "del beneficiario " : "de la beneficiaria ")) . ($affiliate->gender == 'M' ? "del " : "de la ") . $affiliate->fullNameWithDegree() . " con C.I. N° " . $affiliate->identity_card . "., en el siguiente tenor: <br><br>";
       }
     } else {
       $body_resolution .= ($applicant->gender == 'M' ? "del beneficiario de la <strong> &nbsp;Sra. " : "de la beneficiaria del <strong> &nbsp;Sr. ") . Util::fullName($affiliate->spouse()->first()) . "</strong> con C.I. N° <strong>" . $affiliate->spouse()->first()->identity_card . ".</strong>, en el siguiente tenor: <br><br>";
