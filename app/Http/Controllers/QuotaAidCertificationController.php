@@ -1241,8 +1241,8 @@ class QuotaAidCertificationController extends Controller
     de la Ley de Procedimiento Administrativo.
     <br><br>
     Que, el Estudio Matemático Actuarial 2021 – 2025, aprobado mediante Resolución de Directorio Nº
-    77/2021, de 21 de octubre de 2021, determina las cuantías para la otorgación del beneﬁcio de Auxilio Mortuorio.
-    <br><br>';
+    77/2021, de 21 de octubre de 2021, determina las cuantías para la otorgación del beneﬁcio de '.
+    ($quota_aid->procedure_modality->procedure_type->second_name). '. <br><br>';
 
     $considering_two = 'Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución
     de Directorio Nº 68/2023  de  19  de septiembre  de  2023,  en sus Artículos 1 y 2 refieren:  ARTICULO 1°.
