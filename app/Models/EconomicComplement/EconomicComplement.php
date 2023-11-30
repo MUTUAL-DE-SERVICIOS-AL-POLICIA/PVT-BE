@@ -114,6 +114,10 @@ class EconomicComplement extends Model
     {
         return $this->hasOne('Muserpol\Models\EconomicComplement\EcoComBeneficiary');
     }
+    public function eco_com_once_payment()
+    {
+        return $this->hasOne('Muserpol\Models\EconomicComplement\EcoComOncePayment');
+    }
     public function tags()
     {
         return $this->morphToMany('Muserpol\Models\Tag', 'taggable')->withPivot(['user_id', 'date'])->withTimestamps();
@@ -319,7 +323,7 @@ class EconomicComplement extends Model
         $difference = $salary_quotable - $this->total_rent_calc;
         $this->difference = $difference;
         $months_of_payment = 6;
-        if ($this->is_paid_spouse==true)
+        if ($this->is_paid==true)
         {
             if (!empty($this->months_of_payment))
                 $months_of_payment = $this->months_of_payment;
@@ -795,7 +799,7 @@ class EconomicComplement extends Model
                 $beneficiary = $this->eco_com_legal_guardian;
             }
         }
-        if ($this->is_paid_spouse) {
+        if ($this->is_paid) {
             $spouse = $this->affiliate->spouse->first();
             if ($spouse) {
                 $beneficiary = $spouse;
@@ -806,5 +810,9 @@ class EconomicComplement extends Model
     public function isLagging()
     {
         return $this->workflow_id == ID::workflow()->eco_com_lagging;
+    }
+    public function eco_com_review_procedures()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComReviewProcedure');
     }
 }

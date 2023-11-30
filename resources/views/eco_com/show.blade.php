@@ -1,3 +1,6 @@
+show blade 
+
+
 @extends('layouts.app') 
 @section('title', 'Complemento economico Padre') 
 @section('content')
@@ -6,6 +9,7 @@
         {!!Breadcrumbs::render('show_eco_com', $economic_complement)!!}
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
+  
         <div class="pull-left">
             @if(Util::isReceptionEcoCom()||Util::isRegionalRole())
                 @if ($economic_complement->isLagging())
@@ -24,6 +28,15 @@
                     doc-id="{{ $economic_complement->id }}"
                     message="true"
                     url-print="{{ route('eco_com_print_qualification', [$economic_complement->id])}}">
+                </certification-button>
+            @endif
+            @if ((Util::getRol()->id == 4 ) and ($economic_complement->eco_com_reception_type->name =='Inclusión' or $economic_complement->eco_com_reception_type->name =='Habitual-Rehabilitacion'))
+                <certification-button
+                    type="ecoCom"
+                    title="Imprimir Revisión"
+                    doc-id="{{ $economic_complement->id }}"
+                    message="false"
+                    url-print="{{ route('eco_com_print_revision_certificate', [$economic_complement->id])}}">
                 </certification-button>
             @endif
         </div>
@@ -76,6 +89,7 @@
                 <li class="list-group-item tab-eco-com-legal-guardian" data-toggle="tab" href="#tab-eco-com-legal-guardian"><a href="#"><i class="fa fa-shield"></i> Apoderado</a></li>
                 <li class="list-group-item tab-eco-com-summited-document" data-toggle="tab" href="#tab-eco-com-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                 <li class="list-group-item tab-eco-com-qualification" data-toggle="tab" href="#tab-eco-com-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
+                <li class="list-group-item tab-eco-com-review" data-toggle="tab" href="#tab-eco-com-review"><a href="#"><i class="fa fa-check"></i> Revisión</a></li>
                 <li class="list-group-item tab-eco-com-observations" data-toggle="tab" href="#tab-eco-com-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
                 <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-record" ><a href="#"><i class="fa fa-history"></i> Historial</a></li>
                <!-- <li class="list-group-item tab-eco-com-record" data-toggle="tab" href="#tab-eco-com-boleta" ><a href="#"><i class="fa fa-camera-retro"></i> Boleta</a></li>-->
@@ -126,6 +140,10 @@
             <div id="tab-eco-com-qualification" class="tab-pane">
             <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
                 </eco-com-qualification>
+            </div>
+            <div id="tab-eco-com-review" class="tab-pane">
+                <eco-com-review :eco-com="{{ $economic_complement->id }}" :user="{{ $user }}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
+                </eco-com-review>
             </div>
             <div id="tab-eco-com-observations" class="tab-pane">
             <eco-com-observations :observation-types="{{ $observation_types }}"  :eco-com="{{ $economic_complement }}" :permissions="{{ $permissions }}"></eco-com-observations>
