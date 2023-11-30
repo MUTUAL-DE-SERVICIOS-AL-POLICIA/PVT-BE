@@ -128,6 +128,9 @@
                                             <tr>
                                                 <td>Fondo de Retiro</td>
                                             </tr>
+                                            <tr>
+                                                <td>Cuota Mortuoria</td>
+                                            </tr>
                                         </table>
                                     </td>
                                     @for($i=1;$i<13;$i++)
@@ -191,8 +194,14 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->retirement_fund ?? '-'}} </div>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}" class="editcontent numberformat">{{$contributions[$period]->retirement_fund ?? '-'}} </div>
                                                                 <input type="hidden" disabled name="retirement_fund[{{$period}}]" value="{{$contributions[$period]->retirement_fund ??'-'}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">{{$contributions[$period]->mortuary_quota ?? '-'}} </div>
+                                                                <input type="hidden" disabled name="mortuary_quota[{{$period}}]" value="{{$contributions[$period]->mortuary_quota ??'-'}}">
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -249,8 +258,14 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="false" class="editcontent numberformat">0</div>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">0</div>
                                                                 <input type="hidden" disabled name="retirement_fund[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="mortuary_quota[{{$period}}]" value="0">
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -317,6 +332,10 @@
                     <input id="reim_gain" name="reim_gain" type="text" placeholder="Total ganado" class="form-control numberformat">
                     <label>Aporte</label>
                     <input id="reim_amount" name="reim_amount" type="text" placeholder="Aporte" class="form-control numberformat">
+                    <label>Fondo de Retiro</label>
+                    <input id="reim_retirement_fund" name="reim_retirement_fund" type="text" placeholder="Fondo de Retiro" class="form-control numberformat">
+                    <label>Cuota Mortuoria</label>
+                    <input id="reim_mortuary_quota" name="reim_mortuary_quota" type="text" placeholder="Cuota Mortuoria" class="form-control numberformat">
                 </div>
             </div>
             <div class="modal-footer">
@@ -350,6 +369,16 @@
     $('#reim_gain').keydown(function (e) {
         if (e.which == 13 ) {
             $('#reim_amount').focus();
+        }
+    });
+    $('#reim_amount').keydown(function (e) {
+        if (e.which == 13 ) {
+            $('#reim_retirement_fund').focus();
+        }
+    });
+    $('#reim_retirement_fund').keydown(function (e) {
+        if (e.which == 13 ) {
+            $('#reim_mortuary_quota').focus();
         }
     });
     $('.numberformat').each(function(i, obj) {
@@ -413,10 +442,10 @@ function rei(){
 }
 $('.editcontent').blur(function() {
     $(this).next('input').val(parseFloat($(this).html().replace(/,/g , '')));
-    if(parseFloat($(this).next('input').val()) > 0 )
-    {
+    //if(parseFloat($(this).next('input').val()) > 0 )
+    //{
         $(this).next('input').removeAttr('disabled');
-    }    
+    //}    
     $(this).closest('table').find('tr:first').find('td:first').find('input').removeAttr('disabled');
 });
 function createReimbursement(year){
@@ -432,7 +461,9 @@ function clearModal(){
     category = $('#reim_category').val('');
     gain = $('#reim_gain').val('');    
     total =  $('#reim_amount').val('');
-    reim_seniority_bonus = $('#reim_seniority_bonus').val('');
+    seniority_bonus = $('#reim_seniority_bonus').val('');
+    retirement_fund =  $('#reim_retirement_fund').val('');
+    mortuary_quota =  $('#reim_mortuary_quota').val('');
 }
 function storeReimbursement(){
     year = this.actual_year;
@@ -449,11 +480,17 @@ function storeReimbursement(){
     total =  $('#reim_amount').val();
     total = total.replace(/,/g, "");
 
+    retirement_fund =  $('#reim_retirement_fund').val();
+    retirement_fund = retirement_fund.replace(/,/g, "");
+
+    mortuary_quota =  $('#reim_mortuary_quota').val();
+    mortuary_quota = mortuary_quota.replace(/,/g, "");
+
     affiliate_id = $("#affiliate_id").val();
     $.ajax({
         url: "{{asset('reimbursement')}}",
         method: "POST",
-        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total},
+        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total,retirement_fund:retirement_fund,mortuary_quota:mortuary_quota},
         beforeSend: function (xhr, settings) {
             if (settings.url.indexOf(document.domain) >= 0) {
                 xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
