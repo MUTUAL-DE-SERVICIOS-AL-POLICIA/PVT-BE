@@ -242,6 +242,9 @@
                         </div>
                     </div>
                     <br>
+                    <br>
+                    <div class="pull-left"> <legend > Datos de la Cuenta Bancaria del Beneficiario</legend></div>
+                    <br>
                     <div class="hr-line-dashed"></div>
                     <div class="row">
                         <div class="col-md-6">

@@ -1247,16 +1247,9 @@ class EconomicComplementController extends Controller
     {
         $eco_com = EconomicComplement::find($economic_complement_id);
         $user = Auth::user();
-        $reviews = $eco_com->eco_com_review_procedures;
-        $countReview = ReviewProcedure::where('active', true)->count();
-        $count = 0;
         
-        foreach ($reviews as $review) {
-            if ($review->is_valid) {
-                $count++;
-            }
-        }
-        $message = ($countReview == $count) ? 'revisó el trámite.' : 'revisó parcialmente el trámite';
+        $message = 'Revisó el trámite.';
+        
         $eco_com->wf_records()->create([
             'user_id' => $user->id,
             'record_type_id' => 7,
@@ -2177,7 +2170,7 @@ class EconomicComplementController extends Controller
         else{
             $beneficiary = EcoComOncePayment::updateOrCreate([
                 'economic_complement_id' => $eco_com_id,
-                'identity_card' => $once_payment['type'],
+                'type' => $once_payment['type'],
                 'identity_card' => $once_payment['identity_card'],
                 'last_name' => isset($once_payment['last_name']) ? $once_payment['last_name'] : null,
                 'mothers_last_name' => isset($once_payment['mothers_last_name']) ? $once_payment['mothers_last_name'] : null,

@@ -51,6 +51,13 @@ class EcoComOncePayment extends Model
         }
         return Carbon::parse($value)->format('d/m/Y');
     }
+    public function getDateDeathAttribute($value)
+    {
+        if(!$value){
+            return null;
+        }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
     public function getMarriageDateAttribute($value)
     {
         if(!$value){
