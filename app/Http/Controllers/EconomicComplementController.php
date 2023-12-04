@@ -990,7 +990,7 @@ class EconomicComplementController extends Controller
                 'once_payment.civil_status' => 'required|string',
                 'once_payment.phone_number' => 'nullable',
                 'once_payment.cell_phone_number' => 'required',
-                'once_payment.date_death' => 'required|date_format:d/m/Y',
+                'once_payment.date_death' => 'required',
                 'once_payment.reason_death' => 'required|string',
                 'once_payment.death_certificate_number' => 'required|string',
                 'once_payment.city_birth_id' => 'required|numeric',
