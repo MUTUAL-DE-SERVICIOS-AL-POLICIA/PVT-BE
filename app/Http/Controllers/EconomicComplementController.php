@@ -2168,6 +2168,7 @@ class EconomicComplementController extends Controller
             $beneficiary->save();
         }
         else{
+            $birth_date = DateTime::createFromFormat('d/m/Y', $once_payment['birth_date']);
             $beneficiary = EcoComOncePayment::updateOrCreate([
                 'economic_complement_id' => $eco_com_id,
                 'type' => $once_payment['type'],
@@ -2177,17 +2178,17 @@ class EconomicComplementController extends Controller
                 'first_name' => $once_payment['first_name'],
                 'second_name' => isset($once_payment['second_name']) ? $once_payment['second_name'] : null,
                 'surname_husband' => isset($once_payment['surname_husband']) ? $once_payment['surname_husband'] : null,
-                'birth_date' => $once_payment['birth_date'],
+                'birth_date' => $fecha->format('Y-m-d'),
                 'nua' => isset($once_payment['nua']) ? $once_payment['nua'] : null,
                 'gender' => $once_payment['gender'],
                 'civil_status' => $once_payment['civil_status'],
                 'phone_number' => isset($once_payment['phone_number']) ? $once_payment['phone_number']: null,
                 'cell_phone_number' => $once_payment['cell_phone_number'],
-                'date_death' => $once_payment['date_death'],
+                'date_death' => Carbon::parse($once_payment['date_death'])->format('Y-m-d'),
                 'reason_death' => isset($once_payment['reason_death']) ? $once_payment['reason_death'] : 'prueba',
                 'death_certificate_number' => $once_payment['death_certificate_number'],
                 'city_birth_id' => $once_payment['city_birth_id'],
-                'due_date' => isset($once_payment['is_duedate_undefined']) && $once_payment['is_duedate_undefined'] ? null : $once_payment['due_date'],
+                'due_date' => isset($once_payment['is_duedate_undefined']) && $once_payment['is_duedate_undefined'] ? null : Carbon::parse($once_payment['due_date'])->format('Y-m-d'),
                 'is_duedate_undefined' => isset($once_payment['is_duedate_undefined']) ? $once_payment['is_duedate_undefined'] : false
             ]);
         }
