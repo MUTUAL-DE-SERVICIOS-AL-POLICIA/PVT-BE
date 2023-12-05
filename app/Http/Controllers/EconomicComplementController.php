@@ -2168,7 +2168,7 @@ class EconomicComplementController extends Controller
             $beneficiary->save();
         }
         else{
-            $birth_date = DateTime::createFromFormat('d/m/Y', $once_payment['birth_date']);
+            $birth_date = Carbon::createFromFormat('d/m/Y', $once_payment['birth_date']);
             $beneficiary = EcoComOncePayment::updateOrCreate([
                 'economic_complement_id' => $eco_com_id,
                 'type' => $once_payment['type'],
@@ -2178,7 +2178,7 @@ class EconomicComplementController extends Controller
                 'first_name' => $once_payment['first_name'],
                 'second_name' => isset($once_payment['second_name']) ? $once_payment['second_name'] : null,
                 'surname_husband' => isset($once_payment['surname_husband']) ? $once_payment['surname_husband'] : null,
-                'birth_date' => $fecha->format('Y-m-d'),
+                'birth_date' => $birth_date->format('Y-m-d'),
                 'nua' => isset($once_payment['nua']) ? $once_payment['nua'] : null,
                 'gender' => $once_payment['gender'],
                 'civil_status' => $once_payment['civil_status'],
