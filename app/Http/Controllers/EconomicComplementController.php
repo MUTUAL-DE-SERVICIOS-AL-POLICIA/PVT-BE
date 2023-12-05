@@ -2169,6 +2169,8 @@ class EconomicComplementController extends Controller
         }
         else{
             $birth_date = Carbon::createFromFormat('d/m/Y', $once_payment['birth_date']);
+            $date_death = Carbon::createFromFormat('d/m/Y', $once_payment['date_death']);
+            $due_date = isset($once_payment['is_duedate_undefined']) && $once_payment['is_duedate_undefined'] ? null : Carbon::createFromFormat('d/m/Y', $once_payment['due_date']);
             $beneficiary = EcoComOncePayment::updateOrCreate([
                 'economic_complement_id' => $eco_com_id,
                 'type' => $once_payment['type'],
@@ -2184,11 +2186,11 @@ class EconomicComplementController extends Controller
                 'civil_status' => $once_payment['civil_status'],
                 'phone_number' => isset($once_payment['phone_number']) ? $once_payment['phone_number']: null,
                 'cell_phone_number' => $once_payment['cell_phone_number'],
-                'date_death' => Carbon::parse($once_payment['date_death'])->format('Y-m-d'),
+                'date_death' => $date_death->format('Y-m-d'),
                 'reason_death' => isset($once_payment['reason_death']) ? $once_payment['reason_death'] : 'prueba',
                 'death_certificate_number' => $once_payment['death_certificate_number'],
                 'city_birth_id' => $once_payment['city_birth_id'],
-                'due_date' => isset($once_payment['is_duedate_undefined']) && $once_payment['is_duedate_undefined'] ? null : Carbon::parse($once_payment['due_date'])->format('Y-m-d'),
+                'due_date' => $due_date ? $due_date->format('Y-m-d'):null,
                 'is_duedate_undefined' => isset($once_payment['is_duedate_undefined']) ? $once_payment['is_duedate_undefined'] : false
             ]);
         }
