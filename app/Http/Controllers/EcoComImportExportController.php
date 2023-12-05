@@ -163,16 +163,16 @@ class EcoComImportExportController extends Controller
                 $process = collect([]);
                 foreach ($data as $d1) {
                     $temp = $d1;
-                    // foreach ($data as $d2) {
-                    //     if ($d1[3] == $d2[3] && ($d2[34] == 'C' || is_null($d2[34])) && $d1[0] != $d2[0]) {
-                    //         $temp[13] =  Util::verifyAndParseNumber($temp[13]) + Util::verifyAndParseNumber($d2[13]); //TOTAL_CC
-                    //         $temp[19] =  Util::verifyAndParseNumber($temp[19]) + Util::verifyAndParseNumber($d2[19]); //TOTAL_FSA
-                    //         $temp[25] =  Util::verifyAndParseNumber($temp[25]) + Util::verifyAndParseNumber($d2[25]); //TOTAL_FS
-                    //         $process->push($d2[0]);
-                    //     }
-                    // }
-                    $temp[16] = Util::verifyAndParseNumber($temp[16]);
-                    $collect->push($temp);
+                    if (!$process->contains($d1[0])) {
+                        foreach ($data as $d2) {
+                            if ($d1[3] == $d2[3] && $d1[0] != $d2[0]) {
+                                $temp[16] =  Util::verifyAndParseNumber($temp[16]) + Util::verifyAndParseNumber($d2[16]);
+                                $process->push($d2[0]);
+                            }
+                        }
+                        $temp[16] = Util::verifyAndParseNumber($temp[16]);
+                        $collect->push($temp);
+                    }
                 }
                 $eco_coms = EconomicComplement::with('affiliate')->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
@@ -247,11 +247,11 @@ class EcoComImportExportController extends Controller
                         foreach ($data as $d2) {
                             // if ($d1[3] == $d2[3] && $d1[11] == $d2[11] && ($d2[27] == 'C' || is_null($d2[27])) && $d1[0] != $d2[0]) {
                             if ($d1[3] == $d2[3] && ($d2[27] == 'C' || is_null($d2[27])) && $d1[0] != $d2[0]) {
-                                $temp[17] =  Util::verifyAndParseNumber($temp[17]) + Util::verifyAndParseNumber($d2[17]);
+                                $temp[16] =  Util::verifyAndParseNumber($temp[16]) + Util::verifyAndParseNumber($d2[16]);
                                 $process->push($d2[0]);
                             }
                         }
-                        $temp[17] = Util::verifyAndParseNumber($temp[17]);
+                        $temp[16] = Util::verifyAndParseNumber($temp[16]);
                         $collect->push($temp);
                     }
                 }
