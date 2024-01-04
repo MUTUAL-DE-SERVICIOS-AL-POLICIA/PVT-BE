@@ -1431,9 +1431,9 @@ class QuotaAidCertificationController extends Controller
       el grado que ostentaba el o la servidor público policial al momento del fallecimiento; la cuantía del beneficio será distribuido de acuerdo a lo establecido en el Código Civil y normas conexas. (…)”</i>, por tanto 
       a través de la Certificación de Calificación se determina el  monto de pago a favor del titular o derechohabientes. <br><br>';
     }
-    $considering_two.='Que el Artículo 59 del Reglamento de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, 
-    es la instancia técnica y legal que mediante acto administrativo determina la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio. Es designada mediante Resolución Administrativa 
-    de la Dirección General Ejecutiva de la Mutual de Servicios al Policía – MUSERPOL (...)”</i>, por consiguiente, la Resolución Administrativa Nº 038/2023 del 14 de junio de 2023, conforma la Comisión de 
+    $considering_two.='Que, el Artículo 59 del Reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio refiere:<i> “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, 
+    es la instancia técnica y legal que mediante acto administrativo determina la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio. Es designada mediante Resolución Administrativa
+    de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL”.</i>. Por consiguiente, la Resolución Administrativa Nº 002/2024 del 02 de enero de 2024, conforma la Comisión de 
     Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
     Que el Artículo 60 del Reglamento de Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: a. Determinar la otorgación de los beneficios. 
