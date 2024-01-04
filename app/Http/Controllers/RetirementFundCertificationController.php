@@ -2286,14 +2286,15 @@ class RetirementFundCertificationController extends Controller
       $considering_two.='<i>(...)”</i>, por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
      }
     }
-    $considering_two.= 'Que, el Artículo 61 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(DEFINICIÓN Y CONFORMACIÓN).- I. La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante acto administrativo determina la
-    otorgación del beneficio de Fondo de Retiro Policial Solidario. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL(...)”</i>. Por consiguiente, la Resolución Administrativa
-    N° 038/2023 del 14 de junio de 2023, se conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
+    $considering_two.= 'Que, el Artículo 61 del Reglamento del Beneficio de Fondo de Retiro Policial Solidario refiere:<i>“(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante acto administrativo determina la
+    otorgación del beneficio de Fondo de Retiro Policial Solidario. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL.”</i>. Por consiguiente, la Resolución Administrativa
+    N° 002/2024 del 02 de enero de 2024, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
     Que, el Artículo 62 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(ATRIBUCIONES).- La Comisión de Beneﬁcios Económicos tiene las siguientes atribuciones: a) Determinar la otorgación de los beneficios. b) Determinar la otorgación de montos 
     dejados en cuota parte en reserva, c) Resolver los Recursos de Revocatoria, d) Otros, atribuibles dentro de su competencia. Para efectivizar lo establecido, emitirá Resolución, Auto o informe según corresponda”</i>, es así que la comisión de beneﬁcios económicos 
     en consideración de todos los antecedentes y la documentación adjunta a la presentación del trámite y certiﬁcaciones de las diferentes áreas de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, se emite la presente Resolución.
-    Policial Solidario, se emite la presente Resolución.<br><br>';    
+    Policial Solidario, se emite la presente Resolución.<br><br>';
+    
     if($retirement_fund->procedure_modality->procedure_type_id == 21){
     $considering_two.='Que, la DISPOSICIÓN TRANSITORIA SÉPTIMA, refiere: “Se dará curso a la devolución de aportes a aquellos afiliados (as) que presenten una nueva solicitud de devolución, siempre y cuando con anterioridad no se hubiese generado la emisión
     de una Resolución de Prescripción y esta no esté debidamente ejecutoriada”.<br><br>';
