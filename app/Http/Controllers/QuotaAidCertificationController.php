@@ -1433,7 +1433,7 @@ class QuotaAidCertificationController extends Controller
     }
     $considering_two.='Que, el Artículo 59 del Reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio refiere:<i> “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, 
     es la instancia técnica y legal que mediante acto administrativo determina la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio. Es designada mediante Resolución Administrativa
-    de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL”.</i>. Por consiguiente, la Resolución Administrativa Nº 002/2024 del 02 de enero de 2024, conforma la Comisión de 
+    de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL”</i>. Por consiguiente, la Resolución Administrativa Nº 002/2024 del 02 de enero de 2024, conforma la Comisión de 
     Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
     Que el Artículo 60 del Reglamento de Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: a. Determinar la otorgación de los beneficios. 
