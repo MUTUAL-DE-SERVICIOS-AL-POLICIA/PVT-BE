@@ -2212,17 +2212,23 @@ class RetirementFundCertificationController extends Controller
     Transitoria Única del Decreto Supremo No. 3231 de fecha 28 de junio de 2017:  a) Montos dejados en cuota parte en reserva. b) Recursos de Reclamación. c) Carpetas en curso de Trámite. d) Casos especiales determinados por la Comisión”.</i> Es así que la comisión de beneﬁcios económicos 
     en consideración de todos los antecedentes y la documentación adjunta a la presentación del trámite y certiﬁcaciones de las diferentes áreas de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, se emite la presente Resolución.<br>';
     
-    $discounts = $retirement_fund->discount_types();
-    $discount_counter = $discounts->where('discount_type_id', '>', 1)->where('amount', '>', 0)->count();
+    $total_discounts = $retirement_fund->discount_types();
+    $discount_loan = $total_discounts->where('discount_type_id', '2')->first();
+    $total_discounts = $retirement_fund->discount_types();
+    $discount_guarantee = $total_discounts->where('discount_type_id', '3')->first();
+    $total_discounts = $retirement_fund->discount_types();
+    $discounts_counter = $total_discounts->where('discount_type_id', '>', '1')->where('amount', '>', '0')->count();  
 
-    if($discount_counter > 0){
-      $considering_two.= 'Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio Nº 97/2021 de 01 de diciembre de 2021, en sus Artículos 89, 90, 91, 92, 93 y 94 disponen el pago de deuda con la MUSERPOL y la retención de importes y descuentos por 
-      garantía conforme a solicitud de la Dirección de Estrategias Sociales e Inversiones.';
+    if($discounts_counter > 0){
+      $considering_two.= '<br>Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio Nº 97/2021 de 01 de diciembre de 2021, en sus Artículos 89, 90, 91, 92, 93 y 94 disponen el pago de deuda con la MUSERPOL y la retención de importes y descuentos por 
+      garantía conforme a solicitud de la Dirección de Estrategias Sociales e Inversiones.
+      <br>';
     }
-    if($retirement_fund->procedure_modality->procedure_type_id == 21){
-    $considering_two.='Que, la DISPOSICIÓN TRANSITORIA SÉPTIMA, refiere: “Se dará curso a la devolución de aportes a aquellos afiliados (as) que presenten una nueva solicitud de devolución, siempre y cuando con anterioridad no se hubiese generado la emisión
-    de una Resolución de Prescripción y esta no esté debidamente ejecutoriada”.';
-    }
+    // if($retirement_fund->procedure_modality->procedure_type_id == 21){
+    // $considering_two.='Que, la DISPOSICIÓN TRANSITORIA SÉPTIMA, refiere: “Se dará curso a la devolución de aportes a aquellos afiliados (as) que presenten una nueva solicitud de devolución, siempre y cuando con anterioridad no se hubiese generado la emisión
+    // de una Resolución de Prescripción y esta no esté debidamente ejecutoriada”.
+    // <br>';
+    // }
     $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();
     $considering_three = '';
     if ($number->note != '') {
@@ -2332,7 +2338,7 @@ class RetirementFundCertificationController extends Controller
                 $loan_guarantee .= $this->getFlagy($discount_counter, $flagy);
 
                 if (!$header_discount) { //no tiene descuento de prestamo pero se de garantia
-                  $loan_guarantee .= '<br>Que, mediante nota '.$discount_guarantee->pivot->code.' de la Dirección de Estrategias Sociales e Inversiones de fecha '.Util::getStringDate($discount_guarantee->pivot->date).', refiriendo que '.($affiliate->gender == 'M' ? ' el <b>Sr. ' : ' la <b>Sra. ').'</b>'.$affiliate_name.', tiene retención por concepto de garantía,';
+                  $loan_guarantee .= 'Que, mediante nota '.$discount_guarantee->pivot->code.' de la Dirección de Estrategias Sociales e Inversiones de fecha '.Util::getStringDate($discount_guarantee->pivot->date).', refiriendo que '.($affiliate->gender == 'M' ? ' el <b>Sr. ' : ' la <b>Sra. ').'</b>'.$affiliate_name.', tiene retención por concepto de garantía,';
                   $header_garantee = true;
                 } else {
                   $loan_guarantee .= '';
@@ -2588,9 +2594,9 @@ class RetirementFundCertificationController extends Controller
         $body_resolution .= ', en el monto de <strong>' . Util::formatMoneyWithLiteral($beneficiary->amount_total) . '</strong> ';
           if (isset($beneficiary_advisor->id) && $beneficiary->state) {
             $advisor = RetFunAdvisor::where('id', $beneficiary_advisor->ret_fun_advisor_id)->first();
-            $body_resolution.='en calidad de '.$beneficiary->kinship->name.' a través de '.($advisor->gender == 'M' ? 'el Sr. ' : 'la Sra. ').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br><br>';
+            $body_resolution.='en calidad de '.$beneficiary->kinship->name.' a través de '.($advisor->gender == 'M' ? 'el Sr. ' : 'la Sra. ').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br>';
           }else{
-            $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br><br>';
+            $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br>';
           }
          /*if (isset($beneficiary_legal_guardian->id)) {
           $legal_guardian = RetFunLegalGuardian::where('id', $beneficiary_legal_guardian->ret_fun_legal_guardian_id)->first();
@@ -2639,7 +2645,7 @@ class RetirementFundCertificationController extends Controller
                 $advisor = RetFunAdvisor::where('id', $beneficiary_advisor->ret_fun_advisor_id)->first();
                 $body_resolution.='en calidad de '.$beneficiary->kinship->name.' a través de '.($advisor->gender == 'M' ? 'el Sr. ' : 'la Sra. ').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .' '.($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br><br>';
            }else{
-                $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br><br>';
+                $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br>';
            }
               /*$beneficiary_legal_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id', $beneficiary->id)->first();
              if (isset($beneficiary_legal_guardian->id)) {
