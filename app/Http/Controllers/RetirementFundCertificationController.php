@@ -2073,8 +2073,8 @@ class RetirementFundCertificationController extends Controller
     bajo tuición del Ministerio de Gobierno, regula su actividad y procedimiento bajo los principios
     generales descritos en el Art. 232 de la Constitución Política del Estado, Art. 4 de la Ley 2341 y
     Art. 3 del Decreto Supremo N° 27113, cuya competencia para conocer asuntos administrativos suscitados
-    tanto por la institución, así como por los <i>administrados, se sujetan a lo determinado por el Art. 5
-    de la Ley de Procedimiento Administrativo</i>.
+    tanto por la institución, así como por los administrados, se sujetan a lo determinado por el Art. 5
+    de la Ley de Procedimiento Administrativo.
     <br><br>';
     $considering_one .= 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
     NATURALEZA JURÍDICA, Parágrafo I establece: <i>“Se crea la Mutual de Servicios al Policía –
