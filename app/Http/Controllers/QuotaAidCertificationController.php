@@ -1234,7 +1234,7 @@ class QuotaAidCertificationController extends Controller
     77/2021, de 21 de octubre de 2021, determina las cuantías para la otorgación del beneﬁcio de '.
     ($quota_aid->procedure_modality->procedure_type->second_name).'.';
 
-    $considering_two = 'Que, el Reglamento de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 68/2023 
+    $considering_two = 'Que, el Reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio, aprobado mediante Resolución de Directorio Nº 68/2023 
     de  19  de septiembre  de  2023,  en sus Artículos 1, 2, 6, 7, 10, 11, 15, 16, '; 
     if($quota_aid->procedure_modality->procedure_type_id == 3){
       $considering_two .= '17, 22, 23, 24, 25, 26, 28, 42, 46, 51, 52, 56';
@@ -1389,9 +1389,9 @@ class QuotaAidCertificationController extends Controller
     // $considering_two.='</i> por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
 
     if ($quota_aid->procedure_modality->procedure_type_id == 4) {
-      $considering_two .= 'Que, el Artículo 32, del Reglamento de Cuota Mortuoria y Auxilio  Mortuorio, reﬁeren: (DEFINICIÓN): Auxilio Mortuorio.- Es el beneﬁcio económico que se otorga a los (las) derechohabiente (s) de
+      $considering_two .= 'Que, el Artículo 32, del Reglamento de los Beneficios de Cuota Mortuoria y Auxilio  Mortuorio, reﬁeren:<i> "(DEFINICIÓN): Auxilio Mortuorio.- Es el beneﬁcio económico que se otorga a los (las) derechohabiente (s) de
       los miembros del sector pasivo de la Policía Boliviana aﬁliados a la Mutual de Servicios al Policía - MUSERPOL, destinados a los gastos emergentes del fallecimiento del (la) Titular, Cónyuge o Viudo (a) que se hará 
-      efectivo con el pago de un monto único y por una sola vez.
+      efectivo con el pago de un monto único y por una sola vez"</i>.
       <br><br>';
     }else{
       $considering_two .= 'Que, el Artículo 22, del Reglamento de Cuota Mortuoria y Auxilio  Mortuorio, reﬁeren: (DEFINICIÓN): Cuota Mortuoria.- Es el beneﬁcio económico que se otorga a los (las)
