@@ -2208,8 +2208,7 @@ class RetirementFundCertificationController extends Controller
     otorgación del beneficio de Fondo de Retiro Policial Solidario. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL.”</i>. Por consiguiente, la Resolución Administrativa
     N° 002/2024 del 02 de enero de 2024, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
-    Que, el Artículo 62 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(ATRIBUCIONES).- La Comisión de Beneﬁcios Económicos tiene las siguientes atribuciones: 1. Conocer y resolver los casos pendientes de acuerdo a lo establecido en el parágrafo I de la Disposición 
-    Transitoria Única del Decreto Supremo No. 3231 de fecha 28 de junio de 2017:  a) Montos dejados en cuota parte en reserva. b) Recursos de Reclamación. c) Carpetas en curso de Trámite. d) Casos especiales determinados por la Comisión”.</i> Es así que la comisión de beneﬁcios económicos 
+    Que, el Artículo 62 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(ATRIBUCIONES).- La Comisión de Beneﬁcios Económicos tiene las siguientes atribuciones: a) Determinar la otorgación de los beneﬁcios. b) Determinar la otorgación de montos dejados en cuota parte en reserva, c) Resolver los Recursos de Revocatoria, d) Otros, atribuibles dentro de su competencia. Para efectivizar lo establecido, emitirá Resolución, Auto o informe según corresponda”.</i> Es así que la comisión de beneﬁcios económicos 
     en consideración de todos los antecedentes y la documentación adjunta a la presentación del trámite y certiﬁcaciones de las diferentes áreas de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, se emite la presente Resolución.<br>';
     
     $total_discounts = $retirement_fund->discount_types();
@@ -2246,7 +2245,7 @@ class RetirementFundCertificationController extends Controller
         if(isset($certification_date)){
         switch($certification_date->wf_state_id) {
           case 19:
-            $considering_three.= 'Que, mediante Formulario de Recepción de ventanilla de atención al afiliado de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se registra el trámite N° ' .$certification_date->code. ' de fecha ' 
+            $considering_three.= '<br>Que, mediante Formulario de Recepción de ventanilla de atención al afiliado de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se registra el trámite N° ' .$certification_date->code. ' de fecha ' 
             .Util::getStringDate($certification_date->date).', debiéndose aplicar el reglamento vigente a la fecha de presentación de la solicitud formal, en virtud del principio de rogación establecido en el Art. 47 del Reglamento de Fondo de Retiro Policial Solidario.<br><br>';
           break;
           case 20: //Area de Archivo

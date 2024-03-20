@@ -1389,7 +1389,7 @@ class QuotaAidCertificationController extends Controller
     // $considering_two.='</i> por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
 
     if ($quota_aid->procedure_modality->procedure_type_id == 4) {
-      $considering_two .= 'Que, el Artículo 32, del Reglamento de los Beneficios de Cuota Mortuoria y Auxilio  Mortuorio, reﬁeren:<i> "(DEFINICIÓN): Auxilio Mortuorio.- Es el beneﬁcio económico que se otorga a los (las) derechohabiente (s) de
+      $considering_two .= 'Que, el Artículo 32, el Reglamento de los Beneficios de Cuota Mortuoria y Auxilio  Mortuorio, reﬁeren:<i> "(DEFINICIÓN): Auxilio Mortuorio.- Es el beneﬁcio económico que se otorga a los (las) derechohabiente (s) de
       los miembros del sector pasivo de la Policía Boliviana aﬁliados a la Mutual de Servicios al Policía - MUSERPOL, destinados a los gastos emergentes del fallecimiento del (la) Titular, Cónyuge o Viudo (a) que se hará 
       efectivo con el pago de un monto único y por una sola vez"</i>.
       <br><br>';
@@ -1423,12 +1423,12 @@ class QuotaAidCertificationController extends Controller
     //   el grado que ostentaba el o la servidor público policial al momento del fallecimiento; la cuantía del beneficio será distribuido de acuerdo a lo establecido en el Código Civil y normas conexas. (…)”</i>, por tanto 
     //   a través de la Certificación de Calificación se determina el  monto de pago a favor del titular o derechohabientes. <br><br>';
     // }
-    $considering_two.='Que, el Artículo 59 del Reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio refiere:<i> “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: “La Comisión de Beneficios Económicos, 
+    $considering_two.='Que, el Artículo 59 del Reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio refiere:<i> “(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I: “La Comisión de Beneficios Económicos, 
     es la instancia técnica y legal que mediante acto administrativo determina la otorgación de los beneficios de Cuota Mortuoria y Auxilio Mortuorio. Es designada mediante Resolución Administrativa
     de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL”</i>. Por consiguiente, la Resolución Administrativa Nº 002/2024 del 02 de enero de 2024, conforma la Comisión de 
     Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
-    Que el Artículo 60 del Reglamento de Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: a. Determinar la otorgación de los beneficios. 
+    Que el Artículo 60 el Reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio refiere: <i>“(ATRIBUCIONES). La Comisión de Beneficios Económicos tiene las siguientes atribuciones: a. Determinar la otorgación de los beneficios. 
     b. Determinar la otorgación de montos dejados en cuota parte en reserva. c. Resolver los Recursos de Revocatoria. d. Otros, atribuibles dentro de su competencia. Para efectivizar lo establecido, emitirá 
     Resolución, Auto o informe según corresponda”,</i> es así que la comisión de beneficios económicos en consideración de todos los antecedentes y la documentación adjunta a la presentación del trámite y certificaciones 
     de las diferentes áreas de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se emite la presente Resolución.';
@@ -1440,7 +1440,7 @@ class QuotaAidCertificationController extends Controller
     
     $body_reception = "Que, mediante Formulario de Recepción de ventanilla de atención al afiliado de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se registra el trámite 
     N° " .$reception->code. " de fecha ". Util::getStringDate($reception->date) . ", debiéndose aplicar el reglamento vigente a la fecha de presentación de la solicitud formal, en virtud del principio 
-    de rogación establecido en el Art. 51 del reglamento de Cuota Mortuoria y Auxilio Mortuorio.";
+    de rogación establecido en el Art. 51 el reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio.";
     //---END RECEPTION--- //
     ///---FILE---///
     $body_file = "";
@@ -1486,7 +1486,7 @@ class QuotaAidCertificationController extends Controller
     $qualification_id = 37;
     $qualification = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', $qualification_id)->first();
     $months  = $affiliate->getTotalQuotes();
-    $body_qualification .=  'Que, mediante Certificación ' . $qualification->code . " del Área de Calificación de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio,  de fecha " . Util::getStringDate($qualification->date) . ',  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del Reglamento de '. $quota_aid->procedure_modality->procedure_type->second_name .' que establecen la cuantía al <b>'. $quota_aid->procedure_modality->name .'</b> ';
+    $body_qualification .=  'Que, mediante Certificación ' . $qualification->code . " del Área de Calificación de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio,  de fecha " . Util::getStringDate($qualification->date) . ',  en aplicación del Estudio Matemático Actuarial 2021 – 2025 y el Reglamento de los Beneficios de Cuota Mortupria y Auxilio Mortuorio que establecen la cuantía al <b>'. $quota_aid->procedure_modality->name .'</b> ';
       if ($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15 ) {
         $body_qualification.= $spouse_full_name;
       } else {
@@ -1527,7 +1527,7 @@ class QuotaAidCertificationController extends Controller
        if ($number->note != '') {
         $considering_three.= $number->note . "<br><br>";
       }*/
-    $then = 'Habiéndose verificado el cumplimiento de requisitos adjuntos a la carpeta según lo señalado en el Artículo '.$art[$quota_aid->procedure_modality_id].' del Reglamento de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 68/2023 en fecha 19 de septiembre de 2023 y efectivizado el procesamiento del trámite y conforme el Artículo 52  (Procedimiento) del referido Reglamento, corresponde dar curso al pago del beneficio
+    $then = 'Habiéndose verificado el cumplimiento de requisitos adjuntos a la carpeta según lo señalado en el Artículo '.$art[$quota_aid->procedure_modality_id].' el Reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio aprobado mediante Resolución de Directorio N° 68/2023 en fecha 19 de septiembre de 2023 y efectivizado el procesamiento del trámite y conforme el Artículo 52  (Procedimiento) del referido Reglamento, corresponde dar curso al pago del beneficio
     <b>' .mb_strtoupper($quota_aid->procedure_modality->procedure_type->second_name).' - '.mb_strtoupper($quota_aid->procedure_modality->name). '</b>'.$fallecido.'.';
     
     ///----- END QUALIFICATION ----////*/
@@ -1540,7 +1540,7 @@ class QuotaAidCertificationController extends Controller
     }
 
     $then .= '<br><br>La Comisión de Beneficios Económicos de la Mutual de Servicios al Policía “MUSERPOL” en
-        uso de sus facultades y en observancia al Reglamento de  Cuota Mortuoria y Auxilio Mortuorio:';
+        uso de sus facultades y en observancia el Reglamento de los Beneficios de Cuota Mortuoria y Auxilio Mortuorio:';
 
     $cardinal = ['PRIMERA', 'SEGUNDA', 'TERCERA', 'CUARTA', 'QUINTA'];
     $cardinal_index = 0;
