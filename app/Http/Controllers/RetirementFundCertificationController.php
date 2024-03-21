@@ -2231,7 +2231,7 @@ class RetirementFundCertificationController extends Controller
     $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();
     $considering_three = '';
     if ($number->note != '') {
-      $considering_three.= $number->note . '<br>';
+      $considering_three.= $number->note . '<br><br>';
     }
     
     $affiliate_folders = AffiliateFolder::where('affiliate_id', $affiliate->id)->get()->count();
@@ -2245,7 +2245,7 @@ class RetirementFundCertificationController extends Controller
         if(isset($certification_date)){
         switch($certification_date->wf_state_id) {
           case 19:
-            $considering_three.= '<br>Que, mediante Formulario de Recepción de ventanilla de atención al afiliado de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se registra el trámite N° ' .$certification_date->code. ' de fecha ' 
+            $considering_three.= 'Que, mediante Formulario de Recepción de ventanilla de atención al afiliado de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se registra el trámite N° ' .$certification_date->code. ' de fecha ' 
             .Util::getStringDate($certification_date->date).', debiéndose aplicar el reglamento vigente a la fecha de presentación de la solicitud formal, en virtud del principio de rogación establecido en el Art. 47 del Reglamento de Fondo de Retiro Policial Solidario.<br><br>';
           break;
           case 20: //Area de Archivo
