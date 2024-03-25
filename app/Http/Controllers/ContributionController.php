@@ -1498,16 +1498,20 @@ class ContributionController extends Controller
             }
         }else{//auxilio mortuorio
             foreach($request_contributions as $index =>$cont){
-                if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
-                    if($cont['contribution_type_mortuary_id'] == 1){
-                        $count_contributions++;
-                    }else
-                        break;
-                }else{
-                    $count_grace++;
-                    if($count_grace>4)
-                        $grace_period = false;
+                //if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
+                //     if($cont['contribution_type_mortuary_id'] == 1){
+                //         $count_contributions++;
+                //     }else
+                //         break;
+                // }else{
+                //     $count_grace++;
+                //     if($count_grace>4)
+                //         $grace_period = false;
+                // }
+                if($cont['contribution_type_mortuary_id'] == 1){
+                    $count_contributions++;
                 }
+
             }
 
             if($count_contributions > 0){ // debe tener si o si al menos 1 para acceder al beneficio

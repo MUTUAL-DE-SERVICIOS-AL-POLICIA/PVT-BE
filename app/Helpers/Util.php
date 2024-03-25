@@ -1123,7 +1123,7 @@ class Util
     $city = City::find(4);
 
     foreach ($ecos as $e) {
-      $ci_ext = $e->getEcoComBeneficiaryBank()->city_identity_card->to_bank;
+      $ci_ext = $e->getEcoComBeneficiaryBank()->city_identity_card ? $e->getEcoComBeneficiaryBank()->city_identity_card->to_bank : '';
       $ci = $e->getEcoComBeneficiaryBank()->identity_card;
       $type = "CI";
       if ($e->getEcoComBeneficiaryBank()->city_identity_card_id == 10) {

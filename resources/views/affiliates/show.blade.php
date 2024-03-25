@@ -196,7 +196,7 @@ th.ellipsis-text {
                     </div>
                     <div id="tab-ret-fun" class="tab-pane">
                         @can('update',$retirement_fund)
-                            <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" :rf_procedure_type=" {{$retirement_fund->procedure_modality->procedure_type}}" :read="true" inline-template>
+                            <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" :rf_procedure_type=" {{$retirement_fund->procedure_modality->procedure_type}}" :rf_wf_state ="{{$retirement_fund->wf_state}}" :read="true" inline-template>
                                 @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
                             </ret-fun-info>
                         @endcan
