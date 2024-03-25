@@ -53,7 +53,7 @@
                 <div class="row">
                     {{-- <div class="col-md-1"></div> --}}
                     <div class="col-md-2">
-                        <strong> Fecha de Recepcion:</strong>&nbsp;
+                        <strong> Fecha de Recepción:</strong>&nbsp;
                     </div>
                     <div class="col-md-4">
                         @if(Session::get('rol_id') == 28)
