@@ -63,7 +63,14 @@
         de Reparto ni del Sistema Integral de Pensiones, de conformidad a lo establecido en el Decreto
         Supremo Nº 1446 del 19 de diciembre de 2012, modificado mediante Decreto Supremo Nº 3231 del 28
         de junio de 2017.
-        <br><br>
+    </p>   
+    @if($affiliate->pension_entity_id != 5)
+        <p class="text-justify">
+        El monto detallado anteriormente, corresponde al importe total del beneficio del Complemento Económico sin 
+        considerar el descuento para el aporte semestral para el beneficio del Auxilio Mortuorio
+        </p>
+    @endif
+    <p>
         Es cuanto se certifica en honor a la verdad para fines consiguientes.
     </p>
     <p class="text-center">
