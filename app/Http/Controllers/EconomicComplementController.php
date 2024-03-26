@@ -258,6 +258,7 @@ class EconomicComplementController extends Controller
             abort(500, "ERROR");
         }
         $affiliate = Affiliate::find($request->affiliate_id);
+        $last_process = null;
         /* Se ingresa guardar modalidad del ultimo tramite para el guardado de historial fotografias*/
         if($request->reception_type == ID::ecoCom()->inclusion){
             if(AffiliateToken::where('affiliate_id', '=', $affiliate->id)->first()){
@@ -367,6 +368,8 @@ class EconomicComplementController extends Controller
             $economic_complement->aps_disability;
         }*/
         $economic_complement->save();
+
+        $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
         /**
          ** has affiliate observation
          */
@@ -635,9 +638,6 @@ class EconomicComplementController extends Controller
                 }
             }
         }
-
-        $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
-
         return redirect()->action('EconomicComplementController@show', ['id' => $economic_complement->id]);
     }
 
