@@ -201,7 +201,7 @@ th.ellipsis-text {
                             </ret-fun-info>
                         @else
                             <div></div>
-                        @enfif
+                        @endif
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
                         <div class="ibox">
