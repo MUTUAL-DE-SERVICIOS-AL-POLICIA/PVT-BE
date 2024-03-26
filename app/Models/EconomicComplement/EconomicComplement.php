@@ -710,6 +710,8 @@ class EconomicComplement extends Model
         affiliates.mothers_last_name as ap_materno_causahabiente,
         affiliates.surname_husband as ape_casada_causahabiente,
         affiliates.birth_date as fecha_nacimiento,
+        affiliates.service_years as Anios_de_servicio,
+        affiliates.service_months as Meses_de_servicio,
         affiliates.nua as codigo_nua_cua,
         affiliates.sigep_status as Estado_sigep,
         financial_entities.name as Entidad_financiera,
