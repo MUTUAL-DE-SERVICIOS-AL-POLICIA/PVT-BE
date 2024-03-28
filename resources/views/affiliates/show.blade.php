@@ -208,15 +208,12 @@ th.ellipsis-text {
                             <div class="ibox-title">
                                 <h2 class="pull-left">Trámites de Complemento Economico</h2>
                                 <div class="ibox-tools">
-                                    <button class="btn btn-primary dim"
-                                            type="button"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Imprimir Certificacion de pagos realizados"
-                                            onclick='printJS({printable: "{{route("eco_com_print_certification_all_eco_coms", [$affiliate->id])}}", type: "pdf", modalMessage: "Generando documentos de impresión, por favor espere un momento.", showModal: true})'
-                                    >
-                                    <i class="fa fa-print"></i>
-                                    Imprimir
+                                    <button 
+                                        id="printButtonCert" 
+                                        class="btn btn-primary dim"
+                                        data-toogle="tooltip"
+                                        data-palcement="top"
+                                        title="Imprimir Certificaciones de pagos realizados">Imprimir
                                     </button>
                                 </div>
                             </div>
@@ -225,6 +222,7 @@ th.ellipsis-text {
                                     <table class="table table-striped table-hover">
                                         <thead>
                                             <tr class="success">
+                                            <th>Selección</th>
                                             <th># de Trámite</th>
                                             <th>Gestion</th>
                                             <th>Fecha de Ingreso del Trámite</th>
@@ -239,6 +237,7 @@ th.ellipsis-text {
                                         <tbody>
                                             @foreach ($eco_coms as $eco_com)
                                                 <tr>
+                                                <td><input type="checkbox" class="checkbox-seleccionado" value="{{$eco_com->id}}"></td>     
                                                 <td>{{$eco_com->code}}</td>
                                                 <td>{{$eco_com->eco_com_procedure->fullName() }}</td>
                                                 <td>{{$eco_com->reception_date }}</td>
@@ -265,7 +264,7 @@ th.ellipsis-text {
                                                     </tr>
                                                     @foreach ($eco_com->discount_types as $d)
                                                     <tr class="danger">
-                                                        <th colspan="2">{{$d->name}}</th>
+                                                        <th colspan="3">{{$d->name}}</th>
                                                         <th colspan="2">{{Util::formatMoney($d->pivot->amount)}}</th>
                                                     </tr>
                                                     @endforeach
@@ -416,3 +415,32 @@ $(document).ready(function() {
 } );
 </script>
 @endsection
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var printButtonCert = document.getElementById('printButtonCert');
+
+        printButtonCert.addEventListener('click', function() {
+            var selected_ids_eco_com = [];
+            var checkboxes = document.querySelectorAll('.checkbox-seleccionado:checked');
+            checkboxes.forEach(function(checkbox) {
+                selected_ids_eco_com.push(checkbox.value);
+            });
+
+            var printableUrl = "{{ route('eco_com_print_certification_all_eco_coms', [$affiliate->id]) }}";
+            var selectedIdsParam = selected_ids_eco_com.length > 0 ? '?selected_ids_eco_com=' + encodeURIComponent(selected_ids_eco_com.join(',')) : '';
+            var pdfUrl = printableUrl + selectedIdsParam;
+                    
+            // Utiliza Print.js para imprimir el contenido
+            printJS({
+                printable: pdfUrl,
+                type: 'pdf', 
+                showModal: true,
+                modalMessage: 'Generando documentos de impresión, por favor espere un momento.',
+                onError: function(error) {
+                    console.error('Error al imprimir:', error);
+                }
+            });
+        });
+    });
+</script>
+
