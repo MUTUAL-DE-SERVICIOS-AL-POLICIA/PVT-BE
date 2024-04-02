@@ -2069,8 +2069,14 @@ class RetirementFundCertificationController extends Controller
     }
     $viewed.=', presentando documentación en Ventanilla de Atención al Aﬁliado de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio en la Regional '.$regional_city.'.<br><br>';
 
-
-    $considering_one = 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
+    $considering_one = 'Que, la Mutual de Servicios al Policía al ser una institución pública descentralizada,
+    bajo tuición del Ministerio de Gobierno, regula su actividad y procedimiento bajo los principios
+    generales descritos en el Art. 232 de la Constitución Política del Estado, Art. 4 de la Ley 2341 y
+    Art. 3 del Decreto Supremo N° 27113, cuya competencia para conocer asuntos administrativos suscitados
+    tanto por la institución, así como por los administrados, se sujetan a lo determinado por el Art. 5
+    de la Ley de Procedimiento Administrativo.
+    <br><br>';
+    $considering_one .= 'Que, el Decreto Supremo N° 1446 de 19 de diciembre de 2012, Artículo 2 de la CREACIÓN Y
     NATURALEZA JURÍDICA, Parágrafo I establece: <i>“Se crea la Mutual de Servicios al Policía –
     MUSERPOL, como institución pública descentralizada, de duración indefinida y patrimonio
     propio, con autonomía de gestión administrativa, financiera, legal y técnica, bajo tuición del
@@ -2082,119 +2088,42 @@ class RetirementFundCertificationController extends Controller
     reglamentación interna”</i>.<br><br>';
     if($retirement_fund->procedure_modality->procedure_type_id != 21){
     $considering_one.='Que, el Decreto Supremo N° 2829, de 06 de julio de 2016, modificatorio al Decreto Supremo Nº
-    1446 de 19 de diciembre de 2012, en el Artículo 2 de las MODIFICACIONES, Parágrafo III
-    señala: <i>“Se modifica el Parágrafo II del Artículo 14 del Decreto supremo Nº 1446, de 19 de
-    diciembre de 2012, con el siguiente texto: II. El aporte y pago de los beneficios establecidos en
-    los incisos a) (Fondo de Retiro) y b) del Parágrafo precedente, serán objeto de un estudio
+    1446 de 19 de diciembre de 2012, establece que el Fondo de Retiro será objeto de un estudio
     técnico financiero y estudio actuarial que asegure su sostenibilidad, en el marco del principio de
-    solidaridad”</i>.<br><br>
+    solidaridad.<br><br>
     Que, el Decreto Supremo N°3231, de 28 de junio de 2017, modificatoria al Decreto Supremo Nº
-    1446 de 19 de diciembre de 2012, en el Artículo 2 de las MODIFICACIONES, Parágrafos I, III,
-    IV, V y VI señala: <i>“I. Se modifica el inciso c) del Artículo 3 del Decreto Supremo N°1446, de 19
-    de diciembre de 2012, con el siguiente texto: “c) Otorgar el beneficio variable del Fondo de
-    Retiro Policial Solidario, en el marco del principio de Solidaridad; III. Se modifica el inciso a) del
-    Parágrafo I del Artículo 12 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el
-    siguiente texto: a) Los aportes de los afiliados del sector activo de la Policía Boliviana
-    transferidos por el Comando General de acuerdo a estudio actuarial aprobado; IV. Se modifica
-    el inciso a) del Parágrafo I del Artículo 14 del Decreto Supremo N°1446, de 19 de diciembre de
-    2012, con el siguiente texto: “a) Fondo de Retiro Policial Solidario; V. Se modifica el Parágrafo
-    III del Artículo 14 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el siguiente
-    texto: “III. Los beneficios señalados en el presente Artículo se rigen por los principios de
-    equidad y solidaridad, debiendo ser otorgados a todos los afiliados, aportantes de la Policía
-    Boliviana en sus diferentes sectores y niveles sin ninguna distinción; VI. Se modifica el Artículo
-    15 del Decreto Supremo N°1446, de 19 de diciembre de 2012, con el siguiente texto:
-    ARTICULO 15 (FONDO DE RETIRO POLICIAL SOLIDARIO). Es el beneficio que brinda
+    1446 de 19 de diciembre de 2012, estableciendo que el FONDO DE RETIRO POLICIAL SOLIDARIO: <i>"Es el beneficio que brinda
     protección a los miembros del servicio activo y sus derechohabientes, mediante el
     reconocimiento de un pago único, con motivo y oportunidad del retiro definitivo de la actividad
     remunerada dependiente de la Policía Boliviana, el cual será administrado por la MUSERPOL; a
     ser otorgado en el marco del principio de solidaridad, cuando el retiro se produzca por: a)
     Jubilación, b) Fallecimiento del titular, c) Retiro forzoso, d) Retiro voluntario”</i>.
     <br><br>';}
-    $considering_one.='Que, la Mutual de Servicios al Policía al ser una institución pública descentralizada,
-    bajo tuición del Ministerio de Gobierno, regula su actividad y procedimiento bajo los principios
-     generales descritos en el Art. 232 de la Constitución Política del Estado, Art. 4 de la Ley 2341 y
-     Art. 3 del Decreto Supremo N° 27113, cuya competencia para conocer asuntos administrativos suscitados
-    tanto por la institución, así como por los administrados, se sujetan a lo determinado por el Art. 5
-    de la Ley de Procedimiento Administrativo.
-    <br><br>
-    Que, el Estudio Matemático Actuarial 2021 – 2025, aprobado mediante Resolución de Directorio Nº
+    $considering_one.='Que, el Estudio Matemático Actuarial 2021 – 2025, aprobado mediante Resolución de Directorio Nº
     77/2021, de 21 de octubre de 2021, determina la modalidad y parámetros de calificación para la
     otorgación del beneficio de Fondo de Retiro Policial Solidario.
     <br><br>';
 
     $considering_two = 'Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante
-    Resolución de Directorio Nº 97/2021 de 01 de diciembre de 2021, en sus Artículos 1 y 2 refieren:<i>
-    “ARTÍCULO 1. (OBJETO).- El presente Reglamento tiene por objeto definir y establecer las condiciones,
-    formas de cálculo, cuantías, modalidades y procedimientos para la administración y otorgación del
-    beneficio de Fondo de Retiro Policial Solidario. ARTÍCULO 2. (FINALIDAD). - El presente Reglamento,
-    se constituye en una norma específica para los procedimientos de la administración y otorgación del
-    beneficio de Fondo de Retiro Policial Solidario”</i>, se procede con la otorgación del Beneficio de Fondo
-    de Retiro Policial Solidario, específicamente para todos los afiliados de la Mutual de Servicios al Policía MUSERPOL.
-    <br><br>
-    Que, el Artículo 4 del reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(PRINCIPIOS).- El
-    presente reglamento se rige bajo los siguientes principios: a) Principio de Solidaridad.- Es la
-    protección que se brinda a los (las) menos favorecidos con participación de todos los afiliados a la MUSERPOL,
-    actuando con comprensión mutua participación, cooperación y esfuerzo común. b) Principio de Legalidad.- Las
-    actuaciones de la administración pública deben estar sometidas plenamente a la Ley, se presumen legítimas
-    salvo expresa declaración judicial. c) Principio de Legitimidad.- La presente norma jurídica debe ser
-    obedecida sin que medie el recurso al monopolio de la Ley apelando al ideal de ética y justicia que incorpora.
-    d) Principio de Interés Social.- La presente norma se encuentra al servicio exclusivo del interés de la colectividad
-    de los afiliados del sector activo y pasivo de la Policía Boliviana y no solamente de un individuo y grupo de personas. e)
-    Principio de Calidez.- Se brinda atención respetuosa, cordial, oportuna, diligente, identificándose las demandas y necesidades
-    de los afiliados del sector activo y pasivo de la Policía Boliviana afiliados a la MUSERPOL. f) Principio de Calidad.- Capacidad
-    de la norma para satisfacer las necesidades y expectativas de los afiliados del sector activo y pasivo de la Policía
-    Boliviana, por parte de los servidores públicos que prestan servicios en la institución. g) Principio de Equidad.- El
-    presente reglamento busca la cobertura de las necesidades e intereses de todos los afiliados del sector activo y
-    pasivo de la Policía Boliviana, en consideración de sus propias particularidades y diferencias a fin de otorgar a
-    cada quien lo que en justicia le corresponde. h) Principio de Ética.- Se destierran todos aquellos criterios y
-    actos impropios que involucren la vulneración de los derechos de los afiliados del sector activo y pasivo de la
-    MUSERPOL asegurando un accionar correcto de los servidores públicos que desempeñan funciones en la institución. i)
-    Principio de Transparencia.- Todas las actuaciones de los servidores públicos se centran en la administración visible
-    de los recursos provenientes de los aportes de los afiliados del sector activo y pasivo de la MUSERPOL a fin de evitar
-    posibles irregularidades. j) Principio de Rogación. - La actuación de la institución se activa a partir de la solicitud
-    de las (los) interesados (as). k) Principio de Buena Fe.- Se presume que el accionar de los afiliados y de los servidores
-    públicos que prestan servicios en la MUSERPOL, se desarrollan de manera adecuada y sin ningún tipo de vicios que busquen
-    el favorecimiento de una de las partes”</i>, se establecen estos principios como elementos esenciales para el análisis de cada
-    trámite en proceso para la otorgación del beneficio. 
-    <br><br>
-    Que, los Artículos 6 y 7 del reglamento de Fondo de Retiro Policial Solidario refieren:<i>“ARTÍCULO 6. (ÁMBITO DE APLICACIÓN).-
-    El presente Reglamento es de aplicación obligatoria, inmediata e irrenunciable, a partir de su aprobación, por los servidores
-    públicos dependientes de las estructuras organizacionales que forman parte de la Mutual de Servicios al Policía - MUSERPOL. ARTÍCULO 7.
-    (ALCANCE DE LA NORMA).- I. El Reglamento se aplicará a los (las) afiliados (as) del sector activo y sector pasivo de la Policía Boliviana
-    o sus derechohabientes en caso de fallecimiento del titular. II.También serán sujetos de aplicación del presente, los beneficiarios
-    quienes deberán adecuar sus actuaciones a las previsiones contenidas en este Reglamento”</i>, se refiere al alcance y aplicación de este
-    reglamento por los Servidores Públicos de la MUSERPOL para los afiliados del sector activo y pasivo de la Policía Boliviana
+    Resolución de Directorio Nº 97/2021 de 01 de diciembre de 2021, en sus Artículos 1, 2, 4, 6, 7, 10, 11, 15, 16, 17, 36, 40,
+    44, 47, 48, 52, reconocen el derecho a la otorgación del beneficio de Fondo de Retiro Policial Solidario.
     <br><br>';
-    if($retirement_fund->procedure_modality->procedure_type_id != 21){
-    $considering_two.='Que, los Artículos 10 y 11 del reglamento de Fondo de Retiro Policial Solidario refieren:<i>“ARTÍCULO 10. (FINANCIAMIENTO).- I.
-    El pago del beneficio de Fondo de Retiro Policial Solidario, está financiado por los aportes  obligatorios  de  los  miembros del servicio activo,
-    transferidos a la Mutual de Servicios al Policía – MUSERPOL por el Comando General de la Policía Boliviana, información que deberá ser reportada
-    por la Dirección de Beneficios Económicos y contrastada por la Dirección de Asuntos Administrativos.  II. Una alícuota de hasta el 55% de los
-    rendimientos de las inversiones y/o utilidades generadas por el portafolio de inversiones administradas por la Dirección de Estrategias Sociales e
-    Inversiones de la Mutual de Servicios al Policía - MUSERPOL. III. Los aportes directos de los (las) afiliados (as) del servicio activo de la Policía
-    Boliviana que se encuentren en comisión de servicio Ítem Cero (Ítem “0”) y aquellos afiliados (as) que se encuentren suspendidos (as) o retirados (as)
-    temporalmente de sus funciones por procesos disciplinarios y/o penales figurando en planilla de haberes con Ítem Cero (Ítem “0”), y otros; siempre y
-    cuando figuren en planilla de haberes y/o lista de revista del Comando General de la Policía Boliviana. ARTÍCULO 11. (PRIMA DE FINANCIAMIENTO). -
-    La prima de financiamiento es el porcentaje de aportación determinado por el Estudio Matemático Actuarial sobre el cuál los (las) afiliados (as) del
-    sector activo efectivizan su aporte para la otorgación del beneficio. I. El porcentaje de aporte obligatorio determinado por el Estudio Matemático
-    Actuarial 2021 — 2025, para el Fondo de Retiro Policial Solidario de los (las) afiliados (as) del sector activo de la Policía Boliviana, es del 4,77 %
-    sobre la totalidad de sus ingresos cotizables mensuales sin ningún tipo de descuentos (…)”</i>, son los parámetros que establece el rendimiento e inversiones
-    para el beneficio de Fondo de Retiro Policial Solidario, asimismo cuanto es el porcentaje de aportación por parte del sector activo de sus ingresos cotizables mensuales.<br><br>';
-    }
-    $considering_two.='Que, los Artículos 15, 16 y 17 del reglamento de Fondo de Retiro Policial Solidario refieren:<i>“ARTÍCULO 15. (APORTE MENSUAL).- Es el efectuado a la
-    Mutual de Servicios al Policía - MUSERPOL por: I. Los (las) afiliados (as) del servicio activo a través del Comando General de la Policía Boliviana, mediante descuentos
-    mensuales por planillas de haberes. II. Los (las) afiliados (as) del servicio activo, que no son objeto de descuentos mediante planillas de haberes del Comando General
-    de la Policía Boliviana, por estar destinados en comisión de servicio Ítem Cero (Ítem “0”), suspendidos o retirados temporalmente de sus funciones por procesos disciplinarios
-    y/o penales, figurando en planilla de haberes con Ítem Cero (Ítem “0”), deberán realizar sus aportes directos a la Mutual de Servicios al Policía - MUSERPOL, previa firma de
-    compromiso de pago de aportes. ARTÍCULO 16. (OBLIGATORIEDAD DEL APORTE).- I. Los aportes efectuados a la Mutual de Servicios al Policía - MUSERPOL, por los (las) afiliados
-    (as) del sector activo de la Policía Boliviana, son de carácter obligatorio, desde su ingreso a la institución policial, hasta el momento de destino a disponibilidad de
-    las letras (reserva activa) o hasta el momento que cuenten con el Memorándum o Resolución de baja definitiva (voluntaria o forzosa) emitida por el Comando General de la
-    Policía Boliviana. II. Los (las) afiliados (as) del sector activo de la Policía Boliviana, que se encuentren en comisión de servicio Ítem Cero (Ítem “0”), o que hubieran
-    sido suspendidos de sus funciones por procesos disciplinarios y/o penales, figurando en planilla de haberes con Ítem Cero (Ítem “0”) y otros, continuarán aportando
-    de manera directa a la Mutual de Servicios al Policía - MUSERPOL, para poder acceder al beneficio de Fondo de Retiro Policial Solidario; a excepción de los que no
-    figuran en listas de revista y planillas de haberes del Comando General de la Policía Boliviana. ARTÍCULO 17. (RECONOCIMIENTO DE LOS APORTES).- La Mutual de Servicios al
-    Policía – MUSERPOL, reconoce la cantidad de aportes efectuados a partir de mayo de 1976, al Ex Fondo Complementario de Seguridad Social de la Policía Nacional y a la Ex Mutual
-    de Seguros del Policía – MUSEPOL”</i>, establece la forma y manera de como un afiliado de la Policía Boliviana realiza los aportes a la Mutual de Servicios al Policía MUSERPOL.<br><br>';
+    // if($retirement_fund->procedure_modality->procedure_type_id != 21){
+    // $considering_two.='Que, los Artículos 10 y 11 del reglamento de Fondo de Retiro Policial Solidario refieren:<i>“ARTÍCULO 10. (FINANCIAMIENTO).- I.
+    // El pago del beneficio de Fondo de Retiro Policial Solidario, está financiado por los aportes  obligatorios  de  los  miembros del servicio activo,
+    // transferidos a la Mutual de Servicios al Policía – MUSERPOL por el Comando General de la Policía Boliviana, información que deberá ser reportada
+    // por la Dirección de Beneficios Económicos y contrastada por la Dirección de Asuntos Administrativos.  II. Una alícuota de hasta el 55% de los
+    // rendimientos de las inversiones y/o utilidades generadas por el portafolio de inversiones administradas por la Dirección de Estrategias Sociales e
+    // Inversiones de la Mutual de Servicios al Policía - MUSERPOL. III. Los aportes directos de los (las) afiliados (as) del servicio activo de la Policía
+    // Boliviana que se encuentren en comisión de servicio Ítem Cero (Ítem “0”) y aquellos afiliados (as) que se encuentren suspendidos (as) o retirados (as)
+    // temporalmente de sus funciones por procesos disciplinarios y/o penales figurando en planilla de haberes con Ítem Cero (Ítem “0”), y otros; siempre y
+    // cuando figuren en planilla de haberes y/o lista de revista del Comando General de la Policía Boliviana. ARTÍCULO 11. (PRIMA DE FINANCIAMIENTO). -
+    // La prima de financiamiento es el porcentaje de aportación determinado por el Estudio Matemático Actuarial sobre el cuál los (las) afiliados (as) del
+    // sector activo efectivizan su aporte para la otorgación del beneficio. I. El porcentaje de aporte obligatorio determinado por el Estudio Matemático
+    // Actuarial 2021 — 2025, para el Fondo de Retiro Policial Solidario de los (las) afiliados (as) del sector activo de la Policía Boliviana, es del 4,77 %
+    // sobre la totalidad de sus ingresos cotizables mensuales sin ningún tipo de descuentos (…)”</i>, son los parámetros que establece el rendimiento e inversiones
+    // para el beneficio de Fondo de Retiro Policial Solidario, asimismo cuanto es el porcentaje de aportación por parte del sector activo de sus ingresos cotizables mensuales.<br><br>';
+    // }
     if($retirement_fund->procedure_modality->procedure_type_id == 1){ // Pago Global de aportes
     $considering_two.='Que, el Artículo 22 del reglamento de Fondo de Retiro Policial Solidario refiere: ARTÍCULO 22. (PAGO GLOBAL DE APORTES).- I. El pago global de aportes procederá,
     cuando el (la) afiliado (a) no cumpla con sesenta (60) cotizaciones (5 años) para acceder al pago del beneficio de Fondo de Retiro Policial Solidario, antes de su desvinculación
@@ -2213,102 +2142,98 @@ class RetirementFundCertificationController extends Controller
     la fecha de fallecimiento. 10. Certificado original de haberes otorgado por el Comando General de la Policía Boliviana, hasta la fecha de fallecimiento (…)”</i>, por tanto, al verificarse la documentación
     adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
     }
-    if($retirement_fund->procedure_modality->procedure_type_id == 21){ //devolucion de Aportes
-    $considering_two.='Que, el Artículo 27 del reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(DEVOLUCIÓN DE APORTES). – I. La Dirección de Asuntos Administrativos de la Mutual de Servicios al
-    Policía – MUSERPOL, efectivizará la devolución de aportes sin ningún tipo de rendimientos ni mantenimiento de valor a aquellos ex afiliados (as) que no accedan al pago del Fondo de Retiro ni al Pago
-    Global de Aportes, que se hubiesen desvinculado de la institución policial dentro de los diez (10) años anteriores a la presentación de su solicitud formal, previo informe de Jefatura y certificación
-    emitida por el Área de Cuentas Individuales de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio.<b> II. Corresponderá la devolución de los aportes realizados sin ningún tipo de
-    rendimientos ni mantenimiento de valor a aquellos afiliados (as) que no accedan al beneficio de Fondo de Retiro ni al Pago Global de Aportes por haber transcurrido más de diez (10) años de su desvinculación
-    de la institución policial</b>, sin que se hubiese generado la solicitud formal de pago con anterioridad. III. De presentarse una solicitud de pago del Fondo de Retiro Policial Solidario por afiliados o
-    derechohabientes que no pudieron acceder al mismo por prescripción, se acogerán a lo determinado por la Disposición Transitoria Séptima del presente reglamento. IV. Para la devolución de aportes,
-    los (las) afiliados (as) deberán presentar los siguientes documentos:</i> ';
-      if($retirement_fund->procedure_modality_id == ID::retFunDevPay()->titular_id){//sub modalidad Titular
-        $considering_two.='<b>a) Devolución de aportes a titulares 1.</b> Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. <b>2.</b>
-        Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. <b>3.</b> Fotocopia simple de la Cédula de Identidad
-        del titular, vigente a la fecha de solicitud. <b>4.</b> Certificado de años de servicio desglosado, en original o copia legalizada otorgado por el Comando General de la Policía Boliviana. <b>5.</b> En caso de no
-        contar con el certificado de años de servicio desglosado o a requerimiento del área pertinente, se deberán adjuntar el original de las boletas de pago correspondientes”.<br><br>';
-      }
-      if($retirement_fund->procedure_modality_id == ID::retFunDevPay()->fallecimiento_id){//sub modalidad Fallecimiento
-        $considering_two.='<b>b) Devolución de aportes en caso de fallecimiento 1.</b> Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la
-        MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple de la
-        Cédula de Identidad del titular, vigente a la fecha de solicitud. 4. Certificado de defunción original del titular. 5. Certificado de años de servicio desglosado, en original o copia legalizada
-        otorgado por el Comando General de la Policía Boliviana. 6. Declaratoria de Herederos o Aceptación de Herencia original o copia legalizada. 7. Fotocopia simple de la Cédula de Identidad de los
-        derechohabientes, vigente a la fecha de solicitud. 8. En caso de no contar con el certificado de años de servicio desglosado o a requerimiento del área pertinente, se deberán adjuntar el
-        original de las boletas de pago correspondientes”.<br><br>';
-      }
-    }
-    if($retirement_fund->procedure_modality->procedure_type_id != 21){
+    // if($retirement_fund->procedure_modality->procedure_type_id == 21){ //devolucion de Aportes
+    // $considering_two.='Que, el Artículo 27 del reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(DEVOLUCIÓN DE APORTES). – I. La Dirección de Asuntos Administrativos de la Mutual de Servicios al
+    // Policía – MUSERPOL, efectivizará la devolución de aportes sin ningún tipo de rendimientos ni mantenimiento de valor a aquellos ex afiliados (as) que no accedan al pago del Fondo de Retiro ni al Pago
+    // Global de Aportes, que se hubiesen desvinculado de la institución policial dentro de los diez (10) años anteriores a la presentación de su solicitud formal, previo informe de Jefatura y certificación
+    // emitida por el Área de Cuentas Individuales de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio.<b> II. Corresponderá la devolución de los aportes realizados sin ningún tipo de
+    // rendimientos ni mantenimiento de valor a aquellos afiliados (as) que no accedan al beneficio de Fondo de Retiro ni al Pago Global de Aportes por haber transcurrido más de diez (10) años de su desvinculación
+    // de la institución policial</b>, sin que se hubiese generado la solicitud formal de pago con anterioridad. III. De presentarse una solicitud de pago del Fondo de Retiro Policial Solidario por afiliados o
+    // derechohabientes que no pudieron acceder al mismo por prescripción, se acogerán a lo determinado por la Disposición Transitoria Séptima del presente reglamento. IV. Para la devolución de aportes,
+    // los (las) afiliados (as) deberán presentar los siguientes documentos:</i> ';
+    //   if($retirement_fund->procedure_modality_id == ID::retFunDevPay()->titular_id){//sub modalidad Titular
+    //     $considering_two.='<b>a) Devolución de aportes a titulares 1.</b> Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la MUSERPOL. <b>2.</b>
+    //     Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. <b>3.</b> Fotocopia simple de la Cédula de Identidad
+    //     del titular, vigente a la fecha de solicitud. <b>4.</b> Certificado de años de servicio desglosado, en original o copia legalizada otorgado por el Comando General de la Policía Boliviana. <b>5.</b> En caso de no
+    //     contar con el certificado de años de servicio desglosado o a requerimiento del área pertinente, se deberán adjuntar el original de las boletas de pago correspondientes”.<br><br>';
+    //   }
+    //   if($retirement_fund->procedure_modality_id == ID::retFunDevPay()->fallecimiento_id){//sub modalidad Fallecimiento
+    //     $considering_two.='<b>b) Devolución de aportes en caso de fallecimiento 1.</b> Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios en la cuenta fiscal de la
+    //     MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple de la
+    //     Cédula de Identidad del titular, vigente a la fecha de solicitud. 4. Certificado de defunción original del titular. 5. Certificado de años de servicio desglosado, en original o copia legalizada
+    //     otorgado por el Comando General de la Policía Boliviana. 6. Declaratoria de Herederos o Aceptación de Herencia original o copia legalizada. 7. Fotocopia simple de la Cédula de Identidad de los
+    //     derechohabientes, vigente a la fecha de solicitud. 8. En caso de no contar con el certificado de años de servicio desglosado o a requerimiento del área pertinente, se deberán adjuntar el
+    //     original de las boletas de pago correspondientes”.<br><br>';
+    //   }
+    // }
+    // if($retirement_fund->procedure_modality->procedure_type_id != 21){
     $considering_two.='Que, los Artículos 28 y 29 del Reglamento de Fondo de Retiro Policial Solidario refieren:<i>“ARTÍCULO 28. (NATURALEZA JURIDICA DEL BENEFICIO).- El Fondo de Retiro Policial Solidario
     se constituye en un beneficio económico que no se encuentra comprendido dentro del Código de Seguridad Social o dentro de los alcances de la seguridad social de largo plazo (Servicio Nacional
     del Sistema de Reparto – SENASIR ni del Sistema Integral de Pensiones – SIP) en razón a su fuente de financiamiento (…). ARTÍCULO 29. (MODALIDADES DEL FONDO DE RETIRO POLICIAL SOLIDARIO).- El Beneficio
     de Fondo de Retiro Policial Solidario, se otorgará en los siguientes casos: a) Fondo de Retiro Policial Solidario por Jubilación/Invalidez. b) Fondo de Retiro Policial Solidario por Fallecimiento. c) Fondo
     de Retiro Policial Solidario por Retiro Forzoso. d) Fondo de Retiro Policial Solidario por Retiro Voluntario”</i>, establece la definición del Beneficio de Fondo de Retiro y en que consiste la otorgación del
     mismo, señalando que es un beneficio económico y no así un beneficio social.
-    <br><br>
-    Que, el Artículo 36 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(COTIZACIONES NECESARIAS PARA ACCEDER AL BENEFICIO).- I. Para acceder a la otorgación del beneficio de Fondo de Retiro Policial
-    Solidario estipulado en los Artículos 30, 31, 32 y 33 del presente Reglamento, es necesario acreditar de manera obligatoria una cantidad igual o mayor a sesenta (60) cotizaciones efectivas a la Mutual de Servicios
-    al Policía - MUSERPOL, anteriores a la disponibilidad de las letras (reserva activa), invalidez, fallecimiento o baja definitiva de la institución policial, sea esta voluntaria o forzosa. II. El Beneficio de Fondo
-    de Retiro Policial Solidario, en las modalidades mencionadas anteriormente, se cancelará previo cumplimiento de los requisitos establecidos en el Artículo 44 del presente Reglamento”</i>, se verifica que el presente
-    trámite cuenta con las cotizaciones necesarias para su procesamiento.
-    <br><br>
-    Que, el Artículo 40 del reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(PRESENTACIÓN DE TRÁMITES NUEVOS).- I. La recepción de solicitudes y trámites nuevos para acceder al beneficio de Fondo de Retiro
-    Policial Solidario, se efectuarán en Ventanilla de Atención al Afiliado de la Oficina Central u Oficinas Regionales en el interior, verificándose que los documentos presentados estén completos de acuerdo a lo
-    referido en el Artículo 44 del presente Reglamento, en función a la modalidad del beneficio; en caso de identificar algún documento faltante no se procederá a la recepción (…)”</i>,establece los parámetros de presentación
-    de los documentos para acceder a la otorgación del beneficio.
     <br><br>';
-    if($retirement_fund->procedure_modality->procedure_type_id == 2){
-      $considering_two.='Que, el Artículo 44 del reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(REQUISITOS PARA SOLICITUDES NUEVAS). - I. Las solicitudes nuevas para el pago del beneficio de Fondo de Retiro Policial Solidario, que
-    ingresen a partir de la aprobación del presente Reglamento deberán contener los siguientes documentos: <b>a.) Requisitos generales</b> 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios
-    en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple de la Cédula
-    de Identidad del titular, vigente a la fecha de solicitud. 4. Memorándum original o copia legalizada de Agradecimiento de Servicios emitido por el Comando General de la Policía Boliviana, dirigido a nombre del titular.  5.
-    Memorándum original o copia legalizada de destino a disponibilidad a las letras "C" y "A" (reserva activa) según corresponda. Este documento debe ser el del último lugar de destino de trabajo transcrito a nombre del (la) titular o en su caso,
-    adjuntar la Certificación de ingreso o no ingreso a la Disponibilidad en original, emitido por el Comando General de la Policía Boliviana. 6. Certificado original de haberes otorgado por el Comando General de la Policía Boliviana, considerando
-    los últimos sesenta (60) meses, antes de su ingreso a la disponibilidad (reserva activa). 7. Certificado de años de servicio desglosado, en original o copia legalizada otorgado por el Comando General de la Policía Boliviana</i>';
-      if($retirement_fund->procedure_modality_id == ID::retFun()->fallecimiento_id){//sub modalidad Fallecimiento
-        $considering_two.='. <i><b>b). Requisitos Específicos(...), <u>b.2) Fondo de Retiro Policial Solidario por Fallecimiento:</u></b> 1. Certificado original y actualizado de defunción del titular. 2. Fotocopia simple y vigente de la Cédula de
-        Identidad de los derechohabientes. 3. Certificado original y actualizado de Matrimonio o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI" o Resolución original o copia legalizada de reconocimiento
-        de matrimonio de hecho ante autoridad competente. En el caso de que el afiliado policial no hubiese contraído nupcias, deberán adjuntar el certificado de inexistencia de partida matrimonial emitido por el SERECI en original. 4. Certificado
-        original y actualizado de descendencia del titular fallecido, emitido por el SERECI. Este documento, al tener una validez de treinta (30) días, debe estar plenamente vigente a momento de la presentación y/o recepción de la documentación. 5.
-        Declaratoria de Herederos o Aceptación de Herencia, original o copia legalizada; en el caso de herederos por sucesión testamentaria presentar “Testamento” original o copia legalizada, dentro del cual señale expresamente la otorgación del
-        beneficio. 6. En caso de suscitarse el fallecimiento en el periodo de disponibilidad (reserva activa), el certificado de haberes deberá contemplar todos los periodos hasta el último aporte efectivizado</i>';
-      }
-      if($retirement_fund->procedure_modality_id == ID::retFun()->retiro_forzoso_id){//sub modalidad retiro forzoso
-        $considering_two.='. <i><b>b). Requisitos Específicos(...),  <u>b.3) Fondo de Retiro Policial Solidario por Retiro Forzoso:</u></b> 1. Resolución y/o Memorándum de baja definitiva emitida por el Comando General de la Policía Boliviana, dirigido a
-        nombre del titular, en original o copia legalizada. 2. En caso de efectivizarse la baja mientras el afiliado se encuentre en el destino de disponibilidad de las letras (reserva activa), el certificado de haberes deberá contemplar todos los
-        periodos hasta el último aporte efectivizado.3. Certificado original de ingreso o no ingreso a Disponibilidad emitido por el Comando General de la Policía Boliviana</i>';
-      }
-      if($retirement_fund->procedure_modality_id == ID::retFun()->retiro_voluntario_id){//sub modalidad voluntario
-        $considering_two.='. <i><b>b). Requisitos Específicos, <u>b.4) Fondo de Retiro por Retiro Voluntario:</u></b> 1. Resolución y/o Memorándum original o copia legalizada de baja definitiva a solicitud voluntaria, emitida por el Comando General de la Policía
-        Boliviana, dirigido a nombre del titular. 2. En caso que la baja se efectivice mientras el afiliado se encuentre en el destino de disponibilidad de las letras (reserva activa), el certificado de haberes deberá contemplar todos los periodos
-        hasta el último aporte efectivizado. 3. Certificado original de ingreso o no ingreso a Disponibilidad emitido por el Comando General de la Policía Boliviana. 4. En caso de haber prestado servicios en el Batallón de Seguridad Física
-        (Ex Privada, en periodos anteriores a Mayo/2007), deberá presentar adicionalmente documentación requerida por la Mutual de Servicios al Policía – MUSERPOL</i>';
-      }
-      $considering_two.='<i>(...)”</i>, por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
-     }
-    }
+    // if($retirement_fund->procedure_modality->procedure_type_id == 2){
+    //   $considering_two.='Que, el Artículo 44 del reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(REQUISITOS PARA SOLICITUDES NUEVAS). - I. Las solicitudes nuevas para el pago del beneficio de Fondo de Retiro Policial Solidario, que
+    // ingresen a partir de la aprobación del presente Reglamento deberán contener los siguientes documentos: <b>a.) Requisitos generales</b> 1. Comprobante de depósito o de transferencia por concepto de adquisición de folder y formularios
+    // en la cuenta fiscal de la MUSERPOL. 2. Formulario de verificación de requisitos con carácter de Declaración Jurada y solicitud, a ser otorgado por la MUSERPOL a momento de inicio del trámite. 3. Fotocopia simple de la Cédula
+    // de Identidad del titular, vigente a la fecha de solicitud. 4. Memorándum original o copia legalizada de Agradecimiento de Servicios emitido por el Comando General de la Policía Boliviana, dirigido a nombre del titular.  5.
+    // Memorándum original o copia legalizada de destino a disponibilidad a las letras "C" y "A" (reserva activa) según corresponda. Este documento debe ser el del último lugar de destino de trabajo transcrito a nombre del (la) titular o en su caso,
+    // adjuntar la Certificación de ingreso o no ingreso a la Disponibilidad en original, emitido por el Comando General de la Policía Boliviana. 6. Certificado original de haberes otorgado por el Comando General de la Policía Boliviana, considerando
+    // los últimos sesenta (60) meses, antes de su ingreso a la disponibilidad (reserva activa). 7. Certificado de años de servicio desglosado, en original o copia legalizada otorgado por el Comando General de la Policía Boliviana</i>';
+      // if($retirement_fund->procedure_modality_id == ID::retFun()->fallecimiento_id){//sub modalidad Fallecimiento
+      //   $considering_two.='. <i><b>b). Requisitos Específicos(...), <u>b.2) Fondo de Retiro Policial Solidario por Fallecimiento:</u></b> 1. Certificado original y actualizado de defunción del titular. 2. Fotocopia simple y vigente de la Cédula de
+      //   Identidad de los derechohabientes. 3. Certificado original y actualizado de Matrimonio o certificado original y actualizado de unión libre o de hecho emitido por el "SERECI" o Resolución original o copia legalizada de reconocimiento
+      //   de matrimonio de hecho ante autoridad competente. En el caso de que el afiliado policial no hubiese contraído nupcias, deberán adjuntar el certificado de inexistencia de partida matrimonial emitido por el SERECI en original. 4. Certificado
+      //   original y actualizado de descendencia del titular fallecido, emitido por el SERECI. Este documento, al tener una validez de treinta (30) días, debe estar plenamente vigente a momento de la presentación y/o recepción de la documentación. 5.
+      //   Declaratoria de Herederos o Aceptación de Herencia, original o copia legalizada; en el caso de herederos por sucesión testamentaria presentar “Testamento” original o copia legalizada, dentro del cual señale expresamente la otorgación del
+      //   beneficio. 6. En caso de suscitarse el fallecimiento en el periodo de disponibilidad (reserva activa), el certificado de haberes deberá contemplar todos los periodos hasta el último aporte efectivizado</i>';
+      // }
+      // if($retirement_fund->procedure_modality_id == ID::retFun()->retiro_forzoso_id){//sub modalidad retiro forzoso
+      //   $considering_two.='. <i><b>b). Requisitos Específicos(...),  <u>b.3) Fondo de Retiro Policial Solidario por Retiro Forzoso:</u></b> 1. Resolución y/o Memorándum de baja definitiva emitida por el Comando General de la Policía Boliviana, dirigido a
+      //   nombre del titular, en original o copia legalizada. 2. En caso de efectivizarse la baja mientras el afiliado se encuentre en el destino de disponibilidad de las letras (reserva activa), el certificado de haberes deberá contemplar todos los
+      //   periodos hasta el último aporte efectivizado.3. Certificado original de ingreso o no ingreso a Disponibilidad emitido por el Comando General de la Policía Boliviana</i>';
+      // }
+      // if($retirement_fund->procedure_modality_id == ID::retFun()->retiro_voluntario_id){//sub modalidad voluntario
+      //   $considering_two.='. <i><b>b). Requisitos Específicos, <u>b.4) Fondo de Retiro por Retiro Voluntario:</u></b> 1. Resolución y/o Memorándum original o copia legalizada de baja definitiva a solicitud voluntaria, emitida por el Comando General de la Policía
+      //   Boliviana, dirigido a nombre del titular. 2. En caso que la baja se efectivice mientras el afiliado se encuentre en el destino de disponibilidad de las letras (reserva activa), el certificado de haberes deberá contemplar todos los periodos
+      //   hasta el último aporte efectivizado. 3. Certificado original de ingreso o no ingreso a Disponibilidad emitido por el Comando General de la Policía Boliviana. 4. En caso de haber prestado servicios en el Batallón de Seguridad Física
+      //   (Ex Privada, en periodos anteriores a Mayo/2007), deberá presentar adicionalmente documentación requerida por la Mutual de Servicios al Policía – MUSERPOL</i>';
+      // }
+      // $considering_two.='<i>(...)”</i>, por tanto, al verificarse la documentación adjunta a la solicitud presentada, se determina el cumplimiento del mismo.<br><br>';
+    //  }
+    // }
     $considering_two.= 'Que, el Artículo 61 del Reglamento del Beneficio de Fondo de Retiro Policial Solidario refiere:<i>“(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante acto administrativo determina la
     otorgación del beneficio de Fondo de Retiro Policial Solidario. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL.”</i>. Por consiguiente, la Resolución Administrativa
     N° 002/2024 del 02 de enero de 2024, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
-    Que, el Artículo 62 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(ATRIBUCIONES).- La Comisión de Beneﬁcios Económicos tiene las siguientes atribuciones: a) Determinar la otorgación de los beneficios. b) Determinar la otorgación de montos 
-    dejados en cuota parte en reserva, c) Resolver los Recursos de Revocatoria, d) Otros, atribuibles dentro de su competencia. Para efectivizar lo establecido, emitirá Resolución, Auto o informe según corresponda”</i>, es así que la comisión de beneﬁcios económicos 
-    en consideración de todos los antecedentes y la documentación adjunta a la presentación del trámite y certiﬁcaciones de las diferentes áreas de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, se emite la presente Resolución.
-    Policial Solidario, se emite la presente Resolución.<br><br>';
+    Que, el Artículo 62 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(ATRIBUCIONES).- La Comisión de Beneﬁcios Económicos tiene las siguientes atribuciones: a) Determinar la otorgación de los beneﬁcios. b) Determinar la otorgación de montos dejados en cuota parte en reserva, c) Resolver los Recursos de Revocatoria, d) Otros, atribuibles dentro de su competencia. Para efectivizar lo establecido, emitirá Resolución, Auto o informe según corresponda”.</i> Es así que la comisión de beneﬁcios económicos 
+    en consideración de todos los antecedentes y la documentación adjunta a la presentación del trámite y certiﬁcaciones de las diferentes áreas de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, se emite la presente Resolución.<br>';
     
-    if($retirement_fund->procedure_modality->procedure_type_id == 21){
-    $considering_two.='Que, la DISPOSICIÓN TRANSITORIA SÉPTIMA, refiere: “Se dará curso a la devolución de aportes a aquellos afiliados (as) que presenten una nueva solicitud de devolución, siempre y cuando con anterioridad no se hubiese generado la emisión
-    de una Resolución de Prescripción y esta no esté debidamente ejecutoriada”.<br><br>';
+    $total_discounts = $retirement_fund->discount_types();
+    $discount_loan = $total_discounts->where('discount_type_id', '2')->first();
+    $total_discounts = $retirement_fund->discount_types();
+    $discount_guarantee = $total_discounts->where('discount_type_id', '3')->first();
+    $total_discounts = $retirement_fund->discount_types();
+    $discounts_counter = $total_discounts->where('discount_type_id', '>', '1')->where('amount', '>', '0')->count();  
+
+    if($discounts_counter > 0){
+      $considering_two.= '<br>Que, el Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante Resolución de Directorio Nº 97/2021 de 01 de diciembre de 2021, en sus Artículos 89, 90, 91, 92, 93 y 94 disponen el pago de deuda con la MUSERPOL y la retención de importes y descuentos por 
+      garantía conforme a solicitud de la Dirección de Estrategias Sociales e Inversiones.
+      <br>';
     }
+    // if($retirement_fund->procedure_modality->procedure_type_id == 21){
+    // $considering_two.='Que, la DISPOSICIÓN TRANSITORIA SÉPTIMA, refiere: “Se dará curso a la devolución de aportes a aquellos afiliados (as) que presenten una nueva solicitud de devolución, siempre y cuando con anterioridad no se hubiese generado la emisión
+    // de una Resolución de Prescripción y esta no esté debidamente ejecutoriada”.
+    // <br>';
+    // }
     $number = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 26)->first();
     $considering_three = '';
     if ($number->note != '') {
       $considering_three.= $number->note . '<br><br>';
     }
-    $considering_three.= 'Que, la Mutual de Servicios al Policía – MUSERPOL reconoce el derecho de los beneficiarios a
-    partir de la fecha en la cual el (la) afiliado (a) o derechohabientes presentan su solicitud formal por
-    Ventanilla de Atención al Afiliado en la Oficina Central u Oficinas Regionales, dando continuidad al
-    procedimiento previa verificación de antecedentes conforme a lo establecido en el Artículo 48 del
-    Reglamento de Fondo de Retiro Policial Solidario.<br><br>';
+    
     $affiliate_folders = AffiliateFolder::where('affiliate_id', $affiliate->id)->get()->count();
 
     $wf_states = WorkflowState::where('sequence_number','!=',0)->where('module_id',3)->orderBy('sequence_number')->get();
@@ -2319,6 +2244,10 @@ class RetirementFundCertificationController extends Controller
 
         if(isset($certification_date)){
         switch($certification_date->wf_state_id) {
+          case 19:
+            $considering_three.= 'Que, mediante Formulario de Recepción de ventanilla de atención al afiliado de la Unidad de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se registra el trámite N° ' .$certification_date->code. ' de fecha ' 
+            .Util::getStringDate($certification_date->date).', debiéndose aplicar el reglamento vigente a la fecha de presentación de la solicitud formal, en virtud del principio de rogación establecido en el Art. 47 del Reglamento de Fondo de Retiro Policial Solidario.<br><br>';
+          break;
           case 20: //Area de Archivo
             //Certificación de Archivo
             $considering_three .= 'Que, mediante Certificación N° '.$certification_date->code.', de Archivo de la Dirección de Beneficios Económicos de fecha '. Util::getStringDate($certification_date->date).',
@@ -2330,32 +2259,28 @@ class RetirementFundCertificationController extends Controller
                 $administrative_certification .= 'si cuenta con registro de pagos o anticipos por concepto de Fondo de Retiro Policial.<br><br>';
               } else {
                 $administrative_certification .= 'no cuenta con registro de pagos o anticipos por concepto de Fondo
-                de Retiro Policial, sin embargo, se recomienda compatibilizar los listados adjuntos con las carpetas del archivo de la
-                Unidad de Fondo de Retiro para no incurrir en algún error o pago doble de este beneficio.<br><br>';
+                de Retiro Policial, por tanto se encuentra habilitado para la continuidad del trámite.<br><br>';
               }
             $considering_three.= $administrative_certification;
           break;
           case 21: //area de Revisión Legal
             $legacy_area_cetification = 'Que, mediante Certificación N° '.$certification_date->code.' del Área Legal de la Unidad de Otorgación del Fondo de Retiro Policial Solidario,
             Cuota y Auxilio Mortuorio, de fecha '. Util::getStringDate($certification_date->date).', fue verificada y validada la documentación presentada por el
-            titular del trámite signado con el N° '.$retirement_fund->code.', conforme al Artículo '.($retirement_fund->procedure_modality->procedure_type_id==21?'27':($retirement_fund->procedure_modality->procedure_type_id==1?'23':'44')).' del Reglamento Vigente y al Formulario de Recepción
-            emitido en Ventanilla de Atención al Afiliado de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio.<br><br>';
+            titular del trámite signado con el N° '.$retirement_fund->code.', cumpliendo con los requisitos conforme a normativa legal.<br><br>';
             $considering_three.= $legacy_area_cetification;
           break;
           case 22: //área de cuentas individuales
             $months  = $affiliate->getTotalQuotes();
            $individual_accounts = 'Que, mediante Certificación de Aportes N° '.$certification_date->code.' del Área de Cuentas Individuales de la Unidad
             de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha '. Util::getStringDate($certification_date->date).',
-            se verificó los últimos '.($retirement_fund->procedure_modality->procedure_type_id==2?'60':'').' aportes anteriores a su destino de la disponibilidad o desvinculación
-            definitiva de la institución policial, de acuerdo a la información obtenida en la base de datos
-            que cuenta la Institución y contrastada con la información del Certificado de Haberes emitido por el
-            Comando General de la Policía Boliviana.<br><br>';
+            se determina los últimos '.($retirement_fund->procedure_modality->procedure_type_id==2?'60':'').' aportes anteriores a su destino de la disponibilidad o desvinculación
+            definitiva de la institución policial, de acuerdo a la información obtenida en la base de datos de la institución y contrastada con la documentación adjunta en la carpeta administrativa.<br><br>';
             $considering_three.= $individual_accounts;
             //falta para la disponivilidad con aportes
             if($retirement_fund->procedure_modality->procedure_type_id == 2){// Solo para Fondo de retiro
               if($affiliate->hasAvailabilityTime()){//Tiene clasificador con Disponibilidad con y sin portes
                  $considering_three.='Que, mediante Certificación de Aportes N° '.$certification_date->code.' del Área de Cuentas Individuales de la Unidad
-                 de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha '. Util::getStringDate($certification_date->date).', se verifica su permanencia en el destino de disponibilidad por el periodo de <b>'.Util::formatMonthYearLiteral($affiliate->getDatesTotalAvailability()).',</b> en los cuales,';
+                 de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha '. Util::getStringDate($certification_date->date).', se determina su permanencia en el destino de disponibilidad por el periodo de <b>'.Util::formatMonthYearLiteral($affiliate->getDatesTotalAvailability()).'</b>, en los cuales,';
                  if ($affiliate->hasAvailability()) {
                    $availability = Util::sumTotalContributions($affiliate->getDatesAvailability());
                    $considering_three.='se evidencia descuento para el Beneficio de Fondo de Retiro Policial Solidario por '.Util::formatMonthYearLiteral($availability).', motivo por el cual en consideración a la Disposición Transitoria Cuarta del Reglamento del mencionado beneficio, el afiliado podrá solicitar la devolución del mismo.
@@ -2370,8 +2295,7 @@ class RetirementFundCertificationController extends Controller
           case 23://área de calificación
             $affiliate->hasAvailability();
             $months  = $affiliate->getTotalQuotes();
-            $qualification = ' Que, mediante Calificación de la Unidad de otorgación del beneficio de Fondo de Retiro Policial Solidario Cuota y Auxilio Mortuorio, N° '.$certification_date->code.'
-            de fecha '.Util::getStringDate($certification_date->date).', en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del
+            $qualification = ' Que, mediante Certificación '.$certification_date->code.' del Área de Calificación de la Unidad de Otorgación del Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, de fecha '.Util::getStringDate($certification_date->date).', en aplicación del Estudio Matemático Actuarial 2021 – 2025 y del
             Reglamento de Fondo de Retiro Policial Solidario que establecen los parámetros de calificación,
             se reconoce un total de <b>'.Util::formatMonthYearLiteral($months).'</b>';
             if($retirement_fund->procedure_modality->procedure_type_id==2){
@@ -2413,7 +2337,7 @@ class RetirementFundCertificationController extends Controller
                 $loan_guarantee .= $this->getFlagy($discount_counter, $flagy);
 
                 if (!$header_discount) { //no tiene descuento de prestamo pero se de garantia
-                  $loan_guarantee .= '<br>Que, mediante nota '.$discount_guarantee->pivot->code.' de la Dirección de Estrategias Sociales e Inversiones de fecha '.Util::getStringDate($discount_guarantee->pivot->date).', refiriendo que '.($affiliate->gender == 'M' ? ' el <b>Sr. ' : ' la <b>Sra. ').'</b>'.$affiliate_name.', tiene retención por concepto de garantía,';
+                  $loan_guarantee .= 'Que, mediante nota '.$discount_guarantee->pivot->code.' de la Dirección de Estrategias Sociales e Inversiones de fecha '.Util::getStringDate($discount_guarantee->pivot->date).', refiriendo que '.($affiliate->gender == 'M' ? ' el <b>Sr. ' : ' la <b>Sra. ').'</b>'.$affiliate_name.', tiene retención por concepto de garantía,';
                   $header_garantee = true;
                 } else {
                   $loan_guarantee .= '';
@@ -2453,7 +2377,7 @@ class RetirementFundCertificationController extends Controller
           case 24://área de jefatura
             $body_qualification = 'Que, mediante Certificación de Revisión Nº '.$certification_date->code.' de '.Util::getStringDate($certification_date->date).', emitido por la Jefatura de la Unidad de
             Fondo de Retiro Policial Solidario, Cuota y Auxilio Mortuorio, se verifica el cumplimiento de todos los procedimientos
-            requeridos para la correcta determinación del beneficio de Fondo de Retiro.<br><br>';
+            requeridos para la correcta determinación del beneficio de Fondo de Retiro Policial Solidario.';
             $considering_three.= $body_qualification;
           break;
         }
@@ -2506,16 +2430,16 @@ class RetirementFundCertificationController extends Controller
     }
 
     ///fin del inciso//
-    $considering_three.= 'Que, al verificarse el cumplimiento de requisitos adjuntas a la carpeta del según lo señalado el Art.';
+    $then = 'Habiéndose verificado el cumplimiento de requisitos adjuntas a la carpeta del según lo señalado el Art.';
     $directory_resolution = 'del Reglamento de Fondo de Retiro Policial Solidario aprobado mediante Resolución de Directorio N° 97/2021 en fecha 01 de diciembre de 2021 y efectivizado el procesamiento del trámite y conforme el Art. 48  (Procedimiento) del referido Reglamento, corresponde dar curso al ';
     if($retirement_fund->procedure_modality->procedure_type_id==21){
       if($retirement_fund->procedure_modality_id == ID::retFunDevPay()->titular_id){
-        $considering_three.=$subsection.' ('.$retirement_fund->procedure_modality->procedure_type->name.' a '.$retirement_fund->procedure_modality->name.') '.$directory_resolution .' pago de '.$retirement_fund->procedure_modality->procedure_type->name.($affiliate->gender == 'M' ? ' al Sr. ' : 'a la Sra. ').$affiliate_name.'.';
+        $then.=$subsection.' ('.$retirement_fund->procedure_modality->procedure_type->name.' a '.$retirement_fund->procedure_modality->name.') '.$directory_resolution .' pago de '.$retirement_fund->procedure_modality->procedure_type->name.($affiliate->gender == 'M' ? ' al Sr. ' : 'a la Sra. ').$affiliate_name.'.';
       }else{
-        $considering_three.=$subsection.' ('.$retirement_fund->procedure_modality->procedure_type->name.' por '.$retirement_fund->procedure_modality->name.') '.$directory_resolution .' pago de '.$retirement_fund->procedure_modality->procedure_type->name.'del titular'.$retirement_fund->procedure_modality->name.($affiliate->gender == 'M' ? ' Sr. ' : ' Sra. ').$affiliate_name.' a favor de sus derechohabientes.';
+        $then.=$subsection.' ('.$retirement_fund->procedure_modality->procedure_type->name.' por '.$retirement_fund->procedure_modality->name.') '.$directory_resolution .' pago de '.$retirement_fund->procedure_modality->procedure_type->name.'del titular'.$retirement_fund->procedure_modality->name.($affiliate->gender == 'M' ? ' Sr. ' : ' Sra. ').$affiliate_name.' a favor de sus derechohabientes.';
       }
     }else{
-      $considering_three.=$subsection.' ('.$retirement_fund->procedure_modality->procedure_type->name.' por '.$retirement_fund->procedure_modality->name.') '.$directory_resolution .$retirement_fund->procedure_modality->procedure_type->name.'en su modalidad '.$retirement_fund->procedure_modality->name.($affiliate->gender == 'M' ? ' al Sr. ' : 'a la Sra. ').$affiliate_name.'.';
+      $then.=$subsection.' ('.$retirement_fund->procedure_modality->procedure_type->name.' por '.$retirement_fund->procedure_modality->name.') '.$directory_resolution .$retirement_fund->procedure_modality->procedure_type->name.' en su modalidad '.$retirement_fund->procedure_modality->name.($affiliate->gender == 'M' ? ' al Sr. ' : 'a la Sra. ').$affiliate_name.'.';
     }
 
 
@@ -2536,8 +2460,7 @@ class RetirementFundCertificationController extends Controller
       }
     }
 
-  
-    $then = 'La Comisión de Beneficios Económicos de la Mutual de Servicios al Policía “MUSERPOL” en
+    $then .= '<br><br>La Comisión de Beneficios Económicos de la Mutual de Servicios al Policía “MUSERPOL” en
         uso de sus facultades y en observancia al Reglamento de Fondo de Retiro Policial Solidario:';
 
     $cardinal = ['PRIMERA', 'SEGUNDA', 'TERCERA', 'CUARTA', 'QUINTA'];
@@ -2643,7 +2566,7 @@ class RetirementFundCertificationController extends Controller
       } else {
         $body_resolution .= ($applicant->gender == 'M' ? 'del beneficiario ' : 'de la beneficiaria ');
       }
-      $body_resolution .= ($affiliate->gender == 'M' ? ' del Sr. ' : ' de la Sra. ') . $affiliate_name . "., en el siguiente manera: <br><br>";
+      $body_resolution .= ($affiliate->gender == 'M' ? ' del Sr. ' : ' de la Sra. ') . $affiliate_name . "., de la siguiente manera: <br><br>";
       foreach ($beneficiaries as $beneficiary) {
         if (!$beneficiary->state && !$reserved) {
           $reserved = true;
@@ -2670,9 +2593,9 @@ class RetirementFundCertificationController extends Controller
         $body_resolution .= ', en el monto de <strong>' . Util::formatMoneyWithLiteral($beneficiary->amount_total) . '</strong> ';
           if (isset($beneficiary_advisor->id) && $beneficiary->state) {
             $advisor = RetFunAdvisor::where('id', $beneficiary_advisor->ret_fun_advisor_id)->first();
-            $body_resolution.='en calidad de '.$beneficiary->kinship->name.' a través de '.($advisor->gender == 'M' ? 'el Sr. ' : 'la Sra. ').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br><br>';
+            $body_resolution.='en calidad de '.$beneficiary->kinship->name.' a través de '.($advisor->gender == 'M' ? 'el Sr. ' : 'la Sra. ').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br>';
           }else{
-            $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br><br>';
+            $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br>';
           }
          /*if (isset($beneficiary_legal_guardian->id)) {
           $legal_guardian = RetFunLegalGuardian::where('id', $beneficiary_legal_guardian->ret_fun_legal_guardian_id)->first();
@@ -2721,7 +2644,7 @@ class RetirementFundCertificationController extends Controller
                 $advisor = RetFunAdvisor::where('id', $beneficiary_advisor->ret_fun_advisor_id)->first();
                 $body_resolution.='en calidad de '.$beneficiary->kinship->name.' a través de '.($advisor->gender == 'M' ? 'el Sr. ' : 'la Sra. ').Util::fullName($advisor) . ' con C.I. N°' . $advisor->identity_card .' '.($advisor->gender == 'F' ? ' madre' : ' padre').' del menor.</li><br><br>';
            }else{
-                $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br><br>';
+                $body_resolution.='en calidad de '.$beneficiary->kinship->name . '.</li><br>';
            }
               /*$beneficiary_legal_guardian = RetFunLegalGuardianBeneficiary::where('ret_fun_beneficiary_id', $beneficiary->id)->first();
              if (isset($beneficiary_legal_guardian->id)) {
