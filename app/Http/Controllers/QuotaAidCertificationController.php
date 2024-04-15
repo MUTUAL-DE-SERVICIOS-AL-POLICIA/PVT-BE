@@ -1132,7 +1132,7 @@ class QuotaAidCertificationController extends Controller
         if ($quota_aid->procedure_modality_id != 14){
           $person .= ($applicant->gender == 'M' ? 'el Sr. ' : 'la Sra. '). Util::fullName($applicant) . " con C.I. N° " . $applicant->identity_card . ", en calidad de " . $applicant->kinship->name;//solicitante
         }else{
-          $person .=' ';
+          $person .= $affiliate->gender == 'M' ? 'el Sr. ': 'la Sra. ';
         }
     }
     if ($quota_aid->procedure_modality_id != 14) {
