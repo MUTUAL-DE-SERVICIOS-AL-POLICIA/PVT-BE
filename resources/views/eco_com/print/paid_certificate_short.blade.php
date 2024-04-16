@@ -32,8 +32,8 @@
                     <table class="table-code align-top no-padding no-margins">
                         <tbody>
                             <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Área</td>
-                                <td class="text-xs">{!! $area !!}</td>
+                                <td class="text-center bg-grey-darker text-xxs text-white">N° de Trámite</td>
+                                <td class="text-xs">{{ $eco_com->code }}</td>
                             </tr>
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
@@ -41,7 +41,7 @@
                             </tr>
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>
-                                <td class="text-xs uppercase">{{ $date }}</td>
+                                <td class="text-xs uppercase" style="white-space: nowrap; padding-left: 10px; padding-right: 10px;">{{ $date }}</td>
                             </tr>
                         </tbody>
                     </table>
