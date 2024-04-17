@@ -32,16 +32,16 @@
                     <table class="table-code align-top no-padding no-margins">
                         <tbody>
                             <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">N° de Trámite</td>
-                                <td class="text-xs">{{ $eco_com->code }}</td>
+                                <td class="text-center bg-grey-darker text-xs text-white">N° de Trámite</td>
+                                <td class="text-sm">{{ $eco_com->code }}</td>
                             </tr>
                             <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
-                                <td class="text-xs">{!! $user->username !!}</td>
+                                <td class="text-center bg-grey-darker text-xs text-white">Usuario</td>
+                                <td class="text-sm">{!! $user->username !!}</td>
                             </tr>
                             <tr>
-                                <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>
-                                <td class="text-xs uppercase" style="white-space: nowrap; padding-left: 10px; padding-right: 10px;">{{ $date }}</td>
+                                <td class="text-center bg-grey-darker text-xs text-white">Fecha</td>
+                                <td class="text-sm uppercase" style="white-space: nowrap; padding-left: 10px; padding-right: 10px;">{{ $date }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -52,7 +52,7 @@
             </tr>
             <tr>
                 <td colspan="3" class="font-bold text-center text-md uppercase">
-                    BOLETA DE PAGO DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO
+                    DETALLE DEL PAGO DEL COMPLEMENTO ECONÓMICO
                 </td>
             </tr>
             <tr>
@@ -61,16 +61,17 @@
                 </td>
             </tr>
         </table>
+        <br>
         <div class="font-bold uppercase m-b-5 counter">
             Datos del Beneficiario
         </div>
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
-                <tr class="font-medium text-white text-sm">
+                <tr class="font-bold text-white text-sm">
                     <td class="px-20 py text-center">
                         C.I.
                     </td>
-                    <td class="px-15 py text-center ">
+                    <td class="px-15 py text-center">
                         PRIMER NOMBRE
                     </td>
                     <td class="px-15 py text-center">
@@ -90,7 +91,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="text-sm">
+                <tr class="text-base">
                     <td class="text-center font-bold " style="white-space: nowrap; padding-left: 10px; padding-right: 10px;">{!! $applicant->ciWithExt() !!}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->first_name }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->second_name }}</td>
@@ -107,26 +108,26 @@
         </div>
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
-                <tr class="font-medium text-white text-sm">
-                    <td class="px-15 text-center text-sm uppercase">
+                <tr class="font-bold text-white text-sm">
+                    <td class="px-15 text-center uppercase">
                         TIPO DE TRÁMITE
                     </td>
-                    <td class="px-15 text-center text-sm uppercase">
+                    <td class="px-15 text-center uppercase">
                         PRESTACIÓN
                     </td>
-                    <td class="px-15 text-center text-sm uppercase">
+                    <td class="px-15 text-center uppercase">
                         MODALIDAD DE PAGO
                     </td>
-                    <td class="px-15 text-center text-sm uppercase">
+                    <td class="px-15 text-center uppercase">
                         REGIONAL
                     </td>
-                    <td class="px-15 text-center text-sm uppercase">
+                    <td class="px-15 text-center uppercase">
                         NRO DE TRAMITE
                     </td>
                 </tr>
             </thead>
             <tbody>
-                <tr class="text-sm">
+                <tr class="text-base">
                     <td class="text-center uppercase font-bold px-5 py-3">
                         {{ $eco_com->eco_com_reception_type->name }}
                     </td>
@@ -154,40 +155,34 @@
         </div>
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
-                <tr class="font-medium text-white text-sm uppercase">
+                <tr class="font-bold text-white text-sm uppercase">
                     <td class="px-15 text-center">
                         Detalle de pago
                     </td>
                     <td class="px-15 text-center">
-                        Montos
-                    </td>
-                    <td class="px-15 text-center">
-                        Descuento
+                        Bolivianos
                     </td>
                 </tr>
             </thead>
             <tbody class="table-striped text-xs">
                 @if ($eco_com->hasDiscountTypes())
-                <tr class="text-sm">
-                    <td class="w-60 text-left px-10 py-3 uppercase">TOTAL COMPLEMENTO ECONÓMICO EN BOLIVIANOS</td>
-                    <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->getOnlyTotalEcoCom() )}} </td>
-                    <td class="w-15  text-center uppercase px-5 py-3"></td>
+                <tr class="text-base">
+                    <td class="w-60 text-left px-10 py-3 uppercase font-bold">TOTAL COMPLEMENTO ECONÓMICO CALCULADO</td>
+                    <td class="w-15 text-right uppercase px-5 py-3 font-bold"> {{ Util::formatMoney($eco_com->getOnlyTotalEcoCom() )}} </td>
                 </tr>
                 @endif
                 @foreach ($eco_com->discount_types as $d)
-                    <tr class="text-sm">
+                    <tr class="text-base">
                         <td class="w-60 text-left px-20 py-3 uppercase"> - {{ $d->name }}</td>
-                        <td class="w-15  text-center uppercase px-5 py-3"></td>
-                        <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($d->pivot->amount)}} </td>
+                        <td class="w-15 text-right uppercase px-5 py-3"> - {{ Util::formatMoney($d->pivot->amount)}} </td>
                     </tr> 
                 @endforeach
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase font-bold">{{$eco_com->hasDiscountTypes() ? 'LIQUIDO PAGADO EN BOLIVIANOS' : 'TOTAL COMPLEMENTO ECONÓMICO EN BOLIVIANOS'}}</td>
+                <tr class="text-base">
+                    <td class="text-left px-10 py-3 uppercase font-bold">{{$eco_com->hasDiscountTypes() ? 'TOTAL LÍQUIDO PAGADO' : 'TOTAL COMPLEMENTO ECONÓMICO CALCULADO'}}</td>
                     <td class="text-right uppercase px-5 py-3 font-bold"> {{ Util::formatMoney($eco_com->total) }} </td>
-                    <td class="text-center uppercase px-5 py-3"></td>
                 </tr>
-                <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase font-bold"  colspan=3>Son: {{ Util::convertir($eco_com->total) }} BOLIVIANOS</td>
+                <tr class="text-base">
+                    <td class="text-left px-10 py-3 uppercase font-bold"  colspan=2>Son: {{ Util::convertir($eco_com->total) }} BOLIVIANOS</td>
                 </tr>
             </tbody>
         </table>
