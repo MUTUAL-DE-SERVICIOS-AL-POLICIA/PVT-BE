@@ -2566,7 +2566,7 @@ class RetirementFundCertificationController extends Controller
       } else {
         $body_resolution .= ($applicant->gender == 'M' ? 'del beneficiario ' : 'de la beneficiaria ');
       }
-      $body_resolution .= ($affiliate->gender == 'M' ? ' del Sr. ' : ' de la Sra. ') . $affiliate_name . "., en el siguiente manera: <br><br>";
+      $body_resolution .= ($affiliate->gender == 'M' ? ' del Sr. ' : ' de la Sra. ') . $affiliate_name . "., de la siguiente manera: <br><br>";
       foreach ($beneficiaries as $beneficiary) {
         if (!$beneficiary->state && !$reserved) {
           $reserved = true;

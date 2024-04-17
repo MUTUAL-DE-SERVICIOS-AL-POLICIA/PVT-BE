@@ -117,6 +117,9 @@
                                                 <td>Categor&iacute;a</td>
                                             </tr>
                                             <tr>
+                                                <td>Total Ganado</td>
+                                            </tr>
+                                            <tr>
                                                 <td>Cotizable</td>
                                             </tr>
                                             <tr>
@@ -183,6 +186,12 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->quotable}} </div>
+                                                                <input type="hidden" disabled name="quotable[{{$period}}]" value="{{$contributions[$period]->quotable}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->total ?? '-'}} </div>
                                                                 <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">
                                                             </td>
@@ -245,6 +254,12 @@
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                 <input type="hidden" disabled name="gain[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="quotable[{{$period}}]" value="0">
                                                             </td>
                                                         </tr>
                                                         <tr>
