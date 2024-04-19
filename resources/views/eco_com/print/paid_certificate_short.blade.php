@@ -12,9 +12,8 @@
     {{-- Sirve para marcar la mitad de la hoja --}}
     <div style="position: absolute; width: 100%; height: 50%; top: 0px; left: 0px; border-bottom: 1px solid #22292f;">
     </div>
-    @for ($i = 1; $i <= 2; $i++)
-    <div class="page-break" style="{{$i == 2 ? 'position: absolute; top: 50%; margin-top: 25px' : ''}}">
-        <table class="w-100 ">
+    <div class="page-break">
+        <table class="w-100 " style="margin-top: -15px">
             <tr>
                 <th class="w-15 text-left no-padding no-margins align-middle">
                     <div class="text-center">
@@ -185,7 +184,7 @@
                         Detalle de pago
                     </td>
                     <td class="px-15 text-center">
-                        Bolivianos
+                        Monto (En Bolivianos)
                     </td>
                 </tr>
             </thead>
@@ -198,7 +197,11 @@
                 @endif
                 @foreach ($eco_com->discount_types as $d)
                     <tr class="text-base">
+                        @if ($d->id == 7)
+                        <td class="w-60 text-left px-20 py-3 uppercase"> - {{ $d->shortened }}</td>
+                        @else
                         <td class="w-60 text-left px-20 py-3 uppercase"> - {{ $d->name }}</td>
+                        @endif
                         <td class="w-15 text-right uppercase px-5 py-3"> - {{ Util::formatMoney($d->pivot->amount)}} </td>
                     </tr> 
                 @endforeach
@@ -216,8 +219,5 @@
             ni garantía de futuras otorgaciones del Beneficio del Complemento Económico.
         </p>
     </div>
-    {{-- Sirve para reiniciar la numeración que se realiza en el wkhtml.css --}}
-    <div style="counter-reset: number 0 indext 0;"></div>
-    @endfor
 </body>
 </html>
