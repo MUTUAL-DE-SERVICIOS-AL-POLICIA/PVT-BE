@@ -103,7 +103,7 @@ show blade
         <div class="tab-content">
             <div id="tab-eco-com" class="tab-pane active">
                 <eco-com-info :eco-com="{{ $economic_complement }}" :affiliate="{{$affiliate}}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
-                :cities="{{ $cities }}" :degrees="{{$degrees}}" :categories="{{ $categories }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
+                :cities="{{ $cities }}" :degrees="{{$degrees}}" :categories="{{ $categories }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}" :user="{{ $user }}">
                 </eco-com-info>
             </div>
             <div id="tab-eco-coms" class="tab-pane">
@@ -111,14 +111,25 @@ show blade
             </div>
             <div id="tab-affiliate" class="tab-pane">
                 <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
-    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
+                    @include('affiliates.affiliate_personal_information',
+                        ['affiliate'=>$affiliate,
+                         'cities'=>$cities_pluck,
+                         'birth_cities'=>$birth_cities,
+                         'is_editable'=>$is_editable
+                        ]
+                    )
                 </affiliate-show>
             </div>
             <div id="tab-police-info" class="tab-pane">
-                <affiliate-police :affiliate="{{ $affiliate }}" :eco-com-id="{{ $economic_complement->id }}" inline-template :categories="{{$categories}}">
-    @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate, 'affiliate_states'=>$affiliate_states, 'categories'
-                    => $categories->pluck('name', 'id'), 'degrees'=> $degrees->pluck('name', 'id'), 'pension_entities'=>
-                    $pension_entities->pluck('name', 'id')])
+                <affiliate-police :affiliate="{{ $affiliate }}" :eco-com-id="{{ $economic_complement->id }}" :eco-com="{{ $economic_complement }}" inline-template :categories="{{$categories}}">
+                    @include('affiliates.affiliate_police_information',
+                        ['affiliate'=>$affiliate,
+                         'affiliate_states'=>$affiliate_states,
+                         'categories' => $categories->pluck('name', 'id'),
+                         'degrees'=> $degrees->pluck('name', 'id'),
+                         'pension_entities'=> $pension_entities->pluck('name', 'id')
+                        ]
+                    )
                 </affiliate-police>
             </div>
             <div id="tab-eco-com-beneficiary" class="tab-pane">

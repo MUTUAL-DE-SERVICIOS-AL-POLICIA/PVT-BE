@@ -637,8 +637,9 @@
                     name="affiliate_category_id"
                     v-model.trim="affiliate.category_id"
                     v-validate="'required'"
-                    disabled
+                    :disabled="true"
                   >
+                    <!-- :disabled="!(isInclusion || isReEnablement)" -->
                     <option :value="null"></option>
                     <option v-for="c in categories" :value="c.id" :key="c.id">{{ c.name }}</option>
                   </select>
@@ -658,7 +659,7 @@
                     name="affiliate_degree_id"
                     v-model.trim="affiliate.degree_id"
                     v-validate="'required'"
-                    disabled
+                    :disabled="!validationRoles(roleId)"
                   >
                     <option :value="null"></option>
                     <option v-for="d in degrees" :value="d.id" :key="d.id">{{ d.name }}</option>
@@ -690,8 +691,9 @@
                       @change="calculateCategory()"
                       max="100"
                       min="0"
-                      :disabled="isHabitual || (roleId == 22) || (roleId == 23) || (roleId == 24) || (roleId == 25) || (roleId == 26) || (roleId == 27) || (roleId == 52) || (roleId == 68)"
+                      :disabled="!validationRoles(roleId)"
                     >
+                      <!-- :disabled="!((isInclusion || isReEnablement) && (roleId == 22 || roleId == 23 || roleId == 24 || roleId == 25 || roleId == 26 || roleId == 27 || roleId == 52 || roleId == 68))" -->
                     <div v-show="errors.has('affiliate_service_years')">
                       <i class="fa fa-warning text-danger"></i>
                       <span class="text-danger">{{ errors.first('affiliate_service_years') }}</span>
@@ -1384,6 +1386,12 @@ export default {
     isHabitual() {
       return this.receptionType.id == 1;
     },
+    isReEnablement() {
+      return this.receptionType.id == 3;
+    },
+    isInclusion() {
+      return this.receptionType.id == 2;
+    },
     serviceYearsRequired() {
       if (!this.isHabitual) {
         return "required|min_value:0|max_value:100";
@@ -1483,6 +1491,15 @@ export default {
           console.log(error);
         });
       await this.$validator.validateAll();
+    },
+    validationRoles(role) {
+      let rolesPermited = [2, 22, 23, 24, 25, 26, 27, 52, 68]
+      if(this.isInclusion || this.isReEnablement) {
+        console.log("es inclusión o rehabilitación")
+        console.log(rolesPermited.indexOf(parseInt(role)) !== -1)
+        return rolesPermited.indexOf(parseInt(role)) !== -1
+      }
+      return false
     }
   }
 };

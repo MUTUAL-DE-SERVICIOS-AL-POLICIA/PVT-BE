@@ -12,17 +12,19 @@
                 <br>
                 <br>
                 @endcan
-                
                 <br>
                 <div class="row">
-                        
                     <div class="col-md-2"><strong>Estado:</strong></div>
-                    <div class="col-md-4">{!! Form::select('affiliate_state_id', $affiliate_states, null, ['placeholder' => 'Seleccione un estado', 'class' => 'form-control',
-                            'v-model' => 'form.affiliate_state_id' ,':disabled' => '!editing' ]) !!}</div>
+                    <div class="col-md-4">
+                        {!! Form::select(
+                            'affiliate_state_id', $affiliate_states, null, ['placeholder' => 'Seleccione un estado', 'class' => 'form-control',
+                            'v-model' => 'form.affiliate_state_id' ,':disabled' => '!editing || !validationRoles('.$module.', '.$role.')' ]
+                            )
+                        !!}
+                    </div>
                     <div class="col-md-2"><strong>Tipo:</strong></div>
                     <div class="col-md-4">{!! Form::select('type', ['Comando'=>'Comando','Batallón'=>'Batallón'], null, ['placeholder' => 'Seleccione un tipo', 'class' => 'form-control',
                             'v-model' => 'form.type' ,':disabled' => '!editing' ]) !!}</div>
-                    
                 </div>
                 <br>
                 <div class="row">
@@ -32,19 +34,43 @@
                 <br>
                 <div class="row">
                     <div class="col-md-2"><strong>Categor&iacute;a:</strong></div>
-                    <div class="col-md-4">{!! Form::select('category_id', $categories, null, ['placeholder' => 'Seleccione una categoria',
-                            'class' => 'form-control', 'v-model' => 'form.category_id' ,':disabled'
-                            => '!editing || !((editing && ('.$module.' == 2) && !('.$role.' == 22 || '.$role.' == 23 || '.$role.' == 24 || '.$role.' == 25 || '.$role.' == 26 || '.$role.' == 27 || '.$role.' == 52 || '.$role.' == 68 )) || ('.$role.' == 28 || '.$role.' == 43 ))']) !!}</div>
+                    <div class="col-md-4">
+                        {!!
+                            Form::select('category_id', $categories, null, [
+                                'placeholder' => 'Seleccione una categoria',
+                                'class' => 'form-control',
+                                'v-model' => 'form.category_id',
+                                ':disabled' => 'true'
+                            ])
+                        !!}
+                    </div>
                     <div class="col-md-2"><strong>Grado:</strong></div>
-                    <div class="col-md-4">{!! Form::select('degree_id', $degrees, null, ['placeholder' => 'Seleccione un Grado', 'class' => 'form-control' , 'v-model'
-                        => 'form.degree_id' ,':disabled' => '!editing || !((editing && '.$role .' == 5) || (editing && '.$role.' == 28) || (editing && '.$role.' == 43))' ]) !!}</div>
+                    <div class="col-md-4">
+                        {!!
+                            Form::select('degree_id', $degrees, null, [
+                                'placeholder' => 'Seleccione un Grado',
+                                'class' => 'form-control',
+                                'v-model' => 'form.degree_id',
+                                ':disabled' => '!editing || !validationRoles('.$module.', '.$role.')'
+                            ])
+                        !!}
+                    </div>
                 </div>
                 <br>
                 <div class="row">
                     <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
                     <div class="col-md-4">
-                        <input type="number" v-model="form.service_years" name="service_years" class="form-control" 
-                        :disabled="!editing || !(editing && ( {{ intval($module == 2) }} && !( {{ intval($role == 22) }} || {{ intval($role == 23) }} || {{ intval($role == 24) }} || {{ intval($role == 25) }} || {{ intval($role == 26) }} || {{ intval($role == 27) }} || {{ intval($role == 52) }} || {{ intval($role == 68) }} ))  || ({{ intval($role == 28) }}  ||  {{ intval($role == 43) }} ) )" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
+                        <input
+                            type="number"
+                            v-model="form.service_years"
+                            name="service_years"
+                            class="form-control"
+                            :disabled="!editing || !validationRoles('{{$module}}', '{{$role}}')"
+                            @change="getCalculateCategory()"
+                            v-validate="'min_value:0|max_value:100'"
+                            max="100"
+                            min="0"
+                        >
                         <div v-show="errors.has('service_years') && editing" >
                             <i class="fa fa-warning text-danger"></i>
                             <span class="text-danger">@{{ errors.first('service_years') }}</span>
@@ -52,7 +78,7 @@
                     </div>
                     <div class="col-md-2"><label class="control-label">Ente gestor:</label></div>
                     <div class="col-md-4">
-                        {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el ente gestor', 'class' => 'form-control','v-model'=> 'form.pension_entity_id',':disabled'=>'!editing' ]) !!}
+                        {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el ente gestor', 'class' => 'form-control','v-model'=> 'form.pension_entity_id',':disabled'=>'!editing || !validationRoles('.$module.', '.$role.')' ]) !!}
                         <div v-show="errors.has('pension_entity_id') && editing" >
                             <i class="fa fa-warning text-danger"></i>
                             <span class="text-danger">@{{ errors.first('pension_entity_id') }}</span>
@@ -87,8 +113,6 @@
                         <button class="btn btn-primary" type="button" @click="update"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
                     </div>
                 </div>
-                
         </div>
     </div>
-   
 </div>

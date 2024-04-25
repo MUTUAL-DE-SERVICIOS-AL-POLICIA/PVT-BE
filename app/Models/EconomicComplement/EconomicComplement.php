@@ -156,22 +156,6 @@ class EconomicComplement extends Model
                 'errors' => ['No se puede realizar la amortización porque el trámite ' . $this->code . ' se encuentra en estado de ' . $eco_com_state->name],
             ], 422);
         }
-        // // requalify
-        // if ($economic_complement->total > 0 && ( $economic_complement->eco_com_state_id == 1 || $economic_complement->eco_com_state_id == 2 || $economic_complement->eco_com_state_id == 3 || $economic_complement->eco_com_state_id == 17 || $economic_complement->eco_com_state_id == 18 || $economic_complement->eco_com_state_id == 15 ) ) {
-        //     $economic_complement->recalification_date = Carbon::now();
-        //     $temp_eco_com = (array)json_decode($economic_complement);
-        //     $old_eco_com = [];
-        //     foreach ($temp_eco_com as $key => $value) {
-        //         if ($key != 'old_eco_com') {
-        //             $old_eco_com[$key] = $value;
-        //         }
-        //     }
-        //     if (!$economic_complement->old_eco_com) {
-        //         $economic_complement->old_eco_com=json_encode($old_eco_com);
-        //     }
-        //     $economic_complement->save();
-        // }
-        // // /requalify
         $eco_com_procedure = $this->eco_com_procedure;
         $eco_com_rent = EcoComRent::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
@@ -331,9 +315,6 @@ class EconomicComplement extends Model
 
         $total_amount_semester = $difference * $months_of_payment;
         $this->total_amount_semester = $total_amount_semester;
-        // $economic_complement->sub_total_rent = floatval(str_replace(',', '', $sub_total_rent));
-        // $economic_complement->reimbursement = floatval(str_replace(',', '', $reimbursement));
-        // $economic_complement->dignity_pension = floatval(str_replace(',', '', $dignity_pension));
         $complementary_factor = ComplementaryFactor::where('hierarchy_id', '=', $base_wage->degree->hierarchy->id)
             ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
@@ -586,10 +567,23 @@ class EconomicComplement extends Model
             ->where( function($query) {
                 $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
             });
-            //->groupBy('economic_complements.id','eco_com_modalities.id','eco_com_reception_types.id','wf_states.id',
-            //'workflows.id','procedure_modalities.id','affiliate_city.id','beneficiary.id','beneficiary_city.id',
-            //'affiliates.id','eco_com_category.id','eco_com_city.id','eco_com_degree.id','pension_entities.id','eco_com_user.id');
+    }
+    public function scopeInfoDelete($query) {
+        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
+            ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
+            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')
+            ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+            ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
+            ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
+            ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
+            ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
+            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->where( function($query) {
+                $query->where('eco_com_user.message','like','%eliminó%')
+                ->orWhereNull('eco_com_user.id');
         }
+            );
+    }
     public function scopeOrder($query)
     {
         return $query->orderBy(DB::raw("regexp_replace(split_part(economic_complements.code, '/',3),'\D','','g')::integer"))

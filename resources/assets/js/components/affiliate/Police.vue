@@ -4,7 +4,8 @@
 			'affiliate',
 			'typeEcoCom',
 			'ecoComId',
-			'categories'
+			'categories',
+			'ecoCom'
 		],
 		data(){
 			return{
@@ -19,8 +20,7 @@
 						date_entry: this.affiliate.date_entry,
 						type: this.affiliate.type
 					},
-				calculateCategoryId: null
-
+				calculateCategoryId: null,
 			}
 		},
 		created() {
@@ -41,6 +41,20 @@
 			pension_entity_name: function(){
 				return !!this.pension_entity? this.pension_entity.name:'';
 			},
+			isInclution: function() {
+				if(this.ecoCom)
+					if(this.ecoCom.eco_com_reception_type.id == 1)
+						return false
+					else return this.ecoCom.eco_com_reception_type.id == 2
+				else return true
+			},
+			isRehabilitation: function() {
+				if(this.ecoCom)
+					if(this.ecoCom.eco_com_reception_type.id == 1)
+						return false
+					else return this.ecoCom.eco_com_reception_type.id == 3
+				else return false
+			}
 		}
 		,
 		methods: {
@@ -59,6 +73,17 @@
 				if(!!category){
 					this.form.category_id = category.id
 				}
+			},
+			validationRoles(module, role) {
+				let rolesPermited = []
+				if(parseInt(module) !== 2) { // si no es complemento economico
+					rolesPermited = [ 28, 43 ] // solo estos roles pueden editar
+				} else {
+					if(parseInt(module) == 2 && (this.isInclution || this.isRehabilitation)) { // si  el tramite es inclusión o rehabilitación
+						rolesPermited = [ 2, 4, 5, 22, 23, 24, 25, 26, 27, 52, 68 ] // solo estos roles pueden editar
+					}
+				}
+				return rolesPermited.indexOf(parseInt(role)) !== -1
 			},
 			toggle_editing: function () {
 				this.editing = !this.editing;
