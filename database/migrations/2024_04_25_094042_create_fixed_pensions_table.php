@@ -19,9 +19,6 @@ class CreateFixedPensionsTable extends Migration
             $table->bigInteger('affiliate_id');
             $table->bigInteger('regulation_id');
             $table->bigInteger('eco_com_procedure_id');
-            $table->enum('rent_type', ['Manual', 'Automatico']);
-            $table->string('rent_month')->nullable();
-            $table->date('rent_year')->nullable();
             $table->decimal('aps_total_cc', 13, 2)->nullable();
             $table->decimal('aps_total_fsa', 13, 2)->nullable();
             $table->decimal('aps_total_fs', 13, 2)->nullable();
