@@ -769,6 +769,7 @@
                     name="affiliate_account_number"
                     v-model.trim="affiliate.account_number"
                     class="form-control"
+                    :disabled="isHabitual"
                   >
                 </div>
               </div>
@@ -781,6 +782,7 @@
                     class="form-control"
                     name="affiliate_financial_entity_id"
                     v-model.trim="affiliate.financial_entity_id"
+                    :disabled="isHabitual"
                   >
                     <option :value="null"></option>
                     <option v-for="c in financialEntities" :value="c.id" :key="c.id">{{ c.name }}</option>
@@ -802,6 +804,7 @@
                     class="form-control"
                     name="affiliate_account_number_sigep_status"
                     v-model.trim="affiliate.sigep_status"
+                    :disabled="isHabitual"
                   >
                     <option :value="null"></option>
                     <option v-for="c in sigepStatus" :value="c.id" :key="c.id">{{ c.name }}</option>

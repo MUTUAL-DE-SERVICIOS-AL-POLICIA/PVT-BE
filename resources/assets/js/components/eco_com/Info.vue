@@ -74,7 +74,7 @@
             class="btn btn-primary"
             :class="editing ? 'active': ''"
             @click="edit()"
-            :disabled="!can('update_economic_complement')"
+            :disabled="!(can('update_economic_complement') && canEdit())"
             v-if="can('read_economic_complement')"
           >
             <i class="fa" :class="editing ?'fa-edit':'fa-pencil'"></i> Editar
@@ -565,7 +565,7 @@ export default {
     "degrees",
     "categories",
     "roleId",
-    "user"
+    "user",
   ],
   data: function() {
   var defaultType = "V";
@@ -617,6 +617,9 @@ export default {
     },
     isReEnablement() {
       return this.ecoCom.eco_com_reception_type.id == 3
+    },
+    itsUsual() {
+      return this.ecoCom.eco_com_reception_type.id == 1
     }
   },
   mounted() {
@@ -811,6 +814,32 @@ export default {
         } else return false
       }
       return false
+    },
+    canEdit() {
+      if(this.isInclusion || this.isReEnablement) {
+        // Solo pueden editar las regionales y recepción
+        const role_current = this.ecoCom.wf_state.role_id
+        const roles = this.user.roles
+        if(roles) {
+          const filter = roles.filter(obj => obj.id == role_current)
+          const found = roles.find(obj => {
+            return obj.id == 4 || obj.id == 5
+          })
+          if(filter.length !== 0 || found) {
+            return true
+          }
+        }
+        return false
+      } else if (this.itsUsual) {
+        const roles = this.user.roles
+        if(roles) {
+          const found = roles.find(obj => {
+            return obj.id == 4 || obj.id == 5
+          })
+          if( found ) return true
+        }
+        return false
+      }
     }
   }
 };

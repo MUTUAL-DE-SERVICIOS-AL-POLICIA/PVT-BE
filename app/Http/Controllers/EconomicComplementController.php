@@ -668,7 +668,7 @@ class EconomicComplementController extends Controller
     {
         $this->authorize('read', new EconomicComplement());
         $economic_complement = EconomicComplement::with([
-            'wf_state:id,name',
+            'wf_state:id,name,role_id,module_id',
             'workflow:id,name',
             'eco_com_modality:id,name,shortened,procedure_modality_id',
             'eco_com_reception_type:id,name',
@@ -1504,7 +1504,6 @@ class EconomicComplementController extends Controller
             if($temp->onlyTrashed()->count() > 0) {
                 $eco_com_trashed = $temp->onlyTrashed()->orderBy('id')->get();
                 foreach($eco_com_trashed as $eco_coms) {
-                    logger("entra aca");
                     $oldEvents = $eco_com->getEventDispatcher();
                     $eco_com->unsetEventDispatcher();
                     $eco_coms->code .= 'A';

@@ -6,7 +6,15 @@
                 <div class="pull-left"> <legend > Información Policial</legend></div>
                 @can('update',$affiliate)
                 <div class="text-right">
-                    <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
+                    <button
+                        data-animation="flip"
+                        class="btn btn-primary"
+                        :class="editing ? 'active': ''"
+                        @click="toggle_editing"
+                        :disabled="!canEdit()"
+                    >
+                        <i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar
+                    </button>
                 </div>
                 @else
                 <br>
