@@ -13,7 +13,7 @@ class CreateRegulationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('regulations', function (Blueprint $table) {
+        Schema::create('eco_com_regulations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('description');
             $table->boolean('is_enable');
@@ -33,6 +33,6 @@ class CreateRegulationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('regulations');
+        Schema::dropIfExists('eco_com_regulations');
     }
 }

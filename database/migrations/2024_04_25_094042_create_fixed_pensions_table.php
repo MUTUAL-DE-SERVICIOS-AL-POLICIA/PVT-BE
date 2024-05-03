@@ -13,11 +13,11 @@ class CreateFixedPensionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('fixed_pensions', function (Blueprint $table) {
+        Schema::create('eco_com_fixed_pensions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
             $table->bigInteger('affiliate_id');
-            $table->bigInteger('regulation_id');
+            $table->bigInteger('eco_com_regulation_id');
             $table->bigInteger('eco_com_procedure_id');
             $table->enum('rent_type', ['Manual', 'Replica']);
             $table->decimal('aps_total_cc', 13, 2)->nullable();
@@ -33,10 +33,10 @@ class CreateFixedPensionsTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('affiliate_id')->references('id')->on('affiliates');
-            $table->foreign('regulation_id')->references('id')->on('regulations');
+            $table->foreign('eco_com_regulation_id')->references('id')->on('eco_com_regulations');
             $table->foreign('eco_com_procedure_id')->references('id')->on('eco_com_procedures');
 
-            $table->unique(['affiliate_id', 'regulation_id', 'eco_com_procedure_id']);
+            $table->unique(['affiliate_id', 'eco_com_regulation_id', 'eco_com_procedure_id']);
         });
     }
 
@@ -47,6 +47,6 @@ class CreateFixedPensionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fixed_pensions');
+        Schema::dropIfExists('eco_com_fixed_pensions');
     }
 }
