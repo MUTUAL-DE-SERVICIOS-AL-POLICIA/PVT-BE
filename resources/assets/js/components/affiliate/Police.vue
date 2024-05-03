@@ -4,7 +4,9 @@
 			'affiliate',
 			'typeEcoCom',
 			'ecoComId',
-			'categories'
+			'categories',
+			'ecoCom',
+			'user'
 		],
 		data(){
 			return{
@@ -19,8 +21,7 @@
 						date_entry: this.affiliate.date_entry,
 						type: this.affiliate.type
 					},
-				calculateCategoryId: null
-
+				calculateCategoryId: null,
 			}
 		},
 		created() {
@@ -41,6 +42,24 @@
 			pension_entity_name: function(){
 				return !!this.pension_entity? this.pension_entity.name:'';
 			},
+			isInclusion: function() {
+				if(this.ecoCom)
+					if(this.ecoCom.eco_com_reception_type.id == 1)
+						return false
+					else return this.ecoCom.eco_com_reception_type.id == 2
+				else return true
+			},
+			isRehabilitation: function() {
+				if(this.ecoCom)
+					if(this.ecoCom.eco_com_reception_type.id == 1)
+						return false
+					else return this.ecoCom.eco_com_reception_type.id == 3
+				else return false
+			},
+			itsUsual: function() {
+				if(this.ecoCom)
+				return this.ecoCom.eco_com_reception_type.id == 1
+			}
 		}
 		,
 		methods: {
@@ -58,6 +77,43 @@
 				})
 				if(!!category){
 					this.form.category_id = category.id
+				}
+			},
+			validationRoles(module, role) {
+				let rolesPermited = []
+				if(parseInt(module) !== 2) { // si no es complemento economico
+					rolesPermited = [ 28, 43 ] // solo estos roles pueden editar
+				} else {
+					if(parseInt(module) == 2 && (this.isInclusion || this.isRehabilitation)) { // si  el tramite es inclusión o rehabilitación
+						rolesPermited = [ 2, 4, 5, 22, 23, 24, 25, 26, 27, 52, 68 ] // solo estos roles pueden editar
+					}
+				}
+				return rolesPermited.indexOf(parseInt(role)) !== -1
+			},
+			canEdit() {
+				if(this.ecoCom === undefined) return true
+				if(this.isInclusion || this.isRehabilitation) {
+					const role_current = this.ecoCom.wf_state.role_id // rol actual
+					const roles = this.user.roles // roles del usuario
+					if(roles) { // tiene roles el usuario
+						const filter = roles.filter(obj => obj.id == role_current)
+						const found = roles.find(obj => {
+							return obj.id == 4 || obj.id == 5 // jefatura y área técnica
+						});
+						if(filter.length !== 0 || found ) { // si se ha encontrado un rol con el trámite o los roles 4 o 5
+							return true
+						}
+					}
+					return false
+				} else if(this.itsUsual) {
+					const roles = this.user.roles
+					if(roles) {
+						const found = roles.find(obj => {
+							return obj.id == 4 || obj.id == 5
+						})
+						if( found ) return true
+					}
+					return false
 				}
 			},
 			toggle_editing: function () {

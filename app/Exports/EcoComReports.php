@@ -202,13 +202,13 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->get();
                 break;
             case 8:
+                $recordableType = (new EconomicComplement())->getMorphClass();
                 $columns = ", economic_complements.deleted_at";
                 $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
-                    ->info()
+                    ->infoDelete()
                     ->beneficiary()
                     ->affiliateInfo()
                     ->wfstates()
-                    // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
                     ->onlyTrashed()
                     ->get();
@@ -335,7 +335,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "total_complemento",
             "total_liquido_pagable",
             "Ubicacion",
-            "tipoe_beneficiario",
+            "tipo_beneficiario",
             "flujo",
         ];
         return array_merge($default, $new_columns);
