@@ -14,9 +14,9 @@ class AddFixedPensionIdToEconomicComplementsTable extends Migration
     public function up()
     {
         Schema::table('economic_complements', function (Blueprint $table) {
-            $table ->bigInteger('fixed_pension_id')->nullable();
+            $table ->bigInteger('eco_com_fixed_pension_id')->nullable();
 
-            $table->foreign('fixed_pension_id')->references('id')->on('fixed_pensions');
+            $table->foreign('eco_com_fixed_pension_id')->references('id')->on('eco_com_fixed_pensions');
         });
     }
 
@@ -28,7 +28,7 @@ class AddFixedPensionIdToEconomicComplementsTable extends Migration
     public function down()
     {
         Schema::table('economic_complements', function (Blueprint $table) {
-            $table->dropColumn('fixed_pension_id');
+            $table->dropColumn('eco_com_fixed_pension_id');
         });
     }
 }

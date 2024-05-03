@@ -14,9 +14,9 @@ class AddRegulationIdToEcoComProceduresTable extends Migration
     public function up()
     {
         Schema::table('eco_com_procedures', function (Blueprint $table) {
-            $table ->bigInteger('regulation_id')->nullable();
+            $table ->bigInteger('eco_com_regulation_id')->nullable();
 
-            $table->foreign('regulation_id')->references('id')->on('regulations');
+            $table->foreign('eco_com_regulation_id')->references('id')->on('eco_com_regulations');
         });
     }
 

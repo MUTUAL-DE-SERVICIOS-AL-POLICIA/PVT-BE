@@ -13,7 +13,7 @@ class CreateUpdatedPensionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('updated_pensions', function (Blueprint $table) {
+        Schema::create('eco_com_updated_pensions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
             $table->bigInteger('economic_complement_id');
@@ -41,6 +41,6 @@ class CreateUpdatedPensionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('updated_pensions');
+        Schema::dropIfExists('eco_com_updated_pensions');
     }
 }
