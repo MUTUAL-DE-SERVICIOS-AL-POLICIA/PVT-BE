@@ -278,7 +278,6 @@ class EconomicComplementController extends Controller
          ** update affiliate police info
          */
         if($request->reception_type == ID::ecoCom()->inclusion){
-            // $affiliate->category_id = $request->affiliate_category_id;
             $service_year = $request->affiliate_service_years;
             $service_month = $request->affiliate_service_months;
             if ($service_year > 0 || $service_month > 0) {
@@ -294,7 +293,7 @@ class EconomicComplementController extends Controller
                     $affiliate->service_months = $request->affiliate_service_months;
                 }
             }
-            //$affiliate->degree_id = $request->affiliate_degree_id;
+            $affiliate->degree_id = $request->affiliate_degree_id;
             $affiliate->pension_entity_id = $request->pension_entity_id;
             $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
             $affiliate->save();
@@ -669,7 +668,7 @@ class EconomicComplementController extends Controller
     {
         $this->authorize('read', new EconomicComplement());
         $economic_complement = EconomicComplement::with([
-            'wf_state:id,name',
+            'wf_state:id,name,role_id,module_id',
             'workflow:id,name',
             'eco_com_modality:id,name,shortened,procedure_modality_id',
             'eco_com_reception_type:id,name',
@@ -1500,15 +1499,31 @@ class EconomicComplementController extends Controller
         }
         if ($id) {
             $eco_com = EconomicComplement::find($id);
-            $beneficiary = EcoComBeneficiary::whereEconomicComplementId($id)->first();
-            $eco_com->code = $eco_com->code . 'A';
+
+            $temp = EconomicComplement::where('code', 'ilike', $eco_com->code.'%');
+            if($temp->onlyTrashed()->count() > 0) {
+                $eco_com_trashed = $temp->onlyTrashed()->orderBy('id')->get();
+                foreach($eco_com_trashed as $eco_coms) {
+                    $oldEvents = $eco_com->getEventDispatcher();
+                    $eco_com->unsetEventDispatcher();
+                    $eco_coms->code .= 'A';
+                    $eco_coms->save();
+                    $eco_com->setEventDispatcher($oldEvents);
+                }
+            }
+            $oldEvents = $eco_com->getEventDispatcher();
+            $eco_com->unsetEventDispatcher();
+            $eco_com->code .= 'A';
             $eco_com->save();
+            $eco_com->setEventDispatcher($oldEvents);
             $affiliate_tokens = AffiliateToken::whereAffiliateId($eco_com->affiliate_id)->first();
-            $affiliate_device = $affiliate_tokens->affiliate_device;
-            $affiliate_device->eco_com_procedure_id = null;
-            if($affiliate_device->eco_com_procedure_id == null) logger("SI"); else logger("NO");
-            $eco_com->eco_com_beneficiary()->delete();
-            $affiliate_device->update();
+            if($affiliate_tokens) {
+                $affiliate_device = $affiliate_tokens->affiliate_device;
+                if($affiliate_device) {
+                    $affiliate_device->delete();
+                }
+                $affiliate_tokens->delete();
+            }
             $eco_com->eco_com_beneficiary()->delete();
             $eco_com->eco_com_legal_guardian()->delete();
             $eco_com->submitted_documents()->delete();
@@ -1519,13 +1534,6 @@ class EconomicComplementController extends Controller
             $eco_com->discount_types()->detach();
             $eco_com->tags()->detach();
             $eco_com->delete();
-            $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($beneficiary->identity_card)->first();
-            if(!$eco_com_beneficiary) {
-                logger("beneficiario inexistente");
-                $affiliate_tokens->api_token = null;
-                $affiliate_tokens->firebase_token = null;
-                $affiliate_tokens->update();
-            }
             return response()->json([
                 'message' => 'deleted',
             ], 204);
@@ -1778,37 +1786,6 @@ class EconomicComplementController extends Controller
             'eco_com_beneficiary',
             'eco_com_procedure',
             'eco_com_modality',
-            'discount_types',
-            'observations',
-        ])->find($id);
-        $date = Util::getStringDate(date('Y-m-d'));
-
-        $affiliate = $eco_com->affiliate;
-        $applicant = $eco_com->eco_com_beneficiary;
-        $area = $eco_com->wf_state->first_shortened;
-        $user = Auth::user();
-
-        $date = Util::getStringDate(date('Y-m-d'));
-        $eco_com_procedure = $eco_com->eco_com_procedure;
-        $subtitle = $eco_com_procedure->semester . " SEMESTRE " . $eco_com_procedure->getYear();
-        $total_literal = Util::convertir($eco_com->total);
-       
-        $pdftitle = "Certificado de pago";
-        $namepdf = Util::getPDFName($pdftitle, $affiliate);
-
-        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-
-        return \PDF::loadView('eco_com.print.paid_certificate', compact('area', 'user', 'date', 'pdftitle', 'subtitle', 'affiliate', 'applicant', 'eco_com', 'total_literal','bar_code'))
-        ->setPaper('letter')
-        ->setOption('encoding', 'utf-8')
-        ->stream("$namepdf");
-    }
-    public function paidCertificateShort($id){
-        $eco_com = EconomicComplement::with([
-            'affiliate',
-            'eco_com_beneficiary',
-            'eco_com_procedure',
-            'eco_com_modality',
             'eco_com_state',
             'discount_types',
             'observations',
@@ -1836,7 +1813,7 @@ class EconomicComplementController extends Controller
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
 
-        return \PDF::loadView('eco_com.print.paid_certificate_short', compact('area', 'user', 'date', 'pdftitle', 'subtitle', 'affiliate', 'applicant', 'eco_com', 'total_literal','bar_code'))
+        return \PDF::loadView('eco_com.print.paid_certificate', compact('area', 'user', 'date', 'pdftitle', 'subtitle', 'affiliate', 'applicant', 'eco_com', 'total_literal','bar_code'))
         ->setPaper('letter')
         ->setOption('encoding', 'utf-8')
         ->stream("$namepdf");

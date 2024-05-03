@@ -62,6 +62,7 @@
               id="pension_entity_id"
               v-validate.initial="'required'"
               @change="setPensionEntity()"
+              :disabled="itsUsual"
             >
               <option :value="null"></option>
               <option v-for="(p, index) in pensionEntities" :value="p.id" :key="index">{{p.name}}</option>
@@ -184,6 +185,13 @@ export default {
     "ecoComReceptionTypes",
     "ecoComConsecutivo"
   ],
+  computed: {
+    itsUsual() {
+      if(this.lastEcoCom) {
+        return this.lastEcoCom.eco_com_reception_type_id == 1
+      }
+    }
+  },
   data() {
     return {
       requirements: [],

@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="ibox">
       <div class="ibox-title">
-        <h2 class="pull-left">Información del Trámite <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17 || ecoCom.eco_com_state.id == 29 }"></i> </h2>
+        <h2 class="pull-left">Información del Trámites <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17 || ecoCom.eco_com_state.id == 29 }"></i> </h2>
         <div class="ibox-tools">
           <span v-if="roleId === 5">
           <button
@@ -44,17 +44,7 @@
             @click="certificacionPago()"
             :disabled="ecoCom.eco_com_state.eco_com_state_type_id != 1"
           >
-            <i class="fa fa-print"></i> Boleta de pago
-          </button>
-          <button
-            data-animation="flip"
-            data-toggle="tooltip"
-            title="Certificación pago pequeño"
-            class="btn btn-primary"
-            @click="certificacionPagoCorto()"
-            :disabled="ecoCom.eco_com_state.eco_com_state_type_id != 1"
-          >
-            <i class="fa fa-print"></i> Boleta de pago pequeño
+            <i class="fa fa-print"></i> Imprimir boleta de pago
           </button>
           <button
             data-toggle="tooltip"
@@ -62,8 +52,9 @@
             v-if="editing"
             class="btn btn-danger"
             @click="deleteEcoCom()"
-            :disabled="!can('delete_economic_complement')"
+            :disabled="!(can('delete_economic_complement') && canDelete()) "
           >
+            <!-- :disabled="!((ecoCom.city_id == 4 && ecoCom.wf_state.id == 1 && !can('delete_economic_complement')) || (ecoCom.city_id != 4 && ecoCom.wf_state.id != 1) && !can('delete_economic_complement'))" -->
             <i class="fa fa-trash-o"></i>
           </button>
           <button
@@ -73,7 +64,7 @@
             class="btn btn-primary"
             :class="editing ? 'active': ''"
             @click="edit()"
-            :disabled="!can('update_economic_complement')"
+            :disabled="!(can('update_economic_complement') && canEdit())"
             v-if="can('read_economic_complement')"
           >
             <i class="fa" :class="editing ?'fa-edit':'fa-pencil'"></i> Editar
@@ -194,7 +185,7 @@
                 <label class="control-label">Categoria</label>
             </div>
               <div class="col-md-4">
-                <select class="form-control" v-model="form.category_id" name="category_id" :disabled="!editing" v-validate="'required'">
+                <select class="form-control" v-model="form.category_id" name="category_id" :disabled="true" v-validate="'required'">
                   <option v-for="(c, index) in categories" :value="c.id" :key="index">{{c.name}}</option>
                 </select>
                 <div v-show="errors.has('category_id')">
@@ -206,7 +197,7 @@
                 <label class="control-label">Grado</label>
             </div>
               <div class="col-md-4">
-                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing || (roleId != 5) " v-validate="'required'">
+                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing || !validationRoles(roleId)" v-validate="'required'">
                   <option v-for="(c, index) in degrees" :value="c.id" :key="index">{{c.name}}</option>
                 </select>
                 <div v-show="errors.has('degree_id')">
@@ -219,7 +210,7 @@
           <div class="row">
             <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
             <div class="col-md-4">
-                <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
+                <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing || !validationRoles(roleId)" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
                 <div v-show="errors.has('service_years') && editing" >
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">@{{ errors.first('service_years') }}</span>
@@ -563,7 +554,8 @@ export default {
     "permissions",
     "degrees",
     "categories",
-    "roleId"
+    "roleId",
+    "user",
   ],
   data: function() {
   var defaultType = "V";
@@ -609,6 +601,17 @@ export default {
     clone: {}
   };
 },
+  computed: {
+    isInclusion () {
+      return this.ecoCom.eco_com_reception_type.id == 2
+    },
+    isReEnablement() {
+      return this.ecoCom.eco_com_reception_type.id == 3
+    },
+    itsUsual() {
+      return this.ecoCom.eco_com_reception_type.id == 1
+    }
+  },
   mounted() {
     //console.log(this.ecoCom.eco_com_state_id==17 ? true: false);
     document.querySelectorAll(".tab-eco-com")[0].addEventListener(
@@ -779,11 +782,51 @@ export default {
     async certificacionPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/paid_cetificate', type:'pdf', showModal:true});
     },
-    async certificacionPagoCorto(){
-      printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/paid_cetificate_short', type:'pdf', showModal:true});
-    },
     async formSolicitudPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/reception', type:'pdf', showModal:true});
+    },
+    validationRoles(role) {
+      let rolesPermited = [22, 23, 24, 25, 26, 27, 52, 68]
+      if(this.isInclusion || this.isReEnablement) {
+        return rolesPermited.indexOf(parseInt(role)) !== -1
+      }
+      return false
+    },
+    canDelete() {
+      if(this.isInclusion) {
+        if(this.ecoCom.city_id == 4 && this.ecoCom.wf_state.id == 1) { // ciudad de La Paz y es recepción
+          return true
+        } else if(this.ecoCom.city_id != 4 && this.ecoCom.wf_state.id != 1) { // regional y no esta en recepción
+          return true
+        } else return false
+      }
+      return false
+    },
+    canEdit() {
+      if(this.isInclusion || this.isReEnablement) {
+        // Solo pueden editar las regionales y recepción
+        const role_current = this.ecoCom.wf_state.role_id
+        const roles = this.user.roles
+        if(roles) {
+          const filter = roles.filter(obj => obj.id == role_current)
+          const found = roles.find(obj => {
+            return obj.id == 4 || obj.id == 5
+          })
+          if(filter.length !== 0 || found) {
+            return true
+          }
+        }
+        return false
+      } else if (this.itsUsual) {
+        const roles = this.user.roles
+        if(roles) {
+          const found = roles.find(obj => {
+            return obj.id == 4 || obj.id == 5
+          })
+          if( found ) return true
+        }
+        return false
+      }
     }
   }
 };
