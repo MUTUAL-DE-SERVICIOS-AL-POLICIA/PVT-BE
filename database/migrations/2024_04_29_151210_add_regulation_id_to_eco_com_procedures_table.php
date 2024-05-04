@@ -28,7 +28,7 @@ class AddRegulationIdToEcoComProceduresTable extends Migration
     public function down()
     {
         Schema::table('eco_com_procedures', function (Blueprint $table) {
-            $table->dropColumn('procedure_id');
+            $table->dropColumn('eco_com_regulation_id');
         });
     }
 }
