@@ -1778,6 +1778,7 @@ class EconomicComplementController extends Controller
             'eco_com_beneficiary',
             'eco_com_procedure',
             'eco_com_modality',
+            'eco_com_state',
             'discount_types',
             'observations',
         ])->find($id);
@@ -1790,7 +1791,13 @@ class EconomicComplementController extends Controller
 
         $date = Util::getStringDate(date('Y-m-d'));
         $eco_com_procedure = $eco_com->eco_com_procedure;
-        $subtitle = $eco_com_procedure->semester . " SEMESTRE " . $eco_com_procedure->getYear();
+        $numberSemester = "";
+        if($eco_com_procedure->semester == "Primer") {
+            $numberSemester = "1ER.";
+        } else if ($eco_com_procedure->semester == "Segundo") {
+            $numberSemester = "2DO.";
+        }
+        $subtitle = $numberSemester . " SEMESTRE " . $eco_com_procedure->getYear();
         $total_literal = Util::convertir($eco_com->total);
        
         $pdftitle = "Certificado de pago";
@@ -1803,7 +1810,6 @@ class EconomicComplementController extends Controller
         ->setOption('encoding', 'utf-8')
         ->stream("$namepdf");
     }
-
     public function recalificacion(Request $request)
     {
         $eco_com = EconomicComplement::find($request->id);
