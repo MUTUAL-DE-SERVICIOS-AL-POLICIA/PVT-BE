@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Muserpol\Imports\EcoComImportSenasir;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\EconomicComplement\EcoComUpdatedPension;
 use Muserpol\Imports\EcoComImportAPS;
 use Muserpol\Helpers\Util;
 use Muserpol\Imports\EcoComImportPagoFuturo;
@@ -95,9 +96,10 @@ class EcoComImportExportController extends Controller
                         $collect->push($temp);
                     }
                 }
-                $eco_coms = EconomicComplement::with('affiliate')
+                $eco_coms = EconomicComplement::with('affiliate')->with('eco_com_updated_pension')
                     ->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('eco_com_procedure_id', $eco_com_procedure_id)
                     ->NotHasEcoComState(1, 6)
@@ -112,12 +114,19 @@ class EcoComImportExportController extends Controller
                         if ($c[3] == $e->affiliate->nua) {
                             // if ($e->aps_total_cc <> round($c[13], 2) || $e->aps_total_fsa <> round($c[19], 2) || $e->aps_total_fs <> round($c[25], 2)) {
                             // if ($sw_override) {
-                            $e->aps_total_cc = round($c[13], 2);
-                            $e->aps_total_fsa = round($c[19], 2);
-                            $e->aps_total_fs = round($c[25], 2);
-                            $e->rent_type = 'Automatico';
-                            $e->save();
-                            $e->calculateTotalRentAps();
+                            if (is_null($e->eco_com_updated_pension)) {
+                                $updatedPension = new EcoComUpdatedPension();
+                                $updatedPension->user_id = Auth::user()->id;
+                                $updatedPension->economic_complement_id = $e->id;
+                            } else {
+                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            }
+                            $updatedPension->rent_type = 'Automatico';
+                            $updatedPension->aps_total_cc = round($c[13], 2);
+                            $updatedPension->aps_total_fsa = round($c[19], 2);
+                            $updatedPension->aps_total_fs = round($c[25], 2);
+                            $updatedPension->save();
+                            $updatedPension->calculateTotalRentAps();
                             $success++;
                         }
                     }
@@ -134,15 +143,17 @@ class EcoComImportExportController extends Controller
                         $not_found_db->push($c);
                     }
                 }
-                $not_found = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
+                $not_found = EconomicComplement::with('eco_com_beneficiary')->with('eco_com_updated_pension')
+                    ->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
                     ->where('eco_com_procedure_id', $eco_com_procedure_id)
                     ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('rent_type', '<>', 'Automatico')
-                    ->where('rent_type', '<>', 'Manual')
+                    ->where('economic_complements.rent_type', '<>', 'Automatico')
+                    ->where('economic_complements.rent_type', '<>', 'Manual')
                     ->where(function ($query) {
-                        $query->whereNull('economic_complements.total_rent')
-                            ->orWhere('economic_complements.total_rent', '=', 0);
+                        $query->whereNull('eco_com_updated_pensions.total_rent')
+                            ->orWhere('eco_com_updated_pensions.total_rent', '=', 0);
                     })
                     ->get();
 
@@ -174,8 +185,10 @@ class EcoComImportExportController extends Controller
                         $collect->push($temp);
                     }
                 }
-                $eco_coms = EconomicComplement::with('affiliate')->select('economic_complements.*')
+                $eco_coms = EconomicComplement::with('affiliate')->with('eco_com_updated_pension')
+                    ->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('eco_com_procedure_id', $eco_com_procedure_id)
                     ->NotHasEcoComState(1, 6)
@@ -191,9 +204,17 @@ class EcoComImportExportController extends Controller
                         if ($c[3] == $e->affiliate->nua) {
                             // if ($e->aps_disability <> round($c[16], 2)) {
                             //     if ($sw_override) {
-                            $e->aps_disability = round($c[16], 2);
-                            $e->save();
-                            $e->calculateTotalRentAps();
+                            if (is_null($e->eco_com_updated_pension)) {
+                                $updatedPension = new EcoComUpdatedPension();
+                                $updatedPension->user_id = Auth::user()->id;
+                                $updatedPension->economic_complement_id = $e->id;
+                            } else {
+                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            }
+                            $updatedPension->rent_type = 'Automatico';
+                            $updatedPension->aps_disability = round($c[16], 2);
+                            $updatedPension->save();
+                            $updatedPension->calculateTotalRentAps();
                             $success++;
                         }
                     }
@@ -214,15 +235,17 @@ class EcoComImportExportController extends Controller
                     }
                     $temp++;
                 }
-                $not_found = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
+                $not_found = EconomicComplement::with('eco_com_beneficiary')->with('eco_com_updated_pension')
+                    ->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
                     ->where('eco_com_procedure_id', $eco_com_procedure_id)
                     ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('rent_type', '<>', 'Automatico')
-                    ->where('rent_type', '<>', 'Manual')
+                    ->where('economic_complements.rent_type', '<>', 'Automatico')
+                    ->where('economic_complements.rent_type', '<>', 'Manual')
                     ->where(function ($query) {
-                        $query->whereNull('economic_complements.total_rent')
-                            ->orWhere('economic_complements.total_rent', '=', 0);
+                        $query->whereNull('eco_com_updated_pensions.total_rent')
+                            ->orWhere('eco_com_updated_pensions.total_rent', '=', 0);
                     })
                     ->get();
                 break;
@@ -255,8 +278,10 @@ class EcoComImportExportController extends Controller
                         $collect->push($temp);
                     }
                 }
-                $eco_coms = EconomicComplement::with('affiliate')->select('economic_complements.*')
+                $eco_coms = EconomicComplement::with('affiliate')->with('eco_com_updated_pension')
+                    ->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
                     ->where('affiliates.pension_entity_id', '<>', 5)
                     ->where('eco_com_procedure_id', $eco_com_procedure_id)
                     ->NotHasEcoComState(1, 6)
@@ -268,9 +293,17 @@ class EcoComImportExportController extends Controller
                         $ci_aps = explode("-", ltrim($c[11], "0"))[0];
                         // if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
                         if ($c[3] == $e->affiliate->nua) {
-                            $e->aps_total_death = round($c[17], 2);
-                            $e->save();
-                            $e->calculateTotalRentAps();
+                            if (is_null($e->eco_com_updated_pension)) {
+                                $updatedPension = new EcoComUpdatedPension();
+                                $updatedPension->user_id = Auth::user()->id;
+                                $updatedPension->economic_complement_id = $e->id;
+                            } else {
+                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            }
+                            $updatedPension->rent_type = 'Automatico';
+                            $updatedPension->aps_total_death = round($c[17], 2);
+                            $updatedPension->save();
+                            $updatedPension->calculateTotalRentAps();
                             $success++;
                         }
                     }
@@ -291,15 +324,17 @@ class EcoComImportExportController extends Controller
                     }
                     $temp++;
                 }
-                $not_found = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
+                $not_found = EconomicComplement::with('eco_com_beneficiary')->with('eco_com_updated_pension')
+                    ->select('economic_complements.*')
                     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
                     ->where('eco_com_procedure_id', $eco_com_procedure_id)
                     ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('rent_type', '<>', 'Automatico')
-                    ->where('rent_type', '<>', 'Manual')
+                    ->where('economic_complements.rent_type', '<>', 'Automatico')
+                    ->where('economic_complements.rent_type', '<>', 'Manual')
                     ->where(function ($query) {
-                        $query->whereNull('economic_complements.total_rent')
-                            ->orWhere('economic_complements.total_rent', '=', 0);
+                        $query->whereNull('eco_com_updated_pensions.total_rent')
+                            ->orWhere('eco_com_updated_pensions.total_rent', '=', 0);
                     })
                     ->get();
                 break;
