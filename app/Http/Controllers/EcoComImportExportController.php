@@ -64,17 +64,7 @@ class EcoComImportExportController extends Controller
         // }
         switch ($request->type) {
             case 'vejez':
-                if (!$sw_refresh) {
-                    $uploadedFile = $request->file('vejez');
-                    $filename = 'aps-vejez.' . $uploadedFile->getClientOriginalExtension();
-                    Storage::disk('local')->putFileAs(
-                        'aps/' . now()->year,
-                        $uploadedFile,
-                        $filename
-                    );
-                };
-                Excel::import(new EcoComImportAPS, 'aps/' . now()->year . '/aps-vejez.csv');
-                $data = session()->get('aps_data');
+                $data = $this->uploadAndGetData($sw_refresh, $request->file('vejez'), 'vejez');
                 $collect = collect([]);
                 $process = collect([]);
                 foreach ($data as $d1) {
@@ -96,24 +86,10 @@ class EcoComImportExportController extends Controller
                         $collect->push($temp);
                     }
                 }
-                $eco_coms = EconomicComplement::with('affiliate')->with('eco_com_updated_pension')
-                    ->select('economic_complements.*')
-                    ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
-                    ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('eco_com_procedure_id', $eco_com_procedure_id)
-                    ->NotHasEcoComState(1, 6)
-                    ->get();
+                $eco_coms = $this->getEcoComsWithProcedure($eco_com_procedure_id);
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
-                        $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
-                        // $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
-                        $ci_aps = explode("-", ltrim($c[10], "0"))[0];
-                        // $ci_aps = ltrim($c[10], "0");
-                        // if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
                         if ($c[3] == $e->affiliate->nua) {
-                            // if ($e->aps_total_cc <> round($c[13], 2) || $e->aps_total_fsa <> round($c[19], 2) || $e->aps_total_fs <> round($c[25], 2)) {
-                            // if ($sw_override) {
                             if (is_null($e->eco_com_updated_pension)) {
                                 $updatedPension = new EcoComUpdatedPension();
                                 $updatedPension->user_id = Auth::user()->id;
@@ -143,33 +119,10 @@ class EcoComImportExportController extends Controller
                         $not_found_db->push($c);
                     }
                 }
-                $not_found = EconomicComplement::with('eco_com_beneficiary')->with('eco_com_updated_pension')
-                    ->select('economic_complements.*')
-                    ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
-                    ->where('eco_com_procedure_id', $eco_com_procedure_id)
-                    ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('economic_complements.rent_type', '<>', 'Automatico')
-                    ->where('economic_complements.rent_type', '<>', 'Manual')
-                    ->where(function ($query) {
-                        $query->whereNull('eco_com_updated_pensions.total_rent')
-                            ->orWhere('eco_com_updated_pensions.total_rent', '=', 0);
-                    })
-                    ->get();
-
+                $not_found = $this->getEcoComWithoutPensionWithProcedure($eco_com_procedure_id);
                 break;
-            case 'invalidez':
-                if (!$sw_refresh) {
-                    $uploadedFile = $request->file('invalidez');
-                    $filename = 'aps-invalidez.' . $uploadedFile->getClientOriginalExtension();
-                    Storage::disk('local')->putFileAs(
-                        'aps/' . now()->year,
-                        $uploadedFile,
-                        $filename
-                    );
-                };
-                Excel::import(new EcoComImportAPS, 'aps/' . now()->year . '/aps-invalidez.csv');
-                $data = session()->get('aps_data');
+            case 'invalidez':                
+                $data = $this->uploadAndGetData($sw_refresh, $request->file('invalidez'), 'invalidez');
                 $collect = collect([]);
                 $process = collect([]);
                 foreach ($data as $d1) {
@@ -185,25 +138,10 @@ class EcoComImportExportController extends Controller
                         $collect->push($temp);
                     }
                 }
-                $eco_coms = EconomicComplement::with('affiliate')->with('eco_com_updated_pension')
-                    ->select('economic_complements.*')
-                    ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
-                    ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('eco_com_procedure_id', $eco_com_procedure_id)
-                    ->NotHasEcoComState(1, 6)
-                    ->get();
-                $fails = collect([]);
+                $eco_coms = $this->getEcoComsWithProcedure($eco_com_procedure_id);
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
-                        $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
-                        // $affiliate_ci_eco_com = ltrim($e->affiliate->identity_card, "0");
-                        $ci_aps = explode("-", ltrim($c[10], "0"))[0];
-                        // $ci_aps = ltrim($c[10], "0");
-                        // if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
                         if ($c[3] == $e->affiliate->nua) {
-                            // if ($e->aps_disability <> round($c[16], 2)) {
-                            //     if ($sw_override) {
                             if (is_null($e->eco_com_updated_pension)) {
                                 $updatedPension = new EcoComUpdatedPension();
                                 $updatedPension->user_id = Auth::user()->id;
@@ -235,33 +173,11 @@ class EcoComImportExportController extends Controller
                     }
                     $temp++;
                 }
-                $not_found = EconomicComplement::with('eco_com_beneficiary')->with('eco_com_updated_pension')
-                    ->select('economic_complements.*')
-                    ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
-                    ->where('eco_com_procedure_id', $eco_com_procedure_id)
-                    ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('economic_complements.rent_type', '<>', 'Automatico')
-                    ->where('economic_complements.rent_type', '<>', 'Manual')
-                    ->where(function ($query) {
-                        $query->whereNull('eco_com_updated_pensions.total_rent')
-                            ->orWhere('eco_com_updated_pensions.total_rent', '=', 0);
-                    })
-                    ->get();
+                $not_found = $this->getEcoComWithoutPensionWithProcedure($eco_com_procedure_id);
                 break;
 
             case 'muerte':
-                if (!$sw_refresh) {
-                    $uploadedFile = $request->file('muerte');
-                    $filename = 'aps-muerte.' . $uploadedFile->getClientOriginalExtension();
-                    Storage::disk('local')->putFileAs(
-                        'aps/' . now()->year,
-                        $uploadedFile,
-                        $filename
-                    );
-                };
-                Excel::import(new EcoComImportAPS, 'aps/' . now()->year . '/aps-muerte.csv');
-                $data = session()->get('aps_data');
+                $data = $this->uploadAndGetData($sw_refresh, $request->file('muerte'), 'muerte');
                 $collect = collect([]);
                 $process = collect([]);
                 foreach ($data as $d1) {
@@ -278,20 +194,9 @@ class EcoComImportExportController extends Controller
                         $collect->push($temp);
                     }
                 }
-                $eco_coms = EconomicComplement::with('affiliate')->with('eco_com_updated_pension')
-                    ->select('economic_complements.*')
-                    ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
-                    ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('eco_com_procedure_id', $eco_com_procedure_id)
-                    ->NotHasEcoComState(1, 6)
-                    ->get();
-                $fails = collect([]);
+                $eco_coms = $this->getEcoComsWithProcedure($eco_com_procedure_id);
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
-                        $affiliate_ci_eco_com = explode("-", ltrim($e->affiliate->identity_card, "0"))[0];
-                        $ci_aps = explode("-", ltrim($c[11], "0"))[0];
-                        // if ($ci_aps == $affiliate_ci_eco_com && $c[3] == $e->affiliate->nua) {
                         if ($c[3] == $e->affiliate->nua) {
                             if (is_null($e->eco_com_updated_pension)) {
                                 $updatedPension = new EcoComUpdatedPension();
@@ -324,19 +229,7 @@ class EcoComImportExportController extends Controller
                     }
                     $temp++;
                 }
-                $not_found = EconomicComplement::with('eco_com_beneficiary')->with('eco_com_updated_pension')
-                    ->select('economic_complements.*')
-                    ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-                    ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
-                    ->where('eco_com_procedure_id', $eco_com_procedure_id)
-                    ->where('affiliates.pension_entity_id', '<>', 5)
-                    ->where('economic_complements.rent_type', '<>', 'Automatico')
-                    ->where('economic_complements.rent_type', '<>', 'Manual')
-                    ->where(function ($query) {
-                        $query->whereNull('eco_com_updated_pensions.total_rent')
-                            ->orWhere('eco_com_updated_pensions.total_rent', '=', 0);
-                    })
-                    ->get();
+                $not_found = $this->getEcoComWithoutPensionWithProcedure($eco_com_procedure_id);
                 break;
             default:
                 # code...
@@ -350,13 +243,46 @@ class EcoComImportExportController extends Controller
             'notFound' => $not_found,
         ];
         return $data;
-        // $no_import = EconomicComplement::with('eco_com_beneficiary')->select('economic_complements.*')
-        //     ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
-        //     ->where('eco_com_procedure_id', $eco_com_procedure_id)
-        //     ->where('rent_type','<>','Automatico')
-        //     ->where('affiliates.pension_entity_id',5)
-        //     ->get();
-        // return array_merge(session()->get('senasir_data'), ['not_found'=>$no_import]);
+    }
+    private function getEcoComsWithProcedure(int $procedure)
+    {
+        $eco_coms = EconomicComplement::with('affiliate')->with('eco_com_updated_pension')
+            ->select('economic_complements.*')
+            ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+            ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
+            ->where('affiliates.pension_entity_id', '<>', 5)
+            ->where('eco_com_procedure_id', $procedure)
+            ->NotHasEcoComState(1, 6)
+            ->get();
+        return $eco_coms;
+    }
+    private function getEcoComWithoutPensionWithProcedure(int $procedure)
+    {
+        $not_found = EconomicComplement::with('eco_com_beneficiary')->with('eco_com_updated_pension')
+            ->select('economic_complements.*')
+            ->leftJoin('affiliates', 'economic_complements.affiliate_id', '=', 'affiliates.id')
+            ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
+            ->where('eco_com_procedure_id', $procedure)
+            ->where('affiliates.pension_entity_id', '<>', 5)
+            ->where('economic_complements.rent_type', '<>', 'Automatico')
+            ->where('economic_complements.rent_type', '<>', 'Manual')
+            ->where(function ($query) {
+                $query->whereNull('eco_com_updated_pensions.total_rent')
+                    ->orWhere('eco_com_updated_pensions.total_rent', '=', 0);
+            })
+            ->get();
+        return $not_found;
+    }
+    private function uploadAndGetData(string $refresh, $file, string $name) {
+        if (!$refresh) {
+            $filename = 'aps-'.$name.'.' . $file->getClientOriginalExtension();
+            Storage::disk('local')->putFileAs(
+                'aps/' . now()->year,
+                $file,
+                $filename
+            );
+        };
+        return $data = Excel::toCollection(new EcoComImportAPS, 'aps/' . now()->year . '/aps-'.$name.'.csv')[0];
     }
     public function importPagoFuturo(Request $request)
     { DB::beginTransaction();
