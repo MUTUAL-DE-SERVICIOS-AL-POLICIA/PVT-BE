@@ -112,7 +112,9 @@ show blade
                     :categories="{{ $categories }}"
                     :permissions="{{ $permissions }}"
                     :role-id="{{ Util::getRol()->id }}"
-                    :user="{{ Auth::user() }}" >
+                    :user="{{ Auth::user() }}"
+                    :wf-current-state="{{ $wf_current_state }}"
+                >
                 </eco-com-info>
             </div>
             <div id="tab-eco-coms" class="tab-pane">
@@ -140,6 +142,7 @@ show blade
                     :eco-com="{{ $economic_complement }}"
                     :categories="{{$categories}}"
                     :user="{{ Auth::user() }}"
+                    :wf-current-state="{{ $wf_current_state }}"
                     inline-template
                 >
                     @include('affiliates.affiliate_police_information',
@@ -147,7 +150,8 @@ show blade
                          'affiliate_states'=>$affiliate_states,
                          'categories' => $categories->pluck('name', 'id'),
                          'degrees'=> $degrees->pluck('name', 'id'),
-                         'pension_entities'=> $pension_entities->pluck('name', 'id')
+                         'pension_entities'=> $pension_entities->pluck('name', 'id'),
+                         'wf_current_state' => $wf_current_state->role_id
                         ]
                     )
                 </affiliate-police>

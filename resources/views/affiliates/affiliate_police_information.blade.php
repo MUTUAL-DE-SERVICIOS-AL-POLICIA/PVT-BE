@@ -11,7 +11,6 @@
                         class="btn btn-primary"
                         :class="editing ? 'active': ''"
                         @click="toggle_editing"
-                        :disabled="!canEdit()"
                     >
                         <i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar
                     </button>
@@ -24,9 +23,11 @@
                 <div class="row">
                     <div class="col-md-2"><strong>Estado:</strong></div>
                     <div class="col-md-4">
-                        {!! Form::select(
-                            'affiliate_state_id', $affiliate_states, null, ['placeholder' => 'Seleccione un estado', 'class' => 'form-control',
-                            'v-model' => 'form.affiliate_state_id' ,':disabled' => '!editing || !validationRoles('.$module.', '.$role.')' ]
+                        {!! Form::select( 'affiliate_state_id', $affiliate_states, null,
+                             ['placeholder' => 'Seleccione un estado', 'class' => 'form-control',
+                            'v-model' => 'form.affiliate_state_id',
+                            ':disabled' => '!editing || !validationRoles('.$module.', '.$role.', '.$wf_current_state.')'
+                             ]
                             )
                         !!}
                     </div>
@@ -59,7 +60,7 @@
                                 'placeholder' => 'Seleccione un Grado',
                                 'class' => 'form-control',
                                 'v-model' => 'form.degree_id',
-                                ':disabled' => '!editing || !validationRoles('.$module.', '.$role.')'
+                                ':disabled' => '!editing || !validationRoles('.$module.', '.$role.', '.$wf_current_state.')'
                             ])
                         !!}
                     </div>
@@ -73,7 +74,7 @@
                             v-model="form.service_years"
                             name="service_years"
                             class="form-control"
-                            :disabled="!editing || !validationRoles('{{$module}}', '{{$role}}')"
+                            :disabled="!editing || !validationRoles('{{$module}}', '{{$role}}', '{{$wf_current_state}}')"
                             @change="getCalculateCategory()"
                             v-validate="'min_value:0|max_value:100'"
                             max="100"
@@ -86,7 +87,7 @@
                     </div>
                     <div class="col-md-2"><label class="control-label">Ente gestor:</label></div>
                     <div class="col-md-4">
-                        {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el ente gestor', 'class' => 'form-control','v-model'=> 'form.pension_entity_id',':disabled'=>'!editing || !validationRoles('.$module.', '.$role.')' ]) !!}
+                        {!! Form::select('pension_entity_id', $pension_entities, null, ['placeholder' => 'Seleccione el ente gestor', 'class' => 'form-control','v-model'=> 'form.pension_entity_id',':disabled'=>'!editing || !validationRoles('.$module.', '.$role.', '.$wf_current_state.')' ]) !!}
                         <div v-show="errors.has('pension_entity_id') && editing" >
                             <i class="fa fa-warning text-danger"></i>
                             <span class="text-danger">@{{ errors.first('pension_entity_id') }}</span>
@@ -97,7 +98,7 @@
                 <div class="row">
                     <div class="col-md-2"><label class="control-label">Meses de servicio</label></div>
                     <div class="col-md-4">
-                        <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
+                        <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing || !validationRoles('{{$module}}', '{{$role}}', '{{$wf_current_state}}')" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
                         <div v-show="errors.has('service_months') && editing" >
                             <i class="fa fa-warning text-danger"></i>
                             <span class="text-danger">@{{ errors.first('service_months') }}</span>

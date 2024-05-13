@@ -850,7 +850,8 @@ class EconomicComplementController extends Controller
             'fotoboleta' =>  $fotoBoleta,
             'affiliatedevice' =>  $affiliateDevice,
             'affiliatetoken' => $affiliateToken?$affiliateToken:-1,
-            'eco_com_once_payment' => $economic_complement->eco_com_once_payment
+            'eco_com_once_payment' => $economic_complement->eco_com_once_payment,
+            'wf_current_state' => $economic_complement->wf_state
         ];
         return view('eco_com.show', $data);
     }
