@@ -1498,8 +1498,6 @@ export default {
     validationRoles(role) {
       let rolesPermited = [2, 22, 23, 24, 25, 26, 27, 52, 68]
       if(this.isInclusion || this.isReEnablement) {
-        console.log("es inclusión o rehabilitación")
-        console.log(rolesPermited.indexOf(parseInt(role)) !== -1)
         return rolesPermited.indexOf(parseInt(role)) !== -1
       }
       return false

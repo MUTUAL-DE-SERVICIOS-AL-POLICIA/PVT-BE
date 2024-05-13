@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="ibox">
       <div class="ibox-title">
-        <h2 class="pull-left">Información del Trámitess <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17 || ecoCom.eco_com_state.id == 29 }"></i> </h2>
+        <h2 class="pull-left">Información del Trámites <i :class="{'fa fa-home': ecoCom.eco_com_state.id == 17 || ecoCom.eco_com_state.id == 29 }"></i> </h2>
         <div class="ibox-tools">
           <span v-if="roleId === 5">
           <button
@@ -62,7 +62,7 @@
             v-if="editing"
             class="btn btn-danger"
             @click="deleteEcoCom()"
-            :disabled="!(can('delete_economic_complement') && canDelete()) "
+            :disabled="!(can('delete_economic_complement') && canDelete(roleId, wfCurrentState)) "
           >
             <!-- :disabled="!((ecoCom.city_id == 4 && ecoCom.wf_state.id == 1 && !can('delete_economic_complement')) || (ecoCom.city_id != 4 && ecoCom.wf_state.id != 1) && !can('delete_economic_complement'))" -->
             <i class="fa fa-trash-o"></i>
@@ -74,7 +74,7 @@
             class="btn btn-primary"
             :class="editing ? 'active': ''"
             @click="edit()"
-            :disabled="!(can('update_economic_complement') && canEdit())"
+            :disabled="!(can('update_economic_complement'))"
             v-if="can('read_economic_complement')"
           >
             <i class="fa" :class="editing ?'fa-edit':'fa-pencil'"></i> Editar
@@ -207,7 +207,7 @@
                 <label class="control-label">Grado</label>
             </div>
               <div class="col-md-4">
-                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing || !validationRoles(roleId)" v-validate="'required'">
+                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing || !validationRoles(roleId, wfCurrentState)" v-validate="'required'">
                   <option v-for="(c, index) in degrees" :value="c.id" :key="index">{{c.name}}</option>
                 </select>
                 <div v-show="errors.has('degree_id')">
@@ -220,7 +220,7 @@
           <div class="row">
             <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
             <div class="col-md-4">
-                <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing || !validationRoles(roleId)" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
+                <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing || !validationRoles(roleId, wfCurrentState)" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
                 <div v-show="errors.has('service_years') && editing" >
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">@{{ errors.first('service_years') }}</span>
@@ -231,7 +231,7 @@
         <div class="row">
            <div class="col-md-2"><label class="control-label">Meses de servicio</label></div>
             <div class="col-md-4">
-                <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
+                <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing || !validationRoles(roleId, wfCurrentState)" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
                 <div v-show="errors.has('service_months') && editing" >
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">@{{ errors.first('service_months') }}</span>
@@ -566,6 +566,7 @@ export default {
     "categories",
     "roleId",
     "user",
+    "wfCurrentState"
   ],
   data: function() {
   var defaultType = "V";
@@ -798,49 +799,30 @@ export default {
     async formSolicitudPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/reception', type:'pdf', showModal:true});
     },
-    validationRoles(role) {
-      let rolesPermited = [22, 23, 24, 25, 26, 27, 52, 68]
-      if(this.isInclusion || this.isReEnablement) {
-        return rolesPermited.indexOf(parseInt(role)) !== -1
+    validationRoles(roleUser, wfCurrentState) {
+      const roleProcedure = wfCurrentState.role_id // obtenemos donde esta el trámite
+      let rolesPermited = [2, 4, 5, 22, 23, 24, 25, 26, 27, 52, 68] // todos los roles permitidos
+      if(rolesPermited.indexOf(parseInt(roleUser)) !== -1) {
+        if(this.isInclusion || this.isReEnablement) { // es inclusion o rehabilitacion
+          if(roleUser === roleProcedure) return true
+        }
+        if(parseInt(roleUser) == 4 || parseInt(roleUser) == 5) {
+          return true
+        }
       }
       return false
     },
-    canDelete() {
+    canDelete(roleUser, wfCurrentState) {
+      const roleProcedure = wfCurrentState.role_id
       if(this.isInclusion) {
         if(this.ecoCom.city_id == 4 && this.ecoCom.wf_state.id == 1) { // ciudad de La Paz y es recepción
           return true
         } else if(this.ecoCom.city_id != 4 && this.ecoCom.wf_state.id != 1) { // regional y no esta en recepción
-          return true
-        } else return false
+          if(roleUser === roleProcedure) return true
+        }
       }
       return false
     },
-    canEdit() {
-      if(this.isInclusion || this.isReEnablement) {
-        // Solo pueden editar las regionales y recepción
-        const role_current = this.ecoCom.wf_state.role_id
-        const roles = this.user.roles
-        if(roles) {
-          const filter = roles.filter(obj => obj.id == role_current)
-          const found = roles.find(obj => {
-            return obj.id == 4 || obj.id == 5
-          })
-          if(filter.length !== 0 || found) {
-            return true
-          }
-        }
-        return false
-      } else if (this.itsUsual) {
-        const roles = this.user.roles
-        if(roles) {
-          const found = roles.find(obj => {
-            return obj.id == 4 || obj.id == 5
-          })
-          if( found ) return true
-        }
-        return false
-      }
-    }
   }
 };
 </script>

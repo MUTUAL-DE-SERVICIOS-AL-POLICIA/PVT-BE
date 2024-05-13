@@ -6,7 +6,8 @@
 			'ecoComId',
 			'categories',
 			'ecoCom',
-			'user'
+			'user',
+			'wfCurrentState'
 		],
 		data(){
 			return{
@@ -79,42 +80,22 @@
 					this.form.category_id = category.id
 				}
 			},
-			validationRoles(module, role) {
-				let rolesPermited = []
-				if(parseInt(module) !== 2) { // si no es complemento economico
-					rolesPermited = [ 28, 43 ] // solo estos roles pueden editar
-				} else {
-					if(parseInt(module) == 2 && (this.isInclusion || this.isRehabilitation)) { // si  el tramite es inclusión o rehabilitación
-						rolesPermited = [ 2, 4, 5, 22, 23, 24, 25, 26, 27, 52, 68 ] // solo estos roles pueden editar
-					}
-				}
-				return rolesPermited.indexOf(parseInt(role)) !== -1
-			},
-			canEdit() {
-				if(this.ecoCom === undefined) return true
-				if(this.isInclusion || this.isRehabilitation) {
-					const role_current = this.ecoCom.wf_state.role_id // rol actual
-					const roles = this.user.roles // roles del usuario
-					if(roles) { // tiene roles el usuario
-						const filter = roles.filter(obj => obj.id == role_current)
-						const found = roles.find(obj => {
-							return obj.id == 4 || obj.id == 5 // jefatura y área técnica
-						});
-						if(filter.length !== 0 || found ) { // si se ha encontrado un rol con el trámite o los roles 4 o 5
+			validationRoles(module, roleUser, wfCurrentState) {
+				if(module != 2) return false
+				if(wfCurrentState) return false
+				const roleProcedure = wfCurrentState
+				const rolesPermited = [2, 4, 5, 22, 23, 24, 25, 26, 27, 52, 68]
+				if(rolesPermited.indexOf(parseInt(roleUser)) !== -1) {
+					if(this.isInclusion || this.isRehabilitation) {
+						if(roleUser === roleProcedure) {
 							return true
 						}
 					}
-					return false
-				} else if(this.itsUsual) {
-					const roles = this.user.roles
-					if(roles) {
-						const found = roles.find(obj => {
-							return obj.id == 4 || obj.id == 5
-						})
-						if( found ) return true
+					if(parseInt(roleUser) == 4 || parseInt(roleUser) == 5) {
+						return true
 					}
-					return false
 				}
+				return false
 			},
 			toggle_editing: function () {
 				this.editing = !this.editing;
