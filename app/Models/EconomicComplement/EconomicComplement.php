@@ -77,6 +77,14 @@ class EconomicComplement extends Model
     {
         return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['id','amount', 'date', 'message'])->withTimestamps();
     }
+    public function eco_com_fixed_pension()
+    {
+        return $this->belongsTo('Muserpol\Models\EconomicComplement\EcoComFixedPension');
+    }
+    public function eco_com_updated_pension()
+    {
+        return $this->hasOne('Muserpol\Models\EconomicComplement\EcoComUpdatedPension');
+    }
     public function encode()
     {
         $hashids = new Hashids('economic_complements', 10);

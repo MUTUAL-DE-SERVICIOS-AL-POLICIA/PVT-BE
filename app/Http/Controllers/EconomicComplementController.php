@@ -1787,37 +1787,6 @@ class EconomicComplementController extends Controller
             'eco_com_beneficiary',
             'eco_com_procedure',
             'eco_com_modality',
-            'discount_types',
-            'observations',
-        ])->find($id);
-        $date = Util::getStringDate(date('Y-m-d'));
-
-        $affiliate = $eco_com->affiliate;
-        $applicant = $eco_com->eco_com_beneficiary;
-        $area = $eco_com->wf_state->first_shortened;
-        $user = Auth::user();
-
-        $date = Util::getStringDate(date('Y-m-d'));
-        $eco_com_procedure = $eco_com->eco_com_procedure;
-        $subtitle = $eco_com_procedure->semester . " SEMESTRE " . $eco_com_procedure->getYear();
-        $total_literal = Util::convertir($eco_com->total);
-       
-        $pdftitle = "Certificado de pago";
-        $namepdf = Util::getPDFName($pdftitle, $affiliate);
-
-        $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-
-        return \PDF::loadView('eco_com.print.paid_certificate', compact('area', 'user', 'date', 'pdftitle', 'subtitle', 'affiliate', 'applicant', 'eco_com', 'total_literal','bar_code'))
-        ->setPaper('letter')
-        ->setOption('encoding', 'utf-8')
-        ->stream("$namepdf");
-    }
-    public function paidCertificateShort($id){
-        $eco_com = EconomicComplement::with([
-            'affiliate',
-            'eco_com_beneficiary',
-            'eco_com_procedure',
-            'eco_com_modality',
             'eco_com_state',
             'discount_types',
             'observations',
@@ -1845,7 +1814,7 @@ class EconomicComplementController extends Controller
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
 
-        return \PDF::loadView('eco_com.print.paid_certificate_short', compact('area', 'user', 'date', 'pdftitle', 'subtitle', 'affiliate', 'applicant', 'eco_com', 'total_literal','bar_code'))
+        return \PDF::loadView('eco_com.print.paid_certificate', compact('area', 'user', 'date', 'pdftitle', 'subtitle', 'affiliate', 'applicant', 'eco_com', 'total_literal','bar_code'))
         ->setPaper('letter')
         ->setOption('encoding', 'utf-8')
         ->stream("$namepdf");

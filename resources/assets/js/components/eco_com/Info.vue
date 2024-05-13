@@ -44,17 +44,7 @@
             @click="certificacionPago()"
             :disabled="ecoCom.eco_com_state.eco_com_state_type_id != 1"
           >
-            <i class="fa fa-print"></i> Boleta de pago
-          </button>
-          <button
-            data-animation="flip"
-            data-toggle="tooltip"
-            title="Certificación pago pequeño"
-            class="btn btn-primary"
-            @click="certificacionPagoCorto()"
-            :disabled="ecoCom.eco_com_state.eco_com_state_type_id != 1"
-          >
-            <i class="fa fa-print"></i> Boleta de pago pequeño
+            <i class="fa fa-print"></i> Imprimir boleta de pago
           </button>
           <button
             data-toggle="tooltip"
@@ -792,9 +782,6 @@ export default {
     },
     async certificacionPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/paid_cetificate', type:'pdf', showModal:true});
-    },
-    async certificacionPagoCorto(){
-      printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/paid_cetificate_short', type:'pdf', showModal:true});
     },
     async formSolicitudPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/reception', type:'pdf', showModal:true});
