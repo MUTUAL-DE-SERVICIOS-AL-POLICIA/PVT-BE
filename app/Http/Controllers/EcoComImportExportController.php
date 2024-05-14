@@ -302,11 +302,12 @@ class EcoComImportExportController extends Controller
         try{
           $affiliate_has_not_contributions = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $contribution_discontinued_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
           $observation_disc_con = ObservationType::find($contribution_discontinued_id);
-          $eco_com_all = EconomicComplement::select('economic_complements.*')
+          $eco_com_all = EconomicComplement::select('economic_complements.*')->with('eco_com_updated_pension')
+          ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
           ->where('economic_complements.eco_com_procedure_id', $current_procedures)
-          ->where('economic_complements.wf_current_state_id',3)
-          ->where('economic_complements.eco_com_state_id',16)
-          ->whereNotIn('economic_complements.eco_com_modality_id',[3,10,12,11])
+          ->where('economic_complements.wf_current_state_id',3) // 3 - Area Tecnica Complemento Economico
+          ->where('economic_complements.eco_com_state_id',16) // 16 - En proceso de revisión
+          ->whereNotIn('economic_complements.eco_com_modality_id',[3,10,12,11]) // 4 rentas de orfandad 
           ->whereNull('economic_complements.deleted_at')->get();
           foreach($affiliate_has_not_contributions as $affiliate_discontinued){
           $eco_com_disc_con = $eco_com_all->where('affiliate_id', $affiliate_discontinued->observable_id)->first();
@@ -337,8 +338,8 @@ class EcoComImportExportController extends Controller
                                  'enabled' => true
                              ]);
                           }
-                          $eco_com->calculateTotalRentAps();
-                          $total_rent = $eco_com->total_rent;
+                          $eco_com->eco_com_updated_pension->calculateTotalRentAps();
+                          $total_rent = $eco_com->eco_com_updated_pension->total_rent;
                           if ($total_rent > 0){
                               $total = round($total_rent * 2.03 / 100, 2);
                               $aux = $total * 6;
