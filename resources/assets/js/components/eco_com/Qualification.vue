@@ -18,12 +18,16 @@
           </button>
           <button
             class="btn btn-primary"
-            @click="edit()"
+            @click="edit('ce')"
             data-toggle="tooltip"
             title="Editar Rentas"
             :disabled="!can('update_economic_complement')"
           >
-            <i class="fa fa-pencil"></i> Editar
+            <i class="fa fa-pencil"></i> Editar Pensión Fija
+          </button>
+          <button v-if="this.affiliate.pension_entity_id != 5" class="btn btn-primary" @click="edit('am')" data-toggle="tooltip" title="Editar Rentas"
+            :disabled="!can('update_economic_complement')">
+            <i class="fa fa-pencil"></i> Editar Pensión Actualizada
           </button>
         </div>
       </div>
@@ -45,7 +49,7 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n</p>
+            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>Fija</strong></p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -96,6 +100,61 @@
                 </tr>
               </tbody>
             </table>
+            <!-- Tabla de pension actualizada - No mostrar si es inclusión -->
+            <template v-if="ecoCom.eco_com_updated_pension && ecoCom.eco_com_reception_type_id != 2"> 
+              <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>Actualizada</strong> (Para el
+                cálculo de Auxilio Mortuorio)</p>
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th style="text-align: center;">Detalle</th>
+                    <th style="text-align: center;">Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="!isSenasir">
+                    <td>Fracción de Saldo Acumulado (FSA)</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.aps_total_fsa | currency }}</td>
+                  </tr>
+                  <tr v-if="!isSenasir">
+                    <td>Fracción Compensaci&oacute;n de Cotizaciones (CCM)</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.aps_total_cc | currency }}</td>
+                  </tr>
+                  <tr v-if="!isSenasir">
+                    <td>Fracción Solidaria de Vejéz (FSV)</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.aps_total_fs | currency }}</td>
+                  </tr>
+                  <tr class="danger" v-if="ecoCom.eco_com_updated_pension.aps_total_death > 0">
+                    <td>Fracción por Muerte</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.aps_total_death | currency }}</td>
+                  </tr>
+                  <tr class="danger" v-if="ecoCom.eco_com_updated_pension.aps_disability > 0">
+                    <td>Prestación por Invalidéz</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.aps_disability | currency }}</td>
+                  </tr>
+                  <tr v-if="!isSenasir" class="success">
+                    <td>Total Renta o Pensi&oacute;n</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.total_rent | currency }}</td>
+                  </tr>
+                  <tr v-if="isSenasir">
+                    <td>Total Ganado Renta o Pensi&oacute;n</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.sub_total_rent | currency }}</td>
+                  </tr>
+                  <tr v-if="isSenasir">
+                    <td>- Reintegro</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.reimbursement | currency }}</td>
+                  </tr>
+                  <tr v-if="isSenasir">
+                    <td>- Renta Dignidad</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.dignity_pension | currency }}</td>
+                  </tr>
+                  <tr v-if="isSenasir" class="success">
+                    <td>Total Renta o Pensi&oacute;n</td>
+                    <td style="text-align: right;">{{ ecoCom.eco_com_updated_pension.total_rent | currency }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </template>
             <h3 v-if="ecoCom.degree">Grado: {{ ecoCom.degree.name}}</h3>
             <h3 v-if="ecoCom.category">Categoria: {{ ecoCom.category.name}}</h3>
             <h3
@@ -501,7 +560,7 @@ export default {
     can(operation) {
       return canOperation(operation, this.permissions);
     },
-    edit() {
+    edit(type) {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
@@ -509,7 +568,20 @@ export default {
         this.$modal.show("no-edit-rents-modal");
         return;
       }
-      this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
+      console.log(this.ecoCom);
+      switch (type) {
+        case 'ce': // Complemento Economico
+          this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
+          this.ecoComModal.type = "ce";
+          break;
+        case 'am': // Auxilio Mortuorio
+          this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom.eco_com_updated_pension));
+          this.ecoComModal.id = this.ecoCom.id;
+          this.ecoComModal.type = "am";
+          break;
+        default:
+          break;
+      }
       this.$modal.show("rents-modal");
       this.editing = true;
     },
