@@ -819,4 +819,17 @@ class EconomicComplement extends Model
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComReviewProcedure');
     }
+    public function hasFixedPension($data){
+
+        if($data->eco_com_reception_type_id != ID::ecoCom()->inclusion){
+            if($data->affiliate->pension_entity_id !=5){
+                return $data->aps_total_fsa !== null || $data->aps_total_cc !== null || $data->aps_total_fs !== null || $data->aps_total_death !== null || $data->aps_disability != null;
+            }else{
+                return $data->sub_total_rent !== null || $data->reimbursement !== null || $data->dignity_pension !== null || $data->total_rent !== null || $data->aps_disability != null;
+            }
+
+        }else{
+            return true;
+        } 
+    }
 }

@@ -3,6 +3,8 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Muserpol\Models\EconomicComplement\EcoComFixedPension;
+use Muserpol\Models\EconomicComplement\EcoComRegulation;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Illuminate\Support\Facades\Auth;
 use Muserpol\Helpers\Util;
@@ -299,9 +301,7 @@ class EconomicComplementController extends Controller
             $affiliate->save();
             
         }
-        /**
-         ** create Economic complement 
-         */
+
         $affiliate->account_number = $request->affiliate_account_number;
         $affiliate->financial_entity_id = $request->affiliate_financial_entity_id;
         $affiliate->sigep_status = $request->affiliate_account_number_sigep_status;
@@ -367,6 +367,12 @@ class EconomicComplementController extends Controller
             $economic_complement->aps_disability;
         }*/
         $economic_complement->save();
+
+        //Desactivar Observers
+        EconomicComplement::FlushEventListeners(); 
+        $this->updateEcoComWithFixedPension($economic_complement->id);    
+        //Activar Observers
+        EconomicComplement::Boot();
 
         $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
         /**
@@ -1033,7 +1039,7 @@ class EconomicComplementController extends Controller
             $affiliate = Affiliate::find($eco_com->affiliate_id);
             if ($eco_com->eco_com_modality->procedure_modality_id == $request->modality_id) {
                 if($affiliate->stop_eco_com_consecutively()) {
-                    $reception_type_id = ID::ecoCom()->rehabilitacion;;
+                    $reception_type_id = ID::ecoCom()->rehabilitacion;
                 } else {
                     $reception_type_id = ID::ecoCom()->habitual;
                 }
@@ -1124,6 +1130,7 @@ class EconomicComplementController extends Controller
         }
         return $array_phone;
     }
+
     public function editRequirements(Request $request, $id)
     {
         try {
@@ -2207,6 +2214,31 @@ class EconomicComplementController extends Controller
                 'due_date' => $due_date ? $due_date->format('Y-m-d'):null,
                 'is_duedate_undefined' => isset($once_payment['is_duedate_undefined']) ? $once_payment['is_duedate_undefined'] : false
             ]);
+        }
+    }
+    //Metodos para el complemento del quinquenio
+    public function updateEcoComWithFixedPension($economic_complement_id)
+    {
+        $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
+        if(!!$economic_complement){
+            if(!($economic_complement->reception_type == ID::ecoCom()->inclusion)){
+                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)->first();
+                if(!!$fixed_pension){  
+                    $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
+                    $economic_complement->aps_total_cc = $fixed_pension->aps_total_cc;      //APS
+                    $economic_complement->aps_total_fs = $fixed_pension->aps_total_fs;      //APS
+                    $economic_complement->aps_total_death = $fixed_pension->aps_total_death;//APS
+                    $economic_complement->aps_disability = $fixed_pension->aps_disability;  //APS //SENASIR
+
+                    $economic_complement->sub_total_rent = $fixed_pension->sub_total_rent;  //SENASIR
+                    $economic_complement->reimbursement = $fixed_pension->reimbursement;    //SENASIR
+                    $economic_complement->dignity_pension = $fixed_pension->dignity_pension;//SENASIR
+                    $economic_complement->total_rent = $fixed_pension->total_rent;          //SENASIR total_rent=sub_total_rent-descuentos planilla
+
+                    $economic_complement->rent_type = 'Automatico';
+                    $economic_complement->save();             
+                }
+            }
         }
     }
 }
