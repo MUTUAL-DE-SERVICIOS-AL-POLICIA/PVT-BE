@@ -153,15 +153,27 @@ th.ellipsis-text {
 
             <div class="tab-content">         
                     <div id="tab-affiliate" class="tab-pane active">
-                        <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template>
-                            @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
+                        <affiliate-show
+                            :affiliate="{{ $affiliate }}"
+                            :cities="{{ $cities }}"
+                            inline-template>
+                            @include('affiliates.affiliate_personal_information',
+                                ['affiliate'=>$affiliate,
+                                 'cities'=>$cities,
+                                 'birth_cities'=>$birth_cities,
+                                 'is_editable'=>$is_editable
+                                ]
+                            )
                         </affiliate-show>
 
                     </div>
                     <div id="tab-police-info" class="tab-pane">
 
                         <affiliate-police :affiliate="{{ $affiliate }}" :categories="{{$categories_1}}" inline-template>
-                            @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
+                            @include('affiliates.affiliate_police_information',
+                            ['affiliate'=>$affiliate,
+                              'wf_current_state' => null
+                            ])
                         </affiliate-police>
 
                     </div>
