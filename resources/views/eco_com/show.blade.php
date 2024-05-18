@@ -67,6 +67,11 @@ show blade
     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button> {{Session::get('message')}}
 </div>
 @endif
+@if(!$economic_complement->hasFixedPension($economic_complement))
+<div class="alert alert-danger alert-dismissable ">
+El trámite es de tipo <strong>{{$economic_complement->eco_com_reception_type->name}}</strong> y no tiene el registro de rentas fijas.
+</div>
+@endif
 <div class="row">
     <div class="col-md-3" style="padding-right: 3px">
         <div class="widget-head-color-box blue-bg text-center">
