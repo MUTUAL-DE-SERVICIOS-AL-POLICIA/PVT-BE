@@ -195,6 +195,13 @@ class EconomicComplementController extends Controller
             /**
              ** Save eco com beneficiary
             */
+
+            //Desactivar Observers
+            EconomicComplement::FlushEventListeners(); 
+            $this->updateEcoComWithFixedPension($economic_complement->id);    
+            //Activar Observers
+            EconomicComplement::Boot();
+
             $eco_com_beneficiary = new EcoComBeneficiary();
             $eco_com_beneficiary->economic_complement_id = $economic_complement->id;
             $eco_com_beneficiary->city_identity_card_id = $last_eco_com_beneficiary->city_identity_card_id;
@@ -326,6 +333,13 @@ class EconomicComplementController extends Controller
                     $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
                     $economic_complement->uuid = Uuid::uuid1()->toString();
                     $economic_complement->save();
+
+                    //Desactivar Observers
+                    EconomicComplement::FlushEventListeners(); 
+                    $this->updateEcoComWithFixedPension($economic_complement->id);    
+                    //Activar Observers
+                    EconomicComplement::Boot();
+                    
                     /**
                      ** Save eco com beneficiary
                     */

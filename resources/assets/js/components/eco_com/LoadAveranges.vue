@@ -12,13 +12,13 @@
                 <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
             </select>
             <br />
-            <label for="change-date">Fecha (yyyy-mm-dd)</label>
-            <input type="text" id="change-date" v-model="form.changeDate"/>
-            <br />
+            <!-- <label for="change-date">Fecha (yyyy-mm-dd)</label>
+            <input type="text" id="change-date" v-model="form.changeDate"/> -->
+            <!-- <br /> -->
             <button
                 type="button"
                 class="btn btn-primary"
-                @click="sendForm()"
+                @click="loadAverageWithRegulation()"
                 :disabled="loadingButton"
                 title="Genera los promedios a la fecha indicada"
             >
@@ -48,10 +48,11 @@ export default {
         ecoComProcedureId:
           this.ecoComProcedures.length > 0 ? this.ecoComProcedures[0].id : null
       },
+      average: []
     };
   },
   methods: {
-    async sendForm() {
+    async sendForm1() {
       this.showResults = false;
       this.override = false;
       const formData = new FormData();
@@ -69,6 +70,24 @@ export default {
       this.showResults = true;
       this.loadingButton = false
       this.refresh = false
+    },
+    //Cargado re promedios para el quinquenio
+    async loadAverageWithRegulation(){
+      try {
+        this.loadingButton = true;
+        let res = await axios.post('/eco_com_load_average_with_regulation',{
+          ecoComProcedureId: this.form.ecoComProcedureId
+        })
+        if(!res.data.errors){
+          flash('Se registraron los promedios');
+        }
+        this.loadingButton = false
+        
+      } catch (e) {
+        console.log(e)
+        this.loadingButton = false
+        flash('Ya fueron registrados los promedios', 'error');
+      }
     }
   }
 };
