@@ -620,6 +620,9 @@ class ContributionController extends Controller
                     if(isset($request->gain[$key])) {
                         $input_data['gain'][$key]= strip_tags($request->gain[$key]);
                     }
+                    if(isset($request->quotable[$key])) {
+                        $input_data['quotable'][$key]= strip_tags($request->quotable[$key]);
+                    }
                     if(isset($request->total[$key])) {
                         $input_data['total'][$key]= strip_tags($request->total[$key]);
                     }
@@ -633,6 +636,7 @@ class ContributionController extends Controller
                     $array_rules = [
                         'base_wage.'.$key =>  'numeric|min:0',
                         'gain.'.$key =>  'numeric|min:0',
+                        'quotable.'.$key =>  'numeric|min:0',
                         'total.'.$key =>  'required|numeric|min:1',
                         'retirement_fund.'.$key =>  'numeric|min:0',
                         'mortuary_quota.'.$key =>  'numeric|min:0',
@@ -707,6 +711,11 @@ class ContributionController extends Controller
                     else
                         $contribution->gain = $contribution->gain;
 
+                    if(isset($request->quotable[$key]) && $request->quotable[$key] != "")
+                        $contribution->quotable = strip_tags($request->quotable[$key]) ?? $contribution->quotable;
+                    else
+                        $contribution->quotable = $contribution->quotable;
+
                     $contribution->save();
                     array_push($contributions, $contribution);
                 } else {
@@ -748,6 +757,11 @@ class ContributionController extends Controller
                             $contribution->gain = 0;
                         else
                             $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+
+                        if(!isset($request->quotable[$key]))
+                            $contribution->quotable = 0;
+                        else
+                            $contribution->quotable = strip_tags($request->quotable[$key]) ?? 0;
 
                         if(!isset($request->total[$key]))
                             $contribution->total = 0;
