@@ -187,7 +187,7 @@ class EconomicComplementController extends Controller
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_id)->first()->id]);
         }
-        if ($affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->get()->pluck('id'))->count() > 0) {
+        if ($affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->where('type', 'like', 'A')->get()->pluck('id'))->count() > 0) {
             return redirect()->action('AffiliateController@show', ['id' => $affiliate->id]);
         }
         $cities = City::all();
