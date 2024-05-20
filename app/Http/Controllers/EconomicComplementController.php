@@ -1360,10 +1360,10 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_fixed_pension->calculateTotalRentAps();
                 $economic_complement->eco_com_updated_pension->calculateTotalRentAps();
             }
-            $economic_complement->rent_type == "Manual";
+            $economic_complement->rent_type = "Manual";
             // Actualiza las tablas pension fija y actualizada a "manual"
-            $economic_complement->eco_com_fixed_pension->rent_type == "Manual";
-            $economic_complement->eco_com_updated_pension->rent_type == "Manual";
+            $economic_complement->eco_com_fixed_pension->rent_type = "Manual";
+            $economic_complement->eco_com_updated_pension->rent_type = "Manual";
             $economic_complement->save();
         }
         $discount_type_id = null;
