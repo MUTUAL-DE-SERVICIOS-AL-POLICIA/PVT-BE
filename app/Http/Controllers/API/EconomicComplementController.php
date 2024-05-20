@@ -2,6 +2,8 @@
 
 namespace Muserpol\Http\Controllers\API;
 
+use Muserpol\Models\EconomicComplement\EcoComRegulation;
+use Muserpol\Models\EconomicComplement\EcoComRent;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Illuminate\Http\Request;
@@ -509,5 +511,65 @@ class EconomicComplementController extends Controller
             $eco_com->save();
        }
        return $eco_com;
+    }
+    public function loadAverageWithRegulation(Request $request)
+    {
+        $eco_com_procedure_id = $request->ecoComProcedureId;
+        $user_id = 171;
+        $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
+        $year = $eco_com_procedure->year;
+        $semester = $eco_com_procedure->semester;
+
+        $averages = EcoComRent::where('year','=',$year)->where('semester','=',$semester)->get();
+        if($averages->isEmpty())
+        {
+            //Realiza el borrado si existiese
+            foreach ($averages as $item)
+            {
+                $item->delete();
+            }
+
+            $ecoComRents = EcoComRegulation::where('eco_com_regulations.is_enable', true)
+            ->leftJoin('eco_com_procedures', 'eco_com_regulations.replica_eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->leftJoin('eco_com_rents', function($join) {
+                $join->on('eco_com_rents.year', '=', 'eco_com_procedures.year')
+                ->on('eco_com_rents.semester', '=', 'eco_com_procedures.semester');
+            })
+            ->select(
+                'eco_com_rents.degree_id',
+                'eco_com_rents.minor',
+                'eco_com_rents.higher',
+                'eco_com_rents.average',
+                'eco_com_rents.procedure_modality_id'
+            )
+            ->orderBy('eco_com_regulations.created_at')
+            ->get();
+            
+            // Insertar en eco_com_rents
+            foreach ($ecoComRents as $ecoComRent) {
+                EcoComRent::create([
+                    'user_id' => $user_id,
+                    'degree_id' => $ecoComRent->degree_id,
+                    'year' => $year,
+                    'semester' => $semester,
+                    'minor' => $ecoComRent->minor,
+                    'higher' => $ecoComRent->higher,
+                    'average' => $ecoComRent->average,
+                    'procedure_modality_id' => $ecoComRent->procedure_modality_id,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
+            }
+            return response()->json([
+                'msg' => 'Se realizó el cargado de promedios',
+                'data'=> $ecoComRents,
+                'errors' => false,
+            ], 200);
+        } else {
+            return response()->json([
+                'msg' => 'Ya existen promedios registrados',
+                'errors' => true,
+            ], 422);
+        }
     }
 }
