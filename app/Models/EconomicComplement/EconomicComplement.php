@@ -370,7 +370,7 @@ class EconomicComplement extends Model
         // }
         $this->save();
         if ($this->total_rent > $this->salary_quotable) {
-            $this->eco_com_state_id = 12;
+            //$this->eco_com_state_id = 12; // Se quito el estado automatico Exclusion
         } else {
             if ($this->eco_com_state_id == 12) {
                 $this->eco_com_state_id = 16;
