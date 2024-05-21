@@ -4,6 +4,7 @@ namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Muserpol\Models\EconomicComplement\EcoComFixedPension;
+use Muserpol\Models\EconomicComplement\EcoComUpdatedPension;
 use Muserpol\Models\EconomicComplement\EcoComRegulation;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Illuminate\Support\Facades\Auth;
@@ -187,7 +188,7 @@ class EconomicComplementController extends Controller
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_id)->first()->id]);
         }
-        if ($affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->get()->pluck('id'))->count() > 0) {
+        if ($affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->where('type', 'like', 'A')->get()->pluck('id'))->count() > 0) {
             return redirect()->action('AffiliateController@show', ['id' => $affiliate->id]);
         }
         $cities = City::all();
@@ -1312,7 +1313,33 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
-        $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')->find($request->id);
+        $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+        ->with('eco_com_updated_pension')->find($request->id);
+        if (is_null($economic_complement->eco_com_fixed_pension)) {
+            $regulation = EcoComRegulation::where('is_enable', true)->orderBy('created_at')->first();
+
+            $fixed = new EcoComFixedPension;
+            $fixed->user_id = Auth::user()->id;
+            $fixed->affiliate_id = $economic_complement->affiliate_id;
+            $fixed->eco_com_regulation_id = $regulation->id;
+            $fixed->eco_com_procedure_id = $economic_complement->eco_com_procedure_id;
+            $fixed->rent_type = 'Manual';
+            $fixed->save();
+
+            $economic_complement->eco_com_fixed_pension_id = $fixed->id;
+            $economic_complement->save();
+            $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+                ->with('eco_com_updated_pension')->find($request->id);
+        }
+        if (is_null($economic_complement->eco_com_updated_pension)) {
+            $updated = new EcoComUpdatedPension;
+            $updated->user_id = Auth::user()->id;
+            $updated->economic_complement_id = $economic_complement->id;
+            $updated->rent_type = 'Manual';
+            $updated->save();
+            $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+                ->with('eco_com_updated_pension')->find($request->id);
+        }
         if ($request->refresh == false) {
             if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
                 $eco_com_state = $economic_complement->eco_com_state;
@@ -1360,10 +1387,13 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_fixed_pension->calculateTotalRentAps();
                 $economic_complement->eco_com_updated_pension->calculateTotalRentAps();
             }
-            $economic_complement->rent_type == "Manual";
+            if($request->type == "ce"){
+                $economic_complement->rent_type = "Manual";
+                $economic_complement->eco_com_fixed_pension->rent_type = "Manual";
+            } else if ($request->type == "am") {
+                $economic_complement->eco_com_updated_pension->rent_type = "Manual";
+            }
             // Actualiza las tablas pension fija y actualizada a "manual"
-            $economic_complement->eco_com_fixed_pension->rent_type == "Manual";
-            $economic_complement->eco_com_updated_pension->rent_type == "Manual";
             $economic_complement->save();
         }
         $discount_type_id = null;
@@ -1421,6 +1451,7 @@ class EconomicComplementController extends Controller
         try {
             $this->validate($request, [
                 'amount' => 'required|numeric|min:1',
+                'discount_type'=>'required|numeric'
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -1447,7 +1478,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 5;
                 break;
             case 4: // complemento
-                $discount_type_id = 6;
+                $discount_type_id = $request->discount_type;
                 break;
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
