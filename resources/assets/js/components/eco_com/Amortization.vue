@@ -21,6 +21,23 @@
         <div class="row">
           <div class="col-md-10 col-xs-offset-2">
             <div class="form-group">
+              <label class="col-sm-2 control-label">Tipo</label>
+              <div class="col-sm-8">
+                <select
+                  class="form-control m-b"
+                  name="Tipo"
+                  v-model="discount_type"
+                >
+                  <option value="1">Reposición por fondos</option>
+                  <option value="2">Reposición por juzgado</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-xs-offset-2">
+            <div class="form-group">
               <label class="col-sm-2 control-label">Monto</label>
               <div class="col-sm-8">
                 <input
@@ -66,7 +83,7 @@
       <div class="text-center m-sm">
       <h1 class="mx-10"><b> Registrar Deposito</b></h1>
       <hr style="border:2px solid #ddd">
-      </br>
+      <br/>
       </div>
     </div>
       <div class="row col-xs-offset-2" >
@@ -82,7 +99,7 @@
             </div>
         </div>
       </div>
-        </br>
+        <br/>
       <div class="row col-xs-offset-2" >
         <div class="form-group">
           <label class="col-sm-4 control-label">Fecha de Deposito</label>
@@ -98,7 +115,7 @@
             </div>
         </div>
       </div>
-      </br>
+      <br/>
       <div class="row col-xs-offset-2" >
         <div class="form-group">
           <label class="col-sm-4 control-label">Monto</label>
@@ -114,7 +131,7 @@
             </div>
         </div>
       </div>
-      </br>
+      <br/>
       <div class="col-md-12">
       <div class="text-center m-sm">
       <button
@@ -150,6 +167,7 @@ export default {
   data() {
     return {
       form: {},
+      discount_type: null,
       loadingButton: false
     };
   },
@@ -185,6 +203,7 @@ export default {
       this.loadingButton = true;
       this.form.id = this.ecoCom.id;
       this.form.amount = parseMoney(this.ecoCom.discount_amount);
+      this.form.discount_type = this.discount_type
       await axios
         .patch(`/eco_com_save_amortization`, this.form)
         .then(response => {
@@ -205,6 +224,7 @@ export default {
         this.$modal.hide("deposito-modal");
         return;
       }
+      console.log("entra aca")
       this.loadingButton = true;
       this.form.id = this.ecoCom.id;
       this.form.payment_amount = parseMoney(this.ecoCom.payment_amount);
