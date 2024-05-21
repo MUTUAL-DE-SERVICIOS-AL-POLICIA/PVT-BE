@@ -12,12 +12,9 @@ class AddStateEcoComState extends Seeder
      */
     public function run()
     {
-        // Creando nueva exclusión
-        EcoComState::firstOrCreate([
+        DB::table('eco_com_states')->insert([
             'eco_com_state_type_id' => 4,
-            'name' => 'No Pagado - Exclusión Definitiva'
+            'name' => 'No Pagado - Retenido'
         ]);
-
-        EcoComState::where('name', 'like', 'No Pagado - Excluido')->update(['name' => 'No Pagado - Exclusión del Semestre']);
     }
 }
