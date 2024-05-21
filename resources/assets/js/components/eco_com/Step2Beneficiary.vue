@@ -718,7 +718,7 @@
                       @change="calculateCategory()"
                       max="11"
                       min="0"
-                      :readonly="isHabitual || (roleId == 22) || (roleId == 23) || (roleId == 24) || (roleId == 25) || (roleId == 26) || (roleId == 27) || (roleId == 52) || (roleId == 68)"
+                      :readonly="isHabitual || !((roleId == 22) || (roleId == 23) || (roleId == 24) || (roleId == 25) || (roleId == 26) || (roleId == 27) || (roleId == 52) || (roleId == 68))"
                     >
                     <div v-show="errors.has('affiliate_service_months')">
                       <i class="fa fa-warning text-danger"></i>
