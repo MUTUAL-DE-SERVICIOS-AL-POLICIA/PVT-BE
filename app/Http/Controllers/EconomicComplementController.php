@@ -2004,7 +2004,7 @@ class EconomicComplementController extends Controller
         $eco_com->salary_reference = $salary_reference;
 
         if ($eco_com->total_rent > $eco_com->salary_quotable) {
-            $eco_com->eco_com_state_id = 12;
+            //$eco_com->eco_com_state_id = 12; // Se quito el estado automatico Exclusion
         } else {
             if ($eco_com->eco_com_state_id == 12) {
                 $eco_com->eco_com_state_id = 16;
