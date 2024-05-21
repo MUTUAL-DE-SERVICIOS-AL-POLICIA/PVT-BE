@@ -25,7 +25,7 @@
           >
             <i class="fa fa-pencil"></i> Editar Pensión Fija
           </button>
-          <button v-if="this.affiliate.pension_entity_id != 5" class="btn btn-primary" @click="edit('am')" data-toggle="tooltip" title="Editar Rentas"
+          <button v-if="this.affiliate.pension_entity_id != 5 && this.ecoCom.eco_com_reception_type_id != 2" class="btn btn-primary" @click="edit('am')" data-toggle="tooltip" title="Editar Rentas"
             :disabled="!can('update_economic_complement')">
             <i class="fa fa-pencil"></i> Editar Pensión Actualizada
           </button>
@@ -564,17 +564,34 @@ export default {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
-      if (this.ecoCom.rent_type == "Automatico") {
-        this.$modal.show("no-edit-rents-modal");
-        return;
+      if (this.ecoCom.eco_com_updated_pension == null) {
+        this.ecoCom.eco_com_updated_pension = {};
+        this.ecoCom.eco_com_updated_pension.aps_total_fsa = null;
+        this.ecoCom.eco_com_updated_pension.aps_total_cc = null;
+        this.ecoCom.eco_com_updated_pension.aps_total_fs = null;
+        this.ecoCom.eco_com_updated_pension.aps_disability = null;
+        this.ecoCom.eco_com_updated_pension.aps_total_death = null;
+        this.ecoCom.eco_com_updated_pension.sub_total_rent = null;
+        this.ecoCom.eco_com_updated_pension.reimbursement = null;
+        this.ecoCom.eco_com_updated_pension.dignity_pension = null;
+
+        this.ecoCom.eco_com_updated_pension.rent_type = "Manual";
       }
       console.log(this.ecoCom);
       switch (type) {
         case 'ce': // Complemento Economico
+          if (this.ecoCom.rent_type == "Automatico") {
+            this.$modal.show("no-edit-rents-modal");
+            return;
+          }
           this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
           this.ecoComModal.type = "ce";
           break;
         case 'am': // Auxilio Mortuorio
+          if (this.ecoCom.eco_com_updated_pension.rent_type == "Automatico") {
+            this.$modal.show("no-edit-rents-modal");
+            return;
+          }
           this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom.eco_com_updated_pension));
           this.ecoComModal.id = this.ecoCom.id;
           this.ecoComModal.type = "am";
@@ -606,9 +623,6 @@ export default {
     },
     async save() {
       if (!this.can("update_economic_complement", this.permissions)) {
-        return;
-      }
-      if (this.ecoCom.rent_type == "Automatico") {
         return;
       }
       this.loadingButton = true;
