@@ -1451,6 +1451,7 @@ class EconomicComplementController extends Controller
         try {
             $this->validate($request, [
                 'amount' => 'required|numeric|min:1',
+                'discount_type'=>'required|numeric'
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -1477,7 +1478,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 5;
                 break;
             case 4: // complemento
-                $discount_type_id = 6;
+                $discount_type_id = $request->discount_type;
                 break;
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
