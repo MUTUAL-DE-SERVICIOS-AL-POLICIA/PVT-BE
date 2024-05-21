@@ -67,6 +67,7 @@
               <option :value="null"></option>
               <option v-for="(p, index) in pensionEntities" :value="p.id" :key="index">{{p.name}}</option>
             </select>
+            <input type="hidden" v-if="itsUsual" :value="pension_entity_id" name="pension_entity_id">
             <i v-show="errors.has('pension_entity_id')" class="fa fa-warning text-danger"></i>
             <span
               v-show="errors.has('pension_entity_id')"
