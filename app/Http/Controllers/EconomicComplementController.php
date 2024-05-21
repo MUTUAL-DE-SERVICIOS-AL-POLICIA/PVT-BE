@@ -1501,7 +1501,8 @@ class EconomicComplementController extends Controller
         if (Gate::allows('qualify', $eco_com)) {
             $eco_com->qualify();
         }
-        $eco_com = EconomicComplement::with('discount_types')->find($request->id);
+        $eco_com = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+        ->with('eco_com_updated_pension')->find($request->id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $eco_com;
         // case 4: //complemento
