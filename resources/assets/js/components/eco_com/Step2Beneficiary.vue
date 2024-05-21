@@ -639,10 +639,10 @@
                     v-validate="'required'"
                     :disabled="true"
                   >
-                    <!-- :disabled="!(isInclusion || isReEnablement)" -->
                     <option :value="null"></option>
                     <option v-for="c in categories" :value="c.id" :key="c.id">{{ c.name }}</option>
                   </select>
+                  <input type="hidden" name="affiliate_category_id" :value="affiliate.category_id">
                   <div v-show="errors.has('affiliate_category_id')">
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">{{ errors.first('affiliate_category_id') }}</span>
@@ -664,6 +664,7 @@
                     <option :value="null"></option>
                     <option v-for="d in degrees" :value="d.id" :key="d.id">{{ d.name }}</option>
                   </select>
+                  <input type="hidden" name="affiliate_degree_id" v-if="validationRoles(roleId)" :value="affiliate.degree_id">
                   <div v-show="errors.has('affiliate_degree_id')">
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">{{ errors.first('affiliate_degree_id') }}</span>
@@ -691,7 +692,7 @@
                       @change="calculateCategory()"
                       max="100"
                       min="0"
-                      :disabled="!validationRoles(roleId)"
+                      :readonly="!validationRoles(roleId)"
                     >
                       <!-- :disabled="!((isInclusion || isReEnablement) && (roleId == 22 || roleId == 23 || roleId == 24 || roleId == 25 || roleId == 26 || roleId == 27 || roleId == 52 || roleId == 68))" -->
                     <div v-show="errors.has('affiliate_service_years')">
@@ -717,7 +718,7 @@
                       @change="calculateCategory()"
                       max="11"
                       min="0"
-                      :disabled="isHabitual || (roleId == 22) || (roleId == 23) || (roleId == 24) || (roleId == 25) || (roleId == 26) || (roleId == 27) || (roleId == 52) || (roleId == 68)"
+                      :readonly="isHabitual || (roleId == 22) || (roleId == 23) || (roleId == 24) || (roleId == 25) || (roleId == 26) || (roleId == 27) || (roleId == 52) || (roleId == 68)"
                     >
                     <div v-show="errors.has('affiliate_service_months')">
                       <i class="fa fa-warning text-danger"></i>
@@ -738,7 +739,7 @@
                     v-month-year
                     class="form-control"
                     v-validate.initial="'max_current_date_month_year'"
-                    :disabled="isHabitual"
+                    :readonly="isHabitual"
                   >
                   <div v-show="errors.has('affiliate_date_derelict')">
                     <i class="fa fa-warning text-danger"></i>
@@ -769,7 +770,7 @@
                     name="affiliate_account_number"
                     v-model.trim="affiliate.account_number"
                     class="form-control"
-                    :disabled="isHabitual"
+                    :readonly="isHabitual"
                   >
                 </div>
               </div>
@@ -787,6 +788,7 @@
                     <option :value="null"></option>
                     <option v-for="c in financialEntities" :value="c.id" :key="c.id">{{ c.name }}</option>
                   </select>
+                  <input type="hidden" :value="affiliate.financial_entity_id" name="affiliate_financial_entity_id" v-if="isHabitual">
                   <div v-show="errors.has('affiliate_financial_entity_id')">
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">{{ errors.first('affiliate_financial_entity_id') }}</span>
@@ -809,6 +811,7 @@
                     <option :value="null"></option>
                     <option v-for="c in sigepStatus" :value="c.id" :key="c.id">{{ c.name }}</option>
                   </select>
+                  <input name="affiliate_account_number_sigep_status" v-if="isHabitual" type="hidden" :value="affiliate.sigep_status">
                 </div>
               </div>
             </div>
