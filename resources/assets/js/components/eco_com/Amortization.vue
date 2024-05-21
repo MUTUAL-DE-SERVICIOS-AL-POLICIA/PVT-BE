@@ -28,8 +28,8 @@
                   name="Tipo"
                   v-model="discount_type"
                 >
-                  <option value="1">Reposición por fondos</option>
-                  <option value="2">Reposición por juzgado</option>
+                  <option value="6">Reposición de Fondos</option>
+                  <option value="8">Retenciones según Juzgado</option>
                 </select>
               </div>
             </div>
