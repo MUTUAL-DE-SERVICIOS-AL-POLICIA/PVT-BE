@@ -8,6 +8,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Muserpol\Imports\EcoComImportSenasir;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComUpdatedPension;
+use Muserpol\Models\EconomicComplement\EcoComFixedPension;
+use Muserpol\Models\EconomicComplement\EcoComRegulation;
 use Muserpol\Imports\EcoComImportAPS;
 use Muserpol\Helpers\Util;
 use Muserpol\Imports\EcoComImportPagoFuturo;
@@ -17,6 +19,7 @@ use DB;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\DiscountType;
 use Muserpol\User;
+use Muserpol\Helpers\ID;
 use Auth;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Carbon\Carbon;
@@ -90,6 +93,35 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
+                            if ($e->eco_com_reception_type_id == ID::ecoCom()->inclusion) {
+                                $e->user_id = Auth::user()->id;
+                                $e->rent_type = 'Automatico';
+                                $e->aps_total_cc = round($c[13], 2);
+                                $e->aps_total_fsa = round($c[19], 2);
+                                $e->aps_total_fs = round($c[25], 2);
+                                $e->save();
+                                $e->calculateTotalRentAps();
+
+                                $fixedPension = null;
+                                if (is_null($e->eco_com_fixed_pension)) {
+                                    $regulation = EcoComRegulation::where('is_enable', true)->orderBy('created_at')->first();
+
+                                    $fixedPension = new EcoComFixedPension;
+                                    $fixedPension->user_id = Auth::user()->id;
+                                    $fixedPension->affiliate_id = $e->affiliate_id;
+                                    $fixedPension->eco_com_regulation_id = $regulation->id;
+                                    $fixedPension->eco_com_procedure_id = $e->eco_com_procedure_id;
+                                } else {
+                                    $fixedPension = EcoComFixedPension::find($e->eco_com_fixed_pension->id);
+                                }
+                                $fixedPension->rent_type = 'Replica';
+                                $fixedPension->aps_total_cc = round($c[13], 2);
+                                $fixedPension->aps_total_fsa = round($c[19], 2);
+                                $fixedPension->aps_total_fs = round($c[25], 2);
+                                $fixedPension->save();
+                                $fixedPension->calculateTotalRentAps();
+                            }
+                            $updatedPension = null;
                             if (is_null($e->eco_com_updated_pension)) {
                                 $updatedPension = new EcoComUpdatedPension();
                                 $updatedPension->user_id = Auth::user()->id;
