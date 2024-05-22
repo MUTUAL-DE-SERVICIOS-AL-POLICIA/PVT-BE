@@ -2286,7 +2286,7 @@ class EconomicComplementController extends Controller
     {
         $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
         if(!!$economic_complement){
-            if(!($economic_complement->reception_type == ID::ecoCom()->inclusion)){
+            if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
                 $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)->first();
                 if(!!$fixed_pension){  
                     $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
