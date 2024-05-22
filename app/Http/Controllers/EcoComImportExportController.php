@@ -290,11 +290,13 @@ class EcoComImportExportController extends Controller
         $contribution_updated = 0;
         $tramit_number = 0;
         $total_contribution = 0;
+        $not_updated = collect([]);
         $data = [
             'tramit_number' => $tramit_number,
             'contribution_created'=>$contribution_created,
             'contribution_updated'=>$contribution_updated,
-            'total_contribution'=>$total_contribution
+            'total_contribution'=>$total_contribution,
+            'not_updated'=> $not_updated
         ];
         $current_procedures = $request->ecoComProcedureId;
         $pago_futuro_id = 31;
@@ -338,45 +340,53 @@ class EcoComImportExportController extends Controller
                                  'enabled' => true
                              ]);
                           }
-                          $eco_com->eco_com_updated_pension->calculateTotalRentAps();
-                          $total_rent = $eco_com->eco_com_updated_pension->total_rent;
-                          if ($total_rent > 0){
-                              $total = round($total_rent * 2.03 / 100, 2);
-                              $aux = $total * 6;
-                              $discount_type = DiscountType::findOrFail(7);
-                              //registro o actualizacion del descuento
-                                if ($eco_com->discount_types->contains($discount_type->id)) {
-                                    $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
-                                } else {
-                                    $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
-                                }
-                                //registro de aportes en la tabla contribution_passives
-                                $user_id = Auth::user()->id;
-                                $import_contribution = DB::select("select import_contribution_eco_com($user_id,$current_procedures,$eco_com->id)");
-                                DB::commit();
-                                if(!is_null($import_contribution[0]->import_contribution_eco_com)){
-                                    $import_contribution = explode(',',$import_contribution[0]->import_contribution_eco_com);
-                                    $tramit_number = $tramit_number + $import_contribution[0];
-                                    $contribution_created = $contribution_created + $import_contribution[1];
-                                    $contribution_updated = $contribution_updated + $import_contribution[2];
-                                    $total_contribution = $contribution_created + $contribution_updated;
-                                    $data = [
-                                        'tramit_number' => $tramit_number,
-                                        'contribution_created'=>$contribution_created,
-                                        'contribution_updated'=>$contribution_updated,
-                                        'total_contribution'=>$total_contribution
-                                    ];
-                                    if(filter_var($import_contribution[3], FILTER_VALIDATE_BOOLEAN)){
-                                        $month = Carbon::parse($import_contribution[4]);
-                                        $month = $month->formatLocalized('%B');
-                                             return response()->json([
-                                            'status' => 'error',
-                                            'errors' => ['El afiliado con Nup:'.$affiliate_id.' tiene registro de aportes en el mes de '.$month.' con origen senasir.'],
-                                            'data'=> $data
-                                        ], 422);
+                        if ($eco_com->eco_com_updated_pension != null) {
+                            if ($eco_com->eco_com_updated_pension->total_rent > 0) {
+                                $eco_com->eco_com_updated_pension->calculateTotalRentAps();
+                                $total_rent = $eco_com->eco_com_updated_pension->total_rent;
+                                if ($total_rent > 0) {
+                                    $total = round($total_rent * 2.03 / 100, 2);
+                                    $aux = $total * 6;
+                                    $discount_type = DiscountType::findOrFail(7);
+                                    //registro o actualizacion del descuento
+                                    if ($eco_com->discount_types->contains($discount_type->id)) {
+                                        $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
+                                    } else {
+                                        $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
+                                    }
+                                    //registro de aportes en la tabla contribution_passives
+                                    $user_id = Auth::user()->id;
+                                    $import_contribution = DB::select("select import_contribution_eco_com($user_id,$current_procedures,$eco_com->id)");
+                                    DB::commit();
+                                    if (!is_null($import_contribution[0]->import_contribution_eco_com)) {
+                                        $import_contribution = explode(',', $import_contribution[0]->import_contribution_eco_com);
+                                        $tramit_number = $tramit_number + $import_contribution[0];
+                                        $contribution_created = $contribution_created + $import_contribution[1];
+                                        $contribution_updated = $contribution_updated + $import_contribution[2];
+                                        $total_contribution = $contribution_created + $contribution_updated;
+                                        $data = [
+                                            'tramit_number' => $tramit_number,
+                                            'contribution_created' => $contribution_created,
+                                            'contribution_updated' => $contribution_updated,
+                                            'total_contribution' => $total_contribution
+                                        ];
+                                        if (filter_var($import_contribution[3], FILTER_VALIDATE_BOOLEAN)) {
+                                            $month = Carbon::parse($import_contribution[4]);
+                                            $month = $month->formatLocalized('%B');
+                                            return response()->json([
+                                                'status' => 'error',
+                                                'errors' => ['El afiliado con Nup:' . $affiliate_id . ' tiene registro de aportes en el mes de ' . $month . ' con origen senasir.'],
+                                                'data' => $data
+                                            ], 422);
+                                        }
                                     }
                                 }
-                          }
+                            } else {
+                                $not_updated->push($eco_com->code);
+                            }
+                        } else {
+                            $not_updated->push($eco_com->code);
+                        }
                 }else{
                     return response()->json([
                         'status' => 'error',
@@ -387,6 +397,13 @@ class EcoComImportExportController extends Controller
                 }
             }
         }
+        $data = [
+            'tramit_number' => $tramit_number,
+            'contribution_created'=>$contribution_created,
+            'contribution_updated'=>$contribution_updated,
+            'total_contribution'=>$total_contribution,
+            'not_updated'=> $not_updated
+        ];
         session()->put('pago_futuro_data', $data);
         return session()->get('pago_futuro_data');
        }catch (\Exception $e) {
