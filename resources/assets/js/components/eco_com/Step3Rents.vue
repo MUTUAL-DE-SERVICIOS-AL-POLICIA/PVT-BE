@@ -2,7 +2,7 @@
   <div class="col-lg-12">
     <div class="ibox float-e-margins">
       <div class="ibox-content">
-        <legend>
+        <!-- <legend>
           Registrar Rentas de
           <strong>{{ namePensionEntity }}</strong>
         </legend>
@@ -197,7 +197,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
