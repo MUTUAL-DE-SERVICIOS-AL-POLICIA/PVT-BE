@@ -93,49 +93,24 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if ($e->eco_com_reception_type_id == ID::ecoCom()->inclusion) {
-                                $e->user_id = Auth::user()->id;
-                                $e->rent_type = 'Automatico';
-                                $e->aps_total_cc = round($c[13], 2);
-                                $e->aps_total_fsa = round($c[19], 2);
-                                $e->aps_total_fs = round($c[25], 2);
-                                $e->save();
-                                $e->calculateTotalRentAps();
-
-                                $fixedPension = null;
-                                if (is_null($e->eco_com_fixed_pension)) {
-                                    $regulation = EcoComRegulation::where('is_enable', true)->orderBy('created_at')->first();
-
-                                    $fixedPension = new EcoComFixedPension;
-                                    $fixedPension->user_id = Auth::user()->id;
-                                    $fixedPension->affiliate_id = $e->affiliate_id;
-                                    $fixedPension->eco_com_regulation_id = $regulation->id;
-                                    $fixedPension->eco_com_procedure_id = $e->eco_com_procedure_id;
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                $updatedPension = null;
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
                                 } else {
-                                    $fixedPension = EcoComFixedPension::find($e->eco_com_fixed_pension->id);
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
                                 }
-                                $fixedPension->rent_type = 'Replica';
-                                $fixedPension->aps_total_cc = round($c[13], 2);
-                                $fixedPension->aps_total_fsa = round($c[19], 2);
-                                $fixedPension->aps_total_fs = round($c[25], 2);
-                                $fixedPension->save();
-                                $fixedPension->calculateTotalRentAps();
+                                $updatedPension->rent_type = 'Automatico';
+                                $updatedPension->aps_total_cc = round($c[13], 2);
+                                $updatedPension->aps_total_fsa = round($c[19], 2);
+                                $updatedPension->aps_total_fs = round($c[25], 2);
+                                $updatedPension->save();
+                                $updatedPension->calculateTotalRentAps();
+                                $success++;
                             }
-                            $updatedPension = null;
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
-                            }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_total_cc = round($c[13], 2);
-                            $updatedPension->aps_total_fsa = round($c[19], 2);
-                            $updatedPension->aps_total_fs = round($c[25], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }
@@ -174,18 +149,21 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
+                                } else {
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                                }
+                                $updatedPension->rent_type = 'Automatico';
+                                $updatedPension->aps_disability = round($c[16], 2);
+                                $updatedPension->save();
+                                $updatedPension->calculateTotalRentAps();
+                                $success++;
                             }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_disability = round($c[16], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }
@@ -230,18 +208,21 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
+                                } else {
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                                }
+                                $updatedPension->rent_type = 'Automatico';
+                                $updatedPension->aps_total_death = round($c[17], 2);
+                                $updatedPension->save();
+                                $updatedPension->calculateTotalRentAps();
+                                $success++;
                             }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_total_death = round($c[17], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }
