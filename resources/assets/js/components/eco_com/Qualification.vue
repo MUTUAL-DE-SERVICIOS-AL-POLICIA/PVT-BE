@@ -6,7 +6,7 @@
           Calificacion
           <strong>{{ namePensionEntity }}</strong>
         </h2>
-        <div class="ibox-tools">
+        <div class="ibox-tools" v-if="roleId == 4" >
           <button
             class="btn btn-primary"
             @click="refreshQualification()"
