@@ -8,6 +8,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Muserpol\Imports\EcoComImportSenasir;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComUpdatedPension;
+use Muserpol\Models\EconomicComplement\EcoComFixedPension;
+use Muserpol\Models\EconomicComplement\EcoComRegulation;
 use Muserpol\Imports\EcoComImportAPS;
 use Muserpol\Helpers\Util;
 use Muserpol\Imports\EcoComImportPagoFuturo;
@@ -17,6 +19,7 @@ use DB;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\DiscountType;
 use Muserpol\User;
+use Muserpol\Helpers\ID;
 use Auth;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Carbon\Carbon;
@@ -90,20 +93,24 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                $updatedPension = null;
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
+                                } else {
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                                }
+                                $updatedPension->rent_type = 'Automatico';
+                                $updatedPension->aps_total_cc = round($c[13], 2);
+                                $updatedPension->aps_total_fsa = round($c[19], 2);
+                                $updatedPension->aps_total_fs = round($c[25], 2);
+                                $updatedPension->save();
+                                $updatedPension->calculateTotalRentAps();
+                                $success++;
                             }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_total_cc = round($c[13], 2);
-                            $updatedPension->aps_total_fsa = round($c[19], 2);
-                            $updatedPension->aps_total_fs = round($c[25], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }
@@ -142,18 +149,21 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
+                                } else {
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                                }
+                                $updatedPension->rent_type = 'Automatico';
+                                $updatedPension->aps_disability = round($c[16], 2);
+                                $updatedPension->save();
+                                $updatedPension->calculateTotalRentAps();
+                                $success++;
                             }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_disability = round($c[16], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }
@@ -198,18 +208,21 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
+                                } else {
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                                }
+                                $updatedPension->rent_type = 'Automatico';
+                                $updatedPension->aps_total_death = round($c[17], 2);
+                                $updatedPension->save();
+                                $updatedPension->calculateTotalRentAps();
+                                $success++;
                             }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_total_death = round($c[17], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }

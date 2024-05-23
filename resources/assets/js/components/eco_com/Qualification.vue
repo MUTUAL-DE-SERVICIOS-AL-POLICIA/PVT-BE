@@ -6,7 +6,7 @@
           Calificacion
           <strong>{{ namePensionEntity }}</strong>
         </h2>
-        <div class="ibox-tools">
+        <div class="ibox-tools" v-if="roleId == 4" >
           <button
             class="btn btn-primary"
             @click="refreshQualification()"
@@ -23,7 +23,7 @@
             title="Editar Rentas"
             :disabled="!can('update_economic_complement')"
           >
-            <i class="fa fa-pencil"></i> Editar Pensión Fija
+            <i class="fa fa-pencil"></i> {{ this.ecoCom.eco_com_reception_type_id == 2 ? 'Editar Pensión' : 'Editar Pensión Fija' }}
           </button>
           <button v-if="this.affiliate.pension_entity_id != 5 && this.ecoCom.eco_com_reception_type_id != 2" class="btn btn-primary" @click="edit('am')" data-toggle="tooltip" title="Editar Rentas"
             :disabled="!can('update_economic_complement')">
