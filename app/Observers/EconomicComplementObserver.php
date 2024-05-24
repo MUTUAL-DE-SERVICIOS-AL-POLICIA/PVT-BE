@@ -89,6 +89,9 @@ class EconomicComplementObserver
         if ($eco_com->aps_disability != $old->aps_disability) {
             $message = $message . ' Prestación por Invalidéz ' . $old->aps_disability . ' a ' . $eco_com->aps_disability . ', ';
         }
+        if ($eco_com->aps_total_death != $old->aps_total_death) {
+            $message = $message . ' Fracción por Muerte ' . $old->aps_total_death . ' a ' . $eco_com->aps_total_death . ', ';
+        }
         if ($eco_com->degree_id != $old->degree_id) {
             $message = $message . ' Grado ' . optional($old->degree)->name . ' a ' . optional($eco_com->degree)->name . ', ';
         }
