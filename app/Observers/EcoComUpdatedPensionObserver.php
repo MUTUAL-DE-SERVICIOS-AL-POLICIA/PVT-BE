@@ -17,25 +17,28 @@ class EcoComUpdatedPensionObserver
         $message = 'El usuario ' . Auth::user()->username . ' modifico ';
         $temp = $message;
         if ($updated_pension->reimbursement != $old->reimbursement) {
-            $message = $message . ' Reintegro ' . $old->reimbursement . ' a ' . $updated_pension->reimbursement . ' de la pensión actualizada, ';
+            $message = $message . ' Reintegro ' . $old->reimbursement . ' a ' . $updated_pension->reimbursement . ' de la pensión para descuento de auxilio mortuorio, ';
         }
         if ($updated_pension->dignity_pension != $old->dignity_pension) {
-            $message = $message . ' Renta Dignidad ' . $old->dignity_pension . ' a ' . $updated_pension->dignity_pension . ' de la pensión actualizada, ';
+            $message = $message . ' Renta Dignidad ' . $old->dignity_pension . ' a ' . $updated_pension->dignity_pension . ' de la pensión para descuento de auxilio mortuorio, ';
         }
         if ($updated_pension->sub_total_rent != $old->sub_total_rent) {
-            $message = $message . ' fecha de recepción ' . $old->sub_total_rent . ' a ' . $updated_pension->sub_total_rent . ' de la pensión actualizada, ';
+            $message = $message . ' fecha de recepción ' . $old->sub_total_rent . ' a ' . $updated_pension->sub_total_rent . ' de la pensión para descuento de auxilio mortuorio, ';
         }
         if ($updated_pension->aps_total_fsa != $old->aps_total_fsa) {
-            $message = $message . ' Fracción de Saldo Acumulada ' . $old->aps_total_fsa . ' a ' . $updated_pension->aps_total_fsa . ' de la pensión actualizada, ';
+            $message = $message . ' Fracción de Saldo Acumulada ' . $old->aps_total_fsa . ' a ' . $updated_pension->aps_total_fsa . ' de la pensión para descuento de auxilio mortuorio, ';
         }
         if ($updated_pension->aps_total_cc != $old->aps_total_cc) {
-            $message = $message . ' Fracción de Pensión CCM ' . $old->aps_total_cc . ' a ' . $updated_pension->aps_total_cc . ' de la pensión actualizada, ';
+            $message = $message . ' Fracción de Pensión CCM ' . $old->aps_total_cc . ' a ' . $updated_pension->aps_total_cc . ' de la pensión para descuento de auxilio mortuorio, ';
         }
         if ($updated_pension->aps_total_fs != $old->aps_total_fs) {
-            $message = $message . ' Fracción Solidaria de Vejéz ' . $old->aps_total_fs . ' a ' . $updated_pension->aps_total_fs . ' de la pensión actualizada, ';
+            $message = $message . ' Fracción Solidaria de Vejéz ' . $old->aps_total_fs . ' a ' . $updated_pension->aps_total_fs . ' de la pensión para descuento de auxilio mortuorio, ';
         }
         if ($updated_pension->aps_disability != $old->aps_disability) {
-            $message = $message . ' Prestación por Invalidéz ' . $old->aps_disability . ' a ' . $updated_pension->aps_disability . ' de la pensión actualizada, ';
+            $message = $message . ' Prestación por Invalidéz ' . $old->aps_disability . ' a ' . $updated_pension->aps_disability . ' de la pensión para descuento de auxilio mortuorio, ';
+        }
+        if ($updated_pension->aps_total_death != $old->aps_total_death) {
+            $message = $message . ' Fracción por Muerte ' . $old->aps_total_death . ' a ' . $updated_pension->aps_total_death . ' de la pensión para descuento de auxilio mortuorio, ';
         }
         if($temp !=  $message){
             $message = $message . ' ';
