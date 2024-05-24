@@ -23,11 +23,11 @@
             title="Editar Rentas"
             :disabled="!can('update_economic_complement')"
           >
-            <i class="fa fa-pencil"></i> {{ this.ecoCom.eco_com_reception_type_id == 2 ? 'Editar Pensión' : 'Editar Pensión Fija' }}
+            <i class="fa fa-pencil"></i> {{ this.ecoCom.eco_com_reception_type_id == 2 ? 'Renta o Pension' : 'Renta o Pension para calificación' }}
           </button>
           <button v-if="this.affiliate.pension_entity_id != 5 && this.ecoCom.eco_com_reception_type_id != 2" class="btn btn-primary" @click="edit('am')" data-toggle="tooltip" title="Editar Rentas"
             :disabled="!can('update_economic_complement')">
-            <i class="fa fa-pencil"></i> Editar Pensión Actualizada
+            <i class="fa fa-pencil"></i> Pension para descuento de Aux. Mort.
           </button>
         </div>
       </div>
@@ -49,7 +49,7 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>Fija</strong></p>
+            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación</strong></p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -102,8 +102,7 @@
             </table>
             <!-- Tabla de pension actualizada - No mostrar si es inclusión -->
             <template v-if="ecoCom.eco_com_updated_pension && ecoCom.eco_com_reception_type_id != 2"> 
-              <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>Actualizada</strong> (Para el
-                cálculo de Auxilio Mortuorio)</p>
+              <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para descuento de Auxilio Mortuorio</strong></p>
               <table class="table table-bordered table-striped">
                 <thead>
                   <tr>
