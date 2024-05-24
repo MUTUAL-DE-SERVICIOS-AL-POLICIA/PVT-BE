@@ -212,7 +212,7 @@ th.ellipsis-text {
                                 @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
                             </ret-fun-info>
                         @else
-                            <div></div>
+                            <div><h2>NO SE TIENE REGISTROS</h2></div>
                         @endif
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
