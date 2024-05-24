@@ -229,6 +229,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "Amortización_Reposición_de_Fondos",
                     "Amortización_Auxilio_Mortuorio",
                     "Amortización_Cuentas_por_cobrar",
+                    "Amortizacion_Retencion_segun_juzgado",
                     "Estado_de_tramite",
                     "Enrolamiento",
                     "Contraste C.I",
