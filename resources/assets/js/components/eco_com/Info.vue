@@ -44,7 +44,7 @@
             @click="certificacionPago()"
             :disabled="ecoCom.eco_com_state.eco_com_state_type_id != 1"
           >
-            <i class="fa fa-print"></i> Boleta de pago
+            <i class="fa fa-print"></i> Imprimir boleta de pago
           </button>
           <button
             data-toggle="tooltip"
