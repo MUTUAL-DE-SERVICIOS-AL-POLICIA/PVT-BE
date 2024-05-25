@@ -455,8 +455,11 @@ class EcoComCertificationController extends Controller
             // ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }
-    public function certificationAllEcoComs($affiliate_id)
+    public function certificationAllEcoComs(Request $request, $affiliate_id)
     {
+        $selected_ids_eco_com = $request->input('selected_ids_eco_com');
+        $ids_eco_com = explode(',', $selected_ids_eco_com);
+ 
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
@@ -469,14 +472,21 @@ class EcoComCertificationController extends Controller
         $user = auth()->user();
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
-        $eco_coms = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+
+        $eco_coms_query = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
         ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
         ->where('eco_com_applicants.identity_card', $eco_com_beneficiary->identity_card)
         ->where('affiliate_id', $affiliate_id)
         ->select('economic_complements.*')
         ->orderBY('eco_com_procedures.year')
-        ->orderBY('eco_com_procedures.semester')
-        ->get();
+        ->orderBY('eco_com_procedures.semester');
+
+        if($selected_ids_eco_com!=null){
+            $eco_coms_query->whereIn('economic_complements.id',$ids_eco_com);
+        }
+
+        $eco_coms=$eco_coms_query->get();
+
         $bar_code = \DNS2D::getBarcodePNG($affiliate->encode(), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
         $data = [

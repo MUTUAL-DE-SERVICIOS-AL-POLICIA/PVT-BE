@@ -64,6 +64,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "affiliates.mothers_last_name",
                     "affiliates.surname_husband",
                     "affiliates.birth_date",
+                    "affiliates.service_years",
+                    "affiliates.service_months",
                     "affiliates.nua",
                     "affiliates.sigep_status",
                     "financial_entities.name",
@@ -200,13 +202,13 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->get();
                 break;
             case 8:
+                $recordableType = (new EconomicComplement())->getMorphClass();
                 $columns = ", economic_complements.deleted_at";
                 $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
-                    ->info()
+                    ->infoDelete()
                     ->beneficiary()
                     ->affiliateInfo()
                     ->wfstates()
-                    // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
                     ->onlyTrashed()
                     ->get();
@@ -227,6 +229,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "Amortización_Reposición_de_Fondos",
                     "Amortización_Auxilio_Mortuorio",
                     "Amortización_Cuentas_por_cobrar",
+                    "Amortizacion_Retencion_segun_juzgado",
                     "Estado_de_tramite",
                     "Enrolamiento",
                     "Contraste C.I",
@@ -304,6 +307,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "ap_materno_causahabiente",
             "ape_casada_causahabiente",
             "fecha_nacimiento",
+            "Anios_de_servicio",
+            "Meses_de_servicio",
             "codigo_nua_cua",
             "Estado_sigep",
             "Entidad_financiera",
@@ -331,7 +336,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "total_complemento",
             "total_liquido_pagable",
             "Ubicacion",
-            "tipoe_beneficiario",
+            "tipo_beneficiario",
             "flujo",
         ];
         return array_merge($default, $new_columns);

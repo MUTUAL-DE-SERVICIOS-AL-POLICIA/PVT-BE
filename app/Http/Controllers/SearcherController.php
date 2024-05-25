@@ -86,6 +86,7 @@ class SearcherController
         $affiliate_observations = [];
         $affiliate_observations_exclude = [];
         $affiliate_observations_amortizable = [];
+        $affiliate_observations_rectifiable = [];
         $other_observations = collect([]);
         $eco_com_beneficiary = new EcoComBeneficiary();
         $has_doble_perception = false;
@@ -144,7 +145,10 @@ class SearcherController
             $affiliate->category_percentage = $affiliate->category->name ?? '';
             $affiliate->pension_entity_name = $affiliate->pension_entity->name ?? '';
             // !! TODO borrar id 33 y 35 despues de borrar las observaciones
-            $affiliate_observations_exclude = $affiliate->observations()->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->get()->pluck('id'))->get();
+            // Tipo A
+            $affiliate_observations_exclude = $affiliate->observations()->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->where('type', 'like', 'A')->get()->pluck('id'))->get();
+            // Lista
+            $affiliate_observations_exclude_rectifiable = $affiliate->observations()->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->where('type', 'like', 'AT')->get()->pluck('id'))->get();
             $affiliate_devolutions = $affiliate->devolutions()->with('observation_type:id,name,type')->get();
             $affiliate_observations = $affiliate->observations()->whereNull('deleted_at')->whereIn('id', ObservationType::whereIn('description', ['Subsanable', 'Amortizable'])->get()->pluck('id'))->get();
             $eco_com = $affiliate->economic_complements()->select('id', 'code', 'total','eco_com_procedure_id', 'eco_com_modality_id', 'eco_com_state_id', 'aps_disability')->with([
@@ -182,7 +186,7 @@ class SearcherController
         $data = [
             'affiliate' => $affiliate,
             'affiliate_observations_exclude' =>$affiliate_observations_exclude,
-            'affiliate_observations' =>$affiliate_observations,
+            'affiliate_observations' =>array_merge($affiliate_observations->toArray(), $affiliate_observations_exclude_rectifiable->toArray()),
             'affiliate_devolutions' =>$affiliate_devolutions,
             'other_observations' =>$other_observations,
             'eco_com_beneficiary' => $eco_com_beneficiary,

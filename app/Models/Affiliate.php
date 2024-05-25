@@ -194,6 +194,10 @@ class Affiliate extends Model
   {
     return !!$this->observations()->where('observation_type_id', '=', $id)->first();
   }
+  public function eco_com_fixed_pensions()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComFixedPension');
+    }
 
   /**
    * methods

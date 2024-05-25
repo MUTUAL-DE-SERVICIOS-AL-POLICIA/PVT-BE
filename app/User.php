@@ -89,4 +89,8 @@ class User extends Authenticatable
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComReviewProcedure');
     }
+    public function eco_com_fixed_pensions()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComFixedPension');
+    }
 }

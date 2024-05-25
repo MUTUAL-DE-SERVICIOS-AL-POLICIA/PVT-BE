@@ -67,6 +67,11 @@ show blade
     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button> {{Session::get('message')}}
 </div>
 @endif
+@if(!$economic_complement->hasFixedPension($economic_complement))
+<div class="alert alert-danger alert-dismissable ">
+El trámite es de tipo <strong>{{$economic_complement->eco_com_reception_type->name}}</strong> y no tiene el registro de rentas fijas.
+</div>
+@endif
 <div class="row">
     <div class="col-md-3" style="padding-right: 3px">
         <div class="widget-head-color-box blue-bg text-center">
@@ -102,23 +107,58 @@ show blade
     <div class="col-md-9" style="padding-left: 6px">
         <div class="tab-content">
             <div id="tab-eco-com" class="tab-pane active">
-                <eco-com-info :eco-com="{{ $economic_complement }}" :affiliate="{{$affiliate}}" :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}" :states="{{ $states }}"
-                :cities="{{ $cities }}" :degrees="{{$degrees}}" :categories="{{ $categories }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
+                <eco-com-info
+                    :eco-com="{{ $economic_complement }}"
+                    :affiliate="{{$affiliate}}"
+                    :eco-com-procedure="{{ $economic_complement->eco_com_procedure }}"
+                    :states="{{ $states }}"
+                    :cities="{{ $cities }}"
+                    :degrees="{{$degrees}}"
+                    :categories="{{ $categories }}"
+                    :permissions="{{ $permissions }}"
+                    :role-id="{{ Util::getRol()->id }}"
+                    :user="{{ Auth::user() }}"
+                    :wf-current-state="{{ $wf_current_state }}"
+                >
                 </eco-com-info>
             </div>
             <div id="tab-eco-coms" class="tab-pane">
 
             </div>
             <div id="tab-affiliate" class="tab-pane">
-                <affiliate-show :affiliate="{{ $affiliate }}" :cities="{{$cities}}" inline-template>
-    @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities_pluck,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
+                <affiliate-show
+                    :affiliate="{{ $affiliate }}"
+                    :cities="{{$cities}}"
+                    inline-template
+                >
+                    @include('affiliates.affiliate_personal_information',
+                        ['affiliate'=>$affiliate,
+                         'cities'=>$cities_pluck,
+                         'birth_cities'=>$birth_cities,
+                         'is_editable'=>$is_editable
+                        ]
+                    )
                 </affiliate-show>
             </div>
             <div id="tab-police-info" class="tab-pane">
-                <affiliate-police :affiliate="{{ $affiliate }}" :eco-com-id="{{ $economic_complement->id }}" inline-template :categories="{{$categories}}">
-    @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate, 'affiliate_states'=>$affiliate_states, 'categories'
-                    => $categories->pluck('name', 'id'), 'degrees'=> $degrees->pluck('name', 'id'), 'pension_entities'=>
-                    $pension_entities->pluck('name', 'id')])
+                <affiliate-police
+                    :affiliate="{{ $affiliate }}"
+                    :eco-com-id="{{ $economic_complement->id }}"
+                    :eco-com="{{ $economic_complement }}"
+                    :categories="{{$categories}}"
+                    :user="{{ Auth::user() }}"
+                    :wf-current-state="{{ $wf_current_state }}"
+                    inline-template
+                >
+                    @include('affiliates.affiliate_police_information',
+                        ['affiliate'=>$affiliate,
+                         'affiliate_states'=>$affiliate_states,
+                         'categories' => $categories->pluck('name', 'id'),
+                         'degrees'=> $degrees->pluck('name', 'id'),
+                         'pension_entities'=> $pension_entities->pluck('name', 'id'),
+                         'wf_current_state' => $wf_current_state->role_id
+                        ]
+                    )
                 </affiliate-police>
             </div>
             <div id="tab-eco-com-beneficiary" class="tab-pane">

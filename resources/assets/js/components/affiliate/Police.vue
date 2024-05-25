@@ -4,7 +4,10 @@
 			'affiliate',
 			'typeEcoCom',
 			'ecoComId',
-			'categories'
+			'categories',
+			'ecoCom',
+			'user',
+			'wfCurrentState'
 		],
 		data(){
 			return{
@@ -19,8 +22,7 @@
 						date_entry: this.affiliate.date_entry,
 						type: this.affiliate.type
 					},
-				calculateCategoryId: null
-
+				calculateCategoryId: null,
 			}
 		},
 		created() {
@@ -41,6 +43,24 @@
 			pension_entity_name: function(){
 				return !!this.pension_entity? this.pension_entity.name:'';
 			},
+			isInclusion: function() {
+				if(this.ecoCom)
+					if(this.ecoCom.eco_com_reception_type.id == 1)
+						return false
+					else return this.ecoCom.eco_com_reception_type.id == 2
+				else return true
+			},
+			isRehabilitation: function() {
+				if(this.ecoCom)
+					if(this.ecoCom.eco_com_reception_type.id == 1)
+						return false
+					else return this.ecoCom.eco_com_reception_type.id == 3
+				else return false
+			},
+			itsUsual: function() {
+				if(this.ecoCom)
+				return this.ecoCom.eco_com_reception_type.id == 1
+			}
 		}
 		,
 		methods: {
@@ -59,6 +79,23 @@
 				if(!!category){
 					this.form.category_id = category.id
 				}
+			},
+			validationRoles(module, roleUser, wfCurrentState) {
+				if(module != 2) return false
+				if(wfCurrentState) return false
+				const roleProcedure = wfCurrentState
+				const rolesPermited = [2, 4, 5, 22, 23, 24, 25, 26, 27, 52, 68]
+				if(rolesPermited.indexOf(parseInt(roleUser)) !== -1) {
+					if(this.isInclusion || this.isRehabilitation) {
+						if(roleUser === roleProcedure) {
+							return true
+						}
+					}
+					if(parseInt(roleUser) == 4 || parseInt(roleUser) == 5) {
+						return true
+					}
+				}
+				return false
 			},
 			toggle_editing: function () {
 				this.editing = !this.editing;
