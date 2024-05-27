@@ -1331,14 +1331,16 @@ class EconomicComplementController extends Controller
             $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
                 ->with('eco_com_updated_pension')->find($request->id);
         }
-        if (is_null($economic_complement->eco_com_updated_pension)) {
-            $updated = new EcoComUpdatedPension;
-            $updated->user_id = Auth::user()->id;
-            $updated->economic_complement_id = $economic_complement->id;
-            $updated->rent_type = 'Manual';
-            $updated->save();
-            $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
-                ->with('eco_com_updated_pension')->find($request->id);
+        if ($economic_complement->affiliate->pension_entity_id != ID::pensionEntity()->senasir){
+            if (is_null($economic_complement->eco_com_updated_pension)) {
+                $updated = new EcoComUpdatedPension;
+                $updated->user_id = Auth::user()->id;
+                $updated->economic_complement_id = $economic_complement->id;
+                $updated->rent_type = 'Manual';
+                $updated->save();
+                $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+                    ->with('eco_com_updated_pension')->find($request->id);
+            }
         }
         if ($request->refresh == false) {
             if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
@@ -1421,7 +1423,11 @@ class EconomicComplementController extends Controller
     }
     private function updateEcoComPensions($ec, $attr, $value, $type = null)
     {
-        $amount = Util::parseMoney($value);
+        if ($value != null) {
+            $amount = Util::parseMoney($value);
+        } else {
+            $amount = null;
+        }
         if ($type == "ce") {
             $ec->{$attr} = $amount;
             if (!is_null($ec->eco_com_fixed_pension)) {
