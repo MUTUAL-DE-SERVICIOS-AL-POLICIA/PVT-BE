@@ -81,7 +81,7 @@
 				}
 			},
 			validationRoles(module, roleUser, wfCurrentState) {
-				if(module != 2) return false
+				if(module != 2) return true
 				if(wfCurrentState) return false
 				const roleProcedure = wfCurrentState
 				const rolesPermited = [2, 4, 5, 22, 23, 24, 25, 26, 27, 52, 68]
