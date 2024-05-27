@@ -2093,7 +2093,7 @@ class EconomicComplementController extends Controller
             $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$item->id)->where("discount_type_id",6)->first();
             $exist_movement = EcoComMovement::where('affiliate_id', $item->affiliate_id)->exists();
             if ($exist_movement) {
-                $last_movement = EcoComMovement::where("affiliate_id",$item->affiliate_id)->latest()->first();
+                $last_movement = EcoComMovement::where("affiliate_id",$item->affiliate_id)->latest()->orderBy('id', 'desc')->first();
                 if($last_movement->balance > 0){
                     $eco_com_movement = new EcoComMovement();
                     $eco_com_movement->affiliate_id = $item->affiliate_id;
@@ -2141,7 +2141,7 @@ class EconomicComplementController extends Controller
         $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$eco_com->id)->where("discount_type_id",6)->first();
             $exist_movement = EcoComMovement::where('affiliate_id', $eco_com->affiliate_id)->exists();
             if ($exist_movement) {
-                $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->first();
+                $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
                 if($last_movement->balance > 0){
                     $eco_com_movement = new EcoComMovement();
                     $eco_com_movement->affiliate_id = $eco_com->affiliate_id;
