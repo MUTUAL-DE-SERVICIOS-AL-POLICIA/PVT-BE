@@ -116,7 +116,7 @@ class UpdatePlanillaGeneralFunction extends Migration
                 ec.eco_com_procedure_id = $1
                 and ec.deleted_at is null
                 and wf_current_state_id in (3)
-                and ec.eco_com_state_id in (16, 28)
+                and ec.eco_com_state_id in (16, 28, 18, 29)
             order by
                 ec.affiliate_id
         );

@@ -17,6 +17,8 @@ use Muserpol\Observers\ContributionProcessObserver;
 use Carbon\Carbon;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Observers\EconomicComplementObserver;
+use Muserpol\Models\EconomicComplement\EcoComUpdatedPension;
+use Muserpol\Observers\EcoComUpdatedPensionObserver;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Observers\EcoComBeneficiaryObserver;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
@@ -42,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
         //RetFunObservation::observe(RetirementFundObservationObserver::class);
         ContributionProcess::observe(ContributionProcessObserver::class);
         EconomicComplement::observe(EconomicComplementObserver::class);
+        EcoComUpdatedPension::observe(EcoComUpdatedPensionObserver::class);
         EcoComBeneficiary::observe(EcoComBeneficiaryObserver::class);
         EcoComLegalGuardian::observe(EcoComLegalGuardianObserver::class);
         Contribution::observe(ContributionObserver::class);
