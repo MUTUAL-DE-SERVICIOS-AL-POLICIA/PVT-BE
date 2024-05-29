@@ -56,6 +56,7 @@ use Validator;
 use Muserpol\Models\EconomicComplement\EcoComModality;
 use Muserpol\Models\EconomicComplement\EcoComOncePayment;
 use Muserpol\Models\BaseWage;
+use Muserpol\Models\EconomicComplement\EcoComMovement;
 use Muserpol\Models\EconomicComplement\EcoComReviewProcedure;
 use Ramsey\Uuid\Uuid;
 
@@ -1489,9 +1490,9 @@ class EconomicComplementController extends Controller
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
         if ($eco_com->discount_types->contains($discount_type->id)) {
-            $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $request->amount, 'date' => now(), 'message' => $request->message]);
+            $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $request->amount, 'date' => now()]);
         } else {
-            $eco_com->discount_types()->save($discount_type, ['amount' => $request->amount, 'date' => now(), 'message' => $request->message]);
+            $eco_com->discount_types()->save($discount_type, ['amount' => $request->amount, 'date' => now()]);
         }
         //detach
         // if ($eco_com->discount_types->contains($discount_type->id)) {
@@ -2094,16 +2095,21 @@ class EconomicComplementController extends Controller
           }
         $list_eco_com = EconomicComplement::where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
         foreach ($list_eco_com as $item) {
-                 // descuento por devoluciones por reposicion de fondos
-            $query = DB::table('discount_type_economic_complement')
-            ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
-            ->where('discount_type_economic_complement.economic_complement_id',$item->id)
-            ->where('discount_types.name', 'like', '%Reposición de Fondos')
-            ->select('amount')->get();
-            if(sizeof($query) > 0){
-                $devolution = $item->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Reposición de Fondos.')->first()->id)->first();
-                $devolution->balance = $devolution->balance - $query[0]->amount;
-                $devolution->update();
+            // descuento por devoluciones por reposicion de fondos
+            $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$item->id)->where("discount_type_id",6)->first();
+            $exist_movement = EcoComMovement::where('affiliate_id', $item->affiliate_id)->exists();
+            if ($exist_movement) {
+                $last_movement = EcoComMovement::where("affiliate_id",$item->affiliate_id)->latest()->orderBy('id', 'desc')->first();
+                if($last_movement->balance > 0){
+                    $eco_com_movement = new EcoComMovement();
+                    $eco_com_movement->affiliate_id = $item->affiliate_id;
+                    $eco_com_movement->movement_id = $item_discount->id;
+                    $eco_com_movement->movement_type = "discount_type_economic_complement";
+                    $eco_com_movement->description = 'PAGO MEDIANTE TRÁMITE';
+                    $eco_com_movement->amount = $item_discount->amount;
+                    $eco_com_movement->balance = $last_movement->balance - $item_discount->amount;
+                    $eco_com_movement->save();
+                }
             }
             if ($request->ecoComState == 25 ){
                 $item->eco_com_state_id = 26;
@@ -2138,16 +2144,21 @@ class EconomicComplementController extends Controller
     public function cambioEstadoIndividual($id){//para cambio de estado a Pagado individualmente cheque y domicilio
         $eco_com = EconomicComplement::find($id);
         //descuento por reposicion de fondos
-        $query = DB::table('discount_type_economic_complement')
-            ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
-            ->where('discount_type_economic_complement.economic_complement_id',$id)
-            ->where('discount_types.name', 'like', '%Reposición de Fondos')
-            ->select('amount')->get();
-        if(sizeof($query) > 0){
-            $devolution = $eco_com->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Reposición de Fondos.')->first()->id)->first();
-            $devolution->balance = $devolution->balance - $query[0]->amount;
-            $devolution->update();
-        }
+        $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$eco_com->id)->where("discount_type_id",6)->first();
+            $exist_movement = EcoComMovement::where('affiliate_id', $eco_com->affiliate_id)->exists();
+            if ($exist_movement) {
+                $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
+                if($last_movement->balance > 0){
+                    $eco_com_movement = new EcoComMovement();
+                    $eco_com_movement->affiliate_id = $eco_com->affiliate_id;
+                    $eco_com_movement->movement_id = $item_discount->id;
+                    $eco_com_movement->movement_type = "discount_type_economic_complement";
+                    $eco_com_movement->description = 'PAGO MEDIANTE TRÁMITE';
+                    $eco_com_movement->amount = $item_discount->amount;
+                    $eco_com_movement->balance = $last_movement->balance - $item_discount->amount;
+                    $eco_com_movement->save();
+                }
+            }
         //
         if ($eco_com->eco_com_state_id == 29){
             $eco_com->eco_com_state_id=17;
