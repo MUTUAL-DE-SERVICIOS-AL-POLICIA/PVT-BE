@@ -1489,15 +1489,21 @@ class EconomicComplementController extends Controller
                 break;
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
+
+        $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
+        if( $last_movement ) {
+            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+                return response()->json([
+                    'msg' => 'Error',
+                    'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
+                ], 422);
+            }
+        }
         if ($eco_com->discount_types->contains($discount_type->id)) {
             $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $request->amount, 'date' => now()]);
         } else {
             $eco_com->discount_types()->save($discount_type, ['amount' => $request->amount, 'date' => now()]);
         }
-        //detach
-        // if ($eco_com->discount_types->contains($discount_type->id)) {
-        //     $eco_com->discount_types()->detach($discount_type->id);
-        // }
         $eco_com->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 10,
@@ -1512,34 +1518,6 @@ class EconomicComplementController extends Controller
         ->with('eco_com_updated_pension')->find($request->id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $eco_com;
-        // case 4: //complemento
-        // $start_procedure = EconomicComplementProcedure::where('id','=', 2)->first();
-        //     $complemento = EconomicComplement::where('id', $request->id_complemento)->first();
-        //     $complemento->amount_replacement = $request->amount_amortization;
-        //     $complemento->save();
-        //     $sum = 0;
-        //     while ($start_procedure) {
-        //         $eco_com = $start_procedure->economic_complements()->where('affiliate_id', '=', $complemento->affiliate_id)->first();
-        //         if ($eco_com) {
-        //             if ($eco_com->amount_replacement) {
-        //                 $sum += $eco_com->amount_replacement;
-        //             }
-        //         }
-        //         $start_procedure = EconomicComplementProcedure::where('id', '=', Util::semesternext(Carbon::parse($start_procedure->year)->year, $start_procedure->semester))->first();
-        //     }
-        //     $devolution = Devolution::where('affiliate_id', '=', $complemento->affiliate_id)->where('observation_type_id', '=', 13)->first();
-        //     if ($devolution) {
-        //         $devolution->balance = $devolution->total - $sum;
-        //         $devolution->save();
-        //     }
-        //     break;
-        // Session::flash('message', 'Se guardo la Amortización.');
-
-        // if ($complemento->total_rent > 0) {
-        //     EconomicComplement::calculate($complemento, $complemento->total_rent, $complemento->sub_total_rent, $complemento->reimbursement, $complemento->dignity_pension, $complemento->aps_total_fsa, $complemento->aps_total_cc, $complemento->aps_total_fs, $complemento->aps_disability);
-        //     $complemento->save();
-        // }
-
     }
 
     public function saveDeposito(Request $request)
