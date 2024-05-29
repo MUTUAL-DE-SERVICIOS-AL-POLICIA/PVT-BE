@@ -563,7 +563,7 @@ export default {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
-      if (this.ecoCom.eco_com_updated_pension == null) {
+      if (this.ecoCom.eco_com_updated_pension == null && this.affiliate.pension_entity_id != 5) {
         this.ecoCom.eco_com_updated_pension = {};
         this.ecoCom.eco_com_updated_pension.aps_total_fsa = null;
         this.ecoCom.eco_com_updated_pension.aps_total_cc = null;
