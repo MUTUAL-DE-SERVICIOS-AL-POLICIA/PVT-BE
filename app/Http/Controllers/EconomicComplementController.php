@@ -3,6 +3,9 @@
 namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Muserpol\Models\EconomicComplement\EcoComFixedPension;
+use Muserpol\Models\EconomicComplement\EcoComUpdatedPension;
+use Muserpol\Models\EconomicComplement\EcoComRegulation;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Illuminate\Support\Facades\Auth;
 use Muserpol\Helpers\Util;
@@ -185,7 +188,7 @@ class EconomicComplementController extends Controller
         if ($has_economic_complement) {
             return redirect()->action('EconomicComplementController@show', ['id' => $affiliate->economic_complements()->where('eco_com_procedure_id', $eco_com_procedure_id)->first()->id]);
         }
-        if ($affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->get()->pluck('id'))->count() > 0) {
+        if ($affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->where('type', 'like', 'A')->get()->pluck('id'))->count() > 0) {
             return redirect()->action('AffiliateController@show', ['id' => $affiliate->id]);
         }
         $cities = City::all();
@@ -278,7 +281,6 @@ class EconomicComplementController extends Controller
          ** update affiliate police info
          */
         if($request->reception_type == ID::ecoCom()->inclusion){
-            // $affiliate->category_id = $request->affiliate_category_id;
             $service_year = $request->affiliate_service_years;
             $service_month = $request->affiliate_service_months;
             if ($service_year > 0 || $service_month > 0) {
@@ -294,15 +296,13 @@ class EconomicComplementController extends Controller
                     $affiliate->service_months = $request->affiliate_service_months;
                 }
             }
-            //$affiliate->degree_id = $request->affiliate_degree_id;
+            $affiliate->degree_id = $request->affiliate_degree_id;
             $affiliate->pension_entity_id = $request->pension_entity_id;
             $affiliate->date_derelict = Util::verifyMonthYearDate($request->affiliate_date_derelict) ? Util::parseMonthYearDate($request->affiliate_date_derelict) : $request->affiliate_date_derelict;
             $affiliate->save();
             
         }
-        /**
-         ** create Economic complement 
-         */
+
         $affiliate->account_number = $request->affiliate_account_number;
         $affiliate->financial_entity_id = $request->affiliate_financial_entity_id;
         $affiliate->sigep_status = $request->affiliate_account_number_sigep_status;
@@ -368,6 +368,12 @@ class EconomicComplementController extends Controller
             $economic_complement->aps_disability;
         }*/
         $economic_complement->save();
+
+        //Desactivar Observers
+        EconomicComplement::FlushEventListeners(); 
+        $this->updateEcoComWithFixedPension($economic_complement->id);    
+        //Activar Observers
+        EconomicComplement::Boot();
 
         $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
         /**
@@ -669,14 +675,16 @@ class EconomicComplementController extends Controller
     {
         $this->authorize('read', new EconomicComplement());
         $economic_complement = EconomicComplement::with([
-            'wf_state:id,name',
+            'wf_state:id,name,role_id,module_id',
             'workflow:id,name',
             'eco_com_modality:id,name,shortened,procedure_modality_id',
             'eco_com_reception_type:id,name',
             'eco_com_state:id,name,eco_com_state_type_id',
             'degree',
             'category',
-            'eco_com_once_payment'
+            'eco_com_once_payment',
+            'eco_com_fixed_pension',
+            'eco_com_updated_pension'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::all();
@@ -851,7 +859,8 @@ class EconomicComplementController extends Controller
             'fotoboleta' =>  $fotoBoleta,
             'affiliatedevice' =>  $affiliateDevice,
             'affiliatetoken' => $affiliateToken?$affiliateToken:-1,
-            'eco_com_once_payment' => $economic_complement->eco_com_once_payment
+            'eco_com_once_payment' => $economic_complement->eco_com_once_payment,
+            'wf_current_state' => $economic_complement->wf_state
         ];
         return view('eco_com.show', $data);
     }
@@ -1034,7 +1043,7 @@ class EconomicComplementController extends Controller
             $affiliate = Affiliate::find($eco_com->affiliate_id);
             if ($eco_com->eco_com_modality->procedure_modality_id == $request->modality_id) {
                 if($affiliate->stop_eco_com_consecutively()) {
-                    $reception_type_id = ID::ecoCom()->rehabilitacion;;
+                    $reception_type_id = ID::ecoCom()->rehabilitacion;
                 } else {
                     $reception_type_id = ID::ecoCom()->habitual;
                 }
@@ -1125,6 +1134,7 @@ class EconomicComplementController extends Controller
         }
         return $array_phone;
     }
+
     public function editRequirements(Request $request, $id)
     {
         try {
@@ -1282,7 +1292,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 6;
                 break;
         }
-        $eco_com = EconomicComplement::with(['discount_types', 'eco_com_state:id,name,eco_com_state_type_id', 'degree','category','eco_com_modality'])->findOrFail($id);
+        $eco_com = EconomicComplement::with(['discount_types', 'eco_com_state:id,name,eco_com_state_type_id', 'degree','category','eco_com_modality', 'eco_com_fixed_pension', 'eco_com_updated_pension'])->findOrFail($id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         if ($rol->id == 4) {
             $devolution = $eco_com->affiliate->devolutions()->where('observation_type_id',13)->first();
@@ -1303,7 +1313,35 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
-        $economic_complement = EconomicComplement::with('discount_types')->find($request->id);
+        $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+        ->with('eco_com_updated_pension')->find($request->id);
+        if (is_null($economic_complement->eco_com_fixed_pension)) {
+            $regulation = EcoComRegulation::where('is_enable', true)->orderBy('created_at')->first();
+
+            $fixed = new EcoComFixedPension;
+            $fixed->user_id = Auth::user()->id;
+            $fixed->affiliate_id = $economic_complement->affiliate_id;
+            $fixed->eco_com_regulation_id = $regulation->id;
+            $fixed->eco_com_procedure_id = $economic_complement->eco_com_procedure_id;
+            $fixed->rent_type = 'Manual';
+            $fixed->save();
+
+            $economic_complement->eco_com_fixed_pension_id = $fixed->id;
+            $economic_complement->save();
+            $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+                ->with('eco_com_updated_pension')->find($request->id);
+        }
+        if ($economic_complement->affiliate->pension_entity_id != ID::pensionEntity()->senasir){
+            if (is_null($economic_complement->eco_com_updated_pension)) {
+                $updated = new EcoComUpdatedPension;
+                $updated->user_id = Auth::user()->id;
+                $updated->economic_complement_id = $economic_complement->id;
+                $updated->rent_type = 'Manual';
+                $updated->save();
+                $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+                    ->with('eco_com_updated_pension')->find($request->id);
+            }
+        }
         if ($request->refresh == false) {
             if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
                 $eco_com_state = $economic_complement->eco_com_state;
@@ -1314,35 +1352,50 @@ class EconomicComplementController extends Controller
                 ], 422);
             }
             if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
-                $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
-                $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
-                $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
-                $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
-                $economic_complement->aps_total_fsa = null;
-                $economic_complement->aps_total_cc = null;
-                $economic_complement->aps_total_fs = null;
-                $economic_complement->aps_total_death = null;
+                $this->updateEcoComPensions($economic_complement, 'sub_total_rent', $request->sub_total_rent, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'reimbursement', $request->reimbursement, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'dignity_pension', $request->dignity_pension, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_disability', $request->aps_disability, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_total_fsa', null, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_total_cc', null, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_total_fs', null, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_total_death', null, $request->type);
             } else {
-                $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
-                $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
-                $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
-                $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
-                $economic_complement->aps_total_death = Util::parseMoney($request->aps_total_death);
-                $economic_complement->sub_total_rent = null;
-                $economic_complement->reimbursement = null;
-                $economic_complement->dignity_pension = null;
+                $this->updateEcoComPensions($economic_complement, 'aps_total_fsa', $request->aps_total_fsa, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_total_cc', $request->aps_total_cc, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_total_fs', $request->aps_total_fs, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_disability', $request->aps_disability, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'aps_total_death', $request->aps_total_death, $request->type);
+                $this->updateEcoComPensions($economic_complement, 'sub_total_rent', null);
+                $this->updateEcoComPensions($economic_complement, 'reimbursement', null);
+                $this->updateEcoComPensions($economic_complement, 'dignity_pension', null);
             }
-            $economic_complement->save();
+            $economic_complement->push();
             if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
                 $economic_complement->total_rent =
                 $economic_complement->sub_total_rent -
                 $economic_complement->reimbursement -
                 $economic_complement->dignity_pension +
                 $economic_complement->aps_disability;
+                // Sumar renta en las pensiones fijas
+                $economic_complement->eco_com_fixed_pension->total_rent =
+                $economic_complement->eco_com_fixed_pension->sub_total_rent -
+                $economic_complement->eco_com_fixed_pension->reimbursement -
+                $economic_complement->eco_com_fixed_pension->dignity_pension +
+                $economic_complement->eco_com_fixed_pension->aps_disability;
             }else{
                 $economic_complement->calculateTotalRentAps();
+                // Calcular renta en las pensiones fijas y actualizadas
+                $economic_complement->eco_com_fixed_pension->calculateTotalRentAps();
+                $economic_complement->eco_com_updated_pension->calculateTotalRentAps();
             }
-            $economic_complement->rent_type == "Manual";
+            if($request->type == "ce"){
+                $economic_complement->rent_type = "Manual";
+                $economic_complement->eco_com_fixed_pension->rent_type = "Manual";
+            } else if ($request->type == "am") {
+                $economic_complement->eco_com_updated_pension->rent_type = "Manual";
+            }
+            // Actualiza las tablas pension fija y actualizada a "manual"
             $economic_complement->save();
         }
         $discount_type_id = null;
@@ -1363,10 +1416,32 @@ class EconomicComplementController extends Controller
                 return $economic_complement->qualify() ;
             }
         }
-        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality'])->find($economic_complement->id);
+        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_updated_pension'])->find($economic_complement->id);
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         $economic_complement->total_eco_com = $economic_complement->getOnlyTotalEcoCom();
         return $economic_complement;
+    }
+    private function updateEcoComPensions($ec, $attr, $value, $type = null)
+    {
+        if ($value != null) {
+            $amount = Util::parseMoney($value);
+        } else {
+            $amount = null;
+        }
+        if ($type == "ce") {
+            $ec->{$attr} = $amount;
+            if (!is_null($ec->eco_com_fixed_pension)) {
+                $ec->eco_com_fixed_pension->{$attr} = $amount;
+            }
+            if ($ec->eco_com_reception_type_id == 2) // Inclusion
+            {
+                if (!is_null($ec->eco_com_updated_pension)) {
+                    $ec->eco_com_updated_pension->{$attr} = $amount;
+                }
+            }
+        } else if ($type == "am") {
+            $ec->eco_com_updated_pension->{$attr} = $amount;
+        }
     }
     public function saveAmortization(Request $request)
     {
@@ -1382,6 +1457,7 @@ class EconomicComplementController extends Controller
         try {
             $this->validate($request, [
                 'amount' => 'required|numeric|min:1',
+                'discount_type'=>'required|numeric'
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -1408,7 +1484,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 5;
                 break;
             case 4: // complemento
-                $discount_type_id = 6;
+                $discount_type_id = $request->discount_type;
                 break;
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
@@ -1431,7 +1507,8 @@ class EconomicComplementController extends Controller
         if (Gate::allows('qualify', $eco_com)) {
             $eco_com->qualify();
         }
-        $eco_com = EconomicComplement::with('discount_types')->find($request->id);
+        $eco_com = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
+        ->with('eco_com_updated_pension')->find($request->id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         return $eco_com;
         // case 4: //complemento
@@ -1500,15 +1577,31 @@ class EconomicComplementController extends Controller
         }
         if ($id) {
             $eco_com = EconomicComplement::find($id);
-            $beneficiary = EcoComBeneficiary::whereEconomicComplementId($id)->first();
-            $eco_com->code = $eco_com->code . 'A';
+
+            $temp = EconomicComplement::where('code', 'ilike', $eco_com->code.'%');
+            if($temp->onlyTrashed()->count() > 0) {
+                $eco_com_trashed = $temp->onlyTrashed()->orderBy('id')->get();
+                foreach($eco_com_trashed as $eco_coms) {
+                    $oldEvents = $eco_com->getEventDispatcher();
+                    $eco_com->unsetEventDispatcher();
+                    $eco_coms->code .= 'A';
+                    $eco_coms->save();
+                    $eco_com->setEventDispatcher($oldEvents);
+                }
+            }
+            $oldEvents = $eco_com->getEventDispatcher();
+            $eco_com->unsetEventDispatcher();
+            $eco_com->code .= 'A';
             $eco_com->save();
+            $eco_com->setEventDispatcher($oldEvents);
             $affiliate_tokens = AffiliateToken::whereAffiliateId($eco_com->affiliate_id)->first();
-            $affiliate_device = $affiliate_tokens->affiliate_device;
-            $affiliate_device->eco_com_procedure_id = null;
-            if($affiliate_device->eco_com_procedure_id == null) logger("SI"); else logger("NO");
-            $eco_com->eco_com_beneficiary()->delete();
-            $affiliate_device->update();
+            if($affiliate_tokens) {
+                $affiliate_device = $affiliate_tokens->affiliate_device;
+                if($affiliate_device) {
+                    $affiliate_device->delete();
+                }
+                $affiliate_tokens->delete();
+            }
             $eco_com->eco_com_beneficiary()->delete();
             $eco_com->eco_com_legal_guardian()->delete();
             $eco_com->submitted_documents()->delete();
@@ -1519,13 +1612,6 @@ class EconomicComplementController extends Controller
             $eco_com->discount_types()->detach();
             $eco_com->tags()->detach();
             $eco_com->delete();
-            $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($beneficiary->identity_card)->first();
-            if(!$eco_com_beneficiary) {
-                logger("beneficiario inexistente");
-                $affiliate_tokens->api_token = null;
-                $affiliate_tokens->firebase_token = null;
-                $affiliate_tokens->update();
-            }
             return response()->json([
                 'message' => 'deleted',
             ], 204);
@@ -1925,7 +2011,7 @@ class EconomicComplementController extends Controller
         $eco_com->salary_reference = $salary_reference;
 
         if ($eco_com->total_rent > $eco_com->salary_quotable) {
-            $eco_com->eco_com_state_id = 12;
+            //$eco_com->eco_com_state_id = 12; // Se quito el estado automatico Exclusion
         } else {
             if ($eco_com->eco_com_state_id == 12) {
                 $eco_com->eco_com_state_id = 16;
@@ -2199,6 +2285,92 @@ class EconomicComplementController extends Controller
                 'due_date' => $due_date ? $due_date->format('Y-m-d'):null,
                 'is_duedate_undefined' => isset($once_payment['is_duedate_undefined']) ? $once_payment['is_duedate_undefined'] : false
             ]);
+        }
+    }
+    //Metodos para el complemento del quinquenio
+    public function updateEcoComWithFixedPension($economic_complement_id)
+    {
+        $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
+        if(!!$economic_complement){
+            if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
+                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)->first();
+                if(!!$fixed_pension){ 
+                    $economic_complement->eco_com_fixed_pension_id = $fixed_pension->id; 
+                    $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
+                    $economic_complement->aps_total_cc = $fixed_pension->aps_total_cc;      //APS
+                    $economic_complement->aps_total_fs = $fixed_pension->aps_total_fs;      //APS
+                    $economic_complement->aps_total_death = $fixed_pension->aps_total_death;//APS
+                    $economic_complement->aps_disability = $fixed_pension->aps_disability;  //APS //SENASIR
+
+                    $economic_complement->sub_total_rent = $fixed_pension->sub_total_rent;  //SENASIR
+                    $economic_complement->reimbursement = $fixed_pension->reimbursement;    //SENASIR
+                    $economic_complement->dignity_pension = $fixed_pension->dignity_pension;//SENASIR
+                    $economic_complement->total_rent = $fixed_pension->total_rent;          //SENASIR total_rent=sub_total_rent-descuentos planilla
+
+                    $economic_complement->rent_type = 'Automatico';
+                    $economic_complement->save();             
+                }
+            }
+        }
+    }
+    public function loadAverageWithRegulation(Request $request)
+    {
+        $eco_com_procedure_id = $request->ecoComProcedureId;
+        $user_id = Auth::user()->id;
+        $eco_com_procedure = EcoComProcedure::find($eco_com_procedure_id);
+        $year = $eco_com_procedure->year;
+        $semester = $eco_com_procedure->semester;
+
+        $averages = EcoComRent::where('year','=',$year)->where('semester','=',$semester)->get();
+        if($averages->isEmpty())
+        {
+            //Realiza el borrado si existiese
+            foreach ($averages as $item)
+            {
+                $item->delete();
+            }
+
+            $ecoComRents = EcoComRegulation::where('eco_com_regulations.is_enable', true)
+            ->leftJoin('eco_com_procedures', 'eco_com_regulations.replica_eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->leftJoin('eco_com_rents', function($join) {
+                $join->on('eco_com_rents.year', '=', 'eco_com_procedures.year')
+                ->on('eco_com_rents.semester', '=', 'eco_com_procedures.semester');
+            })
+            ->select(
+                'eco_com_rents.degree_id',
+                'eco_com_rents.minor',
+                'eco_com_rents.higher',
+                'eco_com_rents.average',
+                'eco_com_rents.procedure_modality_id'
+            )
+            ->orderBy('eco_com_regulations.created_at')
+            ->get();
+            
+            // Insertar en eco_com_rents
+            foreach ($ecoComRents as $ecoComRent) {
+                EcoComRent::create([
+                    'user_id' => $user_id,
+                    'degree_id' => $ecoComRent->degree_id,
+                    'year' => $year,
+                    'semester' => $semester,
+                    'minor' => $ecoComRent->minor,
+                    'higher' => $ecoComRent->higher,
+                    'average' => $ecoComRent->average,
+                    'procedure_modality_id' => $ecoComRent->procedure_modality_id,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
+            }
+            return response()->json([
+                'msg' => 'Se realizó el cargado de promedios',
+                'data'=> $ecoComRents,
+                'errors' => false,
+            ], 200);
+        } else {
+            return response()->json([
+                'msg' => 'Ya existen promedios registrados',
+                'errors' => true,
+            ], 422);
         }
     }
 }

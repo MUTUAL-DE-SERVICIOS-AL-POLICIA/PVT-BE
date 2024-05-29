@@ -52,8 +52,9 @@
             v-if="editing"
             class="btn btn-danger"
             @click="deleteEcoCom()"
-            :disabled="!can('delete_economic_complement')"
+            :disabled="!(can('delete_economic_complement') && canDelete(roleId, wfCurrentState)) "
           >
+            <!-- :disabled="!((ecoCom.city_id == 4 && ecoCom.wf_state.id == 1 && !can('delete_economic_complement')) || (ecoCom.city_id != 4 && ecoCom.wf_state.id != 1) && !can('delete_economic_complement'))" -->
             <i class="fa fa-trash-o"></i>
           </button>
           <button
@@ -63,7 +64,7 @@
             class="btn btn-primary"
             :class="editing ? 'active': ''"
             @click="edit()"
-            :disabled="!can('update_economic_complement')"
+            :disabled="!(can('update_economic_complement'))"
             v-if="can('read_economic_complement')"
           >
             <i class="fa" :class="editing ?'fa-edit':'fa-pencil'"></i> Editar
@@ -184,7 +185,7 @@
                 <label class="control-label">Categoria</label>
             </div>
               <div class="col-md-4">
-                <select class="form-control" v-model="form.category_id" name="category_id" :disabled="!editing" v-validate="'required'">
+                <select class="form-control" v-model="form.category_id" name="category_id" :disabled="true" v-validate="'required'">
                   <option v-for="(c, index) in categories" :value="c.id" :key="index">{{c.name}}</option>
                 </select>
                 <div v-show="errors.has('category_id')">
@@ -196,7 +197,7 @@
                 <label class="control-label">Grado</label>
             </div>
               <div class="col-md-4">
-                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing || (roleId != 5) " v-validate="'required'">
+                <select class="form-control" v-model="form.degree_id" name="degree_id" :disabled="!editing || !validationRoles(roleId, wfCurrentState)" v-validate="'required'">
                   <option v-for="(c, index) in degrees" :value="c.id" :key="index">{{c.name}}</option>
                 </select>
                 <div v-show="errors.has('degree_id')">
@@ -209,7 +210,7 @@
           <div class="row">
             <div class="col-md-2"><label class="control-label">Años de servicio</label></div>
             <div class="col-md-4">
-                <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
+                <input type="number" v-model="form.service_years" name="service_years" class="form-control" :disabled="!editing || !validationRoles(roleId, wfCurrentState)" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:100'" max="100" min="0">
                 <div v-show="errors.has('service_years') && editing" >
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">@{{ errors.first('service_years') }}</span>
@@ -220,7 +221,7 @@
         <div class="row">
            <div class="col-md-2"><label class="control-label">Meses de servicio</label></div>
             <div class="col-md-4">
-                <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
+                <input type="number" name="service_months" v-model="form.service_months" class="form-control" :disabled="!editing || !validationRoles(roleId, wfCurrentState)" @change="getCalculateCategory()" v-validate="'min_value:0|max_value:11'" min="0" max="11">
                 <div v-show="errors.has('service_months') && editing" >
                     <i class="fa fa-warning text-danger"></i>
                     <span class="text-danger">@{{ errors.first('service_months') }}</span>
@@ -485,7 +486,7 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-          <label for="eco_com_state_id">NO PAGADO - EXCLUIDO</label>
+            <label for="eco_com_state_id">NO PAGADO - EXCLUSIÓN DEL SEMESTRE</label>
           </div>
           <div class="col-md-2">
           <input class ="mediumCheckbox"
@@ -494,6 +495,21 @@
           v-model="form.eco_com_state_id" 
           value='12'
           :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+               <div class="row">
+          <div class="col-md-4">
+            <label for="eco_com_state_id">NO PAGADO - EXCLUSIÓN DEFINITIVA</label>
+          </div>
+          <div class="col-md-2">
+            <input
+              class="mediumCheckbox"
+              type="radio"
+              id="eco_com_state_id"
+              v-model="form.eco_com_state_id"
+              value="31"
+              :disabled="!editing || (roleId != 4)"
+            >
           </div>
         </div>
         <div class="row">
@@ -553,7 +569,9 @@ export default {
     "permissions",
     "degrees",
     "categories",
-    "roleId"
+    "roleId",
+    "user",
+    "wfCurrentState"
   ],
   data: function() {
   var defaultType = "V";
@@ -599,6 +617,17 @@ export default {
     clone: {}
   };
 },
+  computed: {
+    isInclusion () {
+      return this.ecoCom.eco_com_reception_type.id == 2
+    },
+    isReEnablement() {
+      return this.ecoCom.eco_com_reception_type.id == 3
+    },
+    itsUsual() {
+      return this.ecoCom.eco_com_reception_type.id == 1
+    }
+  },
   mounted() {
     //console.log(this.ecoCom.eco_com_state_id==17 ? true: false);
     document.querySelectorAll(".tab-eco-com")[0].addEventListener(
@@ -771,7 +800,31 @@ export default {
     },
     async formSolicitudPago(){
       printJS({printable:'/eco_com/'+this.ecoCom.id+'/print/reception', type:'pdf', showModal:true});
-    }
+    },
+    validationRoles(roleUser, wfCurrentState) {
+      const roleProcedure = wfCurrentState.role_id // obtenemos donde esta el trámite
+      let rolesPermited = [2, 4, 5, 22, 23, 24, 25, 26, 27, 52, 68] // todos los roles permitidos
+      if(rolesPermited.indexOf(parseInt(roleUser)) !== -1) {
+        if(this.isInclusion || this.isReEnablement) { // es inclusion o rehabilitacion
+          if(roleUser === roleProcedure) return true
+        }
+        if(parseInt(roleUser) == 4 || parseInt(roleUser) == 5) {
+          return true
+        }
+      }
+      return false
+    },
+    canDelete(roleUser, wfCurrentState) {
+      const roleProcedure = wfCurrentState.role_id
+      if(this.isInclusion) {
+        if(this.ecoCom.city_id == 4 && this.ecoCom.wf_state.id == 1) { // ciudad de La Paz y es recepción
+          return true
+        } else if(this.ecoCom.city_id != 4 && this.ecoCom.wf_state.id != 1) { // regional y no esta en recepción
+          if(roleUser === roleProcedure) return true
+        }
+      }
+      return false
+    },
   }
 };
 </script>
