@@ -28,6 +28,7 @@ class AffiliateDevolutionController extends Controller
             $correlative = 1;
             foreach ($dues as $due) {
                 $due_object = new \stdClass();
+                $due_object->id = $due->id;
                 $due_object->correlative = $correlative++;
                 $due_object->amount = $due->amount;
                 $due_object->eco_com_procedure_name=$due->eco_com_procedure->getTextName();
