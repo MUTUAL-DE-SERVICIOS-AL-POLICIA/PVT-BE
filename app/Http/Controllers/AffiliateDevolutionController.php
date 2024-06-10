@@ -22,6 +22,7 @@ class AffiliateDevolutionController extends Controller
             $devolution_object->id = $devolution->id;
             $devolution_object->has_payment_commitmment = $devolution->has_payment_commitmment;
             $devolution_object->percentage = $devolution->percentage;
+            $devolution_object->start_eco_com_procedure = $devolution->eco_com_procedure->getTextName();
             $devolution_object->total = EcoComMovement::where("movement_id",$devolution->id)->where("movement_type","devolutions")->first()->amount;
             $dues = $devolution->dues;
             $devolution_object->dues = collect();
