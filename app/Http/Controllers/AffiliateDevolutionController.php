@@ -8,30 +8,34 @@ use Muserpol\Helpers\Util;
 use DB;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\Devolution;
+use Muserpol\Models\EconomicComplement\EcoComMovement;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 
 class AffiliateDevolutionController extends Controller
 {
     public function getDevolutions($affiliate_id)
     {
-        $affiliate = Affiliate::find($affiliate_id);
-        $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
-        $devolution = $devolutions->where('observation_type_id', 13)->first();
-        $dues = [];
-        if ($devolution) {
-            $dues = $devolution->dues()->select('dues.*')
-                ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-                ->orderByDesc('eco_com_procedures.year')
-                ->orderByDesc('eco_com_procedures.semester')
-                ->get();
-            foreach ($dues as $d) {
-                $d->eco_com_procedure_name = $d->eco_com_procedure->getTextName();
+        $devolutions = Devolution::where('affiliate_id',$affiliate_id)->get();
+        $list_devolution= collect();
+        foreach ($devolutions as $devolution ) {
+            $devolution_object = new \stdClass();
+            $devolution_object->has_payment_commitmment = $devolution->has_payment_commitmment;
+            $devolution_object->percentage = $devolution->percentage;
+            $devolution_object->total = EcoComMovement::where("movement_id",$devolution->id)->where("movement_type","devolutions")->first()->amount;
+            $dues = $devolution->dues;
+            $devolution_object->dues = collect();
+            $correlative = 1;
+            foreach ($dues as $due) {
+                $due_object = new \stdClass();
+                $due_object->correlative = $correlative++;
+                $due_object->amount = $due->amount;
+                $due_object->eco_com_procedure_name=$due->eco_com_procedure->getTextName();
+                $devolution_object->dues->push($due_object);
             }
+            $list_devolution->push($devolution_object);
         }
         $data = [
-            'devolutions' => $devolutions,
-            'devolution' => $devolution,
-            'dues' => $dues,
+            'devolutions' => $list_devolution,
         ];
         return $data;
     }
