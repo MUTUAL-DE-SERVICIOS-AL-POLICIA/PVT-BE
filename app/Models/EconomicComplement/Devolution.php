@@ -3,11 +3,13 @@
 namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\ObservationType;
 
 class Devolution extends Model
 {
+    use SoftDeletes;
     protected $guarded = [];
     public function affiliate()
     {
