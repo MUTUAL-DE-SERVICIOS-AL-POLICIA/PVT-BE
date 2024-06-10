@@ -19,6 +19,7 @@ class AffiliateDevolutionController extends Controller
         $list_devolution= collect();
         foreach ($devolutions as $devolution ) {
             $devolution_object = new \stdClass();
+            $devolution_object->id = $devolution->id;
             $devolution_object->has_payment_commitmment = $devolution->has_payment_commitmment;
             $devolution_object->percentage = $devolution->percentage;
             $devolution_object->total = EcoComMovement::where("movement_id",$devolution->id)->where("movement_type","devolutions")->first()->amount;
