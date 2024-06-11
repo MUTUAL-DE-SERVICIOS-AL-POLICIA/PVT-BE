@@ -2,30 +2,35 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox">
+        <div class="ibox-content">
+          <div class="alert alert-warning" >
+            Realice el <b>registro del depósito</b> y la creción del <b>compromiso de pago</b>, mediante el software <b>Seguimiento de Trámites Integral (STI)</b>.
+          </div>
+        </div>
         <div class="ibox-title">
           <h2 class="pull-left">Devoluciones</h2>
           <div class="ibox-tools">
             <div v-if="devolution">
                
-              <button :disabled="devolution.balance==0"  class="btn btn-info" @click="deposito()">
+              <!-- <button :disabled="devolution.balance==0"  class="btn btn-info" @click="deposito()">
                 <i class="fa fa-dollar"></i> <b>Registrar Deposito</b>
-              </button>
+              </button> -->
               <button  class="btn btn-primary" @click="printCertification()">
                 <i class="fa fa-print"></i> Imprimir Certificacion
               </button>
               <button :disabled="devolution.hasPaymentCommitment || selectedDues.length == 0" class="btn btn-primary" @click="printPaymentCommitment()">
                 <i class="fa fa-print"></i> Imprimir Compromiso
               </button>
-              <button class="btn btn-primary" data-toggle="tooltip" title="Crear compromiso de Pago" @click="createPaymentCommitment()">
+              <!-- <button class="btn btn-primary" data-toggle="tooltip" title="Crear compromiso de Pago" @click="createPaymentCommitment()">
                 <i class="fa fa-plus"></i> {{ devolution.has_payment_commitment ? 'Editar':'Crear'}} compromiso de Pago
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
         <div class="ibox-content">
           <div v-for="devolution in devolutions" :key="devolution.id">
-            <h2>Por: {{devolution.observation_type.name}}</h2>
-            <table class="table table-striped table-hover table-bordered" v-if='dues.length'>
+            <!-- <h2>Por: {{devolution.observation_type.name}}</h2> -->
+            <table class="table table-striped table-hover table-bordered" v-if='devolution.dues.length'>
               <thead>
                 <tr>
                   <th></th>
@@ -35,64 +40,58 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(d, index) in dues" :key="index">
+                <tr v-for="(d, index) in devolution.dues" :key="index">
                   <td><input type="checkbox" @click="selectDue(d.id)"></td>
-                  <td>{{index + 1}}</td>
+                  <!-- <td>{{index + 1}}</td> -->
+                   <td>{{  d.correlative }}</td>
                   <td>{{ d.eco_com_procedure_name }}</td>
                   <td>{{ d.amount | currency }}</td>
                 </tr>
               </tbody>
             </table>
-            <table style="width:30%">
+            <table style="width:35%">
               <tr>
-                <td>Total Deuda</td>
+                <td>Total deuda: </td>
                 <td>
                   <strong class="text-xxs">{{ devolution.total | currency }}</strong>
                 </td>
               </tr>
               <tr>
-                <td>Total Deuda Pendiente</td>
+                <td>Semestre de inicio de pago: </td>
                 <td>
-                  <strong>{{ devolution.balance | currency }}</strong>
-                </td>
-              </tr>
-
-              <tr>
-                <td>Numero de Deposito</td>
-                <td>
-                  <strong>{{ devolution.deposit_number }}</strong>
+                  <strong class="text-xxs">{{  devolution.start_eco_com_procedure }}</strong>
                 </td>
               </tr>
               <tr>
-                <td>Fecha de Deposito</td>
+                <td>Porcentaje de pago: </td>
                 <td>
-                  <strong>{{ devolution.payment_date }}</strong>
+                  <strong>{{ devolution.percentage ? `${devolution.percentage}%` : '0%' }}</strong>
                 </td>
               </tr>
               <tr>
-                <td>Monto de Deposito</td>
+                <td>Tiene compromiso de pago: </td>
                 <td>
-                  <strong>{{ devolution.payment_amount | currency }}</strong>
+                  <strong>{{ devolution.has_payment_commitment ? 'Si' : 'No'}}</strong>
                 </td>
               </tr>
             </table>
             <br>
-            <button
+            <!-- <button
                 class="btn btn-primary"
                 @click="confirmTotalDeuda()"
                 data-toggle="tooltip"
                 title="Actualizar Total Deuda"
                >
                 <i class="fa fa-refresh"></i>Total Deuda
-              </button>
-              <button
+              </button> -->
+              <!-- <button
                 class="btn btn-primary"
                 @click="confirmTotalDeudaPendiente()"
                 data-toggle="tooltip"
                 title="Actualizar Total Deuda Pendiente"
                >
                 <i class="fa fa-refresh"></i>Total Deuda Pendiente
-              </button>
+              </button> -->
           </div>
         </div>
       </div>
@@ -261,7 +260,6 @@ export default {
         discountType: null,
       },
 
-      
       percentages:[
         {
           percentage: '0.50',
@@ -306,6 +304,7 @@ export default {
   },
   methods: {
     selectDue(due) {
+      console.log("esto es due ", due)
       if (this.selectedDues.includes(due)) {
         this.selectedDues = this.selectedDues.filter(function(o) {return o != due;});
       } else {
@@ -354,17 +353,18 @@ export default {
       await axios
         .get(`/affiliate_get_devolutions/${this.affiliate.id}`)
         .then(response => {
+          console.log(response.data)
           this.devolutions = response.data.devolutions;
-          this.devolution = response.data.devolution;
-          this.dues = response.data.dues;
-          if (this.devolution) {
-              this.form.discountType = 'total'
-              this.form.start_eco_com_procedure_id = this.devolution.start_eco_com_procedure_id;
-              if (this.devolution.percentage > 0) {
-                this.form.discountType =  'percentage';
-                this.form.percentage =  this.devolution.percentage;
-              }
-          }
+          // this.devolution = response.data.devolution;
+          // this.dues = response.data.dues;
+          // if (this.devolution) {
+          //     this.form.discountType = 'total'
+          //     this.form.start_eco_com_procedure_id = this.devolution.start_eco_com_procedure_id;
+          //     if (this.devolution.percentage > 0) {
+          //       this.form.discountType =  'percentage';
+          //       this.form.percentage =  this.devolution.percentage;
+          //     }
+          // }
         })
         .catch(error => {
           console.log(error);
@@ -385,6 +385,7 @@ export default {
     },
     async printPaymentCommitment(){
       try {
+        console.log("esto es selectedDues", this.selectedDues)
         let res = await axios({
           method: "POST",
           url: `/affiliate/${this.affiliate.id}/print/devolution_payment_commitment`,

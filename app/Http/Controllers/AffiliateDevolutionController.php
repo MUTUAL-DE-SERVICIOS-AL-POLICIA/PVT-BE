@@ -148,7 +148,7 @@ class AffiliateDevolutionController extends Controller
     public function printDevolutionPaymentCommitment(Request $request, $affiliate_id)
     {
         $duesss = $request->all();
-        
+
         $duess = $request->dues;
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
@@ -158,18 +158,30 @@ class AffiliateDevolutionController extends Controller
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
         $affiliate = Affiliate::find($affiliate_id);
-        $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
-        $devolution = $devolutions->where('observation_type_id', 13)->first();
-        if (!isset($devolution->id)) {
-     
-            return response()->json('El Trámite no tiene deudas', 204);
-         
-        }
-        $dues = $devolution->dues()->select('dues.*')
-            ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-            ->orderBy('eco_com_procedures.year')
-            ->orderBy('eco_com_procedures.semester')
+        // $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
+        // $devolution = $devolutions->where('observation_type_id', 13)->first();
+        // if (!isset($devolution->id)) {
+        //     return response()->json('El Trámite no tiene deudas', 204);
+        // }
+        // $dues = $devolution->dues()->select('dues.*')
+        //     ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+        //     ->orderBy('eco_com_procedures.year')
+        //     ->orderBy('eco_com_procedures.semester')
+        //     ->get();
+
+        $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])
+            ->where('observation_type_id', 13)
             ->get();
+
+        $dues = collect([]);
+
+        foreach ($devolutions as $devolution) {
+            $aux = $devolution->dues()->get();
+            if(count($aux) != 0) {
+                $dues = $dues->concat($aux->whereIn('id', $duess));
+            }
+        }
+
         $semesters = collect([]);
         foreach ($dues as $d) {
            $semesters->push($d->eco_com_procedure->getTextName());  
