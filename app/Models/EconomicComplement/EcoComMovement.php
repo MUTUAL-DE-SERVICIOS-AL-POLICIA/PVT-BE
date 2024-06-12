@@ -15,8 +15,8 @@ class EcoComMovement extends Model
         'amount',
         'balance',
     ];
-    public function morphable()
+    public function movementable()
     {
-        return $this->morphTo('morphable');
+        return $this->morphTo();
     }
 }

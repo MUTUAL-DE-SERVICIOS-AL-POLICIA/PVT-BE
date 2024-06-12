@@ -8,6 +8,7 @@ use Muserpol\Helpers\Util;
 use DB;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\Devolution;
+use Muserpol\Models\EconomicComplement\EcoComDirectPayment;
 use Muserpol\Models\EconomicComplement\EcoComMovement;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 
@@ -22,7 +23,7 @@ class AffiliateDevolutionController extends Controller
             $devolution_object->id = $devolution->id;
             $devolution_object->has_payment_commitmment = $devolution->has_payment_commitmment;
             $devolution_object->percentage = $devolution->percentage;
-            $devolution_object->start_eco_com_procedure = $devolution->eco_com_procedure->getTextName();
+            $devolution_object->start_eco_com_procedure = $devolution->eco_com_procedure ? $devolution->eco_com_procedure->getTextName() : null;
             $devolution_object->total = EcoComMovement::where("movement_id",$devolution->id)->where("movement_type","devolutions")->first()->amount;
             $dues = $devolution->dues;
             $devolution_object->dues = collect();
@@ -52,16 +53,30 @@ class AffiliateDevolutionController extends Controller
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
         $affiliate = Affiliate::find($affiliate_id);
+        $movement_list = EcoComMovement::where("affiliate_id", $affiliate_id)->get();
+        $balance =EcoComMovement::where("affiliate_id", $affiliate_id)->latest()->orderBy('id', 'desc')->first()->balance;
+        $direct_payments = $movement_list->where("movement_type", "eco_com_direct_payments");
+        $direct_payment_list = collect([]);
+        foreach ($direct_payments as $direct_payment) {
+            $payment = new \stdClass();
+            $payment->amount = $direct_payment->amount;
+            $eco_com_direct_payment = EcoComDirectPayment::find($direct_payment->movement_id)->first();
+            $payment->voucher = $eco_com_direct_payment->voucher;
+            $payment->payment_date = $eco_com_direct_payment->payment_date;
+            $direct_payment_list->push($payment);
+        }
+        $dues_list = $movement_list->where("movement_type", "devolutions");
+        $total_dues = $dues_list->sum('amount');
         $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
         $devolution = $devolutions->where('observation_type_id', 13)->first();
         if (!isset($devolution->id)) {
             return response()->json('El Trámite no tiene deudas', 204);
         }
         $dues = $devolution->dues()->select('dues.*')
-            ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-            ->orderBy('eco_com_procedures.year')
-            ->orderBy('eco_com_procedures.semester')
-            ->get();
+        ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+        ->orderBy('eco_com_procedures.year')
+        ->orderBy('eco_com_procedures.semester')
+        ->get();
         $semesters = collect([]);
         foreach ($dues as $d) {
             $semesters->push($d->eco_com_procedure->getTextName());
@@ -70,10 +85,9 @@ class AffiliateDevolutionController extends Controller
         $eco_com = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last();
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
         $eco_coms = EconomicComplement::with('discount_types')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-            ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
-            // ->where('eco_com_applicants.identity_card', $eco_com_beneficiary->identity_card)
-            ->where('affiliate_id', $affiliate->id)
-            ->whereIn('economic_complements.eco_com_state_id', [1,21,17,18,26,2])
+        ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
+        ->where('affiliate_id', $affiliate->id)
+            ->whereIn('economic_complements.eco_com_state_id', [1, 21, 17, 18, 26, 2])
             ->select('economic_complements.*')
             ->orderBY('eco_com_procedures.year')
             ->orderBY('eco_com_procedures.semester')
@@ -81,7 +95,6 @@ class AffiliateDevolutionController extends Controller
         $eco_coms = $eco_coms->filter(function ($item) {
             return $item->discount_types->contains(6);
         });
-        // dd($eco_coms->first()->discount_types->where('id', 6));
         $bar_code = \DNS2D::getBarcodePNG($affiliate->encode(), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
@@ -92,7 +105,9 @@ class AffiliateDevolutionController extends Controller
             'title' => $title,
             'area' => $area,
             'date' => $date,
-
+            'total_dues' => $total_dues,
+            'direct_payment_list' => $direct_payment_list,
+            'balance'=>$balance,
             'devolution' => $devolution,
             'eco_com_beneficiary' => $eco_com_beneficiary,
             'affiliate' => $affiliate,
@@ -107,8 +122,8 @@ class AffiliateDevolutionController extends Controller
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
-            ->setOption('margin-bottom', '23mm')
-            ->setOption('footer-html', $footerHtml)
+        ->setOption('margin-bottom', '23mm')
+        ->setOption('footer-html', $footerHtml)
             ->stream("certificacion.pdf");
         return $data;
     }
