@@ -83,10 +83,10 @@ class SearcherController
         $eco_com = null;
         $affiliate = null;
         $affiliate_devolutions = [];
-        $affiliate_observations = [];
+        $affiliate_observations = collect([]);
         $affiliate_observations_exclude = [];
         $affiliate_observations_amortizable = [];
-        $affiliate_observations_rectifiable = [];
+        $affiliate_observations_exclude_rectifiable = collect([]);
         $other_observations = collect([]);
         $eco_com_beneficiary = new EcoComBeneficiary();
         $has_doble_perception = false;
@@ -183,6 +183,7 @@ class SearcherController
                 }
             }
         }
+
         $data = [
             'affiliate' => $affiliate,
             'affiliate_observations_exclude' =>$affiliate_observations_exclude,

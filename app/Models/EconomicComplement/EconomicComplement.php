@@ -679,6 +679,8 @@ class EconomicComplement extends Model
         economic_complements.aps_total_fsa as fraccion_saldo_acumulada_APS,
         economic_complements.aps_total_cc as fraccion_compensacion_cotizaciones_APS,
         economic_complements.aps_total_fs as fraccion_solidaria_vejez_APS,
+        economic_complements.aps_disability as pension_de_invalidez,
+        economic_complements.aps_total_death as pension_por_muerte,
         economic_complements.total_rent as total_renta,
         economic_complements.total_rent_calc as total_renta_neto,
         economic_complements.seniority as antiguedad,
@@ -688,7 +690,13 @@ class EconomicComplement extends Model
         economic_complements.total_amount_semester as total_semestre,
         economic_complements.complementary_factor as factor_complementario,
         round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 3), 2) as total_complemento,
-        economic_complements.total as total_liquido_pagable";
+        economic_complements.total as total_liquido_pagable,
+        eco_com_updated_pensions.aps_total_fsa as AM_fraccion_saldo_acumulada_APS,
+        eco_com_updated_pensions.aps_total_cc as AM_fraccion_compensacion_cotizaciones_APS,
+        eco_com_updated_pensions.aps_total_fs as AM_fraccion_solidaria_vejez_APS,
+        eco_com_updated_pensions.aps_disability as AM_pension_de_invalidez,
+        eco_com_updated_pensions.aps_total_death as AM_pension_por_muerte,
+        eco_com_updated_pensions.total_rent as AM_total_renta";
         // " . EconomicComplement::basic_info_discount() . ",
     }
 
@@ -794,6 +802,12 @@ class EconomicComplement extends Model
             $join->on('wf_records.recordable_id', '=', 'economic_complements.id')
                 ->where('wf_records.recordable_type', '=', 'economic_complements');
         })->leftJoin('users', 'wf_records.user_id', '=', 'users.id');
+    }
+    public function scopeUpdatedPension($query)
+    {
+        return $query->leftJoin('eco_com_updated_pensions', function($join) {
+            $join->on('eco_com_updated_pensions.economic_complement_id', '=', 'economic_complements.id');
+        });
     }
 
     public function getEcoComBeneficiaryBank()

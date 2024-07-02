@@ -82,6 +82,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "economic_complements.aps_total_fsa",
                     "economic_complements.aps_total_cc",
                     "economic_complements.aps_total_fs",
+                    "economic_complements.aps_disability",
+                    "economic_complements.aps_total_death",
                     "economic_complements.total_rent",
                     "economic_complements.total_rent_calc",
                     "economic_complements.seniority",
@@ -100,6 +102,12 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "affiliate_devices.verified",
                     "affiliate_tokens.api_token",
                     "affiliate_tokens.firebase_token",
+                    "eco_com_updated_pensions.aps_total_fsa",
+                    "eco_com_updated_pensions.aps_total_cc",
+                    "eco_com_updated_pensions.aps_total_fs",
+                    "eco_com_updated_pensions.aps_disability",
+                    "eco_com_updated_pensions.aps_total_death",
+                    "eco_com_updated_pensions.total_rent"
                     )
                     ->info()
                     ->beneficiary()
@@ -108,6 +116,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->ecocomstates()
                     ->affiliatetokens()
                     ->wfrecords()
+                    ->updatedpension()
                     // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums().$columns.$columns_add))
                     ->get();
@@ -325,6 +334,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "fraccion_saldo_acumulada_APS",
             "fraccion_compensacion_cotizaciones_APS",
             "fraccion_solidaria_vejez_APS",
+            "pension_de_invalidez",
+            "pension_por_muerte",
             "total_renta",
             "total_renta_neto",
             "antiguedad",
@@ -335,6 +346,12 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "factor_complementario",
             "total_complemento",
             "total_liquido_pagable",
+            "AM_fraccion_saldo_acumulada_APS",
+            "AM_fraccion_compensacion_cotizaciones_APS",
+            "AM_fraccion_solidaria_vejez_APS",
+            "AM_pension_de_invalidez",
+            "AM_pension_por_muerte",
+            "AM_total_renta",
             "Ubicacion",
             "tipo_beneficiario",
             "flujo",
