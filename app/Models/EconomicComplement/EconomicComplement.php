@@ -690,13 +690,7 @@ class EconomicComplement extends Model
         economic_complements.total_amount_semester as total_semestre,
         economic_complements.complementary_factor as factor_complementario,
         round(economic_complements.total_amount_semester * round(economic_complements.complementary_factor/100, 3), 2) as total_complemento,
-        economic_complements.total as total_liquido_pagable,
-        eco_com_updated_pensions.aps_total_fsa as AM_fraccion_saldo_acumulada_APS,
-        eco_com_updated_pensions.aps_total_cc as AM_fraccion_compensacion_cotizaciones_APS,
-        eco_com_updated_pensions.aps_total_fs as AM_fraccion_solidaria_vejez_APS,
-        eco_com_updated_pensions.aps_disability as AM_pension_de_invalidez,
-        eco_com_updated_pensions.aps_total_death as AM_pension_por_muerte,
-        eco_com_updated_pensions.total_rent as AM_total_renta";
+        economic_complements.total as total_liquido_pagable";
         // " . EconomicComplement::basic_info_discount() . ",
     }
 
