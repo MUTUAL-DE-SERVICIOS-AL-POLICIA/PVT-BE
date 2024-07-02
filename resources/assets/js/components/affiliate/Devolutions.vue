@@ -304,7 +304,6 @@ export default {
   },
   methods: {
     selectDue(due) {
-      console.log("esto es due ", due)
       if (this.selectedDues.includes(due)) {
         this.selectedDues = this.selectedDues.filter(function(o) {return o != due;});
       } else {
@@ -385,7 +384,6 @@ export default {
     },
     async printPaymentCommitment(){
       try {
-        console.log("esto es selectedDues", this.selectedDues)
         let res = await axios({
           method: "POST",
           url: `/affiliate/${this.affiliate.id}/print/devolution_payment_commitment`,
@@ -398,8 +396,25 @@ export default {
         printJS(URL.createObjectURL(pdfBlob));
         this.loading = false;
       } catch (error) {
+        if (error.response) {
+          const statusCode = error.response.status;
+          let errorMessage = "Ocurrió un error al generar el documento";
+          try {
+            const jsonString = new TextDecoder().decode(new Uint8Array(error.response.data));
+            const jsonResponse = JSON.parse(jsonString);
+            if (jsonResponse.error) {
+              errorMessage = jsonResponse.error;
+            }
+          } catch (e) {
+            console.error("Error al convertir la respuesta a JSON", e);
+          }
+
+          flashErrors("Error: ", [errorMessage]);
+        } else {
+          flashErrors("Error: ", ["Ocurrió un error al generar el documento"]);
+        }
+
         this.loading = false;
-        flashErrors("Error: ", ["Ocurrio un error al generar el documento"]);
       }
     },
     async confirmSaved(){

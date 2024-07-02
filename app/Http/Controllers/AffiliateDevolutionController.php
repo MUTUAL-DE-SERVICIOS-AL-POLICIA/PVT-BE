@@ -173,21 +173,11 @@ class AffiliateDevolutionController extends Controller
         $area = Util::getRol()->wf_states->first()->first_shortened;
         $date = Util::getTextDate();
         $affiliate = Affiliate::find($affiliate_id);
-        // $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])->get();
-        // $devolution = $devolutions->where('observation_type_id', 13)->first();
-        // if (!isset($devolution->id)) {
-        //     return response()->json('El Trámite no tiene deudas', 204);
-        // }
-        // $dues = $devolution->dues()->select('dues.*')
-        //     ->leftJoin('eco_com_procedures', 'dues.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-        //     ->orderBy('eco_com_procedures.year')
-        //     ->orderBy('eco_com_procedures.semester')
-        //     ->get();
-
         $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])
             ->where('observation_type_id', 13)
             ->get();
 
+        $devolution = $devolutions->first();
         $dues = collect([]);
 
         foreach ($devolutions as $devolution) {
@@ -197,26 +187,21 @@ class AffiliateDevolutionController extends Controller
             }
         }
 
+        if($devolutions->isEmpty()) {
+            return response()->json(['error' => 'No se encontraron devoluciones.'], 400);
+        }
+
         $semesters = collect([]);
         foreach ($dues as $d) {
-           $semesters->push($d->eco_com_procedure->getTextName());  
+           $semesters->push($d->eco_com_procedure->getTextName());
         }
         $semesters = $semesters->implode(', ');
+        if(!($devolution->start_eco_com_procedure_id && $devolution->has_payment_commitment)) {
+            return response()->json(['error' => 'El Trámite no tiene compromiso de pago y/o el semestre de inicio de pago.'], 400);
+        }
         $start_eco_com_procedure = EcoComProcedure::find($devolution->start_eco_com_procedure_id);
         $eco_com = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last();
         $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
-        // $eco_coms = EconomicComplement::with('discount_types')->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
-        //     ->leftJoin('eco_com_applicants', 'economic_complements.id', '=', 'eco_com_applicants.economic_complement_id')
-        //     // ->where('eco_com_applicants.identity_card', $eco_com_beneficiary->identity_card)
-        //     ->where('affiliate_id', $affiliate->id)
-        //     ->select('economic_complements.*')
-        //     ->orderBY('eco_com_procedures.year')
-        //     ->orderBY('eco_com_procedures.semester')
-        //     ->get();
-        // $eco_coms = $eco_coms->filter(function ($item) {
-        //     return $item->discount_types->contains(6);
-        // });
-        // dd($eco_coms->first()->discount_types->where('id', 6));
         $bar_code = \DNS2D::getBarcodePNG($affiliate->encode(), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
@@ -236,12 +221,10 @@ class AffiliateDevolutionController extends Controller
             'user' => $user,
             'semesters' => $semesters,
             'start_eco_com_procedure' => $start_eco_com_procedure,
-            // 'current_semester' => $current_semester,
             'duess' => $duess
         ];
         $pages = [];
         $pages[] = \View::make('affiliates.print.devolution_payment_commitment', $data)->render();
-        // $pages[] = \View::make('eco_com.print.certification_all_eco_coms_second', array_merge($data, ['title' => 'CONFORMIDAD DE ENTREGA']))->render();
         $pdf = \App::make('snappy.pdf.wrapper');
         $pdf->loadHTML($pages);
         return $pdf->setOption('encoding', 'utf-8')
