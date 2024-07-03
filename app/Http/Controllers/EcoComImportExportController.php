@@ -105,9 +105,9 @@ class EcoComImportExportController extends Controller
                                 }
                                 if ($updatedPension->rent_type == null || $updatedPension->rent_type != 'Manual') {
                                     $updatedPension->rent_type = 'Automatico';
-                                    $updatedPension->aps_total_cc = round($c[13], 2);
-                                    $updatedPension->aps_total_fsa = round($c[19], 2);
-                                    $updatedPension->aps_total_fs = round($c[25], 2);
+                                    $updatedPension->aps_total_cc = round($c[13], 2) ?? 0;
+                                    $updatedPension->aps_total_fsa = round($c[19], 2) ?? 0;
+                                    $updatedPension->aps_total_fs = round($c[25], 2) ?? 0;
                                     $updatedPension->save();
                                     $updatedPension->calculateTotalRentAps();
                                     $success++;
@@ -162,7 +162,7 @@ class EcoComImportExportController extends Controller
                                 }
                                 if ($updatedPension->rent_type == null || $updatedPension->rent_type != 'Manual') {
                                     $updatedPension->rent_type = 'Automatico';
-                                    $updatedPension->aps_disability = round($c[16], 2);
+                                    $updatedPension->aps_disability = round($c[16], 2) ?? 0;
                                     $updatedPension->save();
                                     $updatedPension->calculateTotalRentAps();
                                     $success++;
@@ -223,7 +223,7 @@ class EcoComImportExportController extends Controller
                                 }
                                 if ($updatedPension->rent_type == null || $updatedPension->rent_type != 'Manual') {
                                     $updatedPension->rent_type = 'Automatico';
-                                    $updatedPension->aps_total_death = round($c[17], 2);
+                                    $updatedPension->aps_total_death = round($c[17], 2) ?? 0;
                                     $updatedPension->save();
                                     $updatedPension->calculateTotalRentAps();
                                     $success++;
