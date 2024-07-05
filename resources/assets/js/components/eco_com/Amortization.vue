@@ -29,7 +29,7 @@
                   v-model="discount_type"
                 >
                   <option value="6">Reposición de Fondos</option>
-                  <option value="8">Retenciones según Juzgado</option>
+                  <!-- <option value="8">Retenciones según Juzgado</option> -->
                   <option value="5">Amortización por Préstamos en Mora</option>
                   <option value="4">Amortización por Cuentas por Cobrar</option>
                 </select>
