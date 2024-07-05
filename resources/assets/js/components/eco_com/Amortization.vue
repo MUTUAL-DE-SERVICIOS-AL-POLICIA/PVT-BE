@@ -28,10 +28,10 @@
                   name="Tipo"
                   v-model="discount_type"
                 >
-                  <option value="6">Reposición de Fondos</option>
-                  <!-- <option value="8">Retenciones según Juzgado</option> -->
-                  <option value="5">Amortización por Préstamos en Mora</option>
-                  <option value="4">Amortización por Cuentas por Cobrar</option>
+                  <option v-if="role_id==4" value="6">Reposición de Fondos</option>
+                  <option v-if="role_id==4" value="8">Retenciones según Juzgado</option>
+                  <option v-if="role_id==16" value="5">Amortización por Préstamos en Mora</option>
+                  <option v-if="role_id==7" value="4">Amortización por Cuentas por Cobrar</option>
                 </select>
               </div>
             </div>
@@ -165,7 +165,7 @@
 import { parseMoney, canOperation, flashErrors } from "../../helper.js";
 import { mapState, mapMutations } from "vuex";
 export default {
-  props: ["permissions"],
+  props: ["permissions","role_id"],
   data() {
     return {
       form: {},
