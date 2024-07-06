@@ -4,6 +4,7 @@ namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Muserpol\Imports\EcoComImportSenasir;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
@@ -323,13 +324,25 @@ class EcoComImportExportController extends Controller
         try{
           $affiliate_has_not_contributions = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $contribution_discontinued_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
           $observation_disc_con = ObservationType::find($contribution_discontinued_id);
-          $eco_com_all = EconomicComplement::select('economic_complements.*')->with('eco_com_updated_pension')
+          $eco_com_all = EconomicComplement::select('economic_complements.id',
+          'economic_complements.affiliate_id',
+          'economic_complements.code',
+          'economic_complements.eco_com_procedure_id',
+          'economic_complements.wf_current_state_id',
+          'economic_complements.eco_com_state_id',
+          'economic_complements.eco_com_modality_id',
+          'economic_complements.deleted_at')
+          ->with('eco_com_updated_pension')
           ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
           ->where('economic_complements.eco_com_procedure_id', $current_procedures)
           ->where('economic_complements.wf_current_state_id',3) // 3 - Area Tecnica Complemento Economico
           ->where('economic_complements.eco_com_state_id',16) // 16 - En proceso de revisión
           ->whereNotIn('economic_complements.eco_com_modality_id',[3,10,12,11]) // 4 rentas de orfandad 
           ->whereNull('economic_complements.deleted_at')->get();
+          $hash_eco_com_all = [];
+            foreach ($eco_com_all as $result) {
+                $hash_eco_com_all[$result->affiliate_id] = $result;
+            }
           foreach($affiliate_has_not_contributions as $affiliate_discontinued){
           $eco_com_disc_con = $eco_com_all->where('affiliate_id', $affiliate_discontinued->observable_id)->first();
             if($eco_com_disc_con){
@@ -343,12 +356,17 @@ class EcoComImportExportController extends Controller
               }
             }
           }
-        $affiliates = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
+        $affiliates = DB::table('observables')->select('observables.observable_id', 'affiliates.pension_entity_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($affiliates as $affiliate) {
             $affiliate_id = $affiliate->observable_id;
-            $eco_com = $eco_com_all->where('affiliate_id', $affiliate_id)->first();
-            $pension_entity_id = Affiliate::find($affiliate_id)->pension_entity_id;
+            // $eco_com = $eco_com_all->where('affiliate_id', $affiliate_id)->first();
+            $eco_com = null;
+            if (isset($hash_eco_com_all[$affiliate_id])) {
+                $eco_com = $hash_eco_com_all[$affiliate_id];
+            }
+            //$pension_entity_id = Affiliate::find($affiliate_id)->pension_entity_id;
+            $pension_entity_id = $affiliate->pension_entity_id;
             if ($eco_com) {
                 if (!($pension_entity_id == 5) && !($pension_entity_id == null)){
                          if (!$eco_com->hasObservationType($pago_futuro_id)) {
