@@ -57,7 +57,7 @@
             <h2>Total de Aportes: {{ total_contribution }}</h2>
             <h2>Número de Aportes Creados: {{ contribution_created }}</h2>
             <h2>Número de Aportes Actualizados: {{ contribution_updated }}</h2>
-            <template v-if="not_updated.length > 0">
+            <template v-if="not_updated != null && not_updated.length > 0">
               <h2>Trámites sin renta actualizada o con renta total cero:</h2>
               <h3 v-for="item in not_updated ">{{ item }}</h3>
             </template>

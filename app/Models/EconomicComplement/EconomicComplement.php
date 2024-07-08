@@ -679,6 +679,8 @@ class EconomicComplement extends Model
         economic_complements.aps_total_fsa as fraccion_saldo_acumulada_APS,
         economic_complements.aps_total_cc as fraccion_compensacion_cotizaciones_APS,
         economic_complements.aps_total_fs as fraccion_solidaria_vejez_APS,
+        economic_complements.aps_disability as pension_de_invalidez,
+        economic_complements.aps_total_death as pension_por_muerte,
         economic_complements.total_rent as total_renta,
         economic_complements.total_rent_calc as total_renta_neto,
         economic_complements.seniority as antiguedad,
@@ -794,6 +796,12 @@ class EconomicComplement extends Model
             $join->on('wf_records.recordable_id', '=', 'economic_complements.id')
                 ->where('wf_records.recordable_type', '=', 'economic_complements');
         })->leftJoin('users', 'wf_records.user_id', '=', 'users.id');
+    }
+    public function scopeUpdatedPension($query)
+    {
+        return $query->leftJoin('eco_com_updated_pensions', function($join) {
+            $join->on('eco_com_updated_pensions.economic_complement_id', '=', 'economic_complements.id');
+        });
     }
 
     public function getEcoComBeneficiaryBank()

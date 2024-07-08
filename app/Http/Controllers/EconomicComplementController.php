@@ -1289,7 +1289,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 5;
                 break;
             case 4: // complemento
-                $discount_type_id = 6;
+                $discount_type_id = 6 || $discount_type_id = 8;
                 break;
         }
         $eco_com = EconomicComplement::with(['discount_types', 'eco_com_state:id,name,eco_com_state_type_id', 'degree','category','eco_com_modality', 'eco_com_fixed_pension', 'eco_com_updated_pension'])->findOrFail($id);
@@ -1408,7 +1408,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 5;
                 break;
             case 4: // complemento
-                $discount_type_id = 6;
+                $discount_type_id = 6 || $discount_type_id = 8;
                 break;
         }
         if (Gate::allows('qualify', $economic_complement)) {
