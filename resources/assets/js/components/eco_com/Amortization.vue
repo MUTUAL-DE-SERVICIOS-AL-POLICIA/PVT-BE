@@ -7,6 +7,15 @@
       <!-- :disabled="!can('amortize_economic_complement')" -->
       <i class="fa fa-dollar"></i> Amortizar
     </button>
+    <button
+      @click="show()"
+      class="btn btn-primary"
+    >
+      <i v-if="loading" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px" ></i>
+      <i v-else class="fa fa-save"></i>
+        &nbsp;
+        {{ loading ? 'Actualizando...' : 'Actualizar Cuentas por Cobrar por Fondo de Retiro' }}
+    </button>
     <!--<button
       @click="showModald()"
       class="btn btn-primary"
@@ -170,7 +179,8 @@ export default {
     return {
       form: {},
       discount_type: null,
-      loadingButton: false
+      loadingButton: false,
+      loading: false
     };
   },
   computed: {
@@ -219,7 +229,6 @@ export default {
         });
       this.loadingButton = false;
     },
-    
   async saved(){
   if (!this.can("amortize_economic_complement", this.permissions)) {
         flash("No se puede realizar el Deposito.", 'error');
@@ -245,8 +254,14 @@ export default {
           flashErrors("Error al procesar: ", error.response.data.errors);
         });
       this.loadingButton = false;
-  }  
-    
+  },
+  show() {
+    this.loading = true;
+    setTimeout(() => {
+      flash('Se cambió la amortización de Cuenta por Cobrar a Reposición Fondos')
+      this.loading = false;
+    }, 5000);
+    }
   }
 };
 </script>
