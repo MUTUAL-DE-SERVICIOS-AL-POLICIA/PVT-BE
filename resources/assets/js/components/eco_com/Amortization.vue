@@ -14,7 +14,7 @@
       <i v-if="loading" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px" ></i>
       <i v-else class="fa fa-save"></i>
         &nbsp;
-        {{ loading ? 'Actualizando...' : 'Actualizar Cuentas por Cobrar por Fondo de Retiro' }}
+        {{ loading ? 'Actualizando...' : 'Actualizar Cuentas por Cobrar por Reposición de Fondos' }}
     </button>
     <!--<button
       @click="showModald()"
