@@ -212,7 +212,7 @@ th.ellipsis-text {
                                 @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
                             </ret-fun-info>
                         @else
-                            <div><h2>NO SE TIENE REGISTROS</h2></div>
+                            <div class="alert alert-warning">NO SE TIENE REGISTROS DE FONDO DE RETIRO</div>
                         @endif
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
@@ -259,9 +259,11 @@ th.ellipsis-text {
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->getOnlyTotalEcoCom())}}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->total)}}</td>
                                                 <td style="vertical-align:middle">
+                                                @can('update', new Muserpol\Models\EconomicComplement\EconomicComplement)
                                                     <a href="/eco_com/{{$eco_com->id}}">
                                                         <button class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
                                                     </a>
+                                                @endcan    
                                                 </td>
                                                 </tr>
                                                 @if ($eco_com->discount_types->count() > 0)
@@ -289,12 +291,15 @@ th.ellipsis-text {
                         </div>
                     </div>
                     <div id="tab-quota-aid-mortuory" class="tab-pane">
-                        @can('update',$quota_aid)
+
+                        @if($quota_aid)
                         <quota-aid-info :quota_aid="{{ $quota_aid }}" :rf_city_start="{{$quota_aid->city_start}}" :rf_city_end="{{$quota_aid->city_end}}"
                             :rf_procedure_modality=" {{$quota_aid->procedure_modality}}" :states="{{ $states }}" :read="true" inline-template>
                             @include('quota_aid.info', ['quota_aid'=>$quota_aid,'cities'=>$birth_cities])
                         </quota-aid-info>
-                        @endcan
+                        @else
+                        <div class="alert alert-warning">NO SE TIENE REGISTROS DE CUOTA Y AUXILIO MORTUORIO</div>
+                        @endif
                     </div>
                     @if(isset($direct_contribution->id))
                     <div id="tab-direct-contribution" class="tab-pane">

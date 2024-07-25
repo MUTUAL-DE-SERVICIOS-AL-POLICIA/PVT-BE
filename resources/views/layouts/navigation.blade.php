@@ -57,11 +57,13 @@
                     <a href="{{ url('/eco_com') }}"><i class="{{Muserpol\Helpers\Util::IconModule(2)}}"></i> <span
                             class="nav-label">Complemento Economico</span></a>
                 </li>
-                <li  data-toggle="tooltip" data-placement="right"
-                    title="Reportes">
-                    <a href="{{ url('/eco_com_report') }}"><i class="fa fa-file"></i> <span
-                            class="nav-label">Reportes Complemento Economico</span></a>
-                </li>
+                @if(Muserpol\Helpers\Util::getRol()->id != 71)
+                    <li  data-toggle="tooltip" data-placement="right"
+                        title="Reportes">
+                        <a href="{{ url('/eco_com_report') }}"><i class="fa fa-file"></i> <span
+                                class="nav-label">Reportes Complemento Economico</span></a>
+                    </li>
+                @endif
             @endif
             @if (Util::rolIsRetFun())
                 <li class="{{ isActiveRoute('ret_fun.index') }}" data-toggle="tooltip" data-placement="right"

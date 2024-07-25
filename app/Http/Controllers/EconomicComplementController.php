@@ -171,7 +171,7 @@ class EconomicComplementController extends Controller
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->addColumn('action', function ($eco_com) {
-                    return "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+                    return Util::getRol()->id != 71? "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
                 })
                 ->make(true);
     }
