@@ -1195,7 +1195,7 @@ class RetirementFundController extends Controller
                 return null;
             })
             ->addColumn('action', function ($ret_fun) {
-                returnUtil::getRol()->id != 69? "<a href='/ret_fun/" . $ret_fun->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
+                return Util::getRol()->id != 69? "<a href='/ret_fun/" . $ret_fun->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
             })
             ->make(true);
     }
