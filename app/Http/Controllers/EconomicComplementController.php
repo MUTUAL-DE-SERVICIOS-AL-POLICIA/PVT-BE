@@ -2098,10 +2098,10 @@ class EconomicComplementController extends Controller
             $query = DB::table('discount_type_economic_complement')
             ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
             ->where('discount_type_economic_complement.economic_complement_id',$item->id)
-            ->where('discount_types.name', 'like', '%Reposición de Fondos')
+            ->where('discount_types.name', 'like', '%Cuentas por cobrar RF')
             ->select('amount')->get();
             if(sizeof($query) > 0){
-                $devolution = $item->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Reposición de Fondos.')->first()->id)->first();
+                $devolution = $item->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Cuentas por cobrar RF.')->first()->id)->first();
                 $devolution->balance = $devolution->balance - $query[0]->amount;
                 $devolution->update();
             }
@@ -2141,10 +2141,10 @@ class EconomicComplementController extends Controller
         $query = DB::table('discount_type_economic_complement')
             ->join('discount_types', 'discount_types.id', '=', 'discount_type_economic_complement.discount_type_id')
             ->where('discount_type_economic_complement.economic_complement_id',$id)
-            ->where('discount_types.name', 'like', '%Reposición de Fondos')
+            ->where('discount_types.name', 'like', '%Cuentas por cobrar RF')
             ->select('amount')->get();
         if(sizeof($query) > 0){
-            $devolution = $eco_com->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Reposición de Fondos.')->first()->id)->first();
+            $devolution = $eco_com->affiliate->devolutions->where('observation_type_id', ObservationType::where('name','like','%Cuentas por cobrar RF.')->first()->id)->first();
             $devolution->balance = $devolution->balance - $query[0]->amount;
             $devolution->update();
         }
@@ -2169,7 +2169,7 @@ class EconomicComplementController extends Controller
         DB::beginTransaction();
         $updates = 0;
         try{
-            $devolutions = Devolution::where('observation_type_id',ObservationType::where('shortened','Reposición de Fondos')->first()->id)->get();
+            $devolutions = Devolution::where('observation_type_id',ObservationType::where('shortened','Cuentas por cobrar RF')->first()->id)->get();
             foreach($devolutions as $devolution)
             {
                 $sum = DB::table('discount_type_economic_complement')
