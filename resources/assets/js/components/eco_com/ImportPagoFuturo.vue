@@ -57,6 +57,10 @@
             <h2>Total de Aportes: {{ total_contribution }}</h2>
             <h2>Número de Aportes Creados: {{ contribution_created }}</h2>
             <h2>Número de Aportes Actualizados: {{ contribution_updated }}</h2>
+            <template v-if="not_updated != null && not_updated.length > 0">
+              <h2>Trámites sin renta actualizada o con renta total cero:</h2>
+              <h3 v-for="item in not_updated ">{{ item }}</h3>
+            </template>
           </div>
           <br>
         </div>
@@ -75,6 +79,7 @@ export default {
       contribution_created: 0,
       contribution_updated: 0,
       total_contribution: 0,
+      not_updated: [],
       result_error:'',
       is_error: false,
       fails: [],
@@ -106,6 +111,7 @@ export default {
           this.contribution_updated = response.data.contribution_updated;
           this.contribution_created = response.data.contribution_created;
           this.total_contribution = response.data.total_contribution;
+          this.not_updated = response.data.not_updated;
           this.is_error = false;
         })
         .catch(error => {

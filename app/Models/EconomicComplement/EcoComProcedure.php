@@ -13,6 +13,14 @@ class EcoComProcedure extends Model
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EconomicComplement');
     }
+    public function eco_com_regulations()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComRegulation', 'replica_eco_com_procedure_id');
+    }
+    public function eco_com_fixed_pensions()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComFixedPension');
+    }
     public function getNextProcedure()
     {
         if ($this->semester == 'Primer' ) {

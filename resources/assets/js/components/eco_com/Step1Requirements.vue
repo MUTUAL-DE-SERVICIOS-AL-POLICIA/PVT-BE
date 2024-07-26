@@ -62,10 +62,12 @@
               id="pension_entity_id"
               v-validate.initial="'required'"
               @change="setPensionEntity()"
+              :disabled="itsUsual"
             >
               <option :value="null"></option>
               <option v-for="(p, index) in pensionEntities" :value="p.id" :key="index">{{p.name}}</option>
             </select>
+            <input type="hidden" v-if="itsUsual" :value="pension_entity_id" name="pension_entity_id">
             <i v-show="errors.has('pension_entity_id')" class="fa fa-warning text-danger"></i>
             <span
               v-show="errors.has('pension_entity_id')"
@@ -184,6 +186,13 @@ export default {
     "ecoComReceptionTypes",
     "ecoComConsecutivo"
   ],
+  computed: {
+    itsUsual() {
+      if(this.lastEcoCom) {
+        return this.lastEcoCom.eco_com_reception_type_id == 1
+      }
+    }
+  },
   data() {
     return {
       requirements: [],

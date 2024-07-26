@@ -242,7 +242,7 @@ class QuotaAidMortuaryController extends Controller
         return null;
       })
       ->addColumn('action', function ($quota_aid) {
-        return "<a href='/quota_aid/" . $quota_aid->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+        return Util::getRol()->id != 70? "<a href='/quota_aid/" . $quota_aid->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
       })
       ->make(true);
   }

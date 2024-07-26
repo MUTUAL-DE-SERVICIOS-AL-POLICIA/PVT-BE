@@ -37,7 +37,7 @@ class EcoComOverpaymentsSheet implements FromCollection, WithHeadings, ShouldAut
                             where ecst.name = 'Pagado'
                             and dt.name = 'Amortización por Reposición de Fondos'
                             group by ec.affiliate_id ) as devs on a.id = devs.affiliate_id
-                    where ot.shortened  = 'Reposición de Fondos'
+                    where ot.shortened  = 'Cuentas por cobrar RF'
                     and d.deleted_at is null";
         $data = DB::select($query);
         return collect($data);

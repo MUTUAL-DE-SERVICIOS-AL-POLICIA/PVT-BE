@@ -9,6 +9,7 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\Affiliate;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Muserpol\Models\EconomicComplement\EcoComRegulation;
 
 class EcoComProcedureController extends Controller
 {
@@ -103,6 +104,14 @@ class EcoComProcedureController extends Controller
                 'errors' => ['Ya existe.'],
             ], 422);
         }
+
+        $eco_com_regulation = EcoComRegulation::where('is_enable', '=', true)->orderBy('created_at','desc')->first();
+        if(!$eco_com_regulation){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No existe una regulación vigente.'],
+            ], 422);
+        }
         $eco_com_procedure =  new EcoComProcedure();
         $eco_com_procedure->user_id = auth()->user()->id;
         $eco_com_procedure->year = $request->year . "-01-01";
@@ -115,6 +124,7 @@ class EcoComProcedureController extends Controller
         $eco_com_procedure->additional_start_date = Util::verifyBarDate($request->additional_start_date) ? Util::parseBarDate($request->additional_start_date) : $request->additional_start_date;
         $eco_com_procedure->additional_end_date = Util::verifyBarDate($request->additional_end_date) ? Util::parseBarDate($request->additional_end_date) : $request->additional_end_date;
         $eco_com_procedure->indicator = $request->indicator;
+        $eco_com_procedure->eco_com_regulation_id = $eco_com_regulation->id;
         $eco_com_procedure->save();
         return 'created';
     }
