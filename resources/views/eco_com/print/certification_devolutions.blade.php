@@ -14,7 +14,7 @@
         Complemento Económico y registra observación por Reposición de Fondos, a razón del importe de deuda determinado
         por Pagos en Demasía del Complemento Economico a favor de MUSERPOL,
         correspondiente al <span class="italic">{{ $semesters }}</span>, deuda total que asciende a <strong>Bs.
-            {{ Util::formatMoney($devolution->total) }} ({{ Util::convertir($devolution->total) }} Bolivianos)</strong>
+            {{ Util::formatMoney($total_dues) }} ({{ Util::convertir($total_dues) }} Bolivianos)</strong>
         y que se encuentra cancelando a la fecha mediante la
         amortización con el
         beneficio del Complemento Económico.
@@ -28,7 +28,7 @@
         <table class=" w-100 ">
             <tr>
                 <td class="border uppercase font-bold p-5">Deuda Total</td>
-                <td class="border font-bold text-right p-5">Bs. {{ Util::formatMoney($devolution->total) }}</td>
+                <td class="border font-bold text-right p-5">Bs. {{ $total_dues}}</td>
             </tr>
         </table>
     </div>
@@ -86,6 +86,49 @@
         </tbody>
     </table>
     <br>
+    @if ($direct_payment_list)
+    <table class="table-info w-100 table-spacing">
+        <thead class="bg-grey-darker">
+            <tr class="font-medium text-white">
+                <td class="px-15 py text-center">
+                    Fecha de pago
+                </td>
+                <td class="px-15 py text-center">
+                    N° de comprobante
+                </td>
+                <td class="px-15 py text-center">
+                    Monto (En Bs.)
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $suma=0;
+            @endphp
+            @foreach ( $direct_payment_list as $direct_payment)
+                <tr>
+                    <td class="text-right px-10 py-3"> {{ $direct_payment->payment_date}}</td>
+                    <td class="text-right px-10 py-3"> {{ $direct_payment->voucher}}</td>
+                    <td class="text-right px-10 py-3"> {{ $direct_payment->amount}}</td>
+                </tr>
+                @php
+                    $suma += $direct_payment->amount;  // Sumar el valor de amount al total
+                @endphp
+            @endforeach
+        <tr class="bg-grey-lightest">
+                <td class=""></td>
+                <td class="uppercase font-bold text-left px-10 py-3">
+                    Total Amortización
+                </td>
+                <td class=" font-bold text-right px-10 py-3">
+                    Bs. {{ Util::formatMoney($suma) }}
+                </td>
+                <td class=""></td>
+            </tr>
+        </tbody>
+    </table>
+    @endif
+    <br>
     @if (!is_null($devolution->payment_amount))
     <table class="table-info w-100">
         <thead class="bg-grey-darker">
@@ -131,7 +174,7 @@
         <table class=" w-100 ">
             <tr>
                 <td class="border uppercase font-bold p-5">Deuda Pendiente a la fecha</td>
-                    <td class="border font-bold  p-5"> Bs. {{ Util::formatMoney($devolution->total - $suma) }}    
+                    <td class="border font-bold  p-5"> Bs. {{ Util::formatMoney($balance) }}
                 </td>
             </tr>
         </table>
@@ -139,8 +182,8 @@
 
     <p class="text-justify">
         Por lo cual, actualmente usted tiene una deuda pendiente de <strong>Bs.
-            {{ Util::formatMoney($devolution->total - $suma) }}
-            ({{Util::convertir($devolution->total - $suma)}} Bolivianos)</strong> por Pagos en Demasía del Complemento
+            {{ Util::formatMoney($balance) }}
+            ({{Util::convertir($balance)}} Bolivianos)</strong> por Pagos en Demasía del Complemento
         Economico, que
         deberá ser cancelado conforme compromiso(s) de devolución.
     </p>
