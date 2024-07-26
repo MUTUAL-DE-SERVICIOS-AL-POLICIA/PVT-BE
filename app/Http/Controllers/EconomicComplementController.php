@@ -172,7 +172,7 @@ class EconomicComplementController extends Controller
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
                 ->addColumn('action', function ($eco_com) {
-                    return "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+                    return Util::getRol()->id != 71? "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
                 })
                 ->make(true);
     }
@@ -2137,7 +2137,6 @@ class EconomicComplementController extends Controller
                     $eco_com_movement->save();
                 }
             }
-        //
         if ($eco_com->eco_com_state_id == 29){
             $eco_com->eco_com_state_id=17;
         }
@@ -2158,7 +2157,7 @@ class EconomicComplementController extends Controller
         DB::beginTransaction();
         $updates = 0;
         try{
-            $devolutions = Devolution::where('observation_type_id',ObservationType::where('shortened','Reposición de Fondos')->first()->id)->get();
+            $devolutions = Devolution::where('observation_type_id',ObservationType::where('shortened','Cuentas por cobrar RF')->first()->id)->get();
             foreach($devolutions as $devolution)
             {
                 $sum = DB::table('discount_type_economic_complement')
