@@ -75,7 +75,10 @@ class EconomicComplement extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['id','amount', 'date'])->withTimestamps();
+        return $this->belongsToMany('Muserpol\Models\DiscountType')
+        ->withPivot(['id', 'amount', 'date', 'deleted_at'])
+        ->wherePivot('deleted_at', null)
+        ->withTimestamps();
     }
     public function eco_com_fixed_pension()
     {
