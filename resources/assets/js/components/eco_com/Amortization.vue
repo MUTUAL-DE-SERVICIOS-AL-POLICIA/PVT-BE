@@ -7,7 +7,7 @@
       <!-- :disabled="!can('amortize_economic_complement')" -->
       <i class="fa fa-dollar"></i> Amortizar
     </button>
-    <button
+    <!-- <button
       @click="show()"
       class="btn btn-primary"
     >
@@ -15,7 +15,7 @@
       <i v-else class="fa fa-save"></i>
         &nbsp;
         {{ loading ? 'Actualizando...' : 'Actualizar Cuentas por Cobrar por Reposición de Fondos' }}
-    </button>
+    </button> -->
     <!--<button
       @click="showModald()"
       class="btn btn-primary"
