@@ -427,7 +427,7 @@
         <br>
          <div class="row" v-show="editing">
           <div class="col-md-4" >
-            <label class="control-label">ACTUALIZAR ESTADO DEL TRAMITE:{{form.eco_com_state_id}}</label>
+            <label class="control-label">ACTUALIZAR ESTADO DEL TRAMITE:</label>
           </div>
          </div>
          <br>
