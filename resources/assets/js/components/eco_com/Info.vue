@@ -427,7 +427,7 @@
         <br>
          <div class="row" v-show="editing">
           <div class="col-md-4" >
-            <label class="control-label">ACTUALIZAR ESTADO DEL TRAMITE:</label>
+            <label class="control-label">ACTUALIZAR ESTADO DEL TRAMITE:{{form.eco_com_state_id}}</label>
           </div>
          </div>
          <br>
@@ -520,6 +520,19 @@
           id="eco_com_state_id"
           v-model="form.eco_com_state_id"
           value='30'
+          :disabled="!editing || (roleId != 4)" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">NO PAGADO - RETENIDO</label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio"
+          id="eco_com_state_id"
+          v-model="form.eco_com_state_id"
+          value='31'
           :disabled="!editing || (roleId != 4)" >
           </div>
         </div>
