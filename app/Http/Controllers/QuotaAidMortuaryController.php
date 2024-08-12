@@ -42,6 +42,7 @@ use Muserpol\Models\DiscountType;
 use Muserpol\Models\ProcedureState;
 use Muserpol\Models\FinancialEntity;
 use Ramsey\Uuid\Uuid;
+use Carbon\Carbon;
 
 class QuotaAidMortuaryController extends Controller
 {
@@ -1448,7 +1449,7 @@ class QuotaAidMortuaryController extends Controller
   }
   public function saveDiscounts(Request $request, $quota_aid_id)
   {
-
+    dd($request);
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     $affiliate = $quota_aid->affiliate;
     $degree = $affiliate->degree;
@@ -1571,5 +1572,27 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->save();
     $datos = array('quota_aid' => $quota_aid, 'procedure_modality' => $quota_aid->procedure_modality, 'city_start' => $quota_aid->city_start, 'city_end' => $quota_aid->city_end);
     return $datos;
+  }
+  public function createJudicialRetention(Request $request, $quota_aid_id) {
+    $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+    $discount_type = DiscountType::where('shortened', 'Retención según juzgado')->first();
+    if(!$quota_aid || !$discount_type)
+        return response()->json([
+          'error' => "No existe el trámite o el tipo de descuento"
+        ], 409);
+    $discount_type_quota_aid = $quota_aid->discount_types()
+        ->wherePivot('discount_type_id', $discount_type->id)
+        ->wherePivot('quota_aid_mortuary_id', $quota_aid_id)
+        ->count();
+    if($discount_type_quota_aid > 0)
+        return response()->json([
+          'error' => "ya existe la retención"
+        ], 409);
+    $quota_aid->discount_types()->save($discount_type, ['amount' => 0, 'date' => null, 'code' => null, 'note_code' => $request->detail, 'note_code_date' => Carbon::now(), ]);
+    $discount = $quota_aid->discount_types()->whereIn('discount_types.id', [$discount_type->id])->get();
+    return response()->json([
+      'message' => 'Registro exitoso',
+      'data' => $discount
+    ]);
   }
 }
