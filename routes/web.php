@@ -166,6 +166,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('quota_aid/{quota_aid}/print/headship_review', 'QuotaAidCertificationController@printHeadshipReview')->name('quota_aid_print_headship_review');
     Route::get('quota_aid/{quota_aid}/print/legal_resolution', 'QuotaAidCertificationController@printLegalResolution')->name('quota_aid_print_legal_resolution');
     Route::post('quota_aid/{quota_aid}/save_judicial_retention', 'QuotaAidMortuaryController@createJudicialRetention');
+    Route::get('quota_aid/{quota_aid}/obtain_judicial_retention', 'QuotaAidMortuaryController@obtainJudicialRetention');
 
 
     // tags
