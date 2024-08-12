@@ -1075,6 +1075,7 @@ class QuotaAidCertificationController extends Controller
     // array_push($documents,'CERTIFICACIÓN DE DEUDA (DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES)');
     array_push($documents,($quota_aid->isAid()?'CALIFICACIÓN DE AUXILIO MORTUORIO':'CALIFICACIÓN DE CUOTA MORTUORIA'));//ojo
     //array_push($documents, 'DICTAMEN LEGAL');
+    array_push($documents, ['SE VERIFICÓ LA CALIFICACIÓN Y DISTRIBUCIÓN DEL BENEFICIO']);
 
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
     //$bar_code = \DNS2D::getBarcodePNG(($quota_aid->getBasicInfoCode()['code'] . "\n\n" . $quota_aid->getBasicInfoCode()['hash']), "PDF417", 100, 33, array(1, 1, 1));
