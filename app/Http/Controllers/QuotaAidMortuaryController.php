@@ -1449,7 +1449,6 @@ class QuotaAidMortuaryController extends Controller
   }
   public function saveDiscounts(Request $request, $quota_aid_id)
   {
-    dd($request);
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     $affiliate = $quota_aid->affiliate;
     $degree = $affiliate->degree;
