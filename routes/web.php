@@ -160,6 +160,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');
     Route::post('quota_aid/{quota_aid}/legal_review/create', 'QuotaAidMortuaryController@storeLegalReview')->name('store_quota_aid_legal_review_create');
     Route::get('quota_aid/{quota_aid}/print/legal_review', 'QuotaAidCertificationController@printLegalReview')->name('quota_aid_print_legal_review');
+    Route::get('quota_aid/{quota_aid}/print/liquidation', 'QuotaAidCertificationController@printLiquidation')->name('quota_aid_print_liquidation');
     Route::get('quota_aid/{quota_aid}/print/file', 'QuotaAidCertificationController@printFile')->name('quota_aid_print_file');
     Route::get('quota_aid/{quota_aid}/print/certification', 'QuotaAidCertificationController@printCertification2')->name('quota_aid_print_certification');
     Route::get('quota_aid/{quota_aid}/print/legal_dictum', 'QuotaAidCertificationController@printLegalDictum')->name('quota_aid_print_legal_dictum');

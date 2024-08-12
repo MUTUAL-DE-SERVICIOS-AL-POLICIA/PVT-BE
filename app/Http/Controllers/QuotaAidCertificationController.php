@@ -448,6 +448,52 @@ class QuotaAidCertificationController extends Controller
       ->setOption('footer-html', $footerHtml)
       ->stream("$namepdf");
   }
+  public function printLiquidation($id)
+  {
+    $quota_aid = QuotaAidMortuary::find($id);
+    $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 35)->first();
+    $code = $quota_aid->code;
+    $area = $next_area_code->wf_state->first_shortened;
+    $user = $next_area_code->user;
+    $date = Util::getDateFormat($next_area_code->date);
+    $number = $next_area_code->code;
+    $title = "CERTIFICACI&Oacute;N DE LIQUIDACI&Oacute;N";
+    $affiliate = $quota_aid->affiliate;
+    $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
+    $spouse = $affiliate->spouse()->first();
+    $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
+    $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
+    //$footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
+    $cite = $number; //RetFunIncrement::getIncrement(Session::get('rol_id'), $quota_aid->id);
+    $subtitle = $cite;
+    $pdftitle = "Revision Legal";
+    $namepdf = Util::getPDFName($pdftitle, $affiliate);
+    $data = [
+      'code' => $code,
+      'area' => $area,
+      'user' => $user,
+      'date' => $date,
+      'number' => $number,
+      'subtitle' => $subtitle,
+      'title' => $title,
+      'quota_aid' => $quota_aid,
+      'affiliate' => $affiliate,
+      'applicant' => $applicant,
+      'spouse' => $spouse,
+      'beneficiaries' => $beneficiaries,
+    ];
+    $pages = [];
+    for ($i = 1; $i <= 2; $i++) {
+      $pages[] = \View::make('quota_aid.print.liquidation', $data)->render();
+    }
+    $pdf = \App::make('snappy.pdf.wrapper');
+    $pdf->loadHTML($pages);
+    return $pdf->setOption('encoding', 'utf-8')
+      ->setOption('margin-bottom', '15mm')
+      ->setOption('footer-html', $footerHtml)
+      ->stream("$namepdf");
+  }
   public function printFile($id)
   {
 
