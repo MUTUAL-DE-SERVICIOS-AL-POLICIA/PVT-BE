@@ -328,6 +328,7 @@ class QuotaAidCertificationController extends Controller
     $quota_aid = QuotaAidMortuary::find($id);
     $affiliate = $quota_aid->affiliate;
     $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->get();
+    $discount = $quota_aid->discount_types()->where('discount_type_id', '8')->first();
 
     $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)
       ->where('wf_state_id', 37)
@@ -363,6 +364,7 @@ class QuotaAidCertificationController extends Controller
       'beneficiaries' => $beneficiaries,
       // 'start_date' => '2022-01-01',
       // 'end_date' => '2022-01-01',
+      'discount' => $discount,
       'dates' =>$dates,
       'contributions'=> $contributions,
     ];
@@ -451,6 +453,7 @@ class QuotaAidCertificationController extends Controller
   public function printLiquidation($id)
   {
     $quota_aid = QuotaAidMortuary::find($id);
+    $discount = $quota_aid->discount_types()->where('discount_type_id', '8')->first();
     $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 35)->first();
     $code = $quota_aid->code;
     $area = $next_area_code->wf_state->first_shortened;
@@ -482,6 +485,7 @@ class QuotaAidCertificationController extends Controller
       'applicant' => $applicant,
       'spouse' => $spouse,
       'beneficiaries' => $beneficiaries,
+      'discount' => $discount 
     ];
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {
