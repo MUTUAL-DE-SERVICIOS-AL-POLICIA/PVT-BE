@@ -1470,13 +1470,16 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->save();
 
     //mejorar
-    $discount_type = DiscountType::whereIn('id', [$DISCOUNT_TYPE_ADVANCE, $DISCOUNT_TYPE_RETENTION])->first();
+    $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_ADVANCE)->first();
     if ($advance_payment >= 0) {
       if ($quota_aid->discount_types->contains($DISCOUNT_TYPE_ADVANCE) || $quota_aid->discount_types->contains($DISCOUNT_TYPE_RETENTION)) {
         if($judicial_retention_amount !== 0 && $judicial_retention_amount !== null) {
           $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, ['amount' => $judicial_retention_amount, 'date' => $request->judicialRetentionDate]);
         }
-        $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_ADVANCE, ['amount' => $advance_payment, 'date' => $request->advancePaymentDate, 'code' => $request->advancePaymentCode, 'note_code' => $request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
+        if(!$quota_aid->discount_types->contains($DISCOUNT_TYPE_ADVANCE))
+          $quota_aid->discount_types()->save($discount_type, ['amount' => $advance_payment, 'date' => $request->advancePaymentDate, 'code' => $request->advancePaymentCode, 'note_code' => $request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
+        else
+          $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_ADVANCE, ['amount' => $advance_payment, 'date' => $request->advancePaymentDate, 'code' => $request->advancePaymentCode, 'note_code' => $request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
       } else {
         $quota_aid->discount_types()->save($discount_type, ['amount' => $advance_payment, 'date' => $request->advancePaymentDate, 'code' => $request->advancePaymentCode, 'note_code' => $request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
       }
