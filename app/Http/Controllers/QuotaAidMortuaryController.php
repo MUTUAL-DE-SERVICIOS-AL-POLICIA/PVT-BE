@@ -1623,6 +1623,6 @@ class QuotaAidMortuaryController extends Controller
     }
     return response()->json([
       'error' => 'No existe la retención',
-    ], 409);
+    ], 200);
   }
 }

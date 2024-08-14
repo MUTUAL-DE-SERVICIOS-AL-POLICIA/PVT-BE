@@ -57,11 +57,7 @@
 <ret-fun-beneficiary-testimony-list :beneficiaries="{{ $beneficiaries }}" :doc-id="{{ $quota_aid->id }}" type="quotaAid">
 </ret-fun-beneficiary-testimony-list>
 
-@php
-    $role = Auth::user()->roles->firstWhere('id', 38);
-@endphp
-
-@if($role)
+@if(Util::getRol()->id == 38)
     <quota-aid-judicial-retention
     :quota-aid-id="{{ $quota_aid->id }}"
     ></quota-aid-judicial-retention>
