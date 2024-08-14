@@ -1449,7 +1449,7 @@ class QuotaAidMortuaryController extends Controller
   }
   public function saveDiscounts(Request $request, $quota_aid_id)
   {
-    static $DISCOUNT_TYPE_RETENTION = 8;
+    static $DISCOUNT_TYPE_RETENTION = 9;
     static $DISCOUNT_TYPE_ADVANCE = 1;
 
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
