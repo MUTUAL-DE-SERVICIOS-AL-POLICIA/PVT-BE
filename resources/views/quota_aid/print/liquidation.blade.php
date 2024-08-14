@@ -49,7 +49,7 @@
                     <td class="text-left px-10 py-3 uppercase">SUB TOTAL {{$quota_aid->procedure_modality->procedure_type->second_name}}</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($quota_aid->subtotal) }}  Bs.</td>
                 </tr>
-                @if ($discount->id == 8)
+                @if ($discount->id == 9)
                 <tr class="text-md">
                     <td class="text-left px-10 py-3 uppercase"> - {{$discount->shortened}}</td>
                     <td class="text-right uppercase px-5 py-3">- {{ Util::formatMoney($discount->pivot->amount) }}  Bs.</td>
