@@ -1156,7 +1156,7 @@ class ContributionController extends Controller
         $affiliate = $ret_fun->affiliate;
 
         if ($ret_fun->procedure_modality_id == 14) { // fallecimiento conyugue
-            Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clacificación de aportes.');
+            Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clasificación de aportes.');
             return redirect('quota_aid/' . $ret_fun_id);
         }
         if($ret_fun->isQuota()){
