@@ -5,37 +5,48 @@
             <h5>Retenciones judiciales</h5>
             <div class="ibox-tools">
                <button class="btn btn-primary" @click="register = !register">
-                  <i class="fa">Registrar </i>
+                  <i class="fa">Registrar</i>
                </button>
             </div>
          </div>
          <div class="ibox-content" v-if="register">
             <div class="row">
-               <div class="col-md-5">
+               <div class="col-md-12" v-if="retentions != undefined && retentions.length > 0">
                   <table class="table table-striped table-hover table-bordered">
                      <thead>
                         <tr>
                            <th>Nro</th>
                            <th>Detalle</th>
+                           <th>Acción</th>
                         </tr>
                      </thead>
                      <tbody>
-                        <tr v-for="(o, index) in retentions" :key="index">
+                        <tr v-for="(o, index) in retentions" :key="index" >
                            <td>{{ index + 1 }}</td>
                            <td>{{ o.note_code }}</td>
+                           <td>
+                              <button class="btn btn-danger" type="button" @click="cancelJudicialRetention()">
+                                 <i class="fa fa-trash"></i>
+                              </button>
+                              <button class="btn btn-primary" type="button" @click="openEditDialog(o)">
+                                 <i class="fa fa-pencil"></i>
+                              </button>
+                           </td>
                         </tr>
                      </tbody>
                   </table>
                </div>
-               <div class="col-md-1">
-                  <label class="control-label">Descripción:</label>
-               </div>
-               <div class="col-md-6">
-                  <textarea type="text" class="form-control" v-model="detail" placeholder="descripción..."></textarea>
+               <div v-if="retentions != undefined && retentions.length <= 0">
+                  <div class="col-md-6">
+                     <label class="control-label">Detalle:</label>
+                  </div>
+                  <div class="col-md-6">
+                     <textarea type="text" class="form-control" v-model="detail" placeholder="descripción..."></textarea>
+                  </div>
                </div>
             </div>
          </div>
-         <div class="ibox-footer">
+         <div class="ibox-footer" v-if="retentions != undefined && retentions.length <= 0">
             <div class="text-center" v-show="register">
                <button class="btn btn-danger" type="button" @click="cancel()">
                   <i class="fa fa-times-circle">
@@ -48,6 +59,25 @@
             </div>
          </div>
       </div>
+      <!-- Modal retention -->
+      <div v-if="showModal" class="modal-overlay">
+         <div class="modal-content">
+            <span class="close" @click="closeDialog">&times;</span>
+            <h2>Editar retención judicial</h2>
+            <div class="row">
+               <div class="col-md-2">
+                  <label class="control-label">Detalle:</label>
+               </div>
+               <div class="col-md-10">
+                  <textarea type="text" class="form-control" v-model="detail" placeholder="descripción..." cols="30" rows="4"></textarea>
+               </div>
+            </div>
+            <div class="text-center">
+               <button @click="closeDialog" class="btn btn-danger">Cancelar</button>
+               <button @click="modifiyJudicialRetention" class="btn btn-primary">Confirmar</button>
+            </div>
+         </div>
+      </div>
    </div>
 </template>
 <script>
@@ -55,9 +85,11 @@ export default {
    props: ['quotaAidId'],
    data() {
       return {
+         showModal: false,
          register: false,
          detail: null,
-         retentions: []
+         retentions: [],
+         editRetention: null
       }
    },
    mounted() {
@@ -69,9 +101,9 @@ export default {
             const response = await axios.post(`/quota_aid/${this.quotaAidId}/save_judicial_retention`, {
                detail: this.detail
             })
-            window.location.reload();
+            this.retentions.push(response.data.data);
             flash(response.data.message);
-            cancel();
+            window.location.reload()
          } catch( error ) {
             if(error.response) {
                if(error.response.status == 409) {
@@ -83,18 +115,93 @@ export default {
       },
       cancel() {
          this.register = false
-         this.detail = null
+      },
+      openEditDialog(retention) {
+         this.showModal = true;
+         this.editRetention = retention;
+         this.detail = retention.note_code;
+      },
+      closeDialog() {
+         this.showModal = false;
       },
       async obtainJudicialRetention() {
          try {
             const response = await axios.get(`/quota_aid/${this.quotaAidId}/obtain_judicial_retention`)
             if(response.data) {
                this.retentions = response.data.data
+               console.log(this.retentions[0])
             }
          } catch( error ) {
             console.log(error)
          }
+      },
+      async modifiyJudicialRetention() {
+         try {
+            const response = await axios.patch(`/quota_aid/${this.quotaAidId}/modify_judicial_retention`, {
+               detail: this.detail
+            })
+            const index = this.retentions.findIndex(r => r.id === this.editRetention.id);
+            if (index !== -1) {
+                  this.$set(this.retentions, index, response.data.data);
+            }
+            flash(response.data.message)
+            this.closeDialog()
+            await this.obtainJudicialRetention();
+         } catch( error ) {
+            console.error(error)
+         }
+      },
+      async cancelJudicialRetention() {
+         await this.$swal({
+            title: "¿Está seguro de anular la retención judicial?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#59B75C",
+            cancelButtonColor: "#EC4758",
+            confirmButtonText: "<i class='fa fa-save'></i> Confirmar",
+            cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+               await axios.delete(`/quota_aid/${this.quotaAidId}/cancel_judicial_retention`)
+               flash("Se ha eliminado la retención exitosamente");
+               this.retentions = this.retentions.filter(r => r.id !== this.editRetention.id);
+               return true
+            },
+         });
+         window.location.reload();
       }
    }
 }
 </script>
+<style>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+</style>

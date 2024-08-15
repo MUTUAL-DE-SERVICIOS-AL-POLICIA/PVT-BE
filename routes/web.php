@@ -168,7 +168,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('quota_aid/{quota_aid}/print/legal_resolution', 'QuotaAidCertificationController@printLegalResolution')->name('quota_aid_print_legal_resolution');
     Route::post('quota_aid/{quota_aid}/save_judicial_retention', 'QuotaAidMortuaryController@createJudicialRetention');
     Route::get('quota_aid/{quota_aid}/obtain_judicial_retention', 'QuotaAidMortuaryController@obtainJudicialRetention');
-
+    Route::patch('quota_aid/{quota_aid}/modify_judicial_retention', 'QuotaAidMortuaryController@modifyJudicialRetention');
+    Route::delete('quota_aid/{quota_aid}/cancel_judicial_retention', 'QuotaAidMortuaryController@cancelJudicialRetention');
 
     // tags
     Route::resource('/tag', "TagController");

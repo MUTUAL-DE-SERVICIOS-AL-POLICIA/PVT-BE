@@ -1584,7 +1584,7 @@ class QuotaAidMortuaryController extends Controller
   }
   public function createJudicialRetention(Request $request, $quota_aid_id) {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $discount_type = DiscountType::where('shortened', 'Retención según juzgado')->first();
+    $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->first();
     if(!$quota_aid || !$discount_type)
         return response()->json([
           'error' => "No existe el trámite o el tipo de descuento"
@@ -1592,6 +1592,7 @@ class QuotaAidMortuaryController extends Controller
     $discount_type_quota_aid = $quota_aid->discount_types()
         ->wherePivot('discount_type_id', $discount_type->id)
         ->wherePivot('quota_aid_mortuary_id', $quota_aid_id)
+        ->wherePivot('deleted_at', null)
         ->count();
     if($discount_type_quota_aid > 0)
         return response()->json([
@@ -1606,7 +1607,7 @@ class QuotaAidMortuaryController extends Controller
   }
   public function obtainJudicialRetention($quota_aid_id) {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $discount_type = DiscountType::where('shortened', 'Retención según juzgado')->first();
+    $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->first();
     if($quota_aid && $discount_type) {
       $discounts = $quota_aid->discount_types()
         ->wherePivot('discount_type_id', $discount_type->id)
@@ -1623,6 +1624,37 @@ class QuotaAidMortuaryController extends Controller
     }
     return response()->json([
       'error' => 'No existe la retención',
+      'data' => []
     ], 200);
+  }
+  public function modifyJudicialRetention(Request $request, $quota_aid_id) {
+    static $DISCOUNT_TYPE_RETENTION = 9;
+    $quota_aid = QuotaAidMortuary::find($quota_aid_id);
+    $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->first();
+    if($quota_aid && $discount_type) {
+      $updated = $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, [ 'note_code' => $request->detail ]);
+      return response()->json([
+        'message' => 'Modificación de la retención exitosa',
+        'data' => $updated
+      ]);
+    }
+    return response()->json([
+      'error' => 'No se pudo modificar la retención',
+    ], 409);
+  }
+  public function cancelJudicialRetention($quota_aid) {
+    static $DISCOUNT_TYPE_RETENTION = 9;
+    $quota_aid = QuotaAidMortuary::find($quota_aid);
+    $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->first();
+    if($quota_aid && $discount_type) {
+      $deleted = $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, ['deleted_at' => now()]);
+      return response()->json([
+        'message' => 'Se ha eliminado la retención exitosamente',
+        'data' => $deleted
+      ]);
+    }
+    return response()->json([
+      'error' => 'No se pudo eliminar la retención'
+    ], 409);
   }
 }
