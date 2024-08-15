@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Muserpol\Models\Workflow\WorkflowState;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+use Muserpol\Models\Role;
+
 
 class AddLiquidationRole extends Migration
 {
@@ -13,10 +18,13 @@ class AddLiquidationRole extends Migration
      */
     public function up()
     {
-        DB::statement("
-        insert into roles (module_id, display_name, action, created_at, updated_at, name)
-        values (4, 'Área de Liquidación', 'Aprobado', NOW(), NOW(), 'CAM-area-de-liquidacion');
-        ");
+        $role = Role::where('display_name','Área de Liquidación')->first();
+        if($role == null){
+            DB::statement("
+            insert into roles (module_id, display_name, action, created_at, updated_at, name)
+            values (4, 'Área de Liquidación', 'Aprobado', NOW(), NOW(), 'CAM-area-de-liquidacion');
+            ");
+        }
 
         DB::statement("
         update wf_states 
@@ -24,10 +32,13 @@ class AddLiquidationRole extends Migration
         where module_id = 4 and sequence_number = 7 and deleted_at is null;
         ");
 
-        DB::statement("
-        insert into wf_states (module_id, role_id, name, first_shortened, sequence_number)
-        values (4, (select id from roles where display_name = 'Área de Liquidación'), 'Área de Liquidación Cuota y Auxilio Mortuorio', 'Liquidación', 7);
-        ");
+        $state = WorkflowState::where('name','Área de Liquidación Cuota y Auxilio Mortuorio')->first();
+        if($state == null){
+            DB::statement("
+            insert into wf_states (module_id, role_id, name, first_shortened, sequence_number)
+            values (4, (select id from roles where display_name = 'Área de Liquidación'), 'Área de Liquidación Cuota y Auxilio Mortuorio', 'Liquidación', 7);
+            ");
+        }
 
         DB::statement("
         update wf_sequences 
