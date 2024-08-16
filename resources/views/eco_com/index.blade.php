@@ -165,9 +165,19 @@
                 { data: 'wf_state_name' },
                 { data: 'eco_com_inbox_state' },
                 { data: 'total' },
-                { data: 'action' },
-            ],
-        });
+                { data: 'action',
+                        render: function(data, type, row) {
+                            if (row.state == "1") {
+                                return '<button class="btn btn-primary btn-sm btn-hello">Imprimir boleta de pago</button>';
+                            } else {
+                                return '<button class="btn btn-primary btn-sm btn-hello" disabled>Imprimir boleta de pago</button>';
+                            }
+                        },
+                        orderable: false,
+                        searchable: false},
+                            ],
+                        }
+                );
         $('.btn.btn-default.buttons-collection.buttons-colvis').on('click', function () {
             $('div.dt-button-background').remove()
         });
@@ -179,10 +189,41 @@
                 }
             });
         });
-        // $(document).on('click','.btn-received', function(){
-        //     datatable_ret_fun.columns(0).search($(this).data('id')).draw();   
-        // });
-    })();
+
+        $(document).on('click', '.btn-hello', function() {
+        var economic_complement_id = datatable_ret_fun.row($(this).closest('tr')).data().id;
+        var apiUrl = `/eco_com/${economic_complement_id}/print/paid_cetificate`;
+        console.log('Datos de la Fila:', economic_complement_id);
+        fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+        .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la solicitud: ' + response.statusText);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+        var url = window.URL.createObjectURL(blob);
+        var iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.top = '-9999px';
+        iframe.src = url;
+        document.body.appendChild(iframe);
+        iframe.onload = function() {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        };
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+    });
+            })();
 
 </script>
 @endsection
