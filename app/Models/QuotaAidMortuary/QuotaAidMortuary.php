@@ -67,7 +67,7 @@ class QuotaAidMortuary extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'code', 'note_code', 'note_code_date'])->withTimestamps();
+        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'code', 'note_code', 'note_code_date'])->wherePivot('deleted_at',null)->withTimestamps();
     }
     public function quota_aid_correlative()
     {

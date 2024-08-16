@@ -134,6 +134,16 @@
                 </quota-aid-certification-button>
             @endif
 
+            @if(Util::getRol()->id == 102)
+                <quota-aid-certification-button
+                    title="Imprimir Liquidaci&oacute;n"
+                    quota-aid-id="{{ $quota_aid->id }}"
+                    url-print="{{ route('quota_aid_print_liquidation', $quota_aid->id) }}"
+                    message="true"
+                >
+                </quota-aid-certification-button>
+            @endif
+
             @if(Util::getRol()->id == 38)
                 <quota-aid-certification-button
                     title="Imprimir Certificacion de Documentacion Presentada y Revisada"

@@ -390,6 +390,7 @@ Vue.component('quota-aid-certification-button', require('./components/quota_aid/
 Vue.component('quota-aid-qualification', require('./components/quota_aid/Qualification.vue'));
 Vue.component('quota-aid-qualification-group', require('./components/quota_aid/QualificationGroup.vue'));
 Vue.component('quota-aid-date-interval', require('./components/quota_aid/DateInterval.vue'));
+Vue.component('quota-aid-judicial-retention', require('./components/quota_aid/JudicialRetention.vue'));
 //user
 Vue.component('show-password', require('./components/user/ShowPassword.vue'));
 //permission

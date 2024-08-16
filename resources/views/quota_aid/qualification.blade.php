@@ -93,8 +93,8 @@
                                         <th>Monto</th>
                                         <th>Cite</th>
                                         <th>Fecha de Cite</th>
-                                        <th>#</th>
-                                        <th>Fecha</th>
+                                        <th>N° Resolución</th>
+                                        <th>Fecha de Registro</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -121,78 +121,45 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>% de Anticipo </td>
+                                        <td>Porcentaje de Anticipo </td>
                                         <td>@{{ percentageAdvancePayment | percentage }}</td>
                                     </tr>
-                                    {{-- <tr>
-                                        <td>Retencion para pago de prestamo</td>
-                                        <td>
-                                            <input class="form-control" type="text" v-model="retentionLoanPayment" v-money style="width:130px">
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="text" placeholder="Cite" v-model="retentionLoanPaymentCode">
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="date" v-model="retentionLoanPaymentDate">
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="text" placeholder="# de Contrato de Préstamo" v-model="retentionLoanPaymentNoteCode">
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="date" v-model="retentionLoanPaymentNoteCodeDate">
-                                        </td>
-                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered">
+                                <thead>
                                     <tr>
-                                        <td>% de Retencion para pago de prestamo</td>
-                                        <td>@{{ percentageRetentionLoanPayment | percentage }}</td>
+                                        <th>Tipo</th>
+                                        <th>Monto</th>
+                                        <th>Descripción</th>
+                                        <th>Fecha de Registro</th>
                                     </tr>
+                                </thead>
+                                <tbody>
                                     <tr>
+                                        <td>Retenciones judiciales</td>
                                         <td>
-                                            Garantes
-                                            <button class="btn btn-info" @click="addGuarantor"><i class="fa fa-plus"></i></button>
+                                            <div :class="{ 'has-error': validateRetentionAmount(judicialRetentionAmount)}">
+                                                <input type="text" class="form-control" v-money v-model="judicialRetentionAmount">
+                                            </div>
                                         </td>
-                                        <td colspan="5">
-                                            <div class="form-inline" v-for="(guarantor, index) in guarantors">
-                                                <button class="btn btn-danger" type="button" @click="deleteGuarantor(index)" type="button" role="button"><i class="fa fa-trash "></i></button>
-                                                <div class="input-group">
-                                                    <input type="text" name="applicant_identity_card" v-model.trim="guarantor.identity_card" class="form-control" style="width:130px"
-                                                        ref="guarantoridentitycard" @keypress.enter="searchGuarantor(index)"
-                                                        placeholder="Buscar por CI">
-                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-primary" type="button" @click="searchGuarantor(index)" type="button" role="button"><i class="fa fa-search"></i></button>
-                                                                    </span>
-                                                </div>
-                                                <input type="text" disabled :value="guarantor.full_name" class="form-control" style="width:256px;">
-                                                <input type="text" v-if="guarantor.full_name" class="form-control" type="text" v-model="guarantor.amount" v-money
-                                                    style="width:130px" @keyup="updateTotalGuarantor" ref=" guarantoramount">
-                                                <hr>
+                                        <td>
+                                            <textarea
+                                                class="form-control"
+                                                name="description"
+                                                placeholder="Descripción"
+                                                style="resize: none; width: 350px; height: 70px;"
+                                                v-model="judicialRetentionDetail"
+                                                disabled
+                                            ></textarea>
+                                        </td>
+                                        <td>
+                                            <div :class="{ 'has-error': validateRetentionDate(judicialRetentionDate)}">
+                                                <input class="form-control" type="date" v-model="judicialRetentionDate">
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            Retencion para garantes
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="text" :value="retentionGuarantor" disabled v-money>
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="text" placeholder="Cite" v-model="retentionGuarantorCode">
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="date" v-model="retentionGuarantorDate">
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="text" placeholder="# de Contrato de Préstamo" v-model="retentionGuarantorNoteCode">
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="date" v-model="retentionGuarantorNoteCodeDate">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>% de Retencion para garantes</td>
-                                        <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
-                                    </tr>--}}
                                     <tr class="success">
                                         <td>Total</td>
                                         <td colspan="5"><strong>@{{ totalAnimated | currency }}</strong></td>

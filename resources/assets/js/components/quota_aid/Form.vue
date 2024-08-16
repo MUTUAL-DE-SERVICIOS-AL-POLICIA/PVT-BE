@@ -11,13 +11,22 @@ export default {
             email:null,
             phone:null,
             url:null,
+            loading: false
         }
     },
     methods: {
-        onFinish() {
-        document.getElementById("quota-aid-form").submit();
+        async onFinish() {
+            this.loading = true
+            try {
+                await new Promise(resolve => setTimeout(resolve, 3500))
+                document.getElementById("quota-aid-form").submit();
+            } catch( error ) {
+                console.error("Error al enviar el formulario: ", error)
+            } finally {
+                this.loading = false
+            }
         },
-        setLoading: function(value) {
+        setLoading (value) {
             this.loadingWizard = value;
         },
         showRequirementsErrorChanged(val){
@@ -131,3 +140,34 @@ export default {
 
 };
 </script>
+<style>
+.form-wizard-container {
+    position: relative;
+}
+
+.spinner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Asegúrate de que esté por encima del contenido */
+}
+
+.spinner {
+    border: 20px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #1AB394;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
