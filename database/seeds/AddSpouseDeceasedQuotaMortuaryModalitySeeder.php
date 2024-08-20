@@ -57,8 +57,8 @@ class AddSpouseDeceasedQuotaMortuaryModalitySeeder extends Seeder
             /*cuota mortuoria fallecimiento conyugue*/
             ['hierarchy_id' => '1', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => $modality->id,'amount' => '14000', 'year'=>'2024-07-31','months'=>'1200','months_min'=>'12','months_max'=>'1200'],
             ['hierarchy_id' => '2', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => $modality->id,'amount' => '14000', 'year'=>'2024-07-31','months'=>'1200','months_min'=>'12','months_max'=>'1200'],
-            ['hierarchy_id' => '4', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => $modality->id,'amount' => '14000', 'year'=>'2024-07-31','months'=>'1200','months_min'=>'12','months_max'=>'1200'],
             ['hierarchy_id' => '3', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => $modality->id,'amount' => '14000', 'year'=>'2024-07-31','months'=>'1200','months_min'=>'12','months_max'=>'1200'],
+            ['hierarchy_id' => '4', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => $modality->id,'amount' => '14000', 'year'=>'2024-07-31','months'=>'1200','months_min'=>'12','months_max'=>'1200'],
             ['hierarchy_id' => '5', 'type_mortuary' => 'Conyuge', 'procedure_modality_id' => $modality->id,'amount' => '14000', 'year'=>'2024-07-31','months'=>'1200','months_min'=>'12','months_max'=>'1200'],
         ]);
         
