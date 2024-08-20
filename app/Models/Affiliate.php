@@ -1056,10 +1056,14 @@ class Affiliate extends Model
       $date_min = $date_max = $min_limit = $max_limit = null;
 
       if($ret_fun->isQuota()){
-          $date_min = $affiliate->date_entry;
+        $date_min = $affiliate->date_entry;
+        if ($ret_fun->procedure_modality_id == 9 || $ret_fun->procedure_modality_id == 8) {
           $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
-          $min_limit = Util::parseMonthYearDate($date_min);
-          $max_limit = Util::parseMonthYearDate($date_max);
+        } else {
+          $date_max = Carbon::parse(Util::parseBarDate($affiliate->spouse[0]->date_death))->format('m/Y');
+        }
+        $min_limit = Util::parseMonthYearDate($date_min);
+        $max_limit = Util::parseMonthYearDate($date_max);
       }else{
           if($ret_fun->procedure_modality_id == 15){//fallecimiento viuda
               $date_min = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');

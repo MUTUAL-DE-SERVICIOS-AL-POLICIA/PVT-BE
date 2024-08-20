@@ -1154,8 +1154,12 @@ class ContributionController extends Controller
     {
         $ret_fun = QuotaAidMortuary::find($ret_fun_id);
         $affiliate = $ret_fun->affiliate;
-
-        if ($ret_fun->procedure_modality_id == 14) { // fallecimiento conyugue
+        $type_mortuary = $ret_fun->getTypeMortuary();
+        // if ($ret_fun->procedure_modality_id == 14) { // fallecimiento conyugue
+        //     Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clasificación de aportes.');
+        //     return redirect('quota_aid/' . $ret_fun_id);
+        // }
+        if($type_mortuary == 'Conyuge'){
             Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clasificación de aportes.');
             return redirect('quota_aid/' . $ret_fun_id);
         }

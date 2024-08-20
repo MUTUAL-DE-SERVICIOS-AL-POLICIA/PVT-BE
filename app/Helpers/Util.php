@@ -890,6 +890,19 @@ class Util
   {
     return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code', 'not like', '%A')->whereIn('procedure_modality_id', [8, 9])->get()->last())->code;
   }
+  public static function getLastCodeQM2()
+  {
+    return optional(
+      QuotaAidMortuary::select('quota_aid_mortuaries.code')
+      ->join('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+      ->orderBy(DB::raw("regexp_replace(split_part(quota_aid_mortuaries.code, '/',2),'\D','','g')::integer"))
+      ->orderBy(DB::raw("split_part(quota_aid_mortuaries.code, '/',1)::integer"))
+      ->where('code', 'not like', '%A')
+      ->where('procedure_modalities.procedure_type_id', 3)
+      ->get()
+      ->last()
+      )->code;
+  }
   public static function getLastCodeAM($model)
   {
     return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code', 'not like', '%A')->whereIn('procedure_modality_id', [13, 14, 15])->get()->last())->code;

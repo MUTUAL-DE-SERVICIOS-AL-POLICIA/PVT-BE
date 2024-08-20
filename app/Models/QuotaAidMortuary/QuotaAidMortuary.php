@@ -109,13 +109,17 @@ class QuotaAidMortuary extends Model
     }
     public function getDeceased()
     {
-        if ( $this->isQuota() ) {
-            return $this->affiliate;
+        if ($this->isQuota()) {
+            return $this->getTypeMortuary() == 'Titular' ? $this->affiliate : $this->affiliate->spouse->first();
         }
-        if ( $this->isAid() ) {
+        if ($this->isAid()) {
             return $this->procedure_modality->id == 13 ? $this->affiliate : $this->affiliate->spouse->first();
         }
         return null;
+    }
+    public function getTypeMortuary()
+    {
+        return $this->quota_aid_procedure->type_mortuary;
     }
     public function procedure_records()
     {
