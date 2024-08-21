@@ -886,11 +886,11 @@ class Util
     return optional($model::where('code', 'not like', '%A')->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
   }
 
-  public static function getLastCodeQM($model)
-  {
-    return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code', 'not like', '%A')->whereIn('procedure_modality_id', [8, 9])->get()->last())->code;
-  }
-  public static function getLastCodeQM2()
+  // public static function getLastCodeQM($model)
+  // {
+  //   return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code', 'not like', '%A')->whereIn('procedure_modality_id', [8, 9])->get()->last())->code;
+  // }
+  public static function getLastCodeQM()
   {
     return optional(
       QuotaAidMortuary::select('quota_aid_mortuaries.code')
