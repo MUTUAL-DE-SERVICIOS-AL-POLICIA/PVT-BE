@@ -84,6 +84,7 @@ class EconomicComplementController extends Controller
         $eco_coms = EconomicComplement::select(
             DB::RAW("
             economic_complements.id as id,
+            eco_com_state_types.id as state,
             economic_complements.affiliate_id,
             economic_complements.code,
             economic_complements.reception_date,
@@ -99,6 +100,8 @@ class EconomicComplementController extends Controller
             eco_com_applicants.identity_card as eco_com_beneficiary_identity_card,
             trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name, eco_com_applicants.second_name, eco_com_applicants.last_name, eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g'))  as eco_com_beneficiary_full_name
             "))
+            ->leftJoin('eco_com_states','eco_com_states.id', '=', 'economic_complements.eco_com_state_id')
+            ->leftJoin('eco_com_state_types','eco_com_state_types.id',"=","eco_com_states.eco_com_state_type_id")
             ->leftJoin('cities as city_eco_com', 'economic_complements.city_id', '=', 'city_eco_com.id' )
             ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id' )
             ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id' )
