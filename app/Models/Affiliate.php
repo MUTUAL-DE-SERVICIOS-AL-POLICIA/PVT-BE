@@ -565,15 +565,26 @@ class Affiliate extends Model
     }
 
     if ($quota_aid->isQuota()) {
+      if ($quota_aid->getTypeMortuary() == 'Conyuge') {//Conyugue
         $contributions = $this->contributions()
-        ->whereNotNull('contributions.contribution_type_mortuary_id')
-        ->where('contributions.contribution_type_mortuary_id',1)
-        ->where('contributions.month_year','>=',$min_limit)
-        ->where('contributions.month_year','<',$max_limit)
-        ->orderBy('contributions.month_year')
-       // ->take($number_contributions)
-        ->get();
+          ->whereNotNull('contributions.contribution_type_mortuary_id')
+          ->where('contributions.contribution_type_mortuary_id', 1)
+          ->where('contributions.month_year', '>=', $min_limit)
+          ->where('contributions.month_year', '<', $max_limit)
+          ->orderBy('contributions.month_year','desc')
+          ->take($number_contributions)
+          ->get();
+      } else {
+        $contributions = $this->contributions()
+          ->whereNotNull('contributions.contribution_type_mortuary_id')
+          ->where('contributions.contribution_type_mortuary_id', 1)
+          ->where('contributions.month_year', '>=', $min_limit)
+          ->where('contributions.month_year', '<', $max_limit)
+          ->orderBy('contributions.month_year')
+          // ->take($number_contributions)
+          ->get();
         //->toArray();
+      }
     }
 
     if ($quota_aid->isAid()) {
