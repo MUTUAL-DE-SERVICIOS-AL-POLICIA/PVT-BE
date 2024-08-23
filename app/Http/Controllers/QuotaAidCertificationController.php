@@ -328,7 +328,7 @@ class QuotaAidCertificationController extends Controller
     $quota_aid = QuotaAidMortuary::find($id);
     $affiliate = $quota_aid->affiliate;
     $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->get();
-    $discount = $quota_aid->discount_types()->where('discount_type_id', '9')->first();
+    $discounts = $quota_aid->discount_types()->whereIn('discount_type_id', ['1', '9'])->get();
 
     $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)
       ->where('wf_state_id', 37)
@@ -364,7 +364,7 @@ class QuotaAidCertificationController extends Controller
       'beneficiaries' => $beneficiaries,
       // 'start_date' => '2022-01-01',
       // 'end_date' => '2022-01-01',
-      'discount' => $discount,
+      'discounts' => $discounts,
       'dates' =>$dates,
       'contributions'=> $contributions,
     ];

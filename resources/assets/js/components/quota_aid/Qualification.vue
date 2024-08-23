@@ -240,8 +240,6 @@
             // } else {
             //   flash("Porcentages actualizados a los derechohabientes.");
             // }
-            console.log("giad");
-
             // this.hasAvailability = response.data.has_availability;
             // this.subTotalAvailability = response.data.subtotal_availability;
             // this.totalAnnualYield = response.data.total_annual_yield;
@@ -264,6 +262,8 @@
       async obtainDetailsOfJudicialRetention() {
         try {
           const response = await axios.get(`/quota_aid/${this.quotaAidId}/obtain_judicial_retention`)
+          if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
+          if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
           this.judicialRetentionDetail = response.data.data[0].note_code
         } catch (error) {
           if(error.response) {
