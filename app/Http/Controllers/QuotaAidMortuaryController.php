@@ -285,16 +285,18 @@ class QuotaAidMortuaryController extends Controller
 
     $requirements = ProcedureRequirement::select('id')->get();
     $affiliate = Affiliate::find($request->affiliate_id);
-    switch ($request->quota_aid_modality) {
-      case 8:
-      case 9:
-      case 13:
+
+    $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $request->quota_aid_modality)->where('is_enabled',true)->select('id','type_mortuary')->first();
+    switch ($procedure->type_mortuary) {
+      case 'Titular':
         $affiliate->affiliate_state_id = ID::affiliateState()->fallecido;
         $affiliate->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
         break;
-      case 14:
-      case 15:
-        $affiliate->affiliate_state_id = ID::affiliateState()->jubilado;
+      case 'Conyuge':
+      case 'Viuda':
+        if($request->quota_aid_modality == 14 || $request->quota_aid_modality == 15){
+          $affiliate->affiliate_state_id = ID::affiliateState()->jubilado;
+        }
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
         if (!isset($spouse->id))
           $spouse = new Spouse();
@@ -322,9 +324,9 @@ class QuotaAidMortuaryController extends Controller
     }
     $affiliate->save();
 
-    if ($request->quota_aid_modality == 14) { //fallecimiento conyugue
-      $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $request->quota_aid_modality)->where('is_enabled',true)->select('id')->first();
-    }
+    // if ($request->quota_aid_modality == 14) { //fallecimiento conyugue
+    //   $procedure = QuotaAidProcedure::where('hierarchy_id', $affiliate->degree->hierarchy_id)->where('procedure_modality_id', $request->quota_aid_modality)->where('is_enabled',true)->select('id')->first();
+    // }
     $validator = Validator::make($request->all(), [
       //'applicant_first_name' => 'required|max:5',
     ]);
@@ -363,7 +365,8 @@ class QuotaAidMortuaryController extends Controller
     } else {
       if ($request->procedure_type_id == 3) {
 
-        $quota_aid_code = Util::getLastCodeQM(QuotaAidMortuary::class);
+        //$quota_aid_code = Util::getLastCodeQM(QuotaAidMortuary::class);
+        $quota_aid_code = Util::getLastCodeQM();
         $code = Util::getNextCode($quota_aid_code, '179');
       } elseif ($request->procedure_type_id == 4) {
 
@@ -379,7 +382,10 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->user_id = Auth::user()->id;
     $quota_aid->affiliate_id = $request->affiliate_id;
     $quota_aid->procedure_modality_id = $request->quota_aid_modality;
-    if ($request->quota_aid_modality == 14) { //fallecimiento conyugue
+    // if ($request->quota_aid_modality == 14) { //fallecimiento conyugue
+    //   $quota_aid->quota_aid_procedure_id = $procedure->id;
+    // }
+    if($procedure->type_mortuary == 'Conyuge'){
       $quota_aid->quota_aid_procedure_id = $procedure->id;
     }
     $quota_aid->city_start_id = Auth::user()->city_id;

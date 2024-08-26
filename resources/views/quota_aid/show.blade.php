@@ -139,7 +139,6 @@
                     title="Imprimir Liquidaci&oacute;n"
                     quota-aid-id="{{ $quota_aid->id }}"
                     url-print="{{ route('quota_aid_print_liquidation', $quota_aid->id) }}"
-                    message="true"
                 >
                 </quota-aid-certification-button>
             @endif
