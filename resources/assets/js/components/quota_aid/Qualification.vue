@@ -262,9 +262,11 @@
       async obtainDetailsOfJudicialRetention() {
         try {
           const response = await axios.get(`/quota_aid/${this.quotaAidId}/obtain_judicial_retention`)
-          if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
-          if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
-          this.judicialRetentionDetail = response.data.data[0].note_code
+          if(response.data.data) {
+            if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
+            if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
+            if(response.data.data[0].note_code != undefined) this.judicialRetentionDetail = response.data.data[0].note_code
+          }
         } catch (error) {
           if(error.response) {
             if(error.response.status == 409) {
