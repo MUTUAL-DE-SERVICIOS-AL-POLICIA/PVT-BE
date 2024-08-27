@@ -10,6 +10,7 @@
         @include('ret_fun.print.legal_guardian', ['legal_guardian'=>$quota_aid->quota_aid_beneficiaries()->where('type', 'S')->first()->quota_aid_legal_guardians()->first()])
     @endif
     <div class="block">
+    @if ($discount != null && $discount->id == 9)
     <table class="table-info w-100 m-b-10">
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white text-sm uppercase">
@@ -33,6 +34,7 @@
             </tr>
         </tbody>
     </table>
+    @endif
     </div>
     <div class="block">
         <table class="table-info w-100 m-b-10">

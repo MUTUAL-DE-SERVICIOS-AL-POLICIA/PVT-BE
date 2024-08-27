@@ -689,7 +689,9 @@ class QuotaAidCertificationController extends Controller
       ->where('month_year', '<',$max_limit)
       ->orderBy('month_year')->get();
     }
-
+    if($quota_aid->getTypeMortuary() == 'Conyuge') {
+      $spouse = $affiliate->spouse()->first();
+    }
       if ($quota_aid->procedure_modality_id == 14 || $quota_aid->procedure_modality_id == 15) {
         $spouse = $affiliate->spouse()->first();
       }
