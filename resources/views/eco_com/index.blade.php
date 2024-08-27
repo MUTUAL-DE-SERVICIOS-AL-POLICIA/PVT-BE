@@ -166,12 +166,16 @@
                 { data: 'eco_com_inbox_state' },
                 { data: 'total' },
                 { data: 'action',
-                        render: function(data, type, row) {
-                            if (row.state == "1") {
-                                return '<button class="btn btn-primary btn-sm btn-hello">Imprimir boleta de pago</button>';
-                            } else {
-                                return '<button class="btn btn-primary btn-sm btn-hello" disabled>Imprimir boleta de pago</button>';
-                            }
+                        render: function(data, type, row) { 
+                                <?php if (Util::getRol()->id != 71): ?>
+                                    return '<a href="/eco_com/'+row.id+'" class="btn btn-default"><i class="fa fa-eye"></i></a> ';
+                                <?php else: ?>
+                                    if (row.state == "1") {
+                                        return '<button class="btn btn-primary btn-sm btn-hello">Imprimir boleta de pago</button>';
+                                    }else{
+                                        return '<button class="btn btn-primary btn-sm btn-hello" disabled>Imprimir boleta de pago</button>';
+                                    }                                    
+                                <?php endif; ?>
                         },
                         orderable: false,
                         searchable: false},
