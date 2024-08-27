@@ -272,6 +272,16 @@ class QuotaAidMortuaryController extends Controller
    */
   public function store(Request $request)
   {
+    $affiliate = Affiliate::find($request->affiliate_id);
+    $quota_aid = $affiliate->quota_aid_mortuaries()->where('procedure_modality_id', $request->quota_aid_modality)->get();
+    if($quota_aid->isNotEmpty()) {
+      $first_quota_aid = $quota_aid->first();
+      $modality = $first_quota_aid->procedure_modality;
+      $name = $modality->name;
+      Session::flash('message', 'El afiliado ya tiene registrado un trámite de '.$name);
+      return redirect('quota_aid/' . $first_quota_aid->id);
+    }
+
     $first_name = $request->beneficiary_first_name;
     $second_name = $request->beneficiary_second_name;
     $last_name = $request->beneficiary_last_name;
