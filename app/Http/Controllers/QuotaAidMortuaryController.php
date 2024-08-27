@@ -43,6 +43,7 @@ use Muserpol\Models\ProcedureState;
 use Muserpol\Models\FinancialEntity;
 use Ramsey\Uuid\Uuid;
 use Carbon\Carbon;
+use Session;
 
 class QuotaAidMortuaryController extends Controller
 {
