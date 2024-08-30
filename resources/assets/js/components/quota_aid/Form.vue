@@ -60,6 +60,10 @@ export default {
                     return false;
                 }
             }
+            if(this.$refs.two.$children[0].errors.items.length > 0 ){
+                Swal("Información incompleta", "Llene todos los campos obligatorios", "error")
+                    return false;
+            }
             if (!this.$refs.two.$children[0].applicant_type) {
                 return false;
             }
