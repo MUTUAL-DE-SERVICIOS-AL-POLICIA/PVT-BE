@@ -1214,7 +1214,7 @@ class QuotaAidMortuaryController extends Controller
     $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
     if (!isset($spouse->id))
       $spouse = new Spouse();
-    $modalities = ProcedureModality::where('procedure_type_id', '3')->orWhere('procedure_type_id', '4')->select('id', 'procedure_type_id', 'name')->get();
+    $modalities = ProcedureModality::where('procedure_type_id', '3')->orWhere('procedure_type_id', '4')->select('id', 'procedure_type_id', 'name', 'shortened')->get();
 
     $kinships = Kinship::get();
 
