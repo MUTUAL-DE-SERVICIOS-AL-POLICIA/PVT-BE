@@ -44,7 +44,7 @@ class ContributionObserver
             $message = $message  . ' el bono frontera ' . $old->border_bonus . ' a ' . $contribution->border_bonus;
         }
         if($contribution->east_bonus != $old->east_bonus) {
-            $message = $message . ' el bonot oriente ' . $old->east_bonus . ' a ' . $contribution->east_bonus;
+            $message = $message . ' el bono oriente ' . $old->east_bonus . ' a ' . $contribution->east_bonus;
         }
         if($contribution->gain != $old->gain) {
             $message = $message . ' cotizable de' . $old->gain . ' a ' . $contribution->gain;
