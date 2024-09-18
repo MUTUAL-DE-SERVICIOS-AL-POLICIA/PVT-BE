@@ -168,7 +168,7 @@
                                                         </thead>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->base_wage}} </div>
+                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->base_wage}} </div>
                                                                 <input type="hidden" disabled name="base_wage[{{$period}}]" value="{{$contributions[$period]->base_wage}}">
                                                             </td>
                                                         </tr>
