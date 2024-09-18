@@ -703,7 +703,6 @@ class ContributionController extends Controller
                                                     ->first();
                         if($closestCategory ) {
                             $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
-                            $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
                             $contribution->category_id = $closestCategory->id;
                         } else {
                             return response()->json([
