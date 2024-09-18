@@ -111,7 +111,7 @@
                                                 <td>Sueldo</td>
                                             </tr>
                                             <tr>
-                                                <td>Bono Antiguidad</td>
+                                            <td>Bono Antigüedad</td>
                                             </tr>
                                             <tr>
                                                 <td>Categor&iacute;a</td>
