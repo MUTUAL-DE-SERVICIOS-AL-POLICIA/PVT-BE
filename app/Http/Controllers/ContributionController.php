@@ -604,7 +604,7 @@ class ContributionController extends Controller
     public function storeContributions(Request $request)
     {
         //*********START VALIDATOR************//
-
+        logger($request);
         $rules=[];
         $messages=[];
         $input_data = $request->all();
