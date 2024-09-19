@@ -168,7 +168,7 @@
                                                         </thead>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->base_wage}} </div>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->base_wage}} </div>
                                                                 <input type="hidden" disabled name="base_wage[{{$period}}]" value="{{$contributions[$period]->base_wage}}">
                                                             </td>
                                                         </tr>
@@ -186,25 +186,25 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->study_bonus}} </div>
+                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->study_bonus}} </div>
                                                                 <input type="hidden" disabled name="study_bonus[{{$period}}]" value="{{$contributions[$period]->study_bonus}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->position_bonus}} </div>
+                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->position_bonus}} </div>
                                                                 <input type="hidden" disabled name="position_bonus[{{$period}}]" value="{{$contributions[$period]->position_bonus}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->border_bonus}} </div>
+                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->border_bonus}} </div>
                                                                 <input type="hidden" disabled name="border_bonus[{{$period}}]" value="{{$contributions[$period]->border_bonus}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->east_bonus}} </div>
+                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->east_bonus}} </div>
                                                                 <input type="hidden" disabled name="east_bonus[{{$period}}]" value="{{$contributions[$period]->east_bonus}}">
                                                             </td>
                                                         </tr>
