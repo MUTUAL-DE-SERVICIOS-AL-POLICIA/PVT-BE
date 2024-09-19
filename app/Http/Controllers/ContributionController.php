@@ -710,14 +710,15 @@ class ContributionController extends Controller
                             ], 404);
                         }
                     }
-                    if(isset($request->study_bonus[$key]))
-                        $contribution->study_bonus = $request->study_bonus[$key];
+                    if (isset($request->study_bonus[$key])) {
+                        $contribution->study_bonus = is_numeric($request->study_bonus[$key]) ? $request->study_bonus[$key] : 0;
+                    }
                     if(isset($request->position_bonus[$key]))
-                        $contribution->position_bonus = $request->position_bonus[$key];
+                        $contribution->position_bonus = is_numeric($request->position_bonus[$key]) ? $request->position_bonus[$key] : 0;
                     if(isset($request->border_bonus[$key]))
-                        $contribution->border_bonus = $request->border_bonus[$key];
+                        $contribution->border_bonus = is_numeric($request->border_bonus[$key]) ? $request->border_bonus[$key] : 0;
                     if(isset($request->east_bonus[$key]))
-                        $contribution->east_bonus = $request->east_bonus[$key];
+                        $contribution->east_bonus = is_numeric($request->east_bonus[$key]) ?$request->east_bonus[$key]: 0;
                     if(isset($request->gain[$key]) && $request->gain[$key] != "")
                         $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
                     else
