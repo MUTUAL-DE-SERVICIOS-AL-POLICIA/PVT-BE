@@ -210,19 +210,19 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->gain}} </div>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->gain}} </div>
                                                                 <input type="hidden" disabled name="gain[{{$period}}]" value="{{$contributions[$period]->gain}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->quotable}} </div>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->quotable}} </div>
                                                                 <input type="hidden" disabled name="quotable[{{$period}}]" value="{{$contributions[$period]->quotable}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->total ?? '-'}} </div>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->total ?? '-'}} </div>
                                                                 <input type="hidden" disabled name="total[{{$period}}]" value="{{$contributions[$period]->total??'-'}}">
                                                             </td>
                                                         </tr>
@@ -233,15 +233,13 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <!-- <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}" class="editcontent numberformat">{{$contributions[$period]->retirement_fund ?? '-'}} </div> -->
-                                                                <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->retirement_fund ?? '-'}} </div>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}" class="editcontent numberformat">{{$contributions[$period]->retirement_fund ?? '-'}} </div>
                                                                 <input type="hidden" disabled name="retirement_fund[{{$period}}]" value="{{$contributions[$period]->retirement_fund ??'-'}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <!-- <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">{{$contributions[$period]->mortuary_quota ?? '-'}} </div> -->
-                                                                <div contenteditable="false"  class="editcontent numberformat">{{$contributions[$period]->mortuary_quota ?? '-'}} </div>
+                                                                <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">{{$contributions[$period]->mortuary_quota ?? '-'}} </div>
                                                                 <input type="hidden" disabled name="mortuary_quota[{{$period}}]" value="{{$contributions[$period]->mortuary_quota ??'-'}}">
                                                             </td>
                                                         </tr>
