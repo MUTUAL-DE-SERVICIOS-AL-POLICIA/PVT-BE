@@ -283,6 +283,30 @@
                                                         <tr>
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="study_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="position_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="border_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="border_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                 <input type="hidden" disabled name="gain[{{$period}}]" value="0">
                                                             </td>
                                                         </tr>
