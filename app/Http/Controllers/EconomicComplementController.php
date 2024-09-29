@@ -174,9 +174,9 @@ class EconomicComplementController extends Controller
                     $sql = "CASE WHEN economic_complements.inbox_state THEN 'Validado' ELSE 'Pendiente' END ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
-                ->addColumn('action', function ($eco_com) {
-                    return Util::getRol()->id != 71? "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
-                })
+                // ->addColumn('action', function ($eco_com) {
+                //     return Util::getRol()->id != 71? "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
+                // })
                 ->make(true);
     }
 
