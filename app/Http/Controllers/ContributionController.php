@@ -604,7 +604,6 @@ class ContributionController extends Controller
     public function storeContributions(Request $request)
     {
         //*********START VALIDATOR************//
-
         $rules=[];
         $messages=[];
         $input_data = $request->all();
@@ -696,16 +695,30 @@ class ContributionController extends Controller
                         $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
                     else
                         $contribution->base_wage = $contribution->base_wage;
-                    
-                    if (isset($request->category[$key]) && $request->category[$key] != $contribution->category_id) {                    
-                        $category = Category::where('percentage',$request->category[$key])->first();
-                        if(!isset($category->id)) {
-                            $contribution->category_id = null; //default non category found -0
+
+                    if (isset($request->seniority_bonus[$key]) && $request->seniority_bonus[$key] != $contribution->seniority_bonus) {
+                        $percentage_category = $request->seniority_bonus[$key]/$contribution->base_wage;
+                        $closestCategory = Category::select('id', 'percentage')
+                                                    ->where('percentage', '=', $percentage_category)
+                                                    ->first();
+                        if($closestCategory ) {
+                            $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
+                            $contribution->category_id = $closestCategory->id;
                         } else {
-                            $contribution->category_id = $category->id;
-                        }                    
-                        $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
-                    }                    
+                            return response()->json([
+                                'error' => 'No se encontró una categoría con el bono antiguedad insertado'
+                            ], 404);
+                        }
+                    }
+                    if (isset($request->study_bonus[$key])) {
+                        $contribution->study_bonus = is_numeric($request->study_bonus[$key]) ? $request->study_bonus[$key] : 0;
+                    }
+                    if(isset($request->position_bonus[$key]))
+                        $contribution->position_bonus = is_numeric($request->position_bonus[$key]) ? $request->position_bonus[$key] : 0;
+                    if(isset($request->border_bonus[$key]))
+                        $contribution->border_bonus = is_numeric($request->border_bonus[$key]) ? $request->border_bonus[$key] : 0;
+                    if(isset($request->east_bonus[$key]))
+                        $contribution->east_bonus = is_numeric($request->east_bonus[$key]) ?$request->east_bonus[$key]: 0;
                     if(isset($request->gain[$key]) && $request->gain[$key] != "")
                         $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
                     else
