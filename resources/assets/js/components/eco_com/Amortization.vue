@@ -7,6 +7,15 @@
       <!-- :disabled="!can('amortize_economic_complement')" -->
       <i class="fa fa-dollar"></i> Amortizar
     </button>
+    <!-- <button
+      @click="show()"
+      class="btn btn-primary"
+    >
+      <i v-if="loading" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px" ></i>
+      <i v-else class="fa fa-save"></i>
+        &nbsp;
+        {{ loading ? 'Actualizando...' : 'Actualizar Cuentas por Cobrar por Reposición de Fondos' }}
+    </button> -->
     <!--<button
       @click="showModald()"
       class="btn btn-primary"
@@ -18,6 +27,25 @@
         <h1>Registrar Amortización</h1>
       </div>
       <div class="ibox-content">
+        <div class="row">
+          <div class="col-md-10 col-xs-offset-2">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Tipo</label>
+              <div class="col-sm-8">
+                <select
+                  class="form-control m-b"
+                  name="Tipo"
+                  v-model="discount_type"
+                >
+                  <option v-if="role_id==4" value="6">Reposición de Fondos</option>
+                  <option v-if="role_id==4" value="8">Retenciones según Juzgado</option>
+                  <option v-if="role_id==16" value="5">Amortización por Préstamos en Mora</option>
+                  <option v-if="role_id==7" value="4">Amortización por Cuentas por Cobrar</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-10 col-xs-offset-2">
             <div class="form-group">
@@ -66,7 +94,7 @@
       <div class="text-center m-sm">
       <h1 class="mx-10"><b> Registrar Deposito</b></h1>
       <hr style="border:2px solid #ddd">
-      </br>
+      <br/>
       </div>
     </div>
       <div class="row col-xs-offset-2" >
@@ -82,7 +110,7 @@
             </div>
         </div>
       </div>
-        </br>
+        <br/>
       <div class="row col-xs-offset-2" >
         <div class="form-group">
           <label class="col-sm-4 control-label">Fecha de Deposito</label>
@@ -98,7 +126,7 @@
             </div>
         </div>
       </div>
-      </br>
+      <br/>
       <div class="row col-xs-offset-2" >
         <div class="form-group">
           <label class="col-sm-4 control-label">Monto</label>
@@ -114,7 +142,7 @@
             </div>
         </div>
       </div>
-      </br>
+      <br/>
       <div class="col-md-12">
       <div class="text-center m-sm">
       <button
@@ -146,11 +174,13 @@
 import { parseMoney, canOperation, flashErrors } from "../../helper.js";
 import { mapState, mapMutations } from "vuex";
 export default {
-  props: ["permissions"],
+  props: ["permissions","role_id"],
   data() {
     return {
       form: {},
-      loadingButton: false
+      discount_type: null,
+      loadingButton: false,
+      loading: false
     };
   },
   computed: {
@@ -185,6 +215,7 @@ export default {
       this.loadingButton = true;
       this.form.id = this.ecoCom.id;
       this.form.amount = parseMoney(this.ecoCom.discount_amount);
+      this.form.discount_type = this.discount_type
       await axios
         .patch(`/eco_com_save_amortization`, this.form)
         .then(response => {
@@ -198,13 +229,13 @@ export default {
         });
       this.loadingButton = false;
     },
-    
   async saved(){
   if (!this.can("amortize_economic_complement", this.permissions)) {
         flash("No se puede realizar el Deposito.", 'error');
         this.$modal.hide("deposito-modal");
         return;
       }
+      console.log("entra aca")
       this.loadingButton = true;
       this.form.id = this.ecoCom.id;
       this.form.payment_amount = parseMoney(this.ecoCom.payment_amount);
@@ -223,8 +254,14 @@ export default {
           flashErrors("Error al procesar: ", error.response.data.errors);
         });
       this.loadingButton = false;
-  }  
-    
+  },
+  show() {
+    this.loading = true;
+    setTimeout(() => {
+      flash('Se cambió la amortización de Cuenta por Cobrar a Reposición Fondos')
+      this.loading = false;
+    }, 5000);
+    }
   }
 };
 </script>

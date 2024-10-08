@@ -75,7 +75,10 @@ class EconomicComplement extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['id','amount', 'date', 'message'])->withTimestamps();
+        return $this->belongsToMany('Muserpol\Models\DiscountType')
+        ->withPivot(['id', 'amount', 'date', 'deleted_at'])
+        ->wherePivot('deleted_at', null)
+        ->withTimestamps();
     }
     public function eco_com_fixed_pension()
     {
@@ -370,7 +373,7 @@ class EconomicComplement extends Model
         // }
         $this->save();
         if ($this->total_rent > $this->salary_quotable) {
-            $this->eco_com_state_id = 12;
+            //$this->eco_com_state_id = 12; // Se quito el estado automatico Exclusion
         } else {
             if ($this->eco_com_state_id == 12) {
                 $this->eco_com_state_id = 16;
@@ -679,6 +682,8 @@ class EconomicComplement extends Model
         economic_complements.aps_total_fsa as fraccion_saldo_acumulada_APS,
         economic_complements.aps_total_cc as fraccion_compensacion_cotizaciones_APS,
         economic_complements.aps_total_fs as fraccion_solidaria_vejez_APS,
+        economic_complements.aps_disability as pension_de_invalidez,
+        economic_complements.aps_total_death as pension_por_muerte,
         economic_complements.total_rent as total_renta,
         economic_complements.total_rent_calc as total_renta_neto,
         economic_complements.seniority as antiguedad,
@@ -697,8 +702,9 @@ class EconomicComplement extends Model
         return " 
         sum(DISTINCT case when (discount.shortened='Amortización por Préstamo') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
         sum(DISTINCT case when (discount.shortened='Amortización Reposición de Fondos') then  ecocomdiscount.amount else 0 end)  as Amortización_Reposición_de_Fondos,
-        sum(DISTINCT case when (discount.shortened='Aporte para el Auxilio Mortuorio') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
-        sum(DISTINCT case when (discount.shortened='Amortización Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar";
+        sum(DISTINCT case when (discount.shortened='Aporte Auxilio Mortuorio') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
+        sum(DISTINCT case when (discount.shortened='Amortización Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar,
+        sum(DISTINCT case when (discount.shortened='Retención según juzgado') then  ecocomdiscount.amount else 0 end)  as Amortización_Retención_segun_juzgado";
     } 
 
     
@@ -794,6 +800,12 @@ class EconomicComplement extends Model
                 ->where('wf_records.recordable_type', '=', 'economic_complements');
         })->leftJoin('users', 'wf_records.user_id', '=', 'users.id');
     }
+    public function scopeUpdatedPension($query)
+    {
+        return $query->leftJoin('eco_com_updated_pensions', function($join) {
+            $join->on('eco_com_updated_pensions.economic_complement_id', '=', 'economic_complements.id');
+        });
+    }
 
     public function getEcoComBeneficiaryBank()
     {
@@ -818,5 +830,18 @@ class EconomicComplement extends Model
     public function eco_com_review_procedures()
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComReviewProcedure');
+    }
+    public function hasFixedPension($data){
+
+        if($data->eco_com_reception_type_id != ID::ecoCom()->inclusion){
+            if($data->affiliate->pension_entity_id !=5){
+                return $data->aps_total_fsa !== null || $data->aps_total_cc !== null || $data->aps_total_fs !== null || $data->aps_total_death !== null || $data->aps_disability != null;
+            }else{
+                return $data->sub_total_rent !== null || $data->reimbursement !== null || $data->dignity_pension !== null || $data->total_rent !== null || $data->aps_disability != null;
+            }
+
+        }else{
+            return true;
+        } 
     }
 }

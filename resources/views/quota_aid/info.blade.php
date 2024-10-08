@@ -19,7 +19,7 @@
                 </div>
                 @endif
             </div>
-                {{-- @can('update',new Muserpol\Models\RetirementFund\RetirementFund) --}}
+                @can('update',new Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary)
                 <div class="text-right" v-if="!read">
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button>
                 </div>
@@ -28,8 +28,8 @@
                     {{-- <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar </button> --}}
                 </div>
                 {{-- @else
-                <br>
-                    @endcan --}}
+                <br>--}}
+                    @endcan
                 <br>
                 <div class="row">
                     {{-- <div class="col-md-1"></div> --}}

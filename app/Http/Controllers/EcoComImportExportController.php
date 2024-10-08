@@ -4,10 +4,13 @@ namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Muserpol\Imports\EcoComImportSenasir;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComUpdatedPension;
+use Muserpol\Models\EconomicComplement\EcoComFixedPension;
+use Muserpol\Models\EconomicComplement\EcoComRegulation;
 use Muserpol\Imports\EcoComImportAPS;
 use Muserpol\Helpers\Util;
 use Muserpol\Imports\EcoComImportPagoFuturo;
@@ -17,6 +20,7 @@ use DB;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\DiscountType;
 use Muserpol\User;
+use Muserpol\Helpers\ID;
 use Auth;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Carbon\Carbon;
@@ -90,20 +94,26 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                $updatedPension = null;
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
+                                } else {
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                                }
+                                if ($updatedPension->rent_type == null || $updatedPension->rent_type != 'Manual') {
+                                    $updatedPension->rent_type = 'Automatico';
+                                    $updatedPension->aps_total_cc = round($c[13], 2) ?? 0;
+                                    $updatedPension->aps_total_fsa = round($c[19], 2) ?? 0;
+                                    $updatedPension->aps_total_fs = round($c[25], 2) ?? 0;
+                                    $updatedPension->save();
+                                    $updatedPension->calculateTotalRentAps();
+                                    $success++;
+                                }
                             }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_total_cc = round($c[13], 2);
-                            $updatedPension->aps_total_fsa = round($c[19], 2);
-                            $updatedPension->aps_total_fs = round($c[25], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }
@@ -142,18 +152,23 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
+                                } else {
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                                }
+                                if ($updatedPension->rent_type == null || $updatedPension->rent_type != 'Manual') {
+                                    $updatedPension->rent_type = 'Automatico';
+                                    $updatedPension->aps_disability = round($c[16], 2) ?? 0;
+                                    $updatedPension->save();
+                                    $updatedPension->calculateTotalRentAps();
+                                    $success++;
+                                }
                             }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_disability = round($c[16], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }
@@ -198,18 +213,23 @@ class EcoComImportExportController extends Controller
                 foreach ($eco_coms as $e) {
                     foreach ($collect as $c) {
                         if ($c[3] == $e->affiliate->nua) {
-                            if (is_null($e->eco_com_updated_pension)) {
-                                $updatedPension = new EcoComUpdatedPension();
-                                $updatedPension->user_id = Auth::user()->id;
-                                $updatedPension->economic_complement_id = $e->id;
-                            } else {
-                                $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                            // Por solicitud de CE los casos de inclusión no se toman en cuenta en la importación
+                            if ($e->eco_com_reception_type_id != ID::ecoCom()->inclusion) {
+                                if (is_null($e->eco_com_updated_pension)) {
+                                    $updatedPension = new EcoComUpdatedPension();
+                                    $updatedPension->user_id = Auth::user()->id;
+                                    $updatedPension->economic_complement_id = $e->id;
+                                } else {
+                                    $updatedPension = EcoComUpdatedPension::find($e->eco_com_updated_pension->id);
+                                }
+                                if ($updatedPension->rent_type == null || $updatedPension->rent_type != 'Manual') {
+                                    $updatedPension->rent_type = 'Automatico';
+                                    $updatedPension->aps_total_death = round($c[17], 2) ?? 0;
+                                    $updatedPension->save();
+                                    $updatedPension->calculateTotalRentAps();
+                                    $success++;
+                                }
                             }
-                            $updatedPension->rent_type = 'Automatico';
-                            $updatedPension->aps_total_death = round($c[17], 2);
-                            $updatedPension->save();
-                            $updatedPension->calculateTotalRentAps();
-                            $success++;
                         }
                     }
                 }
@@ -290,11 +310,13 @@ class EcoComImportExportController extends Controller
         $contribution_updated = 0;
         $tramit_number = 0;
         $total_contribution = 0;
+        $not_updated = collect([]);
         $data = [
             'tramit_number' => $tramit_number,
             'contribution_created'=>$contribution_created,
             'contribution_updated'=>$contribution_updated,
-            'total_contribution'=>$total_contribution
+            'total_contribution'=>$total_contribution,
+            'not_updated'=> $not_updated
         ];
         $current_procedures = $request->ecoComProcedureId;
         $pago_futuro_id = 31;
@@ -302,13 +324,25 @@ class EcoComImportExportController extends Controller
         try{
           $affiliate_has_not_contributions = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $contribution_discontinued_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
           $observation_disc_con = ObservationType::find($contribution_discontinued_id);
-          $eco_com_all = EconomicComplement::select('economic_complements.*')->with('eco_com_updated_pension')
+          $eco_com_all = EconomicComplement::select('economic_complements.id',
+          'economic_complements.affiliate_id',
+          'economic_complements.code',
+          'economic_complements.eco_com_procedure_id',
+          'economic_complements.wf_current_state_id',
+          'economic_complements.eco_com_state_id',
+          'economic_complements.eco_com_modality_id',
+          'economic_complements.deleted_at')
+          ->with('eco_com_updated_pension')
           ->leftJoin('eco_com_updated_pensions', 'economic_complements.id', '=', 'eco_com_updated_pensions.economic_complement_id')
           ->where('economic_complements.eco_com_procedure_id', $current_procedures)
           ->where('economic_complements.wf_current_state_id',3) // 3 - Area Tecnica Complemento Economico
           ->where('economic_complements.eco_com_state_id',16) // 16 - En proceso de revisión
           ->whereNotIn('economic_complements.eco_com_modality_id',[3,10,12,11]) // 4 rentas de orfandad 
           ->whereNull('economic_complements.deleted_at')->get();
+          $hash_eco_com_all = [];
+            foreach ($eco_com_all as $result) {
+                $hash_eco_com_all[$result->affiliate_id] = $result;
+            }
           foreach($affiliate_has_not_contributions as $affiliate_discontinued){
           $eco_com_disc_con = $eco_com_all->where('affiliate_id', $affiliate_discontinued->observable_id)->first();
             if($eco_com_disc_con){
@@ -322,12 +356,17 @@ class EcoComImportExportController extends Controller
               }
             }
           }
-        $affiliates = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
+        $affiliates = DB::table('observables')->select('observables.observable_id', 'affiliates.pension_entity_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
         $observation = ObservationType::find($pago_futuro_id);
         foreach ($affiliates as $affiliate) {
             $affiliate_id = $affiliate->observable_id;
-            $eco_com = $eco_com_all->where('affiliate_id', $affiliate_id)->first();
-            $pension_entity_id = Affiliate::find($affiliate_id)->pension_entity_id;
+            // $eco_com = $eco_com_all->where('affiliate_id', $affiliate_id)->first();
+            $eco_com = null;
+            if (isset($hash_eco_com_all[$affiliate_id])) {
+                $eco_com = $hash_eco_com_all[$affiliate_id];
+            }
+            //$pension_entity_id = Affiliate::find($affiliate_id)->pension_entity_id;
+            $pension_entity_id = $affiliate->pension_entity_id;
             if ($eco_com) {
                 if (!($pension_entity_id == 5) && !($pension_entity_id == null)){
                          if (!$eco_com->hasObservationType($pago_futuro_id)) {
@@ -338,45 +377,53 @@ class EcoComImportExportController extends Controller
                                  'enabled' => true
                              ]);
                           }
-                          $eco_com->eco_com_updated_pension->calculateTotalRentAps();
-                          $total_rent = $eco_com->eco_com_updated_pension->total_rent;
-                          if ($total_rent > 0){
-                              $total = round($total_rent * 2.03 / 100, 2);
-                              $aux = $total * 6;
-                              $discount_type = DiscountType::findOrFail(7);
-                              //registro o actualizacion del descuento
-                                if ($eco_com->discount_types->contains($discount_type->id)) {
-                                    $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
-                                } else {
-                                    $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
-                                }
-                                //registro de aportes en la tabla contribution_passives
-                                $user_id = Auth::user()->id;
-                                $import_contribution = DB::select("select import_contribution_eco_com($user_id,$current_procedures,$eco_com->id)");
-                                DB::commit();
-                                if(!is_null($import_contribution[0]->import_contribution_eco_com)){
-                                    $import_contribution = explode(',',$import_contribution[0]->import_contribution_eco_com);
-                                    $tramit_number = $tramit_number + $import_contribution[0];
-                                    $contribution_created = $contribution_created + $import_contribution[1];
-                                    $contribution_updated = $contribution_updated + $import_contribution[2];
-                                    $total_contribution = $contribution_created + $contribution_updated;
-                                    $data = [
-                                        'tramit_number' => $tramit_number,
-                                        'contribution_created'=>$contribution_created,
-                                        'contribution_updated'=>$contribution_updated,
-                                        'total_contribution'=>$total_contribution
-                                    ];
-                                    if(filter_var($import_contribution[3], FILTER_VALIDATE_BOOLEAN)){
-                                        $month = Carbon::parse($import_contribution[4]);
-                                        $month = $month->formatLocalized('%B');
-                                             return response()->json([
-                                            'status' => 'error',
-                                            'errors' => ['El afiliado con Nup:'.$affiliate_id.' tiene registro de aportes en el mes de '.$month.' con origen senasir.'],
-                                            'data'=> $data
-                                        ], 422);
+                        if ($eco_com->eco_com_updated_pension != null) {
+                            if ($eco_com->eco_com_updated_pension->total_rent > 0) {
+                                $eco_com->eco_com_updated_pension->calculateTotalRentAps();
+                                $total_rent = $eco_com->eco_com_updated_pension->total_rent;
+                                if ($total_rent > 0) {
+                                    $total = round($total_rent * 2.03 / 100, 2);
+                                    $aux = $total * 6;
+                                    $discount_type = DiscountType::findOrFail(7);
+                                    //registro o actualizacion del descuento
+                                    if ($eco_com->discount_types->contains($discount_type->id)) {
+                                        $eco_com->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $aux, 'date' => now()]);
+                                    } else {
+                                        $eco_com->discount_types()->save($discount_type, ['amount' => $aux, 'date' => now()]);
+                                    }
+                                    //registro de aportes en la tabla contribution_passives
+                                    $user_id = Auth::user()->id;
+                                    $import_contribution = DB::select("select import_contribution_eco_com($user_id,$current_procedures,$eco_com->id)");
+                                    DB::commit();
+                                    if (!is_null($import_contribution[0]->import_contribution_eco_com)) {
+                                        $import_contribution = explode(',', $import_contribution[0]->import_contribution_eco_com);
+                                        $tramit_number = $tramit_number + $import_contribution[0];
+                                        $contribution_created = $contribution_created + $import_contribution[1];
+                                        $contribution_updated = $contribution_updated + $import_contribution[2];
+                                        $total_contribution = $contribution_created + $contribution_updated;
+                                        $data = [
+                                            'tramit_number' => $tramit_number,
+                                            'contribution_created' => $contribution_created,
+                                            'contribution_updated' => $contribution_updated,
+                                            'total_contribution' => $total_contribution
+                                        ];
+                                        if (filter_var($import_contribution[3], FILTER_VALIDATE_BOOLEAN)) {
+                                            $month = Carbon::parse($import_contribution[4]);
+                                            $month = $month->formatLocalized('%B');
+                                            return response()->json([
+                                                'status' => 'error',
+                                                'errors' => ['El afiliado con Nup:' . $affiliate_id . ' tiene registro de aportes en el mes de ' . $month . ' con origen senasir.'],
+                                                'data' => $data
+                                            ], 422);
+                                        }
                                     }
                                 }
-                          }
+                            } else {
+                                $not_updated->push($eco_com->code);
+                            }
+                        } else {
+                            $not_updated->push($eco_com->code);
+                        }
                 }else{
                     return response()->json([
                         'status' => 'error',
@@ -387,6 +434,13 @@ class EcoComImportExportController extends Controller
                 }
             }
         }
+        $data = [
+            'tramit_number' => $tramit_number,
+            'contribution_created'=>$contribution_created,
+            'contribution_updated'=>$contribution_updated,
+            'total_contribution'=>$total_contribution,
+            'not_updated'=> $not_updated
+        ];
         session()->put('pago_futuro_data', $data);
         return session()->get('pago_futuro_data');
        }catch (\Exception $e) {

@@ -2,6 +2,7 @@
 
 namespace Muserpol\Http\Controllers\API;
 
+use Muserpol\Models\EconomicComplement\EcoComFixedPension;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Illuminate\Http\Request;
@@ -195,6 +196,13 @@ class EconomicComplementController extends Controller
             /**
              ** Save eco com beneficiary
             */
+
+            //Desactivar Observers
+            EconomicComplement::FlushEventListeners(); 
+            $this->updateEcoComWithFixedPension($economic_complement->id);    
+            //Activar Observers
+            EconomicComplement::Boot();
+
             $eco_com_beneficiary = new EcoComBeneficiary();
             $eco_com_beneficiary->economic_complement_id = $economic_complement->id;
             $eco_com_beneficiary->city_identity_card_id = $last_eco_com_beneficiary->city_identity_card_id;
@@ -326,6 +334,13 @@ class EconomicComplementController extends Controller
                     $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
                     $economic_complement->uuid = Uuid::uuid1()->toString();
                     $economic_complement->save();
+
+                    //Desactivar Observers
+                    EconomicComplement::FlushEventListeners(); 
+                    $this->updateEcoComWithFixedPension($economic_complement->id);    
+                    //Activar Observers
+                    EconomicComplement::Boot();
+                    
                     /**
                      ** Save eco com beneficiary
                     */
@@ -495,5 +510,30 @@ class EconomicComplementController extends Controller
             $eco_com->save();
        }
        return $eco_com;
+    }
+    public function updateEcoComWithFixedPension($economic_complement_id)
+    {
+        $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
+        if(!!$economic_complement){
+            if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
+                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)->first();
+                if(!!$fixed_pension){  
+                    $economic_complement->eco_com_fixed_pension_id = $fixed_pension->id; 
+                    $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
+                    $economic_complement->aps_total_cc = $fixed_pension->aps_total_cc;      //APS
+                    $economic_complement->aps_total_fs = $fixed_pension->aps_total_fs;      //APS
+                    $economic_complement->aps_total_death = $fixed_pension->aps_total_death;//APS
+                    $economic_complement->aps_disability = $fixed_pension->aps_disability;  //APS //SENASIR
+
+                    $economic_complement->sub_total_rent = $fixed_pension->sub_total_rent;  //SENASIR
+                    $economic_complement->reimbursement = $fixed_pension->reimbursement;    //SENASIR
+                    $economic_complement->dignity_pension = $fixed_pension->dignity_pension;//SENASIR
+                    $economic_complement->total_rent = $fixed_pension->total_rent;          //SENASIR total_rent=sub_total_rent-descuentos planilla
+
+                    $economic_complement->rent_type = 'Automatico';
+                    $economic_complement->save();             
+                }
+            }
+        }
     }
 }
