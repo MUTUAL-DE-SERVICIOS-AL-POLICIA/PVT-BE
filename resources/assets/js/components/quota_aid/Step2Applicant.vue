@@ -92,7 +92,15 @@ export default {
       setTimeout(() => {
         dateInputMaskAll();
       }, 300);
-      return [14,15].includes(this.quotaAid.modality_id);
+      if ([14, 15].includes(this.quotaAid.modality_id)) {
+        return true;
+      }
+      if (this.quotaAid.modality_shortened) {
+        return this.quotaAid.modality_shortened.includes(" FC") ||
+          this.quotaAid.modality_shortened.includes(" FV");
+      }
+      return false;
+      // return [14,15].includes(this.quotaAid.modality_id) || this.quotaAid.modality_shortened.includes(" FC") || this.quotaAid.modality_shortened.includes(" FV");
     },
     canAddDataAffiliate(){
       return [8,9,13].includes(this.quotaAid.modality_id);

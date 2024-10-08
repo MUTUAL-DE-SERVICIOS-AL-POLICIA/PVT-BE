@@ -1167,18 +1167,27 @@ class ContributionController extends Controller
     {
         $ret_fun = QuotaAidMortuary::find($ret_fun_id);
         $affiliate = $ret_fun->affiliate;
-
+        $type_mortuary = $ret_fun->getTypeMortuary();
         if ($ret_fun->procedure_modality_id == 14) { // fallecimiento conyugue
-            Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clacificación de aportes.');
+            Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clasificación de aportes.');
             return redirect('quota_aid/' . $ret_fun_id);
         }
         if($ret_fun->isQuota()){
-            if (!(isset($affiliate->date_entry) && isset($affiliate->date_death))) {
-                Session::flash('message', 'Verifique la fecha de entrada y la fecha de fallecimiento del afiliado existan antes de continuar');
-                return redirect('quota_aid/' . $ret_fun_id);
+            if($ret_fun->procedure_modality_id == 8 || $ret_fun->procedure_modality_id == 9) {
+                if (!(isset($affiliate->date_entry) && isset($affiliate->date_death))) {
+                    Session::flash('message', 'Verifique la fecha de entrada y la fecha de fallecimiento del afiliado existan antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+                $date_min = $affiliate->date_entry;
+                $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
+            } else {
+                if (!(isset($affiliate->date_entry) && isset($affiliate->spouse[0]->date_death))) {
+                    Session::flash('message', 'Verifique la fecha de entrada del titular y la fecha de fallecimiento del (la) cónyuge existan antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+                $date_min = $affiliate->date_entry;
+                $date_max = Carbon::parse(Util::parseBarDate($affiliate->spouse[0]->date_death))->format('m/Y');
             }
-            $date_min = $affiliate->date_entry;
-            $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
             if (!(isset($date_min) && isset($date_max))) {
                 Session::flash('message', 'Verifique la fecha de entrada y fecha de fallecimiento del afiliado existan antes de continuar');
                 return redirect('quota_aid/' . $ret_fun_id);

@@ -23,6 +23,9 @@
             <td class="px-15 py text-center">
                 BENEFICIARIO
             </td>
+            <td class="px-20 py text-center">
+                NÚMERO CELULAR
+            </td>
         </tr>
     </thead>
     <tbody>
@@ -33,6 +36,7 @@
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->mothers_last_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->surname_husband }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::determineRelationshipSex($applicant->gender, $applicant->kinship) }}</td>
+            <td class="text-center uppercase font-bold px-5 py-3">{{ $applicant->cell_phone_number ?? 'S/N' }}</td>
         </tr>
     </tbody>
 

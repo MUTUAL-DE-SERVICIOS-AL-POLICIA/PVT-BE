@@ -1,6 +1,7 @@
 const state ={
     modality: null,
     modality_id: null,
+	modality_shortened: null,
     city: null,
     applicant: {
 		type: null,
@@ -25,6 +26,7 @@ const mutations = {
     setModality(state, object){
         state.modality = object.name;
         state.modality_id = object.id;
+		state.modality_shortened = object.shortened;
     },
     setCity(state, value){
         state.city = value;

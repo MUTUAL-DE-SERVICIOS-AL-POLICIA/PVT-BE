@@ -34,16 +34,25 @@
                 //this.getAditionalRequirements();
             },
             onChooseModality(event){
-                const options = event.target.options;
-                const selectedOption = options[options.selectedIndex];
-                if (selectedOption) {
-                    const selectedText = selectedOption.textContent;
-                    var object={
-                        name:selectedText,
-                        id: this.modality
+                // const options = event.target.options; 
+                // const selectedOption = options[options.selectedIndex];
+                let mod = this.modalities.filter(e => e.id == this.modality)[0];
+                if (mod) {
+                    let object = {
+                        name: mod.name,
+                        id: mod.id,
+                        shortened: mod.shortened
                     }
-                    this.$store.commit('quotaAidForm/setModality',object);//solo se puede enviar un(1) argumento 
+                    this.$store.commit('quotaAidForm/setModality', object);
                 }
+                // if (selectedOption) {
+                //     const selectedText = selectedOption.textContent;
+                //     var object={
+                //         name:selectedText,
+                //         id: this.modality
+                //     }
+                //     this.$store.commit('quotaAidForm/setModality',object);//solo se puede enviar un(1) argumento 
+                // }
                 this.getRequirements();
                 this.getAditionalRequirements();
             },

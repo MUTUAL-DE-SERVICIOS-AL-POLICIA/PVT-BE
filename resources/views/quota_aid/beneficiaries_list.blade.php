@@ -56,3 +56,9 @@
 </quota-aid-beneficiaries-show>
 <ret-fun-beneficiary-testimony-list :beneficiaries="{{ $beneficiaries }}" :doc-id="{{ $quota_aid->id }}" type="quotaAid">
 </ret-fun-beneficiary-testimony-list>
+
+@if(Util::getRol()->id == 38)
+    <quota-aid-judicial-retention
+    :quota-aid-id="{{ $quota_aid->id }}"
+    ></quota-aid-judicial-retention>
+@endif

@@ -11,14 +11,30 @@
 <div class="my-10">
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
 </div>
+@if(!isset($spouse->id)) 
 <strong>CERTIFICA:</strong> Que los &uacute;ltimos doce (12) aportes establecidos en el Reglamento de Couta Mortuoria y Auxilio Mortuorio, corresponden al siguiente detalle:
+@endif
+@if(isset($spouse->id) && ($quota_aid->getTypeMortuary() == 'Conyuge')) 
+    <div class="font-bold uppercase m-b-5">
+        Datos del fallecido
+    </div>
+    <div class="my-10">
+        @include('print_global.spouse_info', ['spouse' => $spouse])
+    </div>
+@endif 
 <table class="table-info w-100 my-10">
     <thead class="bg-grey-darker">
-        <tr class="font-medium text-white text-sm uppercase">                            
+        <tr class="font-medium text-white text-sm uppercase">  
+            @if(isset($spouse->id) && ($quota_aid->getTypeMortuary() == 'Conyuge')) 
+            <td class="text-center uppercase font-bold px-5 py-3">FECHA DE FALLECIMIENTO</td>              
+            @endif                          
             <td class="text-center uppercase font-bold px-5 py-3">MODALIDAD</td>
         </tr>
     </thead>
-    <tr class="text-sm" >                                    
+    <tr class="text-sm" >       
+            @if(isset($spouse->id) && ($quota_aid->getTypeMortuary() == 'Conyuge')) 
+            <td class="text-center uppercase font-bold px-5 py-3"> {!! $spouse->date_death !!}</td>    
+            @endif                               
             <td class="text-center uppercase font-bold px-5 py-3"> {!! $quota_aid->procedure_modality->name !!}  </td>    
     </tr>
 </table>

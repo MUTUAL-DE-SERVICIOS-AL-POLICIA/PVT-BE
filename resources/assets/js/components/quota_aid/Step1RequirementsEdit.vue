@@ -36,7 +36,7 @@
             // });
         },
         mounted(){
-            console.log(this.submitted);
+            // console.log(this.submitted);
             //this.$store.commit('setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
             this.onChooseProcedureType();
             this.modality = this.quota_aid.procedure_modality_id;            
@@ -81,7 +81,7 @@
                         //if(this.submitted[r.number] == r.id){
                             // console.log('match 1'+this.modality_id);
                        let submit_document = this.submitted.find(function(document){ return document.procedure_requirement_id === r.id });                       
-                       console.log(this.rol);
+                    //    console.log(this.rol);
                         if(this.rol!=38){ //revision legal
                         
                             if(submit_document){

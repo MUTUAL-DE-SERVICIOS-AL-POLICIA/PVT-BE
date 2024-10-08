@@ -67,7 +67,7 @@ class QuotaAidMortuary extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'code', 'note_code', 'note_code_date'])->withTimestamps();
+        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['amount', 'date', 'code', 'note_code', 'note_code_date'])->wherePivot('deleted_at',null)->withTimestamps();
     }
     public function quota_aid_correlative()
     {
@@ -109,13 +109,25 @@ class QuotaAidMortuary extends Model
     }
     public function getDeceased()
     {
-        if ( $this->isQuota() ) {
-            return $this->affiliate;
+        if ($this->isQuota()) {
+            if ($this->getTypeMortuary() == 'Titular' || $this->getTypeMortuary() == null) {
+                return $this->affiliate;
+            } else {
+                return $this->affiliate->spouse->first();
+            }
         }
-        if ( $this->isAid() ) {
+        if ($this->isAid()) {
             return $this->procedure_modality->id == 13 ? $this->affiliate : $this->affiliate->spouse->first();
         }
         return null;
+    }
+    public function getTypeMortuary()
+    {
+        if ($this->quota_aid_procedure == null) {
+            return null;
+        } else {
+            return $this->quota_aid_procedure->type_mortuary;
+        }
     }
     public function procedure_records()
     {
