@@ -6,7 +6,7 @@ use Muserpol\Models\AffiliateRecord;
 use Log;
 use Carbon\Carbon;
 use Auth;
-use Muserpol\AffiliateUser;
+use Muserpol\Models\AffiliateUser;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\AffiliateToken;
 
