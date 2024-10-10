@@ -886,9 +886,22 @@ class Util
     return optional($model::where('code', 'not like', '%A')->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->last())->code;
   }
 
-  public static function getLastCodeQM($model)
+  // public static function getLastCodeQM($model)
+  // {
+  //   return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code', 'not like', '%A')->whereIn('procedure_modality_id', [8, 9])->get()->last())->code;
+  // }
+  public static function getLastCodeQM()
   {
-    return optional($model::orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->where('code', 'not like', '%A')->whereIn('procedure_modality_id', [8, 9])->get()->last())->code;
+    return optional(
+      QuotaAidMortuary::select('quota_aid_mortuaries.code')
+      ->join('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+      ->orderBy(DB::raw("regexp_replace(split_part(quota_aid_mortuaries.code, '/',2),'\D','','g')::integer"))
+      ->orderBy(DB::raw("split_part(quota_aid_mortuaries.code, '/',1)::integer"))
+      ->where('code', 'not like', '%A')
+      ->where('procedure_modalities.procedure_type_id', 3)
+      ->get()
+      ->last()
+      )->code;
   }
   public static function getLastCodeAM($model)
   {
@@ -1123,7 +1136,7 @@ class Util
     $city = City::find(4);
 
     foreach ($ecos as $e) {
-      $ci_ext = $e->getEcoComBeneficiaryBank()->city_identity_card->to_bank;
+      $ci_ext = $e->getEcoComBeneficiaryBank()->city_identity_card ? $e->getEcoComBeneficiaryBank()->city_identity_card->to_bank : '';
       $ci = $e->getEcoComBeneficiaryBank()->identity_card;
       $type = "CI";
       if ($e->getEcoComBeneficiaryBank()->city_identity_card_id == 10) {

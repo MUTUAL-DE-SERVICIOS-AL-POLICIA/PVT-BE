@@ -89,6 +89,9 @@ class EconomicComplementObserver
         if ($eco_com->aps_disability != $old->aps_disability) {
             $message = $message . ' Prestación por Invalidéz ' . $old->aps_disability . ' a ' . $eco_com->aps_disability . ', ';
         }
+        if ($eco_com->aps_total_death != $old->aps_total_death) {
+            $message = $message . ' Fracción por Muerte ' . $old->aps_total_death . ' a ' . $eco_com->aps_total_death . ', ';
+        }
         if ($eco_com->degree_id != $old->degree_id) {
             $message = $message . ' Grado ' . optional($old->degree)->name . ' a ' . optional($eco_com->degree)->name . ', ';
         }
@@ -131,5 +134,16 @@ class EconomicComplementObserver
             $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 2, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
         }
 
+    }
+
+    public function deleted(EconomicComplement $eco_com) {
+        $message = 'El usuario '. Auth::user()->username . ' eliminó el trámite.';
+        $eco_com->procedure_records()->create([
+            'user_id' => Auth::user()->id,
+            'record_type_id' => 7,
+            'wf_state_id' => Util::getRol()->wf_states->first()->id,
+            'date' => Carbon::now(),
+            'message' => $message
+        ]);
     }
 }

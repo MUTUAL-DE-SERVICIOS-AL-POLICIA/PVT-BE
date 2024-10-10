@@ -21,6 +21,10 @@
         advancePaymentNoteCode: null,
         advancePaymentCode: null,
         advancePaymentDate: null,
+        /* Retenciones judiciales */
+        judicialRetentionAmount: 0,
+        judicialRetentionDetail: null,
+        judicialRetentionDate: null,
         // retentionLoanPayment: 0,
         // retentionLoanPaymentNoteCodeDate: null,
         // retentionLoanPaymentNoteCode: null,
@@ -33,9 +37,18 @@
         // retentionGuarantorDate: null
       };
     },
+    mounted(){
+      this.obtainDetailsOfJudicialRetention();
+    },
     methods: {
       max(a, b) {
         return parseFloat(a.toFixed(2)) > parseFloat(b.toFixed(2)) || isNaN(a);
+      },
+      validateRetentionAmount(amount) {
+        return !isNaN(amount)
+      },
+      validateRetentionDate(date) {
+        return date == undefined
       },
       colorClass(a, b) {
         if (isNaN(a)) {
@@ -176,11 +189,12 @@
             advancePayment: parseMoney(this.advancePayment),
             // retentionLoanPayment: parseMoney(this.retentionLoanPayment),
             // retentionGuarantor: parseMoney(this.retentionGuarantor),
-
             advancePaymentNoteCode:this.advancePaymentNoteCode,
             advancePaymentNoteCodeDate:this.advancePaymentNoteCodeDate,
             advancePaymentCode:this.advancePaymentCode,
             advancePaymentDate:this.advancePaymentDate,
+            judicialRetentionAmount: parseMoney(this.judicialRetentionAmount),
+            judicialRetentionDate: this.judicialRetentionDate,
             reload
           })
           .then(response => {
@@ -226,8 +240,6 @@
             // } else {
             //   flash("Porcentages actualizados a los derechohabientes.");
             // }
-            console.log("giad");
-
             // this.hasAvailability = response.data.has_availability;
             // this.subTotalAvailability = response.data.subtotal_availability;
             // this.totalAnnualYield = response.data.total_annual_yield;
@@ -246,6 +258,23 @@
             (this.finishQuotaAid = false),
               flash("Error al guardar los porcentages", "error");
           });
+      },
+      async obtainDetailsOfJudicialRetention() {
+        try {
+          const response = await axios.get(`/quota_aid/${this.quotaAidId}/obtain_judicial_retention`)
+          if(response.data.data) {
+            if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
+            if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
+            if(response.data.data[0].note_code != undefined) this.judicialRetentionDetail = response.data.data[0].note_code
+          }
+        } catch (error) {
+          if(error.response) {
+            if(error.response.status == 409) {
+                flash(error.response.data.error, 'error')
+            }
+          }
+          console.error(error)
+        }
       }
     },
     computed: {
@@ -256,11 +285,8 @@
         return sum;
       },
       totalAnimated() {
-        this.totalQuotaAid =  this.subTotalQuotaAid - parseMoney(this.advancePayment);
-        return (this.subTotalQuotaAid - parseMoney(this.advancePayment));
-          //  -
-          // parseMoney(this.retentionLoanPayment) -
-          // parseMoney(this.retentionGuarantor)
+        this.totalQuotaAid =  this.subTotalQuotaAid - parseMoney(this.advancePayment) - parseMoney(this.judicialRetentionAmount);
+        return (this.subTotalQuotaAid - parseMoney(this.advancePayment) - parseMoney(this.judicialRetentionAmount));
       },
       percentageAdvancePayment() {
         return this.subTotalQuotaAid > 0 && this.subTotalQuotaAid != ""

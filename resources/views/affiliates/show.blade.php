@@ -153,15 +153,27 @@ th.ellipsis-text {
 
             <div class="tab-content">         
                     <div id="tab-affiliate" class="tab-pane active">
-                        <affiliate-show  :affiliate="{{ $affiliate }}" :cities="{{ $cities }}" inline-template>
-                            @include('affiliates.affiliate_personal_information',['affiliate'=>$affiliate,'cities'=>$cities,'birth_cities'=>$birth_cities,'is_editable'=>$is_editable])
+                        <affiliate-show
+                            :affiliate="{{ $affiliate }}"
+                            :cities="{{ $cities }}"
+                            inline-template>
+                            @include('affiliates.affiliate_personal_information',
+                                ['affiliate'=>$affiliate,
+                                 'cities'=>$cities,
+                                 'birth_cities'=>$birth_cities,
+                                 'is_editable'=>$is_editable
+                                ]
+                            )
                         </affiliate-show>
 
                     </div>
                     <div id="tab-police-info" class="tab-pane">
 
                         <affiliate-police :affiliate="{{ $affiliate }}" :categories="{{$categories_1}}" inline-template>
-                            @include('affiliates.affiliate_police_information', ['affiliate'=>$affiliate])
+                            @include('affiliates.affiliate_police_information',
+                            ['affiliate'=>$affiliate,
+                              'wf_current_state' => null
+                            ])
                         </affiliate-police>
 
                     </div>
@@ -195,26 +207,25 @@ th.ellipsis-text {
                         @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents, 'file'=>$file ])
                     </div>
                     <div id="tab-ret-fun" class="tab-pane">
-                        @can('update',$retirement_fund)
-                            <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" :rf_procedure_type=" {{$retirement_fund->procedure_modality->procedure_type}}" :read="true" inline-template>
+                        @if($retirement_fund)
+                            <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" :rf_procedure_type=" {{$retirement_fund->procedure_modality->procedure_type}}" :rf_wf_state ="{{$retirement_fund->wf_state}}" :read="true" inline-template>
                                 @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
                             </ret-fun-info>
-                        @endcan
+                        @else
+                            <div class="alert alert-warning">NO SE TIENE REGISTROS DE FONDO DE RETIRO</div>
+                        @endif
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Trámites de Complemento Economico</h2>
                                 <div class="ibox-tools">
-                                    <button class="btn btn-primary dim"
-                                            type="button"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Imprimir Certificacion de pagos realizados"
-                                            onclick='printJS({printable: "{{route("eco_com_print_certification_all_eco_coms", [$affiliate->id])}}", type: "pdf", modalMessage: "Generando documentos de impresión, por favor espere un momento.", showModal: true})'
-                                    >
-                                    <i class="fa fa-print"></i>
-                                    Imprimir
+                                    <button 
+                                        id="printButtonCert" 
+                                        class="btn btn-primary dim"
+                                        data-toogle="tooltip"
+                                        data-palcement="top"
+                                        title="Imprimir Certificaciones de pagos realizados">Imprimir
                                     </button>
                                 </div>
                             </div>
@@ -223,6 +234,7 @@ th.ellipsis-text {
                                     <table class="table table-striped table-hover">
                                         <thead>
                                             <tr class="success">
+                                            <th>Selección</th>
                                             <th># de Trámite</th>
                                             <th>Gestion</th>
                                             <th>Fecha de Ingreso del Trámite</th>
@@ -237,6 +249,7 @@ th.ellipsis-text {
                                         <tbody>
                                             @foreach ($eco_coms as $eco_com)
                                                 <tr>
+                                                <td><input type="checkbox" class="checkbox-seleccionado" value="{{$eco_com->id}}"></td>     
                                                 <td>{{$eco_com->code}}</td>
                                                 <td>{{$eco_com->eco_com_procedure->fullName() }}</td>
                                                 <td>{{$eco_com->reception_date }}</td>
@@ -246,9 +259,11 @@ th.ellipsis-text {
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->getOnlyTotalEcoCom())}}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->total)}}</td>
                                                 <td style="vertical-align:middle">
+                                                @can('update', new Muserpol\Models\EconomicComplement\EconomicComplement)
                                                     <a href="/eco_com/{{$eco_com->id}}">
                                                         <button class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
                                                     </a>
+                                                @endcan    
                                                 </td>
                                                 </tr>
                                                 @if ($eco_com->discount_types->count() > 0)
@@ -263,7 +278,7 @@ th.ellipsis-text {
                                                     </tr>
                                                     @foreach ($eco_com->discount_types as $d)
                                                     <tr class="danger">
-                                                        <th colspan="2">{{$d->name}}</th>
+                                                        <th colspan="3">{{$d->name}}</th>
                                                         <th colspan="2">{{Util::formatMoney($d->pivot->amount)}}</th>
                                                     </tr>
                                                     @endforeach
@@ -276,12 +291,15 @@ th.ellipsis-text {
                         </div>
                     </div>
                     <div id="tab-quota-aid-mortuory" class="tab-pane">
-                        @can('update',$quota_aid)
+
+                        @if($quota_aid)
                         <quota-aid-info :quota_aid="{{ $quota_aid }}" :rf_city_start="{{$quota_aid->city_start}}" :rf_city_end="{{$quota_aid->city_end}}"
                             :rf_procedure_modality=" {{$quota_aid->procedure_modality}}" :states="{{ $states }}" :read="true" inline-template>
                             @include('quota_aid.info', ['quota_aid'=>$quota_aid,'cities'=>$birth_cities])
                         </quota-aid-info>
-                        @endcan
+                        @else
+                        <div class="alert alert-warning">NO SE TIENE REGISTROS DE CUOTA Y AUXILIO MORTUORIO</div>
+                        @endif
                     </div>
                     @if(isset($direct_contribution->id))
                     <div id="tab-direct-contribution" class="tab-pane">
@@ -414,3 +432,32 @@ $(document).ready(function() {
 } );
 </script>
 @endsection
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var printButtonCert = document.getElementById('printButtonCert');
+
+        printButtonCert.addEventListener('click', function() {
+            var selected_ids_eco_com = [];
+            var checkboxes = document.querySelectorAll('.checkbox-seleccionado:checked');
+            checkboxes.forEach(function(checkbox) {
+                selected_ids_eco_com.push(checkbox.value);
+            });
+
+            var printableUrl = "{{ route('eco_com_print_certification_all_eco_coms', [$affiliate->id]) }}";
+            var selectedIdsParam = selected_ids_eco_com.length > 0 ? '?selected_ids_eco_com=' + encodeURIComponent(selected_ids_eco_com.join(',')) : '';
+            var pdfUrl = printableUrl + selectedIdsParam;
+                    
+            // Utiliza Print.js para imprimir el contenido
+            printJS({
+                printable: pdfUrl,
+                type: 'pdf', 
+                showModal: true,
+                modalMessage: 'Generando documentos de impresión, por favor espere un momento.',
+                onError: function(error) {
+                    console.error('Error al imprimir:', error);
+                }
+            });
+        });
+    });
+</script>
+

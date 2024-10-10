@@ -75,7 +75,18 @@ class EconomicComplement extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['id','amount', 'date', 'message'])->withTimestamps();
+        return $this->belongsToMany('Muserpol\Models\DiscountType')
+        ->withPivot(['id', 'amount', 'date', 'deleted_at'])
+        ->wherePivot('deleted_at', null)
+        ->withTimestamps();
+    }
+    public function eco_com_fixed_pension()
+    {
+        return $this->belongsTo('Muserpol\Models\EconomicComplement\EcoComFixedPension');
+    }
+    public function eco_com_updated_pension()
+    {
+        return $this->hasOne('Muserpol\Models\EconomicComplement\EcoComUpdatedPension');
     }
     public function encode()
     {
@@ -156,22 +167,6 @@ class EconomicComplement extends Model
                 'errors' => ['No se puede realizar la amortización porque el trámite ' . $this->code . ' se encuentra en estado de ' . $eco_com_state->name],
             ], 422);
         }
-        // // requalify
-        // if ($economic_complement->total > 0 && ( $economic_complement->eco_com_state_id == 1 || $economic_complement->eco_com_state_id == 2 || $economic_complement->eco_com_state_id == 3 || $economic_complement->eco_com_state_id == 17 || $economic_complement->eco_com_state_id == 18 || $economic_complement->eco_com_state_id == 15 ) ) {
-        //     $economic_complement->recalification_date = Carbon::now();
-        //     $temp_eco_com = (array)json_decode($economic_complement);
-        //     $old_eco_com = [];
-        //     foreach ($temp_eco_com as $key => $value) {
-        //         if ($key != 'old_eco_com') {
-        //             $old_eco_com[$key] = $value;
-        //         }
-        //     }
-        //     if (!$economic_complement->old_eco_com) {
-        //         $economic_complement->old_eco_com=json_encode($old_eco_com);
-        //     }
-        //     $economic_complement->save();
-        // }
-        // // /requalify
         $eco_com_procedure = $this->eco_com_procedure;
         $eco_com_rent = EcoComRent::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
@@ -331,9 +326,6 @@ class EconomicComplement extends Model
 
         $total_amount_semester = $difference * $months_of_payment;
         $this->total_amount_semester = $total_amount_semester;
-        // $economic_complement->sub_total_rent = floatval(str_replace(',', '', $sub_total_rent));
-        // $economic_complement->reimbursement = floatval(str_replace(',', '', $reimbursement));
-        // $economic_complement->dignity_pension = floatval(str_replace(',', '', $dignity_pension));
         $complementary_factor = ComplementaryFactor::where('hierarchy_id', '=', $base_wage->degree->hierarchy->id)
             ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
@@ -381,7 +373,7 @@ class EconomicComplement extends Model
         // }
         $this->save();
         if ($this->total_rent > $this->salary_quotable) {
-            $this->eco_com_state_id = 12;
+            //$this->eco_com_state_id = 12; // Se quito el estado automatico Exclusion
         } else {
             if ($this->eco_com_state_id == 12) {
                 $this->eco_com_state_id = 16;
@@ -586,10 +578,23 @@ class EconomicComplement extends Model
             ->where( function($query) {
                 $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
             });
-            //->groupBy('economic_complements.id','eco_com_modalities.id','eco_com_reception_types.id','wf_states.id',
-            //'workflows.id','procedure_modalities.id','affiliate_city.id','beneficiary.id','beneficiary_city.id',
-            //'affiliates.id','eco_com_category.id','eco_com_city.id','eco_com_degree.id','pension_entities.id','eco_com_user.id');
+    }
+    public function scopeInfoDelete($query) {
+        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
+            ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
+            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')
+            ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+            ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
+            ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
+            ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
+            ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
+            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->where( function($query) {
+                $query->where('eco_com_user.message','like','%eliminó%')
+                ->orWhereNull('eco_com_user.id');
         }
+            );
+    }
     public function scopeOrder($query)
     {
         return $query->orderBy(DB::raw("regexp_replace(split_part(economic_complements.code, '/',3),'\D','','g')::integer"))
@@ -677,6 +682,8 @@ class EconomicComplement extends Model
         economic_complements.aps_total_fsa as fraccion_saldo_acumulada_APS,
         economic_complements.aps_total_cc as fraccion_compensacion_cotizaciones_APS,
         economic_complements.aps_total_fs as fraccion_solidaria_vejez_APS,
+        economic_complements.aps_disability as pension_de_invalidez,
+        economic_complements.aps_total_death as pension_por_muerte,
         economic_complements.total_rent as total_renta,
         economic_complements.total_rent_calc as total_renta_neto,
         economic_complements.seniority as antiguedad,
@@ -696,7 +703,8 @@ class EconomicComplement extends Model
         sum(DISTINCT case when (discount.shortened='Amortización por Préstamo') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
         sum(DISTINCT case when (discount.shortened='Amortización Reposición de Fondos') then  ecocomdiscount.amount else 0 end)  as Amortización_Reposición_de_Fondos,
         sum(DISTINCT case when (discount.shortened='Aporte Auxilio Mortuorio') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
-        sum(DISTINCT case when (discount.shortened='Amortización Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar";
+        sum(DISTINCT case when (discount.shortened='Amortización Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar,
+        sum(DISTINCT case when (discount.shortened='Retención según juzgado') then  ecocomdiscount.amount else 0 end)  as Amortización_Retención_segun_juzgado";
     } 
 
     
@@ -710,6 +718,8 @@ class EconomicComplement extends Model
         affiliates.mothers_last_name as ap_materno_causahabiente,
         affiliates.surname_husband as ape_casada_causahabiente,
         affiliates.birth_date as fecha_nacimiento,
+        affiliates.service_years as Anios_de_servicio,
+        affiliates.service_months as Meses_de_servicio,
         affiliates.nua as codigo_nua_cua,
         affiliates.sigep_status as Estado_sigep,
         financial_entities.name as Entidad_financiera,
@@ -790,6 +800,12 @@ class EconomicComplement extends Model
                 ->where('wf_records.recordable_type', '=', 'economic_complements');
         })->leftJoin('users', 'wf_records.user_id', '=', 'users.id');
     }
+    public function scopeUpdatedPension($query)
+    {
+        return $query->leftJoin('eco_com_updated_pensions', function($join) {
+            $join->on('eco_com_updated_pensions.economic_complement_id', '=', 'economic_complements.id');
+        });
+    }
 
     public function getEcoComBeneficiaryBank()
     {
@@ -814,5 +830,18 @@ class EconomicComplement extends Model
     public function eco_com_review_procedures()
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComReviewProcedure');
+    }
+    public function hasFixedPension($data){
+
+        if($data->eco_com_reception_type_id != ID::ecoCom()->inclusion){
+            if($data->affiliate->pension_entity_id !=5){
+                return $data->aps_total_fsa !== null || $data->aps_total_cc !== null || $data->aps_total_fs !== null || $data->aps_total_death !== null || $data->aps_disability != null;
+            }else{
+                return $data->sub_total_rent !== null || $data->reimbursement !== null || $data->dignity_pension !== null || $data->total_rent !== null || $data->aps_disability != null;
+            }
+
+        }else{
+            return true;
+        } 
     }
 }

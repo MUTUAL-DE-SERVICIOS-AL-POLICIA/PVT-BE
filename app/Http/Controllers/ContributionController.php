@@ -604,7 +604,6 @@ class ContributionController extends Controller
     public function storeContributions(Request $request)
     {
         //*********START VALIDATOR************//
-
         $rules=[];
         $messages=[];
         $input_data = $request->all();
@@ -620,6 +619,9 @@ class ContributionController extends Controller
                     if(isset($request->gain[$key])) {
                         $input_data['gain'][$key]= strip_tags($request->gain[$key]);
                     }
+                    if(isset($request->quotable[$key])) {
+                        $input_data['quotable'][$key]= strip_tags($request->quotable[$key]);
+                    }
                     if(isset($request->total[$key])) {
                         $input_data['total'][$key]= strip_tags($request->total[$key]);
                     }
@@ -633,6 +635,7 @@ class ContributionController extends Controller
                     $array_rules = [
                         'base_wage.'.$key =>  'numeric|min:0',
                         'gain.'.$key =>  'numeric|min:0',
+                        'quotable.'.$key =>  'numeric|min:0',
                         'total.'.$key =>  'required|numeric|min:1',
                         'retirement_fund.'.$key =>  'numeric|min:0',
                         'mortuary_quota.'.$key =>  'numeric|min:0',
@@ -692,20 +695,39 @@ class ContributionController extends Controller
                         $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
                     else
                         $contribution->base_wage = $contribution->base_wage;
-                    
-                    if (isset($request->category[$key]) && $request->category[$key] != $contribution->category_id) {                    
-                        $category = Category::where('percentage',$request->category[$key])->first();
-                        if(!isset($category->id)) {
-                            $contribution->category_id = null; //default non category found -0
+
+                    if (isset($request->seniority_bonus[$key]) && $request->seniority_bonus[$key] != $contribution->seniority_bonus) {
+                        $percentage_category = $request->seniority_bonus[$key]/$contribution->base_wage;
+                        $closestCategory = Category::select('id', 'percentage')
+                                                    ->where('percentage', '=', $percentage_category)
+                                                    ->first();
+                        if($closestCategory ) {
+                            $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
+                            $contribution->category_id = $closestCategory->id;
                         } else {
-                            $contribution->category_id = $category->id;
-                        }                    
-                        $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
-                    }                    
+                            return response()->json([
+                                'error' => 'No se encontró una categoría con el bono antiguedad insertado'
+                            ], 404);
+                        }
+                    }
+                    if (isset($request->study_bonus[$key])) {
+                        $contribution->study_bonus = is_numeric($request->study_bonus[$key]) ? $request->study_bonus[$key] : 0;
+                    }
+                    if(isset($request->position_bonus[$key]))
+                        $contribution->position_bonus = is_numeric($request->position_bonus[$key]) ? $request->position_bonus[$key] : 0;
+                    if(isset($request->border_bonus[$key]))
+                        $contribution->border_bonus = is_numeric($request->border_bonus[$key]) ? $request->border_bonus[$key] : 0;
+                    if(isset($request->east_bonus[$key]))
+                        $contribution->east_bonus = is_numeric($request->east_bonus[$key]) ?$request->east_bonus[$key]: 0;
                     if(isset($request->gain[$key]) && $request->gain[$key] != "")
                         $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
                     else
                         $contribution->gain = $contribution->gain;
+
+                    if(isset($request->quotable[$key]) && $request->quotable[$key] != "")
+                        $contribution->quotable = strip_tags($request->quotable[$key]) ?? $contribution->quotable;
+                    else
+                        $contribution->quotable = $contribution->quotable;
 
                     $contribution->save();
                     array_push($contributions, $contribution);
@@ -748,6 +770,11 @@ class ContributionController extends Controller
                             $contribution->gain = 0;
                         else
                             $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+
+                        if(!isset($request->quotable[$key]))
+                            $contribution->quotable = 0;
+                        else
+                            $contribution->quotable = strip_tags($request->quotable[$key]) ?? 0;
 
                         if(!isset($request->total[$key]))
                             $contribution->total = 0;
@@ -1140,18 +1167,27 @@ class ContributionController extends Controller
     {
         $ret_fun = QuotaAidMortuary::find($ret_fun_id);
         $affiliate = $ret_fun->affiliate;
-
+        $type_mortuary = $ret_fun->getTypeMortuary();
         if ($ret_fun->procedure_modality_id == 14) { // fallecimiento conyugue
-            Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clacificación de aportes.');
+            Session::flash('message', 'La modalidad Fallecimiento del (la) cónyuge, no requiere clasificación de aportes.');
             return redirect('quota_aid/' . $ret_fun_id);
         }
         if($ret_fun->isQuota()){
-            if (!(isset($affiliate->date_entry) && isset($affiliate->date_death))) {
-                Session::flash('message', 'Verifique la fecha de entrada y la fecha de fallecimiento del afiliado existan antes de continuar');
-                return redirect('quota_aid/' . $ret_fun_id);
+            if($ret_fun->procedure_modality_id == 8 || $ret_fun->procedure_modality_id == 9) {
+                if (!(isset($affiliate->date_entry) && isset($affiliate->date_death))) {
+                    Session::flash('message', 'Verifique la fecha de entrada y la fecha de fallecimiento del afiliado existan antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+                $date_min = $affiliate->date_entry;
+                $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
+            } else {
+                if (!(isset($affiliate->date_entry) && isset($affiliate->spouse[0]->date_death))) {
+                    Session::flash('message', 'Verifique la fecha de entrada del titular y la fecha de fallecimiento del (la) cónyuge existan antes de continuar');
+                    return redirect('quota_aid/' . $ret_fun_id);
+                }
+                $date_min = $affiliate->date_entry;
+                $date_max = Carbon::parse(Util::parseBarDate($affiliate->spouse[0]->date_death))->format('m/Y');
             }
-            $date_min = $affiliate->date_entry;
-            $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
             if (!(isset($date_min) && isset($date_max))) {
                 Session::flash('message', 'Verifique la fecha de entrada y fecha de fallecimiento del afiliado existan antes de continuar');
                 return redirect('quota_aid/' . $ret_fun_id);
@@ -1498,16 +1534,20 @@ class ContributionController extends Controller
             }
         }else{//auxilio mortuorio
             foreach($request_contributions as $index =>$cont){
-                if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
-                    if($cont['contribution_type_mortuary_id'] == 1){
-                        $count_contributions++;
-                    }else
-                        break;
-                }else{
-                    $count_grace++;
-                    if($count_grace>4)
-                        $grace_period = false;
+                //if($cont['contribution_type_mortuary_id'] == 1 && $grace_period == true){
+                //     if($cont['contribution_type_mortuary_id'] == 1){
+                //         $count_contributions++;
+                //     }else
+                //         break;
+                // }else{
+                //     $count_grace++;
+                //     if($count_grace>4)
+                //         $grace_period = false;
+                // }
+                if($cont['contribution_type_mortuary_id'] == 1){
+                    $count_contributions++;
                 }
+
             }
 
             if($count_contributions > 0){ // debe tener si o si al menos 1 para acceder al beneficio

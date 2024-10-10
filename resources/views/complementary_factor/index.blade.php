@@ -250,9 +250,9 @@
                 <div class="row text-center">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <a href="{!! url('complementary_factor') !!}" class="btn btn-raised btn-danger"
-                                data-toggle="tooltip" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
-                                    class="glyphicon glyphicon-remove"></i>&nbsp;</a> &nbsp;&nbsp;
+                            <button type="button" class="btn btn-raised btn-danger"
+                                data-toggle="tooltip" data-dismiss="modal" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
+                                    class="glyphicon glyphicon-remove"></i>&nbsp;</button> &nbsp;&nbsp;
                             <button type="submit" class="btn btn-raised btn-primary" data-toggle="tooltip"
                                 data-placement="bottom" data-original-title="Guardar">&nbsp;<i
                                     class="glyphicon glyphicon-floppy-disk"></i>&nbsp;</button>
@@ -406,9 +406,9 @@
                 <div class="row text-center">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <a href="{!! url('complementary_factor') !!}" class="btn btn-raised btn-danger"
-                                data-toggle="tooltip" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
-                                    class="glyphicon glyphicon-remove"></i>&nbsp;</a> &nbsp;&nbsp;
+                            <button type="button" class="btn btn-raised btn-danger"
+                                data-toggle="tooltip" data-dismiss="modal" data-placement="bottom" data-original-title="Cancelar">&nbsp;<i
+                                    class="glyphicon glyphicon-remove"></i>&nbsp;</button> &nbsp;&nbsp;
                             <button type="submit" class="btn btn-raised btn-primary" data-toggle="tooltip"
                                 data-placement="bottom" data-original-title="Guardar">&nbsp;<i
                                     class="glyphicon glyphicon-floppy-disk"></i>&nbsp;</button>

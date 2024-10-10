@@ -194,6 +194,10 @@ class Affiliate extends Model
   {
     return !!$this->observations()->where('observation_type_id', '=', $id)->first();
   }
+  public function eco_com_fixed_pensions()
+    {
+        return $this->hasMany('Muserpol\Models\EconomicComplement\EcoComFixedPension');
+    }
 
   /**
    * methods
@@ -561,15 +565,26 @@ class Affiliate extends Model
     }
 
     if ($quota_aid->isQuota()) {
+      if ($quota_aid->getTypeMortuary() == 'Conyuge') {//Conyugue
         $contributions = $this->contributions()
-        ->whereNotNull('contributions.contribution_type_mortuary_id')
-        ->where('contributions.contribution_type_mortuary_id',1)
-        ->where('contributions.month_year','>=',$min_limit)
-        ->where('contributions.month_year','<',$max_limit)
-        ->orderBy('contributions.month_year')
-       // ->take($number_contributions)
-        ->get();
+          ->whereNotNull('contributions.contribution_type_mortuary_id')
+          ->where('contributions.contribution_type_mortuary_id', 1)
+          ->where('contributions.month_year', '>=', $min_limit)
+          ->where('contributions.month_year', '<', $max_limit)
+          ->orderBy('contributions.month_year','desc')
+          ->take($number_contributions)
+          ->get();
+      } else {
+        $contributions = $this->contributions()
+          ->whereNotNull('contributions.contribution_type_mortuary_id')
+          ->where('contributions.contribution_type_mortuary_id', 1)
+          ->where('contributions.month_year', '>=', $min_limit)
+          ->where('contributions.month_year', '<', $max_limit)
+          ->orderBy('contributions.month_year')
+          // ->take($number_contributions)
+          ->get();
         //->toArray();
+      }
     }
 
     if ($quota_aid->isAid()) {
@@ -1052,10 +1067,14 @@ class Affiliate extends Model
       $date_min = $date_max = $min_limit = $max_limit = null;
 
       if($ret_fun->isQuota()){
-          $date_min = $affiliate->date_entry;
+        $date_min = $affiliate->date_entry;
+        if ($ret_fun->procedure_modality_id == 9 || $ret_fun->procedure_modality_id == 8) {
           $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
-          $min_limit = Util::parseMonthYearDate($date_min);
-          $max_limit = Util::parseMonthYearDate($date_max);
+        } else {
+          $date_max = Carbon::parse(Util::parseBarDate($affiliate->spouse[0]->date_death))->format('m/Y');
+        }
+        $min_limit = Util::parseMonthYearDate($date_min);
+        $max_limit = Util::parseMonthYearDate($date_max);
       }else{
           if($ret_fun->procedure_modality_id == 15){//fallecimiento viuda
               $date_min = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
