@@ -121,7 +121,7 @@
                   <i class="fa fa-comments-o"></i> Comentario:
                 </div>
                 <div class="col-md-6 no-margins no-padding">
-                  <input type="text" :name="'comment'+rq.id" class="form-control">
+                  <input type="text" :name="'comment'+rq.id" class="form-control" maxlength="80">
                 </div>
                 <br>
               </div>
@@ -147,7 +147,7 @@
       </div>
     </div>
     <br>
-    <div v-if="additionalRequirements.length > 0">
+    <div v-if="additionalRequirements.length > 0" style="margin-bottom:180px">
       <h4>Documentos adicionales</h4>
       <select
         data-placeholder="Documentos adicionales..."
@@ -325,6 +325,10 @@ export default {
             $(".chosen-select")
               .chosen({ width: "100%" })
               .trigger("chosen:updated");
+            $(".chosen-select")
+              .next('.chosen-container')
+              .find('.chosen-choices') // Para selects múltiples
+              .css("border", "4px solid #ceebd6");
           }, 500);
           this.verifyOneNumber();
         })

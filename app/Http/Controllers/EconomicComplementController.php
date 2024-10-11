@@ -1173,7 +1173,7 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
 
-        $aditional =  $request->additional_requirements;
+        $aditional =  $request->aditional_requirements;
         $num = "";
         foreach ($procedure_requirements as $requirement) {
             $needle = EcoComSubmittedDocument::where('economic_complement_id', $id)
