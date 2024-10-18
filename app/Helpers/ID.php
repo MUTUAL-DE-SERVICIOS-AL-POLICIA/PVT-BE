@@ -217,6 +217,7 @@ class ID
 	{
 		$ids = [
 			'pagado' => 1,
+			'creado' => 5,
 			'enviado' => 6,
 		];
 		return ((object)$ids);
