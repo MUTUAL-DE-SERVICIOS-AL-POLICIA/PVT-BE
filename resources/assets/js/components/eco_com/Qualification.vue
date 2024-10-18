@@ -6,6 +6,30 @@
           Calificacion
           <strong>{{ namePensionEntity }}</strong>
         </h2>
+        <div class="ibox-tools" v-if="roleId == 5">
+            <!--Para borrar rentas calificación-->
+          <button 
+            class="btn btn-danger"
+            @click="edit('ceh')"
+            data-toggle="tooltip"
+            title="Habilitar renta manual para calificación"
+            :disabled="!(ecoCom.eco_com_reception_type_id == 1 && ecoCom.rent_type == 'Automatico')"
+          >
+            <i class="fa fa-check"></i>Habilitar renta manual para calificación
+          </button>
+          <!-- Para borrar rentas auxilio mortuorio--> 
+           <template v-if="ecoCom.eco_com_updated_pension != null">
+          <button  
+            class="btn btn-danger" 
+            @click="edit('amh')" 
+            data-toggle="tooltip" 
+            title="Habilitar renta manual para Aux. Mort."
+            :disabled="!(affiliate.pension_entity_id != 5 && this.ecoCom.eco_com_reception_type_id == 1 && ecoCom.eco_com_updated_pension.rent_type == 'Automatico')"
+          >
+            <i class="fa fa-check"></i>Habilitar renta manual para Aux. Mort.
+          </button>
+          </template>
+        </div>
         <div class="ibox-tools" v-if="roleId == 4" >
           <button
             class="btn btn-primary"
@@ -16,6 +40,7 @@
           >
             <i class="fa fa-refresh"></i>
           </button>
+          <!--Para calificación-->
           <button
             class="btn btn-primary"
             @click="edit('ce')"
@@ -25,7 +50,11 @@
           >
             <i class="fa fa-pencil"></i> {{ this.ecoCom.eco_com_reception_type_id == 2 ? 'Renta o Pension' : 'Renta o Pension para calificación' }}
           </button>
-          <button v-if="this.affiliate.pension_entity_id != 5 && this.ecoCom.eco_com_reception_type_id != 2" class="btn btn-primary" @click="edit('am')" data-toggle="tooltip" title="Editar Rentas"
+          <!-- Para auxilio mortuorio--> 
+          <button v-if="this.affiliate.pension_entity_id != 5 && this.ecoCom.eco_com_reception_type_id != 2" 
+            class="btn btn-primary" 
+            @click="edit('am')" 
+            data-toggle="tooltip" title="Editar Rentas"
             :disabled="!can('update_economic_complement')">
             <i class="fa fa-pencil"></i> Pension para descuento de Aux. Mort.
           </button>
@@ -242,7 +271,7 @@
     </div>
     <modal name="rents-modal" class="p-sm" height="auto">
       <div cass="ibox-title">
-        <h2 class="pull-left">
+        <h2 class="pull-left col-xs-offset-1">
           Edicion de Rentas
           <strong>{{ namePensionEntity }}</strong>
         </h2>
@@ -355,6 +384,17 @@
                 </div>
               </div>
             </div>
+            <div class="hr-line-dashed"></div>
+              <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am'">
+                <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
+                {{ ecoComModal.eco_com_procedure_id }}
+                  <select 
+                  class="col-sm-6"
+                  name="Periodo que correponde la renta"
+                  v-model="ecoComModal.eco_com_procedure_id">
+                  <option v-for="p in procedures" :value="p.id" :key="p.id">{{ p.semester + p.year.split('-')[0]+ ' ('+ p.rent_month+')' }}</option>
+                  </select>
+              </div>
           </div>
         </div>
         <div class="row" v-if="isSenasir">
@@ -446,6 +486,15 @@
                 </div>
               </div>
             </div>
+            <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am'">
+              <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
+                <select 
+                class="col-sm-6"
+                name="Periodo que correponde la renta"
+                v-model="ecoComModal.eco_com_procedure_id">
+                <option v-for="p in procedures" :value="p.id" :key="p.id">{{ p.semester + p.year.split('-')[0]+ ' ('+ p.rent_month+')' }}</option>
+                </select>
+            </div>
           </div>
         </div>
         <div class="col-md-12">
@@ -493,6 +542,65 @@
         </div>
       </div>
     </modal>
+
+    <modal name="edit-rents-modal" class="p-sm" height="auto">
+      <div class="ibox-title">
+        <h2 class="pull-left col-xs-offset-1">
+          Habilitar edición de Rentas 
+          <strong>{{ namePensionEntity }}</strong> {{ ecoComModal.type }}
+        </h2>
+      </div>
+
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-md-10 col-xs-offset-1">
+            <h3>Las Rentas Fueron Importadas Automáticamente. Esta renta se mantendrá como Fija para las nuevas solicitudes de CE durante el quinquenio<br/><br/></h3>
+
+            <template v-if="ecoComModal.type == 'ce'">
+              <h3 class="text-danger">
+                ¿Esta seguro que desea realizar la edición de forma MANUAL de la renta para la Calificación?<br/><br/>
+              </h3>
+            </template>
+            <template v-else-if="ecoComModal.type == 'am'">
+              <h3 class="text-danger">
+                Esta seguro que desea realizar la edición de forma manual de la renta para el Auxilio Mortuorio?<br/><br/>
+              </h3>
+            </template>
+          </div>
+        </div>
+
+        <div class="col-md-12 text-center m-sm">
+          <button class="btn btn-danger" type="button" @click="$modal.hide('edit-rents-modal')">
+            <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
+            <span class="bold">Cancelar</span>
+          </button>
+
+          <template v-if="ecoComModal.type == 'ce'">
+            <button 
+              class="btn btn-primary"
+              @click="changeRentType('ce')"
+              data-toggle="tooltip"
+              title="Editar Rentas"
+              :disabled="!can('update_economic_complement')"
+            >
+              <i class="fa fa-check"></i> Habilitar registro Manual "Renta Fija"
+            </button>
+          </template>
+          <template v-else-if="ecoComModal.type == 'am'">
+            <button 
+              class="btn btn-primary"
+              @click="changeRentType('am')"
+              data-toggle="tooltip"
+              title="Editar Rentas"
+              :disabled="!can('update_economic_complement')"
+            >
+              <i class="fa fa-check"></i> Habilitar registro Manual "Renta Aux. Mort."
+            </button>
+          </template>
+        </div>
+      </div>
+    </modal>
+
   </div>
 </template>
 
@@ -515,7 +623,8 @@ export default {
       loadingButton: false,
       eco_com_state_type_id:0,
       idEcoCom:0,
-      show_spinner:false
+      show_spinner:false,
+      procedures:[]
     };
   },
   mounted() {
@@ -563,7 +672,7 @@ export default {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
-      if (this.ecoCom.eco_com_updated_pension == null && this.affiliate.pension_entity_id != 5) {
+      if (this.ecoCom.eco_com_updated_pension == null && this.affiliate.pension_entity_id != 5) {//Si no tiene renta de AM y no es senasir
         this.ecoCom.eco_com_updated_pension = {};
         this.ecoCom.eco_com_updated_pension.aps_total_fsa = null;
         this.ecoCom.eco_com_updated_pension.aps_total_cc = null;
@@ -584,6 +693,7 @@ export default {
             return;
           }
           this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
+          console.log(this.ecoCom)
           this.ecoComModal.type = "ce";
           break;
         case 'am': // Auxilio Mortuorio
@@ -594,6 +704,22 @@ export default {
           this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom.eco_com_updated_pension));
           this.ecoComModal.id = this.ecoCom.id;
           this.ecoComModal.type = "am";
+          break;
+          case 'ceh': // Complemento Economico
+          if (this.ecoCom.rent_type == "Automatico") {
+            this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
+            this.ecoComModal.type = "ce";
+            this.$modal.show("edit-rents-modal");
+            return;
+          }
+          break;
+          case 'amh': // Auxilio Mortuorio
+          if (this.ecoCom.eco_com_updated_pension.rent_type == "Automatico") {
+            this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
+            this.ecoComModal.type = "am"
+            this.$modal.show("edit-rents-modal");
+            return;
+          }
           break;
         default:
           break;
@@ -612,9 +738,10 @@ export default {
       this.$scrollTo("#wrapper");
       await axios
         .get(`/get_eco_com/${this.ecoComId}`)
-        .then(response => {
+        .then(response => { 
           this.$store.commit("ecoComForm/setEcoCom", response.data);
           this.eco_com_state_type_id=response.data.eco_com_state.eco_com_state_type_id;
+          this.getProcedures();
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);
@@ -639,6 +766,7 @@ export default {
         });
       this.loadingButton = false;
       this.editing = true;
+      location.reload();
     },
     async refreshQualification(){
       if (!this.can("qualify_economic_complement", this.permissions)) {
@@ -737,7 +865,55 @@ export default {
                         })
                         }
                     })
-            }
+            },
+
+    async changeRentType(type) {
+      if (!this.can("update_economic_complement", this.permissions)) {
+        return;
+      }
+      switch (type) {
+        case 'ceh': // Complemento Economico
+          if (this.ecoCom.rent_type == "Automatico") {
+            this.ecoComModal.id = this.ecoCom.id;
+            //this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
+            this.ecoComModal.type = "ce";
+          }
+        case 'amh': // Auxilio Mortuorio
+          if (this.ecoCom.eco_com_updated_pension.rent_type == "Automatico") {
+            //this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom.eco_com_updated_pension));
+          this.ecoComModal.id = this.ecoCom.id;
+          this.ecoComModal.type = "am"; 
+          }
+      }
+      this.loadingButton = true;
+      this.editing = false;
+      await axios
+        .patch(`/eco_com_change_rent_type`, this.ecoComModal)
+        .then(response => {
+          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          
+          this.$modal.hide("edit-rents-modal");
+          
+          flash("Se actualizó con exito");
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+          this.$modal.hide("edit-rents-modal");
+        });
+      this.loadingButton = false;
+      this.editing = true;
+    }, 
+    async getProcedures() {
+      this.$scrollTo("#wrapper");
+      await axios
+        .get(`/eco_com_procedures_regulation`)
+        .then(response => {
+          this.procedures = response.data
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
+    },
   }
 };
 </script>

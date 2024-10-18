@@ -160,16 +160,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('/update_information_rf', 'RetirementFundController@updateInformation')->name('update_information_rf');
     Route::post('quota_aid/{quota_aid}/legal_review/create', 'QuotaAidMortuaryController@storeLegalReview')->name('store_quota_aid_legal_review_create');
     Route::get('quota_aid/{quota_aid}/print/legal_review', 'QuotaAidCertificationController@printLegalReview')->name('quota_aid_print_legal_review');
-    Route::get('quota_aid/{quota_aid}/print/liquidation', 'QuotaAidCertificationController@printLiquidation')->name('quota_aid_print_liquidation');
     Route::get('quota_aid/{quota_aid}/print/file', 'QuotaAidCertificationController@printFile')->name('quota_aid_print_file');
     Route::get('quota_aid/{quota_aid}/print/certification', 'QuotaAidCertificationController@printCertification2')->name('quota_aid_print_certification');
     Route::get('quota_aid/{quota_aid}/print/legal_dictum', 'QuotaAidCertificationController@printLegalDictum')->name('quota_aid_print_legal_dictum');
     Route::get('quota_aid/{quota_aid}/print/headship_review', 'QuotaAidCertificationController@printHeadshipReview')->name('quota_aid_print_headship_review');
     Route::get('quota_aid/{quota_aid}/print/legal_resolution', 'QuotaAidCertificationController@printLegalResolution')->name('quota_aid_print_legal_resolution');
-    Route::post('quota_aid/{quota_aid}/save_judicial_retention', 'QuotaAidMortuaryController@createJudicialRetention');
-    Route::get('quota_aid/{quota_aid}/obtain_judicial_retention', 'QuotaAidMortuaryController@obtainJudicialRetention');
-    Route::patch('quota_aid/{quota_aid}/modify_judicial_retention', 'QuotaAidMortuaryController@modifyJudicialRetention');
-    Route::delete('quota_aid/{quota_aid}/cancel_judicial_retention', 'QuotaAidMortuaryController@cancelJudicialRetention');
+
 
     // tags
     Route::resource('/tag', "TagController");
@@ -685,6 +681,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('get_eco_com_rents_first_semester', 'EconomicComplementController@getRentsFirstSemester');
     Route::delete('eco_com/{eco_com_id}', 'EconomicComplementController@destroy');
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
+    Route::patch('eco_com_change_rent_type', 'EconomicComplementController@changeRentType');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
     Route::patch('eco_com_save_deposito', 'EconomicComplementController@saveDeposito');
@@ -814,6 +811,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('eco_com_load_promedio', 'EconomicComplementController@loadPromedio');
     // Cargar promedio segun la regulación actual
     Route::post('eco_com_load_average_with_regulation','EconomicComplementController@loadAverageWithRegulation');
+    Route::get('eco_com_procedures_regulation','EconomicComplementController@getProceduresRegulation');
 
 
     // certificado de revision

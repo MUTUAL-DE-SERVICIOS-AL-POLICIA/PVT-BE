@@ -65,32 +65,7 @@ class EconomicComplementObserver
             $message = $message . ' fecha de recepción ' . $old->reception_date . ' a ' . $eco_com->reception_date . ', ';
         }
         if ($eco_com->sub_total_rent != $old->sub_total_rent) {
-            $message = $message . ' Total Ganado Renta ó Pensión ' . $old->sub_total_rent . ' a ' . $eco_com->sub_total_rent . ', ';
-        }
-        if ($eco_com->reimbursement != $old->reimbursement) {
-            $message = $message . ' Reintegro ' . $old->reimbursement . ' a ' . $eco_com->reimbursement . ', ';
-        }
-        if ($eco_com->dignity_pension != $old->dignity_pension) {
-            $message = $message . ' Renta Dignidad ' . $old->dignity_pension . ' a ' . $eco_com->dignity_pension . ', ';
-        }
-
-        if ($eco_com->sub_total_rent != $old->sub_total_rent) {
             $message = $message . ' fecha de recepción ' . $old->sub_total_rent . ' a ' . $eco_com->sub_total_rent . ', ';
-        }
-        if ($eco_com->aps_total_fsa != $old->aps_total_fsa) {
-            $message = $message . ' Fracción de Saldo Acumulada ' . $old->aps_total_fsa . ' a ' . $eco_com->aps_total_fsa . ', ';
-        }
-        if ($eco_com->aps_total_cc != $old->aps_total_cc) {
-            $message = $message . ' Fracción de Pensión CCM ' . $old->aps_total_cc . ' a ' . $eco_com->aps_total_cc . ', ';
-        }
-        if ($eco_com->aps_total_fs != $old->aps_total_fs) {
-            $message = $message . ' Fracción Solidaria de Vejéz ' . $old->aps_total_fs . ' a ' . $eco_com->aps_total_fs . ', ';
-        }
-        if ($eco_com->aps_disability != $old->aps_disability) {
-            $message = $message . ' Prestación por Invalidéz ' . $old->aps_disability . ' a ' . $eco_com->aps_disability . ', ';
-        }
-        if ($eco_com->aps_total_death != $old->aps_total_death) {
-            $message = $message . ' Fracción por Muerte ' . $old->aps_total_death . ' a ' . $eco_com->aps_total_death . ', ';
         }
         if ($eco_com->degree_id != $old->degree_id) {
             $message = $message . ' Grado ' . optional($old->degree)->name . ' a ' . optional($eco_com->degree)->name . ', ';
@@ -106,6 +81,35 @@ class EconomicComplementObserver
         }
         if ($eco_com->eco_com_state_id != $old->eco_com_state_id) {
             $message = $message . ' el estado de ' . $old->eco_com_state->name . ' a ' . $eco_com->eco_com_state->name . ', ';
+        }
+        if ($eco_com->rent_type != $old->rent_type) {
+            $message = $message . ' el registro de rentas de ' . $old->rent_type . ' a ' .$eco_com->rent_type . ', ';
+        }else {
+            if ($eco_com->aps_total_fsa != $old->aps_total_fsa) {
+                $message = $message . ' Fracción de Saldo Acumulada ' . $old->aps_total_fsa . ' a ' . $eco_com->aps_total_fsa . ', ';
+            }
+            if ($eco_com->aps_total_cc != $old->aps_total_cc) {
+                $message = $message . ' Fracción de Pensión CCM ' . $old->aps_total_cc . ' a ' . $eco_com->aps_total_cc . ', ';
+            }
+            if ($eco_com->aps_total_fs != $old->aps_total_fs) {
+                $message = $message . ' Fracción Solidaria de Vejéz ' . $old->aps_total_fs . ' a ' . $eco_com->aps_total_fs . ', ';
+            }
+            if ($eco_com->aps_disability != $old->aps_disability) {
+                $message = $message . ' Prestación por Invalidéz ' . $old->aps_disability . ' a ' . $eco_com->aps_disability . ', ';
+            }
+            if ($eco_com->aps_total_death != $old->aps_total_death) {
+                $message = $message . ' Fracción por Muerte ' . $old->aps_total_death . ' a ' . $eco_com->aps_total_death . ', ';
+            }
+
+            if ($eco_com->sub_total_rent != $old->sub_total_rent) {
+                $message = $message . ' Total Ganado Renta ó Pensión ' . $old->sub_total_rent . ' a ' . $eco_com->sub_total_rent . ', ';
+            }
+            if ($eco_com->reimbursement != $old->reimbursement) {
+                $message = $message . ' Reintegro ' . $old->reimbursement . ' a ' . $eco_com->reimbursement . ', ';
+            }
+            if ($eco_com->dignity_pension != $old->dignity_pension) {
+                $message = $message . ' Renta Dignidad ' . $old->dignity_pension . ' a ' . $eco_com->dignity_pension . ', ';
+            }
         }
         if($temp !=  $message){
             $message = $message . ' ';
