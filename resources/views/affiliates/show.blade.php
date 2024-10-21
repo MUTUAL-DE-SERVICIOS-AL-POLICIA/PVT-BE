@@ -216,6 +216,62 @@ th.ellipsis-text {
                         @endif
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
+                    
+                        <!--Fixed-->
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h2 class="pull-left">Renta/Pensión para la Calificación</h2>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="success">
+                                            <th>Periódo vigente</th>
+                                            <th>Periodo renta/pensión</th>
+                                            <th>Tipo de registro</th>
+                                            @if($affiliate->pension_entity->id !=5)
+                                                <th>Fracción de Saldo Acumulado</th>
+                                                <th>Fracción de Cotización</th>
+                                                <th>Fracción Solidaria</th>
+                                                <th>Renta Invalidez</th>
+                                                <th>Renta Muerte</th>
+                                            @else
+                                                <th>Total Ganado Renta o Pensión</th>
+                                                <th>Reintegro</th>
+                                                <th>Renta Dignidad</th>
+                                            @endif
+                                            <th>Total Renta</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($eco_com_fixed_pensions as $eco_com_fixed_pension)
+                                                <tr>
+                                                <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->start_production_date)->format('Y')}} - 
+                                                    {{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->end_production_date)->format('Y')}}</td>
+                                                <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_procedure->year)->format('Y') }} - {{$eco_com_fixed_pension->eco_com_procedure->semester }}</td>
+                                                <td>{{$eco_com_fixed_pension->rent_type }}</td>
+                                                @if($affiliate->pension_entity->id !=5)
+                                                    <td>{{$eco_com_fixed_pension->aps_total_fsa }}</td>
+                                                    <td>{{$eco_com_fixed_pension->aps_total_cc}}</td>
+                                                    <td>{{$eco_com_fixed_pension->aps_total_fs }}</td>
+                                                    <td>{{$eco_com_fixed_pension->aps_disability }}</td>
+                                                    <td>{{$eco_com_fixed_pension->aps_total_death}}</td>
+                                                @else
+                                                    <td>{{$eco_com_fixed_pension->sub_total_rent }}</td>
+                                                    <td>{{$eco_com_fixed_pension->reimbursement }}</td>
+                                                    <td>{{$eco_com_fixed_pension->dignity_pension }}</td>
+                                                @endif
+                                                <td>{{$eco_com_fixed_pension->total_rent }}</td>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>    
+
+                        <!---End fixed-->
+
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Trámites de Complemento Economico</h2>
