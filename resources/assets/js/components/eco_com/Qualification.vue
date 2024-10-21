@@ -387,11 +387,10 @@
             <div class="hr-line-dashed"></div>
               <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am'">
                 <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
-                {{ ecoComModal.eco_com_procedure_id }}
                   <select 
                   class="col-sm-6"
                   name="Periodo que correponde la renta"
-                  v-model="ecoComModal.eco_com_procedure_id">
+                  v-model="ecoComModal.eco_com_fixed_pension.eco_com_procedure_id">
                   <option v-for="p in procedures" :value="p.id" :key="p.id">{{ p.semester + p.year.split('-')[0]+ ' ('+ p.rent_month+')' }}</option>
                   </select>
               </div>
@@ -491,7 +490,7 @@
                 <select 
                 class="col-sm-6"
                 name="Periodo que correponde la renta"
-                v-model="ecoComModal.eco_com_procedure_id">
+                v-model="ecoComModal.eco_com_fixed_pension.eco_com_procedure_id">
                 <option v-for="p in procedures" :value="p.id" :key="p.id">{{ p.semester + p.year.split('-')[0]+ ' ('+ p.rent_month+')' }}</option>
                 </select>
             </div>
@@ -547,7 +546,7 @@
       <div class="ibox-title">
         <h2 class="pull-left col-xs-offset-1">
           Habilitar edición de Rentas 
-          <strong>{{ namePensionEntity }}</strong> {{ ecoComModal.type }}
+          <strong>{{ namePensionEntity }}</strong>
         </h2>
       </div>
 
@@ -618,7 +617,10 @@ export default {
   props: ["ecoComId", "affiliate", "permissions","roleId"],
   data() {
     return {
-      ecoComModal: {},
+      ecoComModal: {
+        eco_com_fixed_pension: 
+          {eco_com_procedure_id: null},
+      },
       editing: false,
       loadingButton: false,
       eco_com_state_type_id:0,
@@ -766,7 +768,7 @@ export default {
         });
       this.loadingButton = false;
       this.editing = true;
-      location.reload();
+      //location.reload();
     },
     async refreshQualification(){
       if (!this.can("qualify_economic_complement", this.permissions)) {

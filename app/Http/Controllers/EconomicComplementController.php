@@ -1515,7 +1515,9 @@ class EconomicComplementController extends Controller
                 $economic_complement->rent_type = "Manual";
                 $economic_complement->eco_com_fixed_pension->rent_type = "Manual";
                 if($request->eco_com_reception_type_id == ID::ecoCom()->habitual){
-                    $economic_complement->eco_com_fixed_pension->eco_com_procedure_id = $request->eco_com_procedure_id;
+                    if (is_array($request->eco_com_fixed_pension) && isset($request->eco_com_fixed_pension['eco_com_procedure_id'])) {
+                        $economic_complement->eco_com_fixed_pension->eco_com_procedure_id = $request->eco_com_fixed_pension['eco_com_procedure_id'];
+                    }                    
                 }
             } else if ($request->type == "am") {
                 $economic_complement->eco_com_updated_pension->rent_type = "Manual";
@@ -1541,7 +1543,7 @@ class EconomicComplementController extends Controller
                 return $economic_complement->qualify() ;
             }
         }
-        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_updated_pension'])->find($economic_complement->id);
+        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_fixed_pension','eco_com_updated_pension'])->find($economic_complement->id);
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         $economic_complement->total_eco_com = $economic_complement->getOnlyTotalEcoCom();
         return $economic_complement;
