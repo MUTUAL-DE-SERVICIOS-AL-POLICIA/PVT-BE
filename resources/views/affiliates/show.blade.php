@@ -227,48 +227,56 @@ th.ellipsis-text {
                                     <table class="table table-striped table-hover">
                                         <thead>
                                             <tr class="success">
-                                            <th>Periódo vigente</th>
-                                            <th>Periodo renta/pensión</th>
-                                            <th>Tipo de registro</th>
-                                            @if($affiliate->pension_entity->id !=5)
-                                                <th>Fracción de Saldo Acumulado</th>
-                                                <th>Fracción de Cotización</th>
-                                                <th>Fracción Solidaria</th>
-                                                <th>Renta Invalidez</th>
-                                                <th>Renta Muerte</th>
-                                            @else
-                                                <th>Total Ganado Renta o Pensión</th>
-                                                <th>Reintegro</th>
-                                                <th>Renta Dignidad</th>
-                                            @endif
-                                            <th>Total Renta</th>
+                                                <th>Periódo vigente</th>
+                                                <th>Periodo renta/pensión</th>
+                                                <th>Tipo de registro</th>
+                                                @if($affiliate->pension_entity->id != 5)
+                                                    <th>Fracción de Saldo Acumulado</th>
+                                                    <th>Fracción de Cotización</th>
+                                                    <th>Fracción Solidaria</th>
+                                                    <th>Renta Invalidez</th>
+                                                    <th>Renta Muerte</th>
+                                                @else
+                                                    <th>Total Ganado Renta o Pensión</th>
+                                                    <th>Reintegro</th>
+                                                    <th>Renta Dignidad</th>
+                                                @endif
+                                                <th>Total Renta</th>
+                                                <th>Acciones</th> <!-- Nueva columna para acciones -->
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($eco_com_fixed_pensions as $eco_com_fixed_pension)
                                                 <tr>
-                                                <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->start_production_date)->format('Y')}} - 
-                                                    {{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->end_production_date)->format('Y')}}</td>
-                                                <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_procedure->year)->format('Y') }} - {{$eco_com_fixed_pension->eco_com_procedure->semester }}</td>
-                                                <td>{{$eco_com_fixed_pension->rent_type }}</td>
-                                                @if($affiliate->pension_entity->id !=5)
-                                                    <td>{{$eco_com_fixed_pension->aps_total_fsa }}</td>
-                                                    <td>{{$eco_com_fixed_pension->aps_total_cc}}</td>
-                                                    <td>{{$eco_com_fixed_pension->aps_total_fs }}</td>
-                                                    <td>{{$eco_com_fixed_pension->aps_disability }}</td>
-                                                    <td>{{$eco_com_fixed_pension->aps_total_death}}</td>
-                                                @else
-                                                    <td>{{$eco_com_fixed_pension->sub_total_rent }}</td>
-                                                    <td>{{$eco_com_fixed_pension->reimbursement }}</td>
-                                                    <td>{{$eco_com_fixed_pension->dignity_pension }}</td>
-                                                @endif
-                                                <td>{{$eco_com_fixed_pension->total_rent }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->start_production_date)->format('Y') }} - 
+                                                        {{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->end_production_date)->format('Y') }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_procedure->year)->format('Y') }} - {{ $eco_com_fixed_pension->eco_com_procedure->semester }}</td>
+                                                    <td>{{ $eco_com_fixed_pension->rent_type }}</td>
+                                                    @if($affiliate->pension_entity->id != 5)
+                                                        <td>{{ $eco_com_fixed_pension->aps_total_fsa }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->aps_total_cc }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->aps_total_fs }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->aps_disability }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->aps_total_death }}</td>
+                                                    @else
+                                                        <td>{{ $eco_com_fixed_pension->sub_total_rent }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->reimbursement }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->dignity_pension }}</td>
+                                                    @endif
+                                                    <td>{{ $eco_com_fixed_pension->total_rent }}</td>
+                                                    <td>
+                                                        <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal({{ json_encode($eco_com_fixed_pension) }})">Editar</button>
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                        </div>    
+                        </div>
+
+                        <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" ></edit-pension-modal>
+
 
                         <!---End fixed-->
 

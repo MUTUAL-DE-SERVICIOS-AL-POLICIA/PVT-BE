@@ -6,6 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class EcoComFixedPension extends Model
 {
+    protected $filliable= [
+        'user_id',
+        'eco_com_procedure_id',
+        'rent_type',
+        'aps_total_cc',
+        'aps_total_fsa',
+        'aps_total_fs',
+        'aps_disability',
+        'aps_total_death',
+        'sub_total_rent',
+        'reimbursement',
+        'dignity_pension',
+        'total_rent',
+    ];
     public function user()
     {
         return $this->belongsTo('Muserpol\User');

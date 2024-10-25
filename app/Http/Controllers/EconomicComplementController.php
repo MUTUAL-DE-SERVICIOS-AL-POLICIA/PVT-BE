@@ -1327,29 +1327,29 @@ class EconomicComplementController extends Controller
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',
-                'errors' => ['No se puede modificar las rentas del trámite ' . $economic_complement->code . ' porque se encuentra en estado de ' . $eco_com_state->name .'. Solo se pueden modificar los tgramites en estado en PROCESO DE REVISIÓN'],
+                'errors' => ['No se puede modificar las rentas del trámite ' . $economic_complement->code . ' porque se encuentra en estado de ' . $eco_com_state->name .'. Solo se pueden modificar los tramites en estado en PROCESO DE REVISIÓN'],
             ], 422);
         }
     
-        // Si el tipo es "ce", actualiza eco_com_fixed_pension
+        // Si el tipo es "ce"
         if ($request->type == "ce") {
-            //Valida si existen tramites con estado pagado anteriores al procedure del tramite que se desea habilitar a manual
-            $count = EconomicComplement::select('id')
-            ->leftJoin('eco_com_states', 'eco_com_states.id', '=', 'economic_complements.eco_com_state_id')
-            ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
-            ->where('economic_complements.affiliate_id', $request->affiliate_id)
-            ->where('economic_complements.eco_com_procedure_id', '<', $request->eco_com_procedure_id)
-            ->where('eco_com_states.eco_com_state_type_id', 1)
-            ->where('economic_complements.eco_com_fixed_pension_id', '=', $request->eco_com_fixed_pension_id)
-            ->count();
+            // //Valida si existen tramites con estado pagado anteriores al procedure del tramite que se desea habilitar a manual
+            // $count = EconomicComplement::select('id')
+            // ->leftJoin('eco_com_states', 'eco_com_states.id', '=', 'economic_complements.eco_com_state_id')
+            // ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+            // ->where('economic_complements.affiliate_id', $request->affiliate_id)
+            // ->where('economic_complements.eco_com_procedure_id', '<', $request->eco_com_procedure_id)
+            // ->where('eco_com_states.eco_com_state_type_id', 1)
+            // ->where('economic_complements.eco_com_fixed_pension_id', '=', $request->eco_com_fixed_pension_id)
+            // ->count();
         
-            if ($count > 0) {
-                return response()->json([
-                    'status' => 'error',
-                    'msg' => 'Error',
-                    'errors' => ['No se puede modificar la RENTA FIJA por que se tiene trámites pagados anteriores']
-                ], 422);
-            } 
+            // if ($count > 0) {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'msg' => 'Error',
+            //         'errors' => ['No se puede modificar la RENTA FIJA por que se tiene trámites pagados anteriores']
+            //     ], 422);
+            // } 
 
             $economic_complement->rent_type = "Manual";
             $economic_complement->user_id = Auth::user()->id;
@@ -1511,14 +1511,22 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_fixed_pension->calculateTotalRentAps();
                 $economic_complement->eco_com_updated_pension->calculateTotalRentAps();
             }
-            if($request->type == "ce"){
+            if($request->type == "ce" && $economic_complement->rent_type != "Automatico"){
                 $economic_complement->rent_type = "Manual";
                 $economic_complement->eco_com_fixed_pension->rent_type = "Manual";
-                if($request->eco_com_reception_type_id == ID::ecoCom()->habitual){
-                    if (is_array($request->eco_com_fixed_pension) && isset($request->eco_com_fixed_pension['eco_com_procedure_id'])) {
-                        $economic_complement->eco_com_fixed_pension->eco_com_procedure_id = $request->eco_com_fixed_pension['eco_com_procedure_id'];
-                    }                    
-                }
+
+            } else if($request->type == "ce" && $economic_complement->rent_type == "Automatico"){
+                $economic_complement->base_wage_id = null;
+                $economic_complement->complementary_factor_id = null;
+                $economic_complement->total_rent_calc = null;
+                $economic_complement->salary_reference = null;
+                $economic_complement->seniority = null;
+                $economic_complement->salary_quotable = null;
+                $economic_complement->difference = null;
+                $economic_complement->total_amount_semester = null;
+                $economic_complement->complementary_factor = null;
+                $economic_complement->total = null;
+
             } else if ($request->type == "am") {
                 $economic_complement->eco_com_updated_pension->rent_type = "Manual";
             }

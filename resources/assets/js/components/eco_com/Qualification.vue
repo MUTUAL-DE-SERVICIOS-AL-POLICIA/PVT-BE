@@ -9,13 +9,13 @@
         <div class="ibox-tools" v-if="roleId == 5">
             <!--Para borrar rentas calificación-->
           <button 
-            class="btn btn-danger"
+            class="btn btn-success"
             @click="edit('ceh')"
             data-toggle="tooltip"
-            title="Habilitar renta manual para calificación"
-            :disabled="!(ecoCom.eco_com_reception_type_id == 1 && ecoCom.rent_type == 'Automatico')"
+            title="Replicar renta manual para calificación"
+            :disabled="!(ecoCom.eco_com_reception_type_id != 2 && ecoCom.rent_type == 'Automatico')"
           >
-            <i class="fa fa-check"></i>Habilitar renta manual para calificación
+            <i class="fa fa-check"></i>Replicar renta para calificación
           </button>
           <!-- Para borrar rentas auxilio mortuorio--> 
            <template v-if="ecoCom.eco_com_updated_pension != null">
@@ -873,37 +873,77 @@ export default {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
-      switch (type) {
-        case 'ceh': // Complemento Economico
-          if (this.ecoCom.rent_type == "Automatico") {
-            this.ecoComModal.id = this.ecoCom.id;
-            //this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
-            this.ecoComModal.type = "ce";
-          }
-        case 'amh': // Auxilio Mortuorio
-          if (this.ecoCom.eco_com_updated_pension.rent_type == "Automatico") {
-            //this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom.eco_com_updated_pension));
-          this.ecoComModal.id = this.ecoCom.id;
-          this.ecoComModal.type = "am"; 
-          }
-      }
       this.loadingButton = true;
       this.editing = false;
-      await axios
-        .patch(`/eco_com_change_rent_type`, this.ecoComModal)
-        .then(response => {
-          this.$store.commit("ecoComForm/setEcoCom", response.data);
+
+      switch (type) {      
+        case 'ce': // Complemento Economico
+          if (this.ecoCom.rent_type == "Automatico") {  
+
+          this.ecoCom.aps_total_fsa = this.ecoCom.eco_com_fixed_pension.aps_total_fsa;
+          this.ecoCom.aps_total_cc = this.ecoCom.eco_com_fixed_pension.aps_total_cc;
+          this.ecoCom.aps_total_fs = this.ecoCom.eco_com_fixed_pension.aps_total_fs;
+          this.ecoCom.aps_disability = this.ecoCom.eco_com_fixed_pension.aps_disability;
+          this.ecoCom.aps_total_death = this.ecoCom.eco_com_fixed_pension.aps_total_death;
+          this.ecoCom.sub_total_rent = this.ecoCom.eco_com_fixed_pension.sub_total_rent;
+          this.ecoCom.reimbursement = this.ecoCom.eco_com_fixed_pension.reimbursement;
+          this.ecoCom.dignity_pension = this.ecoCom.eco_com_fixed_pension.dignity_pension;
+          // this.ecoCom.base_wage_id = null;
+          // this.ecoCom.complementary_factor_id = null;
+          // this.ecoCom.total_rent_calc = null;
+          // this.ecoCom.salary_reference = null;
+          // this.ecoCom.seniority = null;
+          // this.ecoCom.salary_quotable = null;
+          // this.ecoCom.difference = null;
+          // this.ecoCom.total_amount_semester = null;
+          // this.ecoCom.complementary_factor = null;
+          // this.ecoCom.total = null;
+          this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
+          this.ecoComModal.id = this.ecoCom.id;
+          this.ecoComModal.type = "ce";            
+            
+          this.loadingButton = true;
+          this.editing = false;
+          this.ecoComModal.pension_entity_id = this.affiliate.pension_entity_id;
+          await axios
+            .patch(`/eco_com_update_rents`, this.ecoComModal)
+            .then(response => {
+              this.$store.commit("ecoComForm/setEcoCom", response.data);
+              this.$modal.hide("edit-rents-modal");
+              flash("Rentas Actualizadas con exito");
+            })
+            .catch(error => {
+              flashErrors("Error al procesar: ", error.response.data.errors);
+            });
+          this.loadingButton = false;
+          this.editing = true;
+          }
+        case 'am': // Auxilio Mortuorio
+          if (this.ecoCom.eco_com_updated_pension.rent_type == "Automatico") {
+                //this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom.eco_com_updated_pension));
+              this.ecoComModal.id = this.ecoCom.id;
+              this.ecoComModal.type = "am"; 
+              await axios
+            .patch(`/eco_com_change_rent_type`, this.ecoComModal)
+            .then(response => {
+              this.$store.commit("ecoComForm/setEcoCom", response.data);
+
+              this.$modal.hide("edit-rents-modal");
+
+              flash("Se actualizó con exito");
+            })
+            .catch(error => {
+              flashErrors("Error al procesar: ", error.response.data.errors);
+              this.$modal.hide("edit-rents-modal");
+            });
+            this.loadingButton = false;
+            this.editing = true;
           
-          this.$modal.hide("edit-rents-modal");
-          
-          flash("Se actualizó con exito");
-        })
-        .catch(error => {
-          flashErrors("Error al procesar: ", error.response.data.errors);
-          this.$modal.hide("edit-rents-modal");
-        });
-      this.loadingButton = false;
-      this.editing = true;
+          }
+      }
+
+
+
     }, 
     async getProcedures() {
       this.$scrollTo("#wrapper");

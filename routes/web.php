@@ -701,6 +701,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('eco_com/{eco_com_id}/print/paid_cetificate', 'EconomicComplementController@paidCertificate');
     Route::patch('eco_com_recalificacion', 'EconomicComplementController@recalificacion');
 
+    //fixed
+    Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
+
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');
     Route::patch('/eco_com_beneficiary', 'EcoComBeneficiaryController@update');
@@ -818,5 +821,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('review_show/{eco_com_id}', 'EcoComReviewProcedureController@show')->name('show');
     Route::post('eco_com/review_edit', 'EconomicComplementController@editReviewProcedures')->name('eco_com_review_edit');
     Route::get('eco_com/{eco_com_id}/print/revision_certificate', 'EcoComCertificationController@printRevisionCertificate')->name('eco_com_print_revision_certificate');
+
+
+
   });
 });
