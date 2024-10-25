@@ -604,6 +604,7 @@ class ContributionController extends Controller
     public function storeContributions(Request $request)
     {
         //*********START VALIDATOR************//
+        //dd($request->all());
         $rules=[];
         $messages=[];
         $input_data = $request->all();
@@ -765,6 +766,27 @@ class ContributionController extends Controller
                         $contribution->east_bonus = 0;
                         $contribution->quotable = 0;
                         $contribution->month_year = $key;
+
+                        if(!isset($request->study_bonus[$key]))
+                        $contribution->study_bonus = 0;
+                    else
+                        $contribution->study_bonus = strip_tags($request->study_bonus[$key]) ?? 0;
+
+                        if(!isset($request->position_bonus[$key]))
+                        $contribution->position_bonus = 0;
+                    else
+                        $contribution->position_bonus = strip_tags($request->position_bonus[$key]) ?? 0;
+
+                        if(!isset($request->border_bonus[$key]))
+                        $contribution->border_bonus = 0;
+                    else
+                        $contribution->border_bonus = strip_tags($request->border_bonus[$key]) ?? 0;
+
+                        if(!isset($request->east_bonus[$key]))
+                        $contribution->east_bonus = 0;
+                    else
+                        $contribution->east_bonus = strip_tags($request->east_bonus[$key]) ?? 0;
+
 
                         if(!isset($request->gain[$key]))
                             $contribution->gain = 0;
