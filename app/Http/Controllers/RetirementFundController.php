@@ -1195,7 +1195,7 @@ class RetirementFundController extends Controller
                 return null;
             })
             ->addColumn('action', function ($ret_fun) {
-                return "<a href='/ret_fun/" . $ret_fun->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
+                return Util::getRol()->id != 69? "<a href='/ret_fun/" . $ret_fun->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
             })
             ->make(true);
     }
@@ -1670,6 +1670,7 @@ class RetirementFundController extends Controller
         if ($retirement_fund->ret_fun_state_id == ID::state()->eliminado) {
             $count_delete = RetirementFund::where('code','like',$retirement_fund->code.'%')->count('code');
             $retirement_fund->code .= str_repeat("A", $count_delete);
+            $retirement_fund->deleted_at = now();
         }
         $retirement_fund->save();
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality' => $retirement_fund->procedure_modality, 'city_start' => $retirement_fund->city_start, 'city_end' => $retirement_fund->city_end);

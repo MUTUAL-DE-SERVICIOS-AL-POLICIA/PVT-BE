@@ -84,6 +84,7 @@ class EconomicComplementController extends Controller
         $eco_coms = EconomicComplement::select(
             DB::RAW("
             economic_complements.id as id,
+            eco_com_state_types.id as state,
             economic_complements.affiliate_id,
             economic_complements.code,
             economic_complements.reception_date,
@@ -99,6 +100,8 @@ class EconomicComplementController extends Controller
             eco_com_applicants.identity_card as eco_com_beneficiary_identity_card,
             trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name, eco_com_applicants.second_name, eco_com_applicants.last_name, eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g'))  as eco_com_beneficiary_full_name
             "))
+            ->leftJoin('eco_com_states','eco_com_states.id', '=', 'economic_complements.eco_com_state_id')
+            ->leftJoin('eco_com_state_types','eco_com_state_types.id',"=","eco_com_states.eco_com_state_type_id")
             ->leftJoin('cities as city_eco_com', 'economic_complements.city_id', '=', 'city_eco_com.id' )
             ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id' )
             ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id' )
@@ -171,9 +174,9 @@ class EconomicComplementController extends Controller
                     $sql = "CASE WHEN economic_complements.inbox_state THEN 'Validado' ELSE 'Pendiente' END ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
-                ->addColumn('action', function ($eco_com) {
-                    return "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>";
-                })
+                // ->addColumn('action', function ($eco_com) {
+                //     return Util::getRol()->id != 71? "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
+                // })
                 ->make(true);
     }
 
@@ -1170,7 +1173,7 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
 
-        $aditional =  $request->additional_requirements;
+        $aditional =  $request->aditional_requirements;
         $num = "";
         foreach ($procedure_requirements as $requirement) {
             $needle = EcoComSubmittedDocument::where('economic_complement_id', $id)
@@ -1290,7 +1293,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 5;
                 break;
             case 4: // complemento
-                $discount_type_id = 6;
+                $discount_type_id = 6 || $discount_type_id = 8;
                 break;
         }
         $eco_com = EconomicComplement::with(['discount_types', 'eco_com_state:id,name,eco_com_state_type_id', 'degree','category','eco_com_modality', 'eco_com_fixed_pension', 'eco_com_updated_pension'])->findOrFail($id);
@@ -1409,7 +1412,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 5;
                 break;
             case 4: // complemento
-                $discount_type_id = 6;
+                $discount_type_id = 6 || $discount_type_id = 8;
                 break;
         }
         if (Gate::allows('qualify', $economic_complement)) {
@@ -2137,7 +2140,6 @@ class EconomicComplementController extends Controller
                     $eco_com_movement->save();
                 }
             }
-        //
         if ($eco_com->eco_com_state_id == 29){
             $eco_com->eco_com_state_id=17;
         }
@@ -2158,7 +2160,7 @@ class EconomicComplementController extends Controller
         DB::beginTransaction();
         $updates = 0;
         try{
-            $devolutions = Devolution::where('observation_type_id',ObservationType::where('shortened','Reposición de Fondos')->first()->id)->get();
+            $devolutions = Devolution::where('observation_type_id',ObservationType::where('shortened','Cuentas por cobrar RF')->first()->id)->get();
             foreach($devolutions as $devolution)
             {
                 $sum = DB::table('discount_type_economic_complement')

@@ -86,6 +86,18 @@
                     <td class="w-60 text-left px-10 py-3 uppercase">Causa de Fallecimiento</td>
                     <td class="w-25 text-right uppercase font-bold px-5 py-3"> {{ $affiliate->reason_death }} </td>
                 </tr> --}}
+                @if ($discounts != null)
+                <tr class="text-lg">
+                    <td class="text-left px-10 py-3 uppercase">SUBTOTAL {{$quota_aid->procedure_modality->procedure_type->second_name}}</td>
+                    <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($quota_aid->subtotal) }}  Bs.</td>
+                </tr>
+                @foreach ($discounts as $discount)
+                    <tr class="text-lg">
+                        <td class="text-left px-10 py-3 uppercase"> - {{$discount->shortened}}</td>
+                        <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($discount->pivot->amount) }}  Bs.</td>
+                    </tr>
+                @endforeach
+                @endif
                 <tr class="text-xl font-bold">
                     <td class="text-left px-10 py-3 uppercase">TOTAL {{$quota_aid->procedure_modality->procedure_type->second_name}}</td>
                     <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($quota_aid->total) }}  Bs.</td>

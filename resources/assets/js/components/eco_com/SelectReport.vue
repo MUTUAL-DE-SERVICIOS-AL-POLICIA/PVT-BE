@@ -254,10 +254,10 @@ export default {
           id: 18,
           name: "Para envío BANCO UNION"
         },
-        {
-          id: 28,
-          name: "Pagos en demasía"
-        },
+        //{
+          // id: 28,
+          // name: "Pagos en demasía"
+        //},
         {
           id: 29,
           name: "Afiliados con documentos no escaneados"
