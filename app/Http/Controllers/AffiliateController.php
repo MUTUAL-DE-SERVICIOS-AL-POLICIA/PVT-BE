@@ -433,6 +433,15 @@ class AffiliateController extends Controller
                 $file = "1";
             }
         }
+        /**
+         * Renta fija CE
+         */
+
+        $eco_com_fixed_pensions = $affiliate->eco_com_fixed_pensions()->get();
+        foreach ($eco_com_fixed_pensions as $eco_com_fixed_pension){
+            $eco_com_fixed_pension->eco_com_regulation = $eco_com_fixed_pension->eco_com_regulation;
+            $eco_com_fixed_pension->eco_com_procedure = $eco_com_fixed_pension->eco_com_procedure;
+        }
 
         $data = array(
             'quota_aid'=>$quota_aid,
@@ -478,6 +487,7 @@ class AffiliateController extends Controller
             'permissions'  =>  $permissions,
             'eco_coms'  =>  $eco_coms,
             'eco_com_procedures'  =>  $eco_com_procedures,
+            'eco_com_fixed_pensions' => $eco_com_fixed_pensions,
             'financial_entities' =>  $financial_entities,
 
             'fotofrente' =>  $fotoFrente,
@@ -501,7 +511,7 @@ class AffiliateController extends Controller
             'affiliatetoken' => $affiliateToken,
             'affiliatedevice' =>  $affiliateDevice,
             'file' => $file,
-        );
+        );        
         //dd($data);
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));

@@ -1307,6 +1307,96 @@ class EconomicComplementController extends Controller
         $eco_com->total_eco_com = $eco_com->getOnlyTotalEcoCom();
         return $eco_com;
     }
+    public function changeRentType(Request $request) {
+        try {
+            $this->authorize('update', new EconomicComplement());
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para editar el Trámite'],
+            ], 403);
+        }
+    
+        // Encuentra el complemento económico junto con las relaciones necesarias
+        $economic_complement = EconomicComplement::with('discount_types', 'eco_com_fixed_pension', 'eco_com_updated_pension')
+            ->find($request->id);
+    
+        // Verifica si el trámite está en estado EN PROCESO
+        if ($economic_complement->eco_com_state->eco_com_state_type_id != ID::ecoComStateType()->creado ) {
+            $eco_com_state = $economic_complement->eco_com_state;
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['No se puede modificar las rentas del trámite ' . $economic_complement->code . ' porque se encuentra en estado de ' . $eco_com_state->name .'. Solo se pueden modificar los tramites en estado en PROCESO DE REVISIÓN'],
+            ], 422);
+        }
+    
+        // Si el tipo es "ce"
+        if ($request->type == "ce" && $economic_complement->rent_type == "Automatico") {
+
+            $economic_complement->rent_type = "Manual";
+            $economic_complement->user_id = Auth::user()->id;
+
+            $economic_complement->sub_total_rent = $economic_complement->eco_com_fixed_pension->sub_total_rent;
+            $economic_complement->reimbursement = $economic_complement->eco_com_fixed_pension->reimbursement;
+            $economic_complement->dignity_pension = $economic_complement->eco_com_fixed_pension->dignity_pension;
+
+            $economic_complement->aps_total_fsa = $economic_complement->eco_com_fixed_pension->aps_total_fsa;
+            $economic_complement->aps_total_cc = $economic_complement->eco_com_fixed_pension->aps_total_cc;
+            $economic_complement->aps_total_fs =  $economic_complement->eco_com_fixed_pension->aps_total_fs;
+            $economic_complement->aps_total_death = $economic_complement->eco_com_fixed_pension->aps_total_death;
+            $economic_complement->aps_disability = $economic_complement->eco_com_fixed_pension->aps_disability;
+            $economic_complement->total_rent = $economic_complement->eco_com_fixed_pension->total_rent;
+            //Limpia los campos si ya se hubiese calificado
+            $economic_complement->base_wage_id = null;
+            $economic_complement->complementary_factor_id = null;
+            $economic_complement->total_rent_calc = null;
+            $economic_complement->salary_reference = null;
+            $economic_complement->seniority = null;
+            $economic_complement->salary_quotable = null;
+            $economic_complement->difference = null;
+            $economic_complement->total_amount_semester = null;
+            $economic_complement->complementary_factor = null;
+            $economic_complement->total = null;
+        } 
+        // Si el tipo es "am", actualiza eco_com_updated_pension
+        else if ($request->type == "am") {
+
+            // Verificar que no tenga descuento por auxilio mortuorio para poder cambiar a MANUAL
+            $discount_type_id=7;
+            $exists = $economic_complement->hasDiscountType($discount_type_id);        
+            if ($exists) {
+                $pivot_id = $economic_complement->discount_types->where('id', $discount_type_id)->first()->pivot->id;
+                
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Error',
+                    'errors' => ['No se puede cambiar a estado MANUAL la renta para Aux. Mort. por que se tiene el registro de descuento ('. $pivot_id . '). Elimine el descuento previamente.']
+                ], 422);
+            }
+        
+            if ($economic_complement->eco_com_updated_pension) {
+                $economic_complement->eco_com_updated_pension->rent_type = "Manual";
+                $economic_complement->eco_com_updated_pension->user_id = Auth::user()->id;
+
+                $economic_complement->eco_com_updated_pension->sub_total_rent = null;
+                $economic_complement->eco_com_updated_pension->reimbursement = null;
+                $economic_complement->eco_com_updated_pension->dignity_pension = null;
+                $economic_complement->eco_com_updated_pension->aps_disability = null;
+                $economic_complement->eco_com_updated_pension->aps_total_fsa = null;
+                $economic_complement->eco_com_updated_pension->aps_total_cc = null;
+                $economic_complement->eco_com_updated_pension->aps_total_fs = null;
+                $economic_complement->eco_com_updated_pension->aps_total_death = null;
+
+                $economic_complement->eco_com_updated_pension->save();
+            }
+        }    
+        $economic_complement->save();
+        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_updated_pension'])->find($economic_complement->id);
+    
+        return $economic_complement;
+    }    
+    
     public function updateRents(Request $request)
     {
         try {
@@ -1393,7 +1483,7 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_fixed_pension->calculateTotalRentAps();
                 $economic_complement->eco_com_updated_pension->calculateTotalRentAps();
             }
-            if($request->type == "ce"){
+            if($request->type == "ce" && $economic_complement->rent_type != "Automatico"){
                 $economic_complement->rent_type = "Manual";
                 $economic_complement->eco_com_fixed_pension->rent_type = "Manual";
             } else if ($request->type == "am") {
@@ -1420,7 +1510,7 @@ class EconomicComplementController extends Controller
                 return $economic_complement->qualify() ;
             }
         }
-        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_updated_pension'])->find($economic_complement->id);
+        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_fixed_pension','eco_com_updated_pension'])->find($economic_complement->id);
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         $economic_complement->total_eco_com = $economic_complement->getOnlyTotalEcoCom();
         return $economic_complement;
@@ -2364,4 +2454,20 @@ class EconomicComplementController extends Controller
             ], 422);
         }
     }
+
+    public function getProceduresRegulation()
+    {
+
+        $eco_com_regulation = EcoComRegulation::where('eco_com_regulations.is_enable',true)->first();
+
+        if (!$eco_com_regulation) {
+            return response()->json(['message' => 'Regulación no encontrada'], 404);
+        }
+        $eco_com_procedures = EcoComProcedure::where('id', '>=', $eco_com_regulation->replica_eco_com_procedure_id)
+            ->select('id', 'year', 'semester', 'rent_month')
+            ->get();   
+
+        return response()->json($eco_com_procedures);
+    }
+
 }
