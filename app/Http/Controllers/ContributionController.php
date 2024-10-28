@@ -697,20 +697,26 @@ class ContributionController extends Controller
                     else
                         $contribution->base_wage = $contribution->base_wage;
 
-                    if (isset($request->seniority_bonus[$key]) && $request->seniority_bonus[$key] != $contribution->seniority_bonus) {
-                        $percentage_category = $request->seniority_bonus[$key]/$contribution->base_wage;
+                    if(isset($request->seniority_bonus[$key]) && $request->seniority_bonus[$key] != "")
+                        $contribution->seniority_bonus = strip_tags($request->seniority_bonus[$key]) ?? $contribution->seniority_bonus;
+                    else
+                        $contribution->seniority_bonus = $contribution->seniority_bonus;
+
+                    //obtener categoria
+                    if (isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key])) {
+                        $percentage_category = round(floatval( $contribution->seniority_bonus/$contribution->base_wage),2);
                         $closestCategory = Category::select('id', 'percentage')
                                                     ->where('percentage', '=', $percentage_category)
                                                     ->first();
                         if($closestCategory ) {
-                            $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
                             $contribution->category_id = $closestCategory->id;
                         } else {
                             return response()->json([
-                                'error' => 'No se encontró una categoría con el bono antiguedad insertado'
+                                'error' => 'No se encontró una categoría ' .$percentage_category. ' con el bono antiguedad insertado'
                             ], 404);
                         }
                     }
+
                     if (isset($request->study_bonus[$key])) {
                         $contribution->study_bonus = is_numeric($request->study_bonus[$key]) ? $request->study_bonus[$key] : 0;
                     }
@@ -749,23 +755,39 @@ class ContributionController extends Controller
                             $contribution->base_wage = 0;
                         else
                             $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
-                        
-                        if(isset($request->category[$key])) {
-                            $category = Category::where('percentage',$request->category[$key])->first();
-                            if(!isset($category->id)) {
-                                $contribution->category_id = null; //default non category found -0
-                            } else {
-                                $contribution->category_id = $category->id;
-                            }                    
-                        }                    
+                                      
                         //$data = $contribution->base_wage * 123;                
                         $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
-                        $contribution->study_bonus = 0;
-                        $contribution->position_bonus = 0;
-                        $contribution->border_bonus = 0;
-                        $contribution->east_bonus = 0;
-                        $contribution->quotable = 0;
+
                         $contribution->month_year = $key;
+
+                        // if(isset($request->category[$key])) {
+                        //     $category = Category::where('percentage',$request->category[$key])->first();
+                        //     if(!isset($category->id)) {
+                        //         $contribution->category_id = null; //default non category found -0
+                        //     } else {
+                        //         $contribution->category_id = $category->id;
+                        //     }                    
+                        // }   
+                        
+                        //obtener categoria
+                        if (isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key])) {
+                            $percentage_category = round(floatval( $contribution->seniority_bonus/$contribution->base_wage),2);
+                            $closestCategory = Category::select('id', 'percentage')
+                                                        ->where('percentage', '=', $percentage_category)
+                                                        ->first();
+                                                    
+                            if($closestCategory ) {
+                                $contribution->category_id = $closestCategory->id;
+                            } else {
+                                return response()->json([
+                                    'error' => 'No se encontró una categoría ' .$percentage_category. ' con el bono antiguedad insertado'
+                                ], 404);
+                            }
+                        }else{
+                            $contribution->category_id = null;
+                        }
+
 
                         if(!isset($request->study_bonus[$key]))
                         $contribution->study_bonus = 0;
