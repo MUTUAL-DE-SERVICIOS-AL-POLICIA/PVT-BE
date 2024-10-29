@@ -111,7 +111,10 @@
                                                 <td>Sueldo</td>
                                             </tr>
                                             <tr>
-                                            <td>Bono Antigüedad</td>
+                                                <td>Bono Antigüedad</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Liquido pagable</td>
                                             </tr>
                                             <tr>
                                                 <td>Categor&iacute;a</td>
@@ -176,6 +179,12 @@
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat seniority_bonus">{{$contributions[$period]->seniority_bonus}} </div>
                                                                 <input type="hidden" disabled name="seniority_bonus[{{$period}}]" value="{{$contributions[$period]->seniority_bonus}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat payable_liquid">{{$contributions[$period]->payable_liquid}} </div>
+                                                                <input type="hidden" disabled name="payable_liquid[{{$period}}]" value="{{$contributions[$period]->payable_liquid}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -265,6 +274,12 @@
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat seniority_bonus">0</div>
                                                                 <input type="hidden" disabled name="seniority_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat payable_liquid">0</div>
+                                                                <input type="hidden" disabled name="payable_liquid[{{$period}}]" value="0">
                                                             </td>
                                                         </tr>
                                                         <tr>
