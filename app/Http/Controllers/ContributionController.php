@@ -680,11 +680,6 @@ class ContributionController extends Controller
                     else
                         $contribution->seniority_bonus = $contribution->seniority_bonus;
 
-                    if(isset($request->payable_liquid[$key]) && $request->payable_liquid[$key] != "")
-                        $contribution->payable_liquid = strip_tags($request->payable_liquid[$key]) ?? $contribution->payable_liquid;
-                    else
-                        $contribution->payable_liquid = $contribution->payable_liquid;
-
                     //obtener categoria
                     if ((isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key]) && $contribution->unit_id != 21)) {
                         $categoryId = $this->assignCategoryToContribution($contribution);
@@ -717,6 +712,11 @@ class ContributionController extends Controller
                         $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
                     else
                         $contribution->gain = $contribution->gain;
+
+                    if(isset($request->payable_liquid[$key]) && $request->payable_liquid[$key] != "")
+                        $contribution->payable_liquid = strip_tags($request->payable_liquid[$key]) ?? $contribution->payable_liquid;
+                    else
+                        $contribution->payable_liquid = $contribution->payable_liquid;
 
                     if(isset($request->quotable[$key]) && $request->quotable[$key] != "")
                         $contribution->quotable = strip_tags($request->quotable[$key]) ?? $contribution->quotable;
@@ -769,12 +769,7 @@ class ContributionController extends Controller
                             $contribution->seniority_bonus = 0;
                         else
                             $contribution->seniority_bonus = strip_tags($request->seniority_bonus[$key]) ?? 0;
-
-                        if(!isset($request->payable_liquid[$key]))
-                            $contribution->payable_liquid = 0;
-                        else
-                            $contribution->payable_liquid = strip_tags($request->payable_liquid[$key]) ?? 0;
-                        
+                      
                         //obtener categoria
                         if ((isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key])) && $affiliate->unit_id != 21) {
                             $categoryId = $this->assignCategoryToContribution($contribution);
@@ -815,6 +810,11 @@ class ContributionController extends Controller
                             $contribution->gain = 0;
                         else
                             $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
+
+                        if(!isset($request->payable_liquid[$key]))
+                            $contribution->payable_liquid = 0;
+                        else
+                            $contribution->payable_liquid = strip_tags($request->payable_liquid[$key]) ?? 0;
 
                         if(!isset($request->quotable[$key]))
                             $contribution->quotable = 0;
