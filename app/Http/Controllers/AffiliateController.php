@@ -136,7 +136,7 @@ class AffiliateController extends Controller
     {
         $cities = City::all()->pluck('name', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
-        $degrees = Degree::all()->pluck('name', 'id');
+        $degrees = Degree::where ('is_active', true)->pluck('name', 'id');
         return view('affiliates.create', compact('cities', 'birth_cities', 'degrees'));
     }
 
@@ -223,7 +223,7 @@ class AffiliateController extends Controller
         $cities = City::all()->pluck('name', 'id');
         $birth_cities = City::all()->pluck('name', 'id');
         $categories = Category::all()->pluck('name', 'id');
-        $degrees = Degree::all()->pluck('name', 'id');
+        $degrees = Degree::where('is_active', true)->pluck('name', 'id');
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
         $affiliate_states = AffiliateState::all()->pluck('name', 'id');
         $financial_entities = FinancialEntity::all()->pluck('name', 'id');

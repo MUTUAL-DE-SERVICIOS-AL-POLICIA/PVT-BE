@@ -604,7 +604,7 @@ class ContributionController extends Controller
     public function storeContributions(Request $request)
     {
         //*********START VALIDATOR************//
-        //dd($request->all());
+    
         $rules=[];
         $messages=[];
         $input_data = $request->all();
@@ -667,31 +667,9 @@ class ContributionController extends Controller
         foreach ($request->iterator as $key => $iterator) {
 
             $contribution = Contribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
-            //if(isset($request->total[$key]) && $request->total[$key]>0) {
-                if (isset($contribution->id)) {
-                    //envia los parametros T,FR,QM
-                    if(isset($request->total[$key]) && $request->total[$key] != ""){
-                        $contribution->total = strip_tags($request->total[$key]);
-                    }
-                    if(isset($request->retirement_fund[$key]) && $request->retirement_fund[$key] != ""){
-                        $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]);
-                    }
-                    if(isset($request->mortuary_quota[$key]) && $request->mortuary_quota[$key] != ""){
-                        $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]);
-                    }
-
-                    $rate=ContributionRate::where('month_year', $key)->first();
-                    //Verifica para casos anteriores a enero 1999
-                    if($contribution->month_year <= '1999-01-01') {
-                        if($contribution->month_year <='1987-04-01'){
-                            $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
-                            $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
-                        }else{
-                            $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
-                            $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
-                        }
-                    }
-                     //VErifica los otrso parametros
+     
+                if (isset($contribution->id)) {//update
+                    //Verifica los otrso parametros
                     if(isset($request->base_wage[$key]) && $request->base_wage[$key] != "")
                         $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? $contribution->base_wage;
                     else
@@ -703,45 +681,75 @@ class ContributionController extends Controller
                         $contribution->seniority_bonus = $contribution->seniority_bonus;
 
                     //obtener categoria
-                    if (isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key])) {
-                        $percentage_category = round(floatval( $contribution->seniority_bonus/$contribution->base_wage),2);
-                        $closestCategory = Category::select('id', 'percentage')
-                                                    ->where('percentage', '=', $percentage_category)
-                                                    ->first();
-                        if($closestCategory ) {
-                            $contribution->category_id = $closestCategory->id;
+                    if ((isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key]) && $contribution->unit_id != 21)) {
+                        $categoryId = $this->assignCategoryToContribution($contribution);
+
+                        if ($categoryId) {
+                            $contribution->category_id = $categoryId;
                         } else {
                             return response()->json([
-                                'error' => 'No se encontró una categoría ' .$percentage_category. ' con el bono antiguedad insertado'
+                                'error' => 'No se encontró una categoría correspondiente al bono de antigüedad.'
                             ], 404);
                         }
+                    }else {
+                        $contribution->category_id = null;
                     }
 
                     if (isset($request->study_bonus[$key])) {
                         $contribution->study_bonus = is_numeric($request->study_bonus[$key]) ? $request->study_bonus[$key] : 0;
                     }
+
                     if(isset($request->position_bonus[$key]))
                         $contribution->position_bonus = is_numeric($request->position_bonus[$key]) ? $request->position_bonus[$key] : 0;
+
                     if(isset($request->border_bonus[$key]))
                         $contribution->border_bonus = is_numeric($request->border_bonus[$key]) ? $request->border_bonus[$key] : 0;
+
                     if(isset($request->east_bonus[$key]))
-                        $contribution->east_bonus = is_numeric($request->east_bonus[$key]) ?$request->east_bonus[$key]: 0;
+                        $contribution->east_bonus = is_numeric($request->east_bonus[$key]) ? $request->east_bonus[$key]: 0;
+
                     if(isset($request->gain[$key]) && $request->gain[$key] != "")
                         $contribution->gain = strip_tags($request->gain[$key]) ?? $contribution->gain;
                     else
                         $contribution->gain = $contribution->gain;
+
+                    if(isset($request->payable_liquid[$key]) && $request->payable_liquid[$key] != "")
+                        $contribution->payable_liquid = strip_tags($request->payable_liquid[$key]) ?? $contribution->payable_liquid;
+                    else
+                        $contribution->payable_liquid = $contribution->payable_liquid;
 
                     if(isset($request->quotable[$key]) && $request->quotable[$key] != "")
                         $contribution->quotable = strip_tags($request->quotable[$key]) ?? $contribution->quotable;
                     else
                         $contribution->quotable = $contribution->quotable;
 
+                    $rate=ContributionRate::where('month_year', $key)->first();
+                    //Distribución porcentual de aportes para casos anteriores a enero 1999
+                    if($contribution->month_year <= '1999-01-01') {
+                        if($contribution->month_year <='1987-04-01'){
+                            $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
+                            $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
+                        }else{
+                            $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
+                            $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
+                        }
+                    }else{
+                        //envia los parametros T,FR,QM
+                        if(isset($request->total[$key]) && $request->total[$key] != ""){
+                            $contribution->total = strip_tags($request->total[$key]);
+                        }
+                        if(isset($request->retirement_fund[$key]) && $request->retirement_fund[$key] != ""){
+                            $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]);
+                        }
+                        if(isset($request->mortuary_quota[$key]) && $request->mortuary_quota[$key] != ""){
+                            $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]);
+                        }
+                    }
+                    $contribution->user_id = Auth::user()->id;
                     $contribution->save();
                     array_push($contributions, $contribution);
-                } else {
-    //                $contribution = new Contribution();
-    //                $contribution->user_id = Auth::user()->id;
-    //                $contribution->total = $total;
+
+                } else {//Create
                     if(isset($request->total[$key]) && $request->total[$key]>0) {
                         $affiliate = Affiliate::find($request->affiliate_id);
                         $contribution = new Contribution();
@@ -750,91 +758,68 @@ class ContributionController extends Controller
                         $contribution->degree_id = $affiliate->degree_id;
                         $contribution->unit_id = $affiliate->unit_id;
                         $contribution->breakdown_id = $affiliate->breakdown_id;
+                        $contribution->month_year = $key;
                         
                         if(!isset($request->base_wage[$key]))
                             $contribution->base_wage = 0;
                         else
                             $contribution->base_wage = strip_tags($request->base_wage[$key]) ?? 0;
-                                      
-                        //$data = $contribution->base_wage * 123;                
-                        $contribution->seniority_bonus = $request->seniority_bonus[$key] ?? 0;
 
-                        $contribution->month_year = $key;
-
-                        // if(isset($request->category[$key])) {
-                        //     $category = Category::where('percentage',$request->category[$key])->first();
-                        //     if(!isset($category->id)) {
-                        //         $contribution->category_id = null; //default non category found -0
-                        //     } else {
-                        //         $contribution->category_id = $category->id;
-                        //     }                    
-                        // }   
-                        
+                        if(!isset($request->seniority_bonus[$key]))
+                            $contribution->seniority_bonus = 0;
+                        else
+                            $contribution->seniority_bonus = strip_tags($request->seniority_bonus[$key]) ?? 0;
+                      
                         //obtener categoria
-                        if (isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key])) {
-                            $percentage_category = round(floatval( $contribution->seniority_bonus/$contribution->base_wage),2);
-                            $closestCategory = Category::select('id', 'percentage')
-                                                        ->where('percentage', '=', $percentage_category)
-                                                        ->first();
-                                                    
-                            if($closestCategory ) {
-                                $contribution->category_id = $closestCategory->id;
+                        if ((isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key])) && $affiliate->unit_id != 21) {
+                            $categoryId = $this->assignCategoryToContribution($contribution);
+
+                            if ($categoryId) {
+                                $contribution->category_id = $categoryId;
                             } else {
+                                // Retorna un error si no se encontró la categoría
                                 return response()->json([
-                                    'error' => 'No se encontró una categoría ' .$percentage_category. ' con el bono antiguedad insertado'
+                                    'error' => 'No se encontró una categoría correspondiente al bono de antigüedad.'
                                 ], 404);
                             }
-                        }else{
+                        }else {
                             $contribution->category_id = null;
                         }
 
-
                         if(!isset($request->study_bonus[$key]))
-                        $contribution->study_bonus = 0;
-                    else
-                        $contribution->study_bonus = strip_tags($request->study_bonus[$key]) ?? 0;
+                            $contribution->study_bonus = 0;
+                        else
+                            $contribution->study_bonus = strip_tags($request->study_bonus[$key]) ?? 0;
 
                         if(!isset($request->position_bonus[$key]))
-                        $contribution->position_bonus = 0;
-                    else
-                        $contribution->position_bonus = strip_tags($request->position_bonus[$key]) ?? 0;
+                            $contribution->position_bonus = 0;
+                        else
+                            $contribution->position_bonus = strip_tags($request->position_bonus[$key]) ?? 0;
 
                         if(!isset($request->border_bonus[$key]))
-                        $contribution->border_bonus = 0;
-                    else
-                        $contribution->border_bonus = strip_tags($request->border_bonus[$key]) ?? 0;
+                            $contribution->border_bonus = 0;
+                        else
+                            $contribution->border_bonus = strip_tags($request->border_bonus[$key]) ?? 0;
 
                         if(!isset($request->east_bonus[$key]))
-                        $contribution->east_bonus = 0;
-                    else
-                        $contribution->east_bonus = strip_tags($request->east_bonus[$key]) ?? 0;
-
+                            $contribution->east_bonus = 0;
+                        else
+                            $contribution->east_bonus = strip_tags($request->east_bonus[$key]) ?? 0;
 
                         if(!isset($request->gain[$key]))
                             $contribution->gain = 0;
                         else
                             $contribution->gain = strip_tags($request->gain[$key]) ?? 0;
 
+                        if(!isset($request->payable_liquid[$key]))
+                            $contribution->payable_liquid = 0;
+                        else
+                            $contribution->payable_liquid = strip_tags($request->payable_liquid[$key]) ?? 0;
+
                         if(!isset($request->quotable[$key]))
                             $contribution->quotable = 0;
                         else
-                            $contribution->quotable = strip_tags($request->quotable[$key]) ?? 0;
-
-                        if(!isset($request->total[$key]))
-                            $contribution->total = 0;
-                        else
-                            $contribution->total = strip_tags($request->total[$key]) ?? 0;
-
-                        if(!isset($request->retirement_fund[$key]))
-                            $contribution->retirement_fund = 0;
-                        else
-                            $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]) ?? 0;
-                    
-                        if(!isset($request->mortuary_quota[$key]))
-                            $contribution->mortuary_quota = 0;
-                        else
-                            $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]) ?? 0;
-                        
+                            $contribution->quotable = strip_tags($request->quotable[$key]) ?? 0;                      
 
                         $rate=ContributionRate::where('month_year', $key)->first();
 
@@ -845,18 +830,45 @@ class ContributionController extends Controller
                                 $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
                                 $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
                             }
+                        }else{
+                            if(!isset($request->total[$key]))
+                                $contribution->total = 0;
+                            else
+                                $contribution->total = strip_tags($request->total[$key]) ?? 0;
+
+                            if(!isset($request->retirement_fund[$key]))
+                                $contribution->retirement_fund = 0;
+                            else
+                                $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]) ?? 0;
+                            
+                            if(!isset($request->mortuary_quota[$key]))
+                                $contribution->mortuary_quota = 0;
+                            else
+                                $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]) ?? 0;  
                         }
                         $contribution->type = 'Planilla';
                         $contribution->save();
                         array_push($contributions, $contribution);
                     }
                 }
-            //}
         }
         return $contributions;
         //return json_encode($contribution);
     }
 }
+    public function assignCategoryToContribution($contribution)
+    {
+        $percentage_category = round(floatval($contribution->seniority_bonus / $contribution->base_wage), 2);
+    
+        $closestCategory = Category::select('id', 'percentage')
+                                   ->where('percentage', '=', $percentage_category)
+                                   ->first();
+        if ($closestCategory) {
+            return $closestCategory->id;
+        }    
+        return false;
+    }
+
     public function generateContribution(Affiliate $affiliate) 
     {
         $this->authorize('create',Contribution::class);

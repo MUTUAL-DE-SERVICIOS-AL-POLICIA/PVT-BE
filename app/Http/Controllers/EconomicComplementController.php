@@ -216,7 +216,7 @@ class EconomicComplementController extends Controller
         }
         $modalities = ProcedureModality::where('procedure_type_id', ID::procedureType()->eco_com)->get();
         $pension_entities = PensionEntity::all();
-        $degrees = Degree::all();
+        $degrees = Degree::where('is_active', true)->get();
         $categories = Category::all();
         $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $eco_com_reception_types = EcoComReceptionType::all();

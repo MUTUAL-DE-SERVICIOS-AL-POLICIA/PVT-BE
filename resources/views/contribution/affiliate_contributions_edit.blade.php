@@ -111,7 +111,7 @@
                                                 <td>Sueldo</td>
                                             </tr>
                                             <tr>
-                                            <td>Bono Antigüedad</td>
+                                                <td>Bono Antigüedad</td>
                                             </tr>
                                             <tr>
                                                 <td>Categor&iacute;a</td>
@@ -130,6 +130,9 @@
                                             </tr>
                                             <tr>
                                                 <td>Total Ganado</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Liquido pagable</td>
                                             </tr>
                                             <tr>
                                                 <td>Cotizable</td>
@@ -212,6 +215,12 @@
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->gain}} </div>
                                                                 <input type="hidden" disabled name="gain[{{$period}}]" value="{{$contributions[$period]->gain}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat payable_liquid">{{$contributions[$period]->payable_liquid}} </div>
+                                                                <input type="hidden" disabled name="payable_liquid[{{$period}}]" value="{{$contributions[$period]->payable_liquid}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -308,6 +317,12 @@
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                 <input type="hidden" disabled name="gain[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat payable_liquid">0</div>
+                                                                <input type="hidden" disabled name="payable_liquid[{{$period}}]" value="0">
                                                             </td>
                                                         </tr>
                                                         <tr>
