@@ -691,7 +691,7 @@ class EconomicComplementController extends Controller
             'eco_com_updated_pension'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
-        $degrees = Degree::all();
+        $degrees = Degree::where('is_active', true)->get();
         $categories = Category::all();
 
         $states = ProcedureState::all();
@@ -1629,6 +1629,7 @@ class EconomicComplementController extends Controller
             ->leftJoin('degrees', 'eco_com_rents.degree_id', '=', 'degrees.id')
             ->whereYear('eco_com_rents.year', '=', $year)
             ->where('eco_com_rents.semester', '=', $semester)
+            ->where('degrees.is_active', true)
             ->orderBy('degrees.correlative', 'ASC')
             ->orderBy('procedure_modalities.id', 'ASC');
 
