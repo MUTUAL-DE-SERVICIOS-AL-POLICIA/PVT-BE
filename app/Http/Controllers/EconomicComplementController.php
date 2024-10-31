@@ -1334,7 +1334,6 @@ class EconomicComplementController extends Controller
         // Si el tipo es "ce"
         if ($request->type == "ce" && $economic_complement->rent_type == "Automatico") {
 
-            $economic_complement->rent_type = "Manual";
             $economic_complement->user_id = Auth::user()->id;
 
             $economic_complement->sub_total_rent = $economic_complement->eco_com_fixed_pension->sub_total_rent;
@@ -1387,6 +1386,7 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_updated_pension->aps_total_cc = null;
                 $economic_complement->eco_com_updated_pension->aps_total_fs = null;
                 $economic_complement->eco_com_updated_pension->aps_total_death = null;
+                $economic_complement->eco_com_updated_pension->total_rent = null;
 
                 $economic_complement->eco_com_updated_pension->save();
             }

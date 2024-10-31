@@ -30,6 +30,7 @@ th.ellipsis-text {
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
 @section('content')
+@php($role = \Muserpol\Helpers\Util::getRol()->id)
 <div class="row  wrapper border-bottom white-bg page-heading">
     <div class="col-lg-7">
         {{ Breadcrumbs::render('show_affiliate', $affiliate) }}
@@ -242,7 +243,9 @@ th.ellipsis-text {
                                                     <th>Renta Dignidad</th>
                                                 @endif
                                                 <th>Total Renta</th>
-                                                <th>Acciones</th> <!-- Nueva columna para acciones -->
+                                                @if($role == 5)
+                                                <th>Acciones</th>
+                                                @endif
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -264,9 +267,11 @@ th.ellipsis-text {
                                                         <td>{{ $eco_com_fixed_pension->dignity_pension }}</td>
                                                     @endif
                                                     <td>{{ $eco_com_fixed_pension->total_rent }}</td>
+                                                    @if($role == 5)
                                                     <td>
                                                         <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal({{ json_encode($eco_com_fixed_pension) }})">Editar</button>
                                                     </td>
+                                                    @endif
                                                 </tr>
                                             @endforeach
                                         </tbody>

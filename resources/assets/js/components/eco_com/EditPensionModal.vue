@@ -312,15 +312,7 @@ export default {
           flashErrors("Error al procesar:", error.response.data.errors);
            this.closeModal();
         })
-      //location.reload();
-      // this.$http.update(`/eco_com_fixed_pensions/${this.eco_com_fixed_pension.id}`, this.eco_com_fixed_pension)
-      //     .then(response => {
-      //         this.closeModal();
-      //         // Actualiza la tabla o redirige según tu lógica
-      //     })
-      //     .catch(error => {
-      //         console.error('Error:', error);
-      //     });
+      location.reload();
     },
     async getProcedures() {
       this.$scrollTo("#wrapper");

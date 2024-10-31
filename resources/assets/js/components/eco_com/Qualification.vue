@@ -710,7 +710,7 @@ export default {
           this.ecoComModal.id = this.ecoCom.id;
           this.ecoComModal.type = "am";
           break;
-          case 'ceh': // Complemento Economico
+        case 'ceh': // Complemento Economico
           if (this.ecoCom.rent_type == "Automatico") {
             this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
             this.ecoComModal.type = "ce";
@@ -718,7 +718,7 @@ export default {
             return;
           }
           break;
-          case 'amh': // Auxilio Mortuorio
+        case 'amh': // Auxilio Mortuorio
           if (this.ecoCom.eco_com_updated_pension.rent_type == "Automatico") {
             this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
             this.ecoComModal.type = "am"
@@ -771,7 +771,6 @@ export default {
         });
       this.loadingButton = false;
       this.editing = true;
-      location.reload();
     },
     async refreshQualification(){
       if (!this.can("qualify_economic_complement", this.permissions)) {
@@ -903,10 +902,12 @@ export default {
             .then(response => {
               this.$store.commit("ecoComForm/setEcoCom", response.data);
               this.$modal.hide("edit-rents-modal");
+              location.reload();
               flash("Rentas Actualizadas con exito");
             })
             .catch(error => {
               flashErrors("Error al procesar: ", error.response.data.errors);
+              this.$modal.hide("edit-rents-modal");
             });
           this.loadingButton = false;
           this.editing = true;
