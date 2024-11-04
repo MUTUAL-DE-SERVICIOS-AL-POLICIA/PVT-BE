@@ -2285,7 +2285,9 @@ class EconomicComplementController extends Controller
         $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
         if(!!$economic_complement){
             if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
-                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)->first();
+                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)
+                ->orderBy('created_at','desc')
+                ->first();
                 if(!!$fixed_pension){ 
                     $economic_complement->eco_com_fixed_pension_id = $fixed_pension->id; 
                     $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
@@ -2321,7 +2323,7 @@ class EconomicComplementController extends Controller
             {
                 $item->delete();
             }
-
+            //TODO Se debe crear una interfaz para que se ingrese los promedios, por el momento se sumo 1 a partir de la regulacion de la replica del eco_com_procedure_id
             $ecoComRents = EcoComRegulation::where('eco_com_regulations.is_enable', true)
             ->leftJoin('eco_com_procedures', DB::raw('eco_com_regulations.replica_eco_com_procedure_id + 1'), '=', 'eco_com_procedures.id')
             ->leftJoin('eco_com_rents', function($join) {
