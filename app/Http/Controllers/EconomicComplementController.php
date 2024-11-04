@@ -2323,7 +2323,7 @@ class EconomicComplementController extends Controller
             }
 
             $ecoComRents = EcoComRegulation::where('eco_com_regulations.is_enable', true)
-            ->leftJoin('eco_com_procedures', 'eco_com_regulations.replica_eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->leftJoin('eco_com_procedures', DB::raw('eco_com_regulations.replica_eco_com_procedure_id + 1'), '=', 'eco_com_procedures.id')
             ->leftJoin('eco_com_rents', function($join) {
                 $join->on('eco_com_rents.year', '=', 'eco_com_procedures.year')
                 ->on('eco_com_rents.semester', '=', 'eco_com_procedures.semester');
