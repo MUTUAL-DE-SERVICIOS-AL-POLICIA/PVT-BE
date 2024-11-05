@@ -1400,7 +1400,7 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_updated_pension->rent_type = "Manual";
             }
             // Actualiza las tablas pension fija y actualizada a "manual"
-            $economic_complement->save();
+            $economic_complement->push();
         }
         $discount_type_id = null;
         $rol = Util::getRol();
