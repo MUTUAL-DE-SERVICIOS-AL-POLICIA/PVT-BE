@@ -39,6 +39,7 @@
                 >
                   <option v-if="role_id==4" value="6">Reposición de Fondos</option>
                   <option v-if="role_id==4" value="8">Retenciones según Juzgado</option>
+                  <option v-if="role_id==16" value="9">Amortización por Préstamo Estacional</option>
                   <option v-if="role_id==16" value="5">Amortización por Préstamos en Mora</option>
                   <option v-if="role_id==7" value="4">Amortización por Cuentas por Cobrar</option>
                 </select>
