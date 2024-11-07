@@ -824,6 +824,11 @@ class ContributionController extends Controller
                         $rate=ContributionRate::where('month_year', $key)->first();
 
                         if($contribution->month_year <= '1999-01-01') {
+                            if(!isset($request->total[$key]))
+                                $contribution->total = 0;
+                            else
+                                $contribution->total = strip_tags($request->total[$key]) ?? 0;
+
                             if($contribution->month_year <='1987-04-01'){
                                 $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
                             }else{
