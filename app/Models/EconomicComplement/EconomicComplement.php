@@ -579,6 +579,19 @@ class EconomicComplement extends Model
                 $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
             });
     }
+    public function scopeInfoBasic($query)
+    {
+        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
+            ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
+            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')
+            ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+            ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
+            ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
+            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->where( function($query) {
+                $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
+            });
+    }
     public function scopeInfoDelete($query) {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
             ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
