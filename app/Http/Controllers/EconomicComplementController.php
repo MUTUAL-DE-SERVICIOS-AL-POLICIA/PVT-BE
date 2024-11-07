@@ -1290,7 +1290,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = 5 || $discount_type_id = 9;
                 break;
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
@@ -1409,7 +1409,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = 5 || $discount_type_id = 9;
                 break;
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
@@ -1485,7 +1485,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = $request->discount_type;
                 break;
             case 4: // complemento
                 $discount_type_id = $request->discount_type;
