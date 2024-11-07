@@ -243,6 +243,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             case 1:
                 $new_columns = [
                     "Amortización_Préstamos_en_Mora ",
+                    "Amortización_Préstamo_Estacional ",
                     "Amortización_Reposición_de_Fondos",
                     "Amortización_Auxilio_Mortuorio",
                     "Amortización_Cuentas_por_cobrar",
