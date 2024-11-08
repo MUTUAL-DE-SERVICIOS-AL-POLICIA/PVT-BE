@@ -216,7 +216,7 @@ class EconomicComplementController extends Controller
         }
         $modalities = ProcedureModality::where('procedure_type_id', ID::procedureType()->eco_com)->get();
         $pension_entities = PensionEntity::all();
-        $degrees = Degree::all();
+        $degrees = Degree::where('is_active', true)->get();
         $categories = Category::all();
         $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $eco_com_reception_types = EcoComReceptionType::all();
@@ -691,7 +691,7 @@ class EconomicComplementController extends Controller
             'eco_com_updated_pension'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
-        $degrees = Degree::all();
+        $degrees = Degree::where('is_active', true)->get();
         $categories = Category::all();
 
         $states = ProcedureState::all();
@@ -1290,7 +1290,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = 5 || $discount_type_id = 9;
                 break;
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
@@ -1400,7 +1400,7 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_updated_pension->rent_type = "Manual";
             }
             // Actualiza las tablas pension fija y actualizada a "manual"
-            $economic_complement->save();
+            $economic_complement->push();
         }
         $discount_type_id = null;
         $rol = Util::getRol();
@@ -1409,7 +1409,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = 5 || $discount_type_id = 9;
                 break;
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
@@ -1485,7 +1485,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = $request->discount_type;
                 break;
             case 4: // complemento
                 $discount_type_id = $request->discount_type;
@@ -1629,6 +1629,7 @@ class EconomicComplementController extends Controller
             ->leftJoin('degrees', 'eco_com_rents.degree_id', '=', 'degrees.id')
             ->whereYear('eco_com_rents.year', '=', $year)
             ->where('eco_com_rents.semester', '=', $semester)
+            ->where('degrees.is_active', true)
             ->orderBy('degrees.correlative', 'ASC')
             ->orderBy('procedure_modalities.id', 'ASC');
 
@@ -2284,7 +2285,9 @@ class EconomicComplementController extends Controller
         $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
         if(!!$economic_complement){
             if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
-                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)->first();
+                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)
+                ->orderBy('created_at','desc')
+                ->first();
                 if(!!$fixed_pension){ 
                     $economic_complement->eco_com_fixed_pension_id = $fixed_pension->id; 
                     $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
@@ -2320,9 +2323,9 @@ class EconomicComplementController extends Controller
             {
                 $item->delete();
             }
-
+            //TODO Se debe crear una interfaz para que se ingrese los promedios, por el momento se sumo 1 a partir de la regulacion de la replica del eco_com_procedure_id
             $ecoComRents = EcoComRegulation::where('eco_com_regulations.is_enable', true)
-            ->leftJoin('eco_com_procedures', 'eco_com_regulations.replica_eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->leftJoin('eco_com_procedures', DB::raw('eco_com_regulations.replica_eco_com_procedure_id + 1'), '=', 'eco_com_procedures.id')
             ->leftJoin('eco_com_rents', function($join) {
                 $join->on('eco_com_rents.year', '=', 'eco_com_procedures.year')
                 ->on('eco_com_rents.semester', '=', 'eco_com_procedures.semester');

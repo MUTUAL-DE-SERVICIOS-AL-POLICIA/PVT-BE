@@ -13,12 +13,35 @@ class DiscountTypeSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('discount_types')->insert([
-            'module_id' => 2,
-            'name' => 'Amortización Retención mediante Resolución Judicial o Requerimientos Fiscal',
-            'shortened' => 'Retención según juzgado',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        ]);
+        $data =[
+            [
+                'module_id' => 2,
+                'name' => 'Amortización Retención mediante Resolución Judicial o Requerimientos Fiscal',
+                'shortened' => 'Retención según juzgado',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'module_id' => 2,
+                'name' => 'Amortización de Descuento por Préstamo Estacional',
+                'shortened' => 'Amortización por Préstamo Estacional',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]
+        ];
+        foreach ($data as $discount) {
+            DB::table('discount_types')->updateOrInsert(
+                [
+                    'module_id' => $discount['module_id'],
+                    'name' => $discount['name']
+                ],
+                [
+                    'shortened' => $discount['shortened'],
+                    'created_at' => $discount['created_at'],
+                    'updated_at' => $discount['updated_at'],
+                ]
+            );
+        }
+        
     }
 }
