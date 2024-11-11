@@ -714,7 +714,7 @@ class EconomicComplement extends Model
     {
         return " 
         sum(DISTINCT case when (discount.shortened='Amortización por Préstamo en Mora') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
-        sum(DISTINCT case when (discount.shortened='Amortización por Préstamo Estacional') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamo_Estacional,
+        sum(DISTINCT case when (discount.shortened='Descuento por Préstamo Estacional') then  ecocomdiscount.amount else 0 end)  as Descuento_Préstamo_Estacional,
         sum(DISTINCT case when (discount.shortened='Amortización Reposición de Fondos') then  ecocomdiscount.amount else 0 end)  as Amortización_Reposición_de_Fondos,
         sum(DISTINCT case when (discount.shortened='Aporte Auxilio Mortuorio') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
         sum(DISTINCT case when (discount.shortened='Amortización Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar,
