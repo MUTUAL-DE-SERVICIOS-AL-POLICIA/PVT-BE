@@ -23,8 +23,8 @@ class DiscountTypeSeeder extends Seeder
             ],
             [
                 'module_id' => 2,
-                'name' => 'Amortización de Descuento por Préstamo Estacional',
-                'shortened' => 'Amortización por Préstamo Estacional',
+                'name' => 'Descuento por Amortización de Préstamo Estacional',
+                'shortened' => 'Descuento por Préstamo Estacional',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]

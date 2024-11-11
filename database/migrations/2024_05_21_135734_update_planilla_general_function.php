@@ -44,8 +44,8 @@ class UpdatePlanillaGeneralFunction extends Migration
             total_amount_semester numeric,
             complementary_factor numeric,
             total_complement numeric,
-            amortizacion_prestamos numeric,
-            amortización_prestamo_estacional numeric,
+            amortizacion_prestamos_mora numeric,
+            descuento_prestamo_estacional numeric,
             amortizacion_reposicion numeric,
             amortizacion_retencion_segun_juzgado numeric,
             amortizacion_auxilio numeric,
@@ -93,8 +93,8 @@ class UpdatePlanillaGeneralFunction extends Migration
                 ec.total_amount_semester,
                 ec.complementary_factor,
                 0.0 as total_complement,
-                0.0 as amortizacion_prestamos,
-                0.0 as amortización_prestamo_estacional,
+                0.0 as amortizacion_prestamos_mora,
+                0.0 as descuento_prestamo_estacional,
                 0.0 as amortizacion_reposicion,
                 0.0 as amortizacion_retencion_segun_juzgado,
                 0.0 as amortizacion_auxilio,
@@ -126,7 +126,7 @@ class UpdatePlanillaGeneralFunction extends Migration
         update
             tmp_planilla_general tpg
         set
-            amortizacion_prestamos = dtec.amount
+            amortizacion_prestamos_mora = dtec.amount
         from
             discount_type_economic_complement dtec
         where
@@ -136,7 +136,7 @@ class UpdatePlanillaGeneralFunction extends Migration
         update
             tmp_planilla_general tpg
         set
-            amortización_prestamo_estacional = dtec.amount
+            descuento_prestamo_estacional = dtec.amount
         from
             discount_type_economic_complement dtec
         where
@@ -187,7 +187,7 @@ class UpdatePlanillaGeneralFunction extends Migration
             tmp_planilla_general
         set
             total_complement = tmp_planilla_general.total + (
-                tmp_planilla_general.amortizacion_prestamos + tmp_planilla_general.amortización_prestamo_estacional + tmp_planilla_general.amortizacion_reposicion + tmp_planilla_general.amortizacion_retencion_segun_juzgado + tmp_planilla_general.amortizacion_auxilio + tmp_planilla_general.amortizacion_cuentasxcobrar
+                tmp_planilla_general.amortizacion_prestamos_mora + tmp_planilla_general.descuento_prestamo_estacional + tmp_planilla_general.amortizacion_reposicion + tmp_planilla_general.amortizacion_retencion_segun_juzgado + tmp_planilla_general.amortizacion_auxilio + tmp_planilla_general.amortizacion_cuentasxcobrar
             )
         where
             1 = 1;
@@ -337,8 +337,8 @@ class UpdatePlanillaGeneralFunction extends Migration
             tpg.total_amount_semester,
             tpg.complementary_factor,
             tpg.total_complement,
-            tpg.amortizacion_prestamos,
-            tpg.amortización_prestamo_estacional,
+            tpg.amortizacion_prestamos_mora,
+            tpg.descuento_prestamo_estacional,
             tpg.amortizacion_reposicion,
             tpg.amortizacion_retencion_segun_juzgado,
             tpg.amortizacion_auxilio,
