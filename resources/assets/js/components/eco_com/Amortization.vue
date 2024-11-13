@@ -37,7 +37,7 @@
                   name="Tipo"
                   v-model="discount_type"
                 >
-                <option v-if="role_id == 4" value="6">
+                  <option v-if="role_id == 4" value="6">
                     Reposición de Fondos
                   </option>
                   <option v-if="role_id == 4 && availableDiscountTypes.retencionesJuzgado" value="8">
