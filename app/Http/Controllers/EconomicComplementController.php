@@ -688,7 +688,8 @@ class EconomicComplementController extends Controller
             'category',
             'eco_com_once_payment',
             'eco_com_fixed_pension',
-            'eco_com_updated_pension'
+            'eco_com_updated_pension',
+            'observations'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::where('is_active', true)->get();
@@ -864,7 +865,8 @@ class EconomicComplementController extends Controller
             'affiliatedevice' =>  $affiliateDevice,
             'affiliatetoken' => $affiliateToken?$affiliateToken:-1,
             'eco_com_once_payment' => $economic_complement->eco_com_once_payment,
-            'wf_current_state' => $economic_complement->wf_state
+            'wf_current_state' => $economic_complement->wf_state,
+            'observations' => $economic_complement->observations,
         ];
         return view('eco_com.show', $data);
     }
