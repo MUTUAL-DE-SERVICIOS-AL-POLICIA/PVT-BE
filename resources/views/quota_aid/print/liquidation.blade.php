@@ -99,6 +99,6 @@
             </tbody>
         </table>
     </div>
-    @include('ret_fun.print.signature_footer',['user'=>$user])
+    {{-- @include('ret_fun.print.signature_footer',['user'=>$user]) --}}
 </div>
 @endsection

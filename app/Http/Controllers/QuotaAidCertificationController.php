@@ -460,7 +460,7 @@ class QuotaAidCertificationController extends Controller
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
-    $title = "CERTIFICACI&Oacute;N DE LIQUIDACI&Oacute;N";
+    $title = "LIQUIDACI&Oacute;N DE PAGO";
     $affiliate = $quota_aid->affiliate;
     $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
     $spouse = $affiliate->spouse()->first();
