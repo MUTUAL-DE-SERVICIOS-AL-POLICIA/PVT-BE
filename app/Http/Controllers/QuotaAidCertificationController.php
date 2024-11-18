@@ -474,8 +474,8 @@ class QuotaAidCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $data = [
       'code' => $code,
-      'area' => $area,
-      'user' => $user,
+      //'area' => $area,
+      //'user' => $user,
       'date' => $date,
       'number' => $number,
       'subtitle' => $subtitle,
