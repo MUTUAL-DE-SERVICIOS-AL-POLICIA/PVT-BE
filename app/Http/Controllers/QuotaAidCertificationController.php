@@ -454,7 +454,7 @@ class QuotaAidCertificationController extends Controller
   {
     $quota_aid = QuotaAidMortuary::find($id);
     $discount = $quota_aid->discount_types()->where('discount_type_id', '9')->first();
-    $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 35)->first();
+    $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 61)->first();
     $code = $quota_aid->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
@@ -474,8 +474,8 @@ class QuotaAidCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $data = [
       'code' => $code,
-      'area' => $area,
-      'user' => $user,
+      //'area' => $area,
+      //'user' => $user,
       'date' => $date,
       'number' => $number,
       'subtitle' => $subtitle,
