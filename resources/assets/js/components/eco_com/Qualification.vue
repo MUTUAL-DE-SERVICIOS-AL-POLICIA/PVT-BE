@@ -63,7 +63,7 @@
       <div class="ibox-content">
         <div class="row">
           <div class="col-md-3">
-            <eco-com-amortization :role_id=roleId :permissions="permissions"></eco-com-amortization>
+            <eco-com-amortization :role_id=roleId :permissions="permissions" :observations="observations"></eco-com-amortization>
           </div>
           <div class="col-md-3" v-if="eco_com_state_type_id===1 && roleId===4">
             <button
@@ -618,7 +618,7 @@ import {
 import { mapState, mapMutations } from "vuex";
 
 export default {
-  props: ["ecoComId", "affiliate", "permissions","roleId"],
+  props: ["ecoComId", "affiliate", "permissions","roleId", "observations"],
   data() {
     return {
       ecoComModal: {

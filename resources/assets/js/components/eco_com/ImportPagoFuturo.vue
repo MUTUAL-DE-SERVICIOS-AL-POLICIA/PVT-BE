@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import {flashErrors} from "../../helper.js";
+
 export default {
   props: ["permissions","ecoComProcedures"],
   data() {
@@ -115,6 +117,7 @@ export default {
           this.is_error = false;
         })
         .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
           console.log(error.response.data.errors[0]);
           if(error.response.data.errors[0]){
             this.result_error = error.response.data.errors[0];

@@ -688,7 +688,8 @@ class EconomicComplementController extends Controller
             'category',
             'eco_com_once_payment',
             'eco_com_fixed_pension',
-            'eco_com_updated_pension'
+            'eco_com_updated_pension',
+            'observations'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::where('is_active', true)->get();
@@ -864,7 +865,8 @@ class EconomicComplementController extends Controller
             'affiliatedevice' =>  $affiliateDevice,
             'affiliatetoken' => $affiliateToken?$affiliateToken:-1,
             'eco_com_once_payment' => $economic_complement->eco_com_once_payment,
-            'wf_current_state' => $economic_complement->wf_state
+            'wf_current_state' => $economic_complement->wf_state,
+            'observations' => $economic_complement->observations,
         ];
         return view('eco_com.show', $data);
     }
@@ -1290,7 +1292,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = 5 || $discount_type_id = 9;
                 break;
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
@@ -1499,7 +1501,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = 5 || $discount_type_id = 9;
                 break;
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
@@ -1575,7 +1577,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = $request->discount_type;
                 break;
             case 4: // complemento
                 $discount_type_id = $request->discount_type;
@@ -2120,7 +2122,7 @@ class EconomicComplementController extends Controller
     public function cambiarEstado(Request $request){//cambio de estado a habilitado en lote
         switch ($request->reportTypeId) {
             case 26:
-                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status = 'ACTIVO' and account_number is not null and financialentities is not null and total>0");
+                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos_mora, descuento_prestamo_estacional, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status = 'ACTIVO' and account_number is not null and financialentities is not null and total>0");
                 foreach ($data as $item) {
                     $eco_com = EconomicComplement::where('code','=', $item->code)->first();
                     $eco_com->eco_com_state_id = 25;
@@ -2132,7 +2134,7 @@ class EconomicComplementController extends Controller
                 }
                 break;
             case 27:
-                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status <> 'ACTIVO' and total>0");
+                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos_mora, descuento_prestamo_estacional, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status <> 'ACTIVO' and total>0");
                 foreach ($data as $item) {
                     $eco_com = EconomicComplement::where('code','=', $item->code)->first();
                     $eco_com->eco_com_state_id = 24;

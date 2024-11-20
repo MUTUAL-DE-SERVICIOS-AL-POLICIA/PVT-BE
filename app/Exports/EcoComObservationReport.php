@@ -48,6 +48,8 @@ class EcoComObservationReport implements WithMultipleSheets
                 'affiliates.surname_husband as ape_casada_causahabiente',
                 'affiliates.birth_date as fecha_nacimiento',
                 'affiliates.nua as codigo_nua_cua',
+                'affiliates.sigep_status as Estado_sigep',
+                'affiliates.account_number as Numero_de_cuenta',
                 'eco_com_city.name as regional',
                 'procedure_modalities.name as tipo_de_prestacion',
                 'eco_com_reception_types.name as reception_type',
@@ -77,7 +79,7 @@ class EcoComObservationReport implements WithMultipleSheets
                 'workflows.name as flujo'
             )
             ->has('observations')
-            ->info()
+            ->infoBasic()
             ->beneficiary()
             ->affiliateInfo()
             ->wfstates()
