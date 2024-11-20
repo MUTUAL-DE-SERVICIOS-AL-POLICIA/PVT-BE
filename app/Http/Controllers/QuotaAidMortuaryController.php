@@ -1230,7 +1230,7 @@ class QuotaAidMortuaryController extends Controller
     $kinships = Kinship::get();
 
     $cities = City::get();
-    $degrees = Degree::all();
+    $degrees = Degree::where('is_active', true)->get();
     $data = [
       'requirements' => $procedure_requirements,
       'modalities'    => $modalities,
