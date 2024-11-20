@@ -724,11 +724,11 @@ class ContributionController extends Controller
                         $contribution->quotable = $contribution->quotable;
 
                     $rate=ContributionRate::where('month_year', $key)->first();
-                    //Distribución porcentual de aportes para casos anteriores a enero 1999
+                    //Distribución porcentual de aportes para casos anteriores a enero 1999, solo para estos casos se hace el calculo automatico
                     if($contribution->month_year <= '1999-01-01') {
                         if($contribution->month_year <='1987-04-01'){
                             $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
-                            $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
+                            $contribution->mortuary_quota = 0;
                         }else{
                             $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
                             $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
@@ -821,16 +821,19 @@ class ContributionController extends Controller
                         else
                             $contribution->quotable = strip_tags($request->quotable[$key]) ?? 0;                      
 
+                        if(!isset($request->total[$key]))
+                            $contribution->total = 0;
+                        else
+                            $contribution->total = strip_tags($request->total[$key]) ?? 0;
+
                         $rate=ContributionRate::where('month_year', $key)->first();
 
+                         //Distribución porcentual de aportes para casos anteriores a enero 1999, solo para estos casos se hace el calculo automatico
                         if($contribution->month_year <= '1999-01-01') {
-                            if(!isset($request->total[$key]))
-                                $contribution->total = 0;
-                            else
-                                $contribution->total = strip_tags($request->total[$key]) ?? 0;
 
                             if($contribution->month_year <='1987-04-01'){
                                 $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->fcsspn)),2);
+                                $contribution->mortuary_quota = 0;
                             }else{
                                 $contribution->retirement_fund = round((floatval($contribution->total) * floatval($rate->retirement_fund))/(floatval($rate->retirement_fund)+floatval($rate->mortuary_quota)),2);
                                 $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
