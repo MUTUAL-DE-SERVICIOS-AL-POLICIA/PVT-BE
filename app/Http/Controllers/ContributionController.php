@@ -723,6 +723,11 @@ class ContributionController extends Controller
                     else
                         $contribution->quotable = $contribution->quotable;
 
+                    if(isset($request->total[$key]) && $request->total[$key] != "")
+                        $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
+                    else
+                        $contribution->total = $contribution->total;
+
                     $rate=ContributionRate::where('month_year', $key)->first();
                     //Distribución porcentual de aportes para casos anteriores a enero 1999, solo para estos casos se hace el calculo automatico
                     if($contribution->month_year <= '1999-01-01') {
@@ -734,10 +739,8 @@ class ContributionController extends Controller
                             $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
                         }
                     }else{
-                        //envia los parametros T,FR,QM
-                        if(isset($request->total[$key]) && $request->total[$key] != ""){
-                            $contribution->total = strip_tags($request->total[$key]);
-                        }
+                        //envia los parametros FR,QM
+
                         if(isset($request->retirement_fund[$key]) && $request->retirement_fund[$key] != ""){
                             $contribution->retirement_fund = strip_tags($request->retirement_fund[$key]);
                         }
@@ -839,11 +842,6 @@ class ContributionController extends Controller
                                 $contribution->mortuary_quota = $contribution->total - $contribution->retirement_fund;
                             }
                         }else{
-                            if(!isset($request->total[$key]))
-                                $contribution->total = 0;
-                            else
-                                $contribution->total = strip_tags($request->total[$key]) ?? 0;
-
                             if(!isset($request->retirement_fund[$key]))
                                 $contribution->retirement_fund = 0;
                             else
