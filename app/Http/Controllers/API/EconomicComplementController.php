@@ -15,6 +15,7 @@ use Muserpol\Models\EconomicComplement\EcoComModality;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\Address;
+use Muserpol\Models\Affiliate;
 use Muserpol\Helpers\Util;
 use Muserpol\Helpers\ID;
 use Carbon\Carbon;
@@ -537,5 +538,52 @@ class EconomicComplementController extends Controller
                 }
             }
         }
+    }
+
+    // Por migrar a microservicio
+
+    public static function isInclusion(Affiliate $affiliate)
+    {
+        $eco_com = EconomicComplement::where('affiliate_id', $affiliate->id)
+            ->where('eco_com_reception_type_id', ID::ecoCom()->inclusion)
+            ->orderBy('eco_com_procedure_id', 'desc')->first();
+        if (!!$eco_com) {
+            $state_type = $eco_com->eco_com_state()->first()->eco_com_state_type_id;
+            if ($state_type == ID::ecoComStateType()->pagado) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function checkEcoComAvailability(Affiliate $affiliate)
+    {
+        if(self::isInclusion($affiliate)){
+            return response()->json([
+                'error' => true,
+                'message' => 'El trámite es de inclusión',
+                'data' => [],
+            ], 400);
+        }
+        $current_procedures = EcoComProcedure::affiliate_available_procedures($affiliate->id);
+        return $current_procedures;
+        if (($current_procedures->count() > 0)) {
+            $month = $current_procedures->first()->rent_month ? $current_procedures->first()->rent_month : '';
+            $complements = EconomicComplement::where('affiliate_id', $affiliate->id)->whereIn('eco_com_procedure_id', $current_procedures)->get();
+            return response()->json([
+                'error' => false,
+                'message' => 'Puede crear trámites',
+                'data' => [
+                    'procedure_id' => $current_procedures->first()->id,
+                    'month' => $month != '' ? $month . '/' . strval(Carbon::parse($current_procedures->first()->year)->year) : '',
+                    'complements' => $complements
+                ],
+            ]);
+        }
+        return response()->json([
+            'error' => true,
+            'message' => 'No es posible crear trámites',
+            'data' => [],
+        ], 400);
     }
 }
