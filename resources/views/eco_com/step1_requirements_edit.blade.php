@@ -32,7 +32,7 @@
                                             <i class="fa fa-comments-o"></i> Comentario:
                                         </div>
                                         <div class="col-md-6 no-margins no-padding">
-                                            <input type="text" :name="'comment'+rq.id" class="form-control"
+                                            <input type="text" :name="'comment'+rq.id" class="form-control" maxlength="80"
                                                 :disabled="!editing" v-model="rq.comment">
                                         </div>
                                         <br>
@@ -56,11 +56,11 @@
                     <div v-if="editing" class="alert alert-warning">No hay requisitos por editar</div>
                 </div> --}}
                 <br>
-                <div>
+                <div style="margin-bottom:180px">
                     <h4>Documentos adicionales</h4>
                     <select data-placeholder="Documentos adicionales..." class="chosen-select"
                         id="aditional_requirements" name="aditional_requirements[]" multiple=""
-                        style="width: 350px; display: none;" tabindex="-1" v-bind:disabled="!editing">
+                        style="width: 350px; display: none; border: 2px solid red;" tabindex="-1" v-bind:disabled="!editing">
                         <option v-for="(requirement, index) in aditionalRequirements" :value="requirement.id"
                             :key="`nonselected-${index}`">@{{ requirement.document }} </option>
                         <option v-for="(requirement, index) in aditionalRequirementsSelected" :value="requirement.id"
