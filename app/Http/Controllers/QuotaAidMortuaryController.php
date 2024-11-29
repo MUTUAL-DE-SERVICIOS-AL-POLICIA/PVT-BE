@@ -1594,6 +1594,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->quota_aid_procedure_id = $request->quota_aid_procedure_id;
     if ($quota_aid->procedure_state_id == ID::state()->eliminado) {
       $quota_aid->code .= "A";
+      $quota_aid->deleted_at =now();
     }
     $quota_aid->save();
     $datos = array('quota_aid' => $quota_aid, 'procedure_modality' => $quota_aid->procedure_modality, 'city_start' => $quota_aid->city_start, 'city_end' => $quota_aid->city_end);
