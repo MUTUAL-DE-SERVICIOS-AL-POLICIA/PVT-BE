@@ -228,6 +228,7 @@ th.ellipsis-text {
                     <div id="tab-eco-com" class="tab-pane">
                     
                         <!--Fixed-->
+                        @if($role == 5 || $role == 4)
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Renta/Pensión para la Calificación</h2>
@@ -290,8 +291,7 @@ th.ellipsis-text {
                         </div>
 
                         <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" ></edit-pension-modal>
-
-
+                        @endif
                         <!---End fixed-->
 
                         <div class="ibox">
