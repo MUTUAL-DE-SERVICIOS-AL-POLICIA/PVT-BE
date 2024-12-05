@@ -565,19 +565,24 @@ class EconomicComplementController extends Controller
                 'data' => [],
             ], 400);
         }
-        $current_procedures = EcoComProcedure::affiliate_available_procedures($affiliate->id);
-        return $current_procedures;
-        if (($current_procedures->count() > 0)) {
-            $month = $current_procedures->first()->rent_month ? $current_procedures->first()->rent_month : '';
-            $complements = EconomicComplement::where('affiliate_id', $affiliate->id)->whereIn('eco_com_procedure_id', $current_procedures)->get();
+
+        $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
+        $available_procedures = EcoComProcedure::whereIn('id', $current_procedures->values())->orderBy('year')->orderBy('normal_start_date')->get();
+        if (($available_procedures->count() > 0)) {
+            $complements = [];
+            foreach ($available_procedures as $procedures) {
+                $month = $procedures->rent_month ?? '';
+                $eco_com = EconomicComplement::where('eco_com_procedure_id', $procedures->id)->where('affiliate_id', $affiliate->id)->first();
+                $complements[] = [
+                    'procedure_id' => $procedures->id,
+                    'month' => $month != '' ? $month . '/' . strval(Carbon::parse($procedures->year)->year) : '',
+                    'data' => !!$eco_com ? new EconomicComplementResource($eco_com) : (object)[] , 
+                ];
+            }
             return response()->json([
                 'error' => false,
                 'message' => 'Puede crear trámites',
-                'data' => [
-                    'procedure_id' => $current_procedures->first()->id,
-                    'month' => $month != '' ? $month . '/' . strval(Carbon::parse($current_procedures->first()->year)->year) : '',
-                    'complements' => $complements
-                ],
+                'data' => $complements,
             ]);
         }
         return response()->json([
