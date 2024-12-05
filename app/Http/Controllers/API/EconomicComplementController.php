@@ -585,7 +585,8 @@ class EconomicComplementController extends Controller
                 $complements[] = [
                     'procedure_id' => $procedures->id,
                     'month' => $month != '' ? $month . '/' . strval(Carbon::parse($procedures->year)->year) : '',
-                    'eco_com_id' => !!$eco_com ? $eco_com->id : null
+                    'eco_com_id' => !!$eco_com ? $eco_com->id : null,
+                    'affiliate_id' => $affiliate->id
                     //'data' => !!$eco_com ? new EconomicComplementResource($eco_com) : (object)[] , 
                 ];
             }
