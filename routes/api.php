@@ -39,6 +39,15 @@ Route::group([
     Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('show');
 });
 
+Route::group([
+    'middleware' => ['verify.bearer'],
+    'prefix' => 'v1',
+], function () {
+    Route::get('kioskoComplemento', 'API\EconomicComplementController@checkAvailability');
+    Route::get('eco_com/{eco_com_id}', 'API\EconomicComplementController@showFormatedEcoCom');
+    Route::post('eco_com', 'API\EconomicComplementController@createEcoCom');
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

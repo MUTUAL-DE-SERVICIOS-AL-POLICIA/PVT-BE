@@ -291,25 +291,4 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function kioskoComplemento(Request $request)
-    {
-        $token = $request->bearerToken();
-        if (Hash::check('kiosko-muserpol', $token)) {
-            $affiliate = Affiliate::where('identity_card', $request->ci)->first();
-            if (!$affiliate) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'No existe afiliado',
-                    'data' => (object)[]
-                ], 404);
-            }
-            return APIEconomicComplementController::checkEcoComAvailability($affiliate);
-        } else {
-            return response()->json([
-                'error' => true,
-                'message' => 'Sin Autorización',
-                'data' => (object)[]
-            ], 403);
-        }
-    }
 }
