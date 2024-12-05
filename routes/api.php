@@ -24,6 +24,7 @@ Route::group([
     Route::resource('policy', 'API\PolicyController')->only('index');
     Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('index');
     Route::post('version', 'API\VersionController@version');
+    Route::get('kioskoComplemento', 'API\AuthController@kioskoComplemento');
 });
 
 Route::group([
@@ -36,6 +37,15 @@ Route::group([
     Route::resource('liveness', 'API\LivenessController')->only('index', 'store', 'show');
     Route::resource('message', 'API\MessageController')->only('show');
     Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('show');
+});
+
+Route::group([
+    'middleware' => ['verify.bearer'],
+    'prefix' => 'v1',
+], function () {
+    Route::get('kioskoComplemento', 'API\EconomicComplementController@checkAvailability');
+    Route::get('eco_com/{eco_com_id}', 'API\EconomicComplementController@showFormatedEcoCom');
+    Route::post('eco_com', 'API\EconomicComplementController@createEcoCom');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
