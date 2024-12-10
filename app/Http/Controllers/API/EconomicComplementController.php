@@ -831,6 +831,7 @@ class EconomicComplementController extends Controller
             return response()->json([
                 'error' => false,
                 'message' => 'Complemento Económico creado.',
+                'eco_com_id' => $economic_complement->id
             ]);
         } else {
             return response()->json([
