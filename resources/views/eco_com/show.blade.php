@@ -178,7 +178,7 @@ El trámite es de tipo <strong>{{$economic_complement->eco_com_reception_type->n
                 </eco-com-step1-requirements-edit>
             </div>
             <div id="tab-eco-com-qualification" class="tab-pane">
-            <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
+            <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}" :observations="{{ $observations }}">
                 </eco-com-qualification>
             </div>
             <div id="tab-eco-com-review" class="tab-pane">

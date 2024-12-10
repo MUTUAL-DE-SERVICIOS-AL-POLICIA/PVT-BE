@@ -412,7 +412,7 @@ class EcoComImportExportController extends Controller
                                             $month = $month->formatLocalized('%B');
                                             return response()->json([
                                                 'status' => 'error',
-                                                'errors' => ['El afiliado con Nup:' . $affiliate_id . ' tiene registro de aportes en el mes de ' . $month . ' con origen senasir.'],
+                                                'errors' => ['El afiliado con Nup:' . $affiliate_id . ' tiene registro de aportes en el mes de ' . $month . ' con origen Senasir. DEBE SUBSANAR EL ERROR Y VOLVER A EJECUTAR LA FUNCIÓN DE PAGO A FUTURO'],
                                                 'data' => $data
                                             ], 422);
                                         }
@@ -427,7 +427,7 @@ class EcoComImportExportController extends Controller
                 }else{
                     return response()->json([
                         'status' => 'error',
-                        'errors' => ['El afiliado con Nup:'.$affiliate_id.' tiene registrado como Ente Gestor Senasir ò no se tiene un registro.'],
+                        'errors' => ['ERROR: El afiliado con Nup:'.$affiliate_id.' tiene registrado como Ente Gestor Senasir ò no se tiene un registro. DEBE SUBSANAR EL ERROR Y VOLVER A EJECUTAR LA FUNCIÓN DE PAGO A FUTURO'],
                         'data'=> $data
 
                     ], 422);
