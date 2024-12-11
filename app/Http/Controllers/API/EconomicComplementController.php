@@ -562,6 +562,7 @@ class EconomicComplementController extends Controller
         if (!$affiliate) {
             return response()->json([
                 'error' => true,
+                'canCreate' => false,
                 'message' => 'No existe afiliado',
                 'data' => (object)[]
             ], 404);
@@ -569,7 +570,8 @@ class EconomicComplementController extends Controller
 
         if(self::isInclusion($affiliate)){
             return response()->json([
-                'error' => true,
+                'error' => false,
+                'canCreate' => false,
                 'message' => 'El trámite es de inclusión',
                 'data' => [],
             ], 400);
@@ -579,6 +581,7 @@ class EconomicComplementController extends Controller
         $available_procedures = EcoComProcedure::whereIn('id', $current_procedures->values())->orderBy('year')->orderBy('normal_start_date')->get();
         if (($available_procedures->count() > 0)) {
             $complements = [];
+            $canCreate = false;
             foreach ($available_procedures as $procedures) {
                 $month = $procedures->rent_month ?? '';
                 $eco_com = EconomicComplement::where('eco_com_procedure_id', $procedures->id)->where('affiliate_id', $affiliate->id)->first();
@@ -589,15 +592,20 @@ class EconomicComplementController extends Controller
                     'affiliate_id' => $affiliate->id
                     //'data' => !!$eco_com ? new EconomicComplementResource($eco_com) : (object)[] , 
                 ];
+                if(!$eco_com){
+                    $canCreate = true;
+                }
             }
             return response()->json([
                 'error' => false,
-                'message' => 'Puede crear trámites',
+                'canCreate' => $canCreate,
+                'message' => !!$canCreate ? 'Puede crear trámites' : 'Sin complementos pendientes de creación',
                 'data' => $complements,
             ]);
         }
         return response()->json([
             'error' => true,
+            'canCreate' => false,
             'message' => 'No es posible crear trámites',
             'data' => [],
         ], 400);
