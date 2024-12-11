@@ -51,6 +51,8 @@
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                         </tr>
                         </tr>
                     </tfoot>
@@ -89,6 +91,8 @@
                             <th>Fecha Jefatura</th>
                             <th># de Resolución</th>
                             <th>Fecha Resolución</th>
+                            <th># de Liquidación</th>
+                            <th>Fecha Liquidación</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -183,7 +187,10 @@
                 { data: 'cell_phone_number', visible: false },
                 { data: 'type' },
                 { data: 'procedure_modality.name' },
-                { data: 'wf_state.first_shortened' },
+                { data: 'wf_state.first_shortened', render: function (data, type, row) {
+                        return data == null ? '' : data;
+                    } 
+                },
                 { data: 'city_start.name' },
                 { data: 'inbox_state' },
                 { data: 'total' },      
@@ -201,6 +208,8 @@
                 { data: 'headship_date', visible: false },
                 { data: 'resolution_code', visible: false },
                 { data: 'resolution_date', visible: false },
+                { data: 'liquidation_code', visible: false },
+                { data: 'liquidation_date', visible: false },
                 { data: 'action' },
             ],
         });
