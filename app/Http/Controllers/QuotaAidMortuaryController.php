@@ -243,6 +243,25 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
+      ->addColumn('liquidation_code', function ($quota_aid) {
+        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+          return $value['wf_state_id'] == 61;
+        });
+        if (sizeof($filter) > 0) {
+
+          return (reset($filter)['code']);
+        }
+        return null;
+      })
+      ->addColumn('liquidation_date', function ($quota_aid) {
+        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+          return $value['wf_state_id'] == 61;
+        });
+        if (sizeof($filter) > 0) {
+          return (reset($filter)['date']);
+        }
+        return null;
+      })
       ->addColumn('action', function ($quota_aid) {
         return Util::getRol()->id != 70? "<a href='/quota_aid/" . $quota_aid->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
       })
