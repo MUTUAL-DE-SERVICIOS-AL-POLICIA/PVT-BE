@@ -581,24 +581,24 @@ class EconomicComplementController extends Controller
         /**
          ** save documents
          */
-        $requirements = ProcedureRequirement::where('procedure_modality_id', $request->modality_id)->get();
-        foreach ($requirements  as  $requirement) {
-            if ($request->input('document' . $requirement->id) == 'checked') {
+        if($request->required_requirements) {
+            foreach($request->required_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
-                $submit->procedure_requirement_id = $requirement->id;
+                $submit->procedure_requirement_id = $requirement->procedureRequirementId;
+                $submit->comment = $requirement->comment;
+                $submit->id_uploaded = $requirement->isUploaded;
                 $submit->reception_date = date('Y-m-d');
-                $submit->comment = $request->input('comment' . $requirement->id);
-                $submit->save();
             }
         }
-        if ($request->aditional_requirements) {
-            foreach ($request->aditional_requirements  as  $requirement) {
+        if ($request->additional_requirements) {
+            foreach ($request->additional_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
-                $submit->procedure_requirement_id = $requirement;
+                $submit->procedure_requirement_id = $requirement->procedureRequirementId;
                 $submit->reception_date = date('Y-m-d');
                 $submit->comment = null;
+                $submit->id_uploaded = $requirement->isUploaded;
                 $submit->save();
             }
         }
