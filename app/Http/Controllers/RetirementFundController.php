@@ -302,23 +302,23 @@ class RetirementFundController extends Controller
 
         //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
        //Guarda los requisitos requeridos
-        foreach ($requirements  as  $requirement) {
-            if ($request->input('document' . $requirement->id) == 'checked') {
+        if($request->required_requirements){
+            foreach ($request->required_requirements  as  $requirement) {
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_fund->id;
-                $submit->procedure_requirement_id = $requirement->id;
-                $submit->comment = $request->input('comment' . $requirement->id);
+                $submit->procedure_requirement_id = $requirement->procedureRequirementId;
+                $submit->comment = $requirement->comment;
+                $submit->is_uploaded = $requirement->isUploaded;
                 $submit->save();
             }
         }
-
-        //storing aditional documents
-        if ($request->aditional_requirements) {
-            foreach ($request->aditional_requirements  as  $requirement) {
+        if ($request->additional_requirements) {
+            foreach ($request->additional_requirements  as  $requirement) {
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_fund->id;
-                $submit->procedure_requirement_id = $requirement;
-                $submit->comment = "";
+                $submit->procedure_requirement_id = $requirement->procedureRequirementId;
+                $submit->comment = null;
+                $submit->is_uploaded = $requirement->isUploaded;
                 $submit->save();
             }
         }

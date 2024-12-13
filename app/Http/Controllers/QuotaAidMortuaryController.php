@@ -419,24 +419,25 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->procedure_state_id = 1;
     $quota_aid->save();
 
-    foreach ($requirements  as  $requirement) {
-      if ($request->input('document' . $requirement->id) == 'checked') {
+    if($request->required_requirements) {
+      foreach ($request->required_requirements  as  $requirement) {
         $submit = new QuotaAidSubmittedDocument();
         $submit->quota_aid_mortuary_id = $quota_aid->id;
-        $submit->procedure_requirement_id = $requirement->id;
+        $submit->procedure_requirement_id = $requirement->procedureRequirementId;
         $submit->reception_date = date('Y-m-d');
-        $submit->comment = $request->input('comment' . $requirement->id);
+        $submit->comment = $requirement->comment;
+        $submit->is_uploaded = $requirement->isUploaded;
         $submit->save();
       }
     }
-
-    if ($request->aditional_requirements) {
-      foreach ($request->aditional_requirements  as  $requirement) {
+    if ($request->additional_requirements) {
+      foreach ($request->additional_requirements  as  $requirement) {
         $submit = new QuotaAidSubmittedDocument();
         $submit->quota_aid_mortuary_id = $quota_aid->id;
-        $submit->procedure_requirement_id = $requirement;
+        $submit->procedure_requirement_id = $requirement->procedureRequirementId;
         $submit->reception_date = date('Y-m-d');
-        $submit->comment = "";
+        $submit->comment = null;
+        $submit->is_uploaded = $requirement->isUploaded;
         $submit->save();
       }
     }
