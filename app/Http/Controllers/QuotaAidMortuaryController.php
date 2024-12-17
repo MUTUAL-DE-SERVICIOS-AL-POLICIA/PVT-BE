@@ -273,6 +273,16 @@ class QuotaAidMortuaryController extends Controller
    */
   public function store(Request $request)
   {
+    //format documents
+    $required_requirements = [];
+    foreach ($request->required_requirements as $number) {
+      foreach ($number as $req) {
+        if(isset($req['status']) && $req['status'] == 'checked'){
+          $required_requirements[] = $req;
+        }
+      }
+    } 
+    return $required_requirements;
     $affiliate = Affiliate::find($request->affiliate_id);
     $quota_aid = $affiliate->quota_aid_mortuaries()->where('procedure_modality_id', $request->quota_aid_modality)->get();
     if($quota_aid->isNotEmpty()) {
