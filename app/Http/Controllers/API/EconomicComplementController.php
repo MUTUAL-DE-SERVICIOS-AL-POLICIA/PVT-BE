@@ -559,8 +559,8 @@ class EconomicComplementController extends Controller
 
     public static function checkAvailability(Request $request)
     {
-        $affiliate = Affiliate::where('identity_card', $request->ci)->first();
-        if (!$affiliate) {
+        $affiliates[] = Affiliate::where('identity_card', $request->ci)->first();
+        if (!$affiliates[0]) {
             return response()->json([
                 'error' => true,
                 'canCreate' => false,
@@ -569,7 +569,7 @@ class EconomicComplementController extends Controller
             ], 404);
         }
 
-        if(self::isInclusion($affiliate)){
+        if(self::isInclusion($affiliates[0])){
             return response()->json([
                 'error' => false,
                 'canCreate' => false,
@@ -577,26 +577,38 @@ class EconomicComplementController extends Controller
                 'data' => [],
             ], 400);
         }
-
         $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
         $available_procedures = EcoComProcedure::whereIn('id', $current_procedures->values())->orderBy('year')->orderBy('normal_start_date')->get();
+
+        $last_eco_com = $affiliates[0]->economic_complements()->whereHas('eco_com_procedure', function ($q) {
+            $q->orderBy('year')->orderBy('normal_start_date');
+        })->latest()->first();
+        $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
+        if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
+            $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id', [2, 5, 9, 7])->first();
+            $affiliates[] = $eco_com_beneficiary->economic_complement->affiliate;
+        }
+        
         if (($available_procedures->count() > 0)) {
             $complements = [];
             $canCreate = false;
-            foreach ($available_procedures as $procedures) {
-                $month = $procedures->rent_month ?? '';
-                $eco_com = EconomicComplement::where('eco_com_procedure_id', $procedures->id)->where('affiliate_id', $affiliate->id)->first();
-                $complements[] = [
-                    'procedure_id' => $procedures->id,
-                    'month' => $month != '' ? $month . '/' . strval(Carbon::parse($procedures->year)->year) : '',
-                    'eco_com_id' => !!$eco_com ? $eco_com->id : null,
-                    'affiliate_id' => $affiliate->id
-                    //'data' => !!$eco_com ? new EconomicComplementResource($eco_com) : (object)[] , 
-                ];
-                if(!$eco_com){
-                    $canCreate = true;
+            
+            foreach ($affiliates as $affiliate) {
+                foreach ($available_procedures as $procedures) {
+                    $month = $procedures->rent_month ?? '';
+                    $eco_com = EconomicComplement::where('eco_com_procedure_id', $procedures->id)->where('affiliate_id', $affiliate->id)->first();
+                    $complements[] = [
+                        'procedure_id' => $procedures->id,
+                        'month' => $month != '' ? $month . '/' . strval(Carbon::parse($procedures->year)->year) : '',
+                        'eco_com_id' => !!$eco_com ? $eco_com->id : null,
+                        'affiliate_id' => $affiliate->id 
+                    ];
+                    if(!$eco_com){
+                        $canCreate = true;
+                    }
                 }
             }
+            
             return response()->json([
                 'error' => false,
                 'canCreate' => $canCreate,

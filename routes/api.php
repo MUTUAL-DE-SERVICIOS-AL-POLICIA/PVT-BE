@@ -24,7 +24,6 @@ Route::group([
     Route::resource('policy', 'API\PolicyController')->only('index');
     Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('index');
     Route::post('version', 'API\VersionController@version');
-    //Route::get('kioskoComplemento', 'API\AuthController@kioskoComplemento');
 });
 
 Route::group([
