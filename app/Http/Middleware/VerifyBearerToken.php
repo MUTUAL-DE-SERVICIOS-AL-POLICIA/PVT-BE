@@ -18,7 +18,7 @@ class VerifyBearerToken
     {
         $token = $request->bearerToken();
         
-        if (Hash::check('kiosko-muserpol', $token)) {
+        if (Hash::check(env("HASH_TOKEN"), $token)) {
             return $next($request);
         } else {
             return response()->json([
