@@ -121,7 +121,7 @@
                 columns: [
                     { data: 'month_year', sClass: "text-center" },
                     { data: 'c1', sClass: "text-right", bSortable: false },
-                    { data: 'c2', sClass: "text-right", bSortable: false },
+                    // { data: 'c2', sClass: "text-right", bSortable: false }, inactivo
                     { data: 'c3', sClass: "text-right", bSortable: false },
                     { data: 'c4', sClass: "text-right", bSortable: false },
                     { data: 'c5', sClass: "text-right", bSortable: false },

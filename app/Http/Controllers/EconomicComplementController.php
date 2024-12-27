@@ -84,6 +84,7 @@ class EconomicComplementController extends Controller
         $eco_coms = EconomicComplement::select(
             DB::RAW("
             economic_complements.id as id,
+            eco_com_state_types.id as state,
             economic_complements.affiliate_id,
             economic_complements.code,
             economic_complements.reception_date,
@@ -99,6 +100,8 @@ class EconomicComplementController extends Controller
             eco_com_applicants.identity_card as eco_com_beneficiary_identity_card,
             trim(regexp_replace(concat_ws(' ', eco_com_applicants.first_name, eco_com_applicants.second_name, eco_com_applicants.last_name, eco_com_applicants.mothers_last_name, eco_com_applicants.surname_husband), '\s+', ' ', 'g'))  as eco_com_beneficiary_full_name
             "))
+            ->leftJoin('eco_com_states','eco_com_states.id', '=', 'economic_complements.eco_com_state_id')
+            ->leftJoin('eco_com_state_types','eco_com_state_types.id',"=","eco_com_states.eco_com_state_type_id")
             ->leftJoin('cities as city_eco_com', 'economic_complements.city_id', '=', 'city_eco_com.id' )
             ->leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id' )
             ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id' )
@@ -171,9 +174,9 @@ class EconomicComplementController extends Controller
                     $sql = "CASE WHEN economic_complements.inbox_state THEN 'Validado' ELSE 'Pendiente' END ilike ?";
                     $query->whereRaw($sql, ["%{$keyword}%"]);
                 })
-                ->addColumn('action', function ($eco_com) {
-                    return Util::getRol()->id != 71? "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
-                })
+                // ->addColumn('action', function ($eco_com) {
+                //     return Util::getRol()->id != 71? "<a href='/eco_com/" . $eco_com->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
+                // })
                 ->make(true);
     }
 
@@ -213,7 +216,7 @@ class EconomicComplementController extends Controller
         }
         $modalities = ProcedureModality::where('procedure_type_id', ID::procedureType()->eco_com)->get();
         $pension_entities = PensionEntity::all();
-        $degrees = Degree::all();
+        $degrees = Degree::where('is_active', true)->get();
         $categories = Category::all();
         $eco_com_legal_guardian_types = EcoComLegalGuardianType::all();
         $eco_com_reception_types = EcoComReceptionType::all();
@@ -685,10 +688,11 @@ class EconomicComplementController extends Controller
             'category',
             'eco_com_once_payment',
             'eco_com_fixed_pension',
-            'eco_com_updated_pension'
+            'eco_com_updated_pension',
+            'observations'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
-        $degrees = Degree::all();
+        $degrees = Degree::where('is_active', true)->get();
         $categories = Category::all();
 
         $states = ProcedureState::all();
@@ -861,7 +865,8 @@ class EconomicComplementController extends Controller
             'affiliatedevice' =>  $affiliateDevice,
             'affiliatetoken' => $affiliateToken?$affiliateToken:-1,
             'eco_com_once_payment' => $economic_complement->eco_com_once_payment,
-            'wf_current_state' => $economic_complement->wf_state
+            'wf_current_state' => $economic_complement->wf_state,
+            'observations' => $economic_complement->observations,
         ];
         return view('eco_com.show', $data);
     }
@@ -1170,7 +1175,7 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
 
-        $aditional =  $request->additional_requirements;
+        $aditional =  $request->aditional_requirements;
         $num = "";
         foreach ($procedure_requirements as $requirement) {
             $needle = EcoComSubmittedDocument::where('economic_complement_id', $id)
@@ -1287,7 +1292,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = 5 || $discount_type_id = 9;
                 break;
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
@@ -1397,7 +1402,7 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_updated_pension->rent_type = "Manual";
             }
             // Actualiza las tablas pension fija y actualizada a "manual"
-            $economic_complement->save();
+            $economic_complement->push();
         }
         $discount_type_id = null;
         $rol = Util::getRol();
@@ -1406,7 +1411,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = 5 || $discount_type_id = 9;
                 break;
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
@@ -1482,7 +1487,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 4;
                 break;
             case 16: //prestamo
-                $discount_type_id = 5;
+                $discount_type_id = $request->discount_type;
                 break;
             case 4: // complemento
                 $discount_type_id = $request->discount_type;
@@ -1490,13 +1495,16 @@ class EconomicComplementController extends Controller
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
 
-        $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
-        if( $last_movement ) {
-            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
-                return response()->json([
-                    'msg' => 'Error',
-                    'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
-                ], 422);
+
+        if($discount_type_id == 6) {//Amortización por Reposición de Fondos
+            $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
+            if( $last_movement ) {
+                if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+                    return response()->json([
+                        'msg' => 'Error',
+                        'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
+                    ], 422);
+                }
             }
         }
         if ($eco_com->discount_types->contains($discount_type->id)) {
@@ -1626,6 +1634,7 @@ class EconomicComplementController extends Controller
             ->leftJoin('degrees', 'eco_com_rents.degree_id', '=', 'degrees.id')
             ->whereYear('eco_com_rents.year', '=', $year)
             ->where('eco_com_rents.semester', '=', $semester)
+            ->where('degrees.is_active', true)
             ->orderBy('degrees.correlative', 'ASC')
             ->orderBy('procedure_modalities.id', 'ASC');
 
@@ -2026,7 +2035,7 @@ class EconomicComplementController extends Controller
     public function cambiarEstado(Request $request){//cambio de estado a habilitado en lote
         switch ($request->reportTypeId) {
             case 26:
-                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status = 'ACTIVO' and account_number is not null and financialentities is not null and total>0");
+                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos_mora, descuento_prestamo_estacional, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status = 'ACTIVO' and account_number is not null and financialentities is not null and total>0");
                 foreach ($data as $item) {
                     $eco_com = EconomicComplement::where('code','=', $item->code)->first();
                     $eco_com->eco_com_state_id = 25;
@@ -2038,7 +2047,7 @@ class EconomicComplementController extends Controller
                 }
                 break;
             case 27:
-                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status <> 'ACTIVO' and total>0");
+                $data = DB::select("select nro, observacion, estado_observacion, affiliate_id, code, identity_card, first_name, second_name, last_name, mothers_last_name, surname_husband, regional, tipo_prestamo, tipo_recepcion, categoria, grado, ente_gestor, total_rent, total_rent_calc, seniority, salary_reference, salary_quotable, difference, total_amount_semester, complementary_factor, total_complement, amortizacion_prestamos_mora, descuento_prestamo_estacional, amortizacion_reposicion, amortizacion_auxilio, amortizacion_cuentasxcobrar,total, ubicacion, tipo_beneficiario, estado, sigep_status, account_number, financialentities from public.planilla_general(".$request->ecoComProcedureId.") where eco_com_state_id = 16 and estado_observacion in ('','Subsanado') and sigep_status <> 'ACTIVO' and total>0");
                 foreach ($data as $item) {
                     $eco_com = EconomicComplement::where('code','=', $item->code)->first();
                     $eco_com->eco_com_state_id = 24;
@@ -2281,7 +2290,9 @@ class EconomicComplementController extends Controller
         $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
         if(!!$economic_complement){
             if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
-                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)->first();
+                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)
+                ->orderBy('created_at','desc')
+                ->first();
                 if(!!$fixed_pension){ 
                     $economic_complement->eco_com_fixed_pension_id = $fixed_pension->id; 
                     $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
@@ -2317,9 +2328,9 @@ class EconomicComplementController extends Controller
             {
                 $item->delete();
             }
-
+            //TODO Se debe crear una interfaz para que se ingrese los promedios, por el momento se sumo 1 a partir de la regulacion de la replica del eco_com_procedure_id
             $ecoComRents = EcoComRegulation::where('eco_com_regulations.is_enable', true)
-            ->leftJoin('eco_com_procedures', 'eco_com_regulations.replica_eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->leftJoin('eco_com_procedures', DB::raw('eco_com_regulations.replica_eco_com_procedure_id + 1'), '=', 'eco_com_procedures.id')
             ->leftJoin('eco_com_rents', function($join) {
                 $join->on('eco_com_rents.year', '=', 'eco_com_procedures.year')
                 ->on('eco_com_rents.semester', '=', 'eco_com_procedures.semester');

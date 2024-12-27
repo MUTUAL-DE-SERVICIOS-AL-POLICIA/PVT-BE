@@ -35,8 +35,14 @@ export default {
       setTimeout(() => {
         $(".chosen-select")
           .chosen({ width: "100%" })
-          .trigger("chosen:updated");
+          .trigger("chosen:updated")
+        // Si es un select múltiple, usa '.chosen-choices'
+        $(".chosen-select")
+          .next('.chosen-container')
+          .find('.chosen-choices') // Para selects múltiples
+          .css("border", "4px solid #ceebd6");
       }, 500);
+
     },
     getRequirements() {
       this.requirementList = this.requirements.filter(r => {

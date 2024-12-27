@@ -139,7 +139,16 @@ th.ellipsis-text {
                         <li class="list-group-item " data-toggle="tab" href="#tab-eco-com"><a href="#"><i class="{{ Util::IconModule(2)}}"></i> Complemento Económico</a></li>
                         {{-- <li class="list-group-item " data-toggle="tab"><a href="#tab-aid-mortuory"><i class="{{ Util::IconModule(5)}}"></i> Auxilio Mortuorio </a></li> --}}
                         <li class="list-group-item " data-toggle="tab" href="#tab-devolutions"><a href="#"><i class="fa fa-balance-scale"></i> Devoluciones</a></li>
-                        <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                        <li class="list-group-item" data-toggle="tab" href="#tab-observations">
+                            <a href="#">
+                                <i class="fa fa-eye-slash"></i> Observaciones
+                            </a>
+                            @if ($affiliate->observations->count() > 0)
+                                <span class="label label-danger pull-right" key="value">
+                                    {{$affiliate->observations->count()}}
+                                </span>
+                            @endif
+                        </li>
                         <li class="list-group-item tab-affiliate-records" data-toggle="tab" href="#tab-affiliate-records"><a href="#"><i class="fa fa-eye-slash"></i> Historial</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-affiliate-photos"><a href="#"><i class="fa fa-camera-retro"></i> Fotos</a></li>
                         <li class="list-group-item " data-toggle="tab" href="#tab-deceased-photos"><a href="#"><i class="fa fa-image"></i> Historial de Fotos</a></li>

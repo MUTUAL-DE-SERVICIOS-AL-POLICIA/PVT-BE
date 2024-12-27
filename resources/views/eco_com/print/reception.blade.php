@@ -62,7 +62,11 @@
                 @if($item->number > 0)
                 <tr>
                     <td class='text-center p-5'>{!! $item->number !!}</td>
-                    <td class='text-justify p-5'>{!! $item->procedure_document->name !!} </td>
+                        <td class='text-justify p-5'>{!! $item->procedure_document->name !!}</br>
+                    @if(trim($item->comment) != null && trim($item->comment) != '')
+                        <span class="text-justify text-xs">* {!! $item->comment !!}</span>
+                    @endif
+                    </td>
                     @if (true)
                     <td class="text-center">
                         <img
@@ -82,18 +86,19 @@
             </tbody>
         </table>
         @endif
-        {{-- @if($submitted_documents[0]->procedure_requirement->number != 1)
+    @if(sizeof($eco_com_submitted_documents) > 0)
+        @if($eco_com_submitted_documents[0]->number == 0)
         <table class="table-info w-100 m-b-5">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm">
-                    <td class="text-center p-5">ADICIONALES</td>
+                    <td class="text-center p-5">DOCUMENTOS ADICIONALES</td>
                     <td class="text-center p-5">V°B°</td>
                 </tr>
             </thead>
             <tbody class="text-sm">
-                @foreach($submitted_documents as $i=>$item) @if($item->procedure_requirement->number == 0)
+                @foreach($eco_com_submitted_documents as $i=>$item) @if($item->number == 0)
                 <tr>
-                    <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
+                    <td class='text-justify p-5'>{!! $item->procedure_document->name !!} </td>
                     @if (true)
                     <td class="text-center">
                         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
@@ -107,7 +112,8 @@
                 @endif @endforeach
             </tbody>
         </table>
-        @endif --}}
+        @endif
+    @endif 
             @if($habitual)
             <br>
             <div class="text-justify text-sm">{{ $text }}</div>
@@ -116,9 +122,9 @@
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
         @if($eco_com->eco_com_reception_type_id == 2 || $eco_com->eco_com_reception_type_id == 3)
         <table style="margin-top: {{$size_down}}px;" class="m-t-50 table-info">
-            <tbody>
+       
                 <tr>
-                    <td class="no-border text-center text-base w-50 align-bottom"
+                    <td class="no-border text-center text-base w-20 align-bottom"
                         style="border-radius: 0.5em 0 0 0!important;">
                         <span class="font-bold">
                             ----------------------------------------------------
@@ -126,21 +132,21 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="no-border text-center text-base w-50 align-top">
+                    <td class="no-border text-center text-base w-10 align-top">
                         <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
                         <br />
                         <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
                         <span class="font-bold">TEL. CEL. {{ $eco_com_beneficiary->phone_number }} {{ $eco_com_beneficiary->cell_phone_number }}</span>
                     </td>
                 </tr>
-            </tbody>
+    
         </table>
         @endif
         
         @if($habitual)
             <div style="margin-top: {{$size}}px;" class="font-bold text-xxs">
         @else
-            <div style="margin-top: 100px;" class="font-bold text-xxs">
+            <div style="margin-top: 20px;" class="font-bold text-xxs">
         @endif
         </div>
         <div class="font-bold text-xxs">
