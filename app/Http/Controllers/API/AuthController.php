@@ -16,6 +16,8 @@ use Muserpol\Models\EconomicComplement\EcoComModality;
 use Muserpol\Models\AffiliateToken;
 use Illuminate\Support\Facades\Log;
 
+use Muserpol\Http\Controllers\API\EconomicComplementController as APIEconomicComplementController;
+
 class AuthController extends Controller
 {
     private function getToken($device_id) {
@@ -288,4 +290,5 @@ class AuthController extends Controller
             'data' => (object)[]
         ], 200);
     }
+
 }
