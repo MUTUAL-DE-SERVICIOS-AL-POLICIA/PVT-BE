@@ -584,11 +584,11 @@ class EconomicComplementController extends Controller
             $q->orderBy('year')->orderBy('normal_start_date');
         })->latest()->first();
         $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
+        //return $last_eco_com_beneficiary;
         if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
             $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id', [2, 5, 9, 7])->first();
             $affiliates[] = $eco_com_beneficiary->economic_complement->affiliate;
         }
-        
         if (($available_procedures->count() > 0)) {
             $complements = [];
             $canCreate = false;
@@ -612,6 +612,8 @@ class EconomicComplementController extends Controller
             return response()->json([
                 'error' => false,
                 'canCreate' => $canCreate,
+                'available_procedures' => $available_procedures->pluck('id'),
+                'affiliate_id' => $affiliates[0]->id,
                 'message' => !!$canCreate ? 'Puede crear trámites' : 'Sin complementos pendientes de creación',
                 'data' => $complements,
             ]);
@@ -649,6 +651,7 @@ class EconomicComplementController extends Controller
         $user_id = 171; // Cambiar por usuario kiosko
         $wf_current_state_id = 60; // Cambiar por uno del kiosko
         $affiliate = Affiliate::find($request->affiliate_id);
+        $eco_com_id = [];
         
         $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
         $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();        
@@ -658,6 +661,7 @@ class EconomicComplementController extends Controller
              ** Create Economic Complement 
             */
             $economic_complement = $this->createEconomicComplement($user_id, $affiliate, $wf_current_state_id, $last_eco_com, $eco_com_procedure_id);
+            $eco_com_id[] = $economic_complement->id;
             
             /**
              ** Save eco com beneficiary
@@ -686,7 +690,7 @@ class EconomicComplementController extends Controller
                      ** Create Economic Complement 
                     */
                     $economic_complement = $this->createEconomicComplement($user_id, $affiliate, $wf_current_state_id, $last_eco_com, $eco_com_procedure_id);
-                    
+                    $eco_com_id[] = $economic_complement->id;
                     /**
                      ** Save eco com beneficiary
                     */
@@ -709,7 +713,7 @@ class EconomicComplementController extends Controller
             return response()->json([
                 'error' => false,
                 'message' => 'Complemento Económico creado.',
-                'eco_com_id' => $economic_complement->id
+                'eco_com_id' => $eco_com_id
             ]);
         } else {
             return response()->json([
