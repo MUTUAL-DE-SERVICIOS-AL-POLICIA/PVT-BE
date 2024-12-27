@@ -51,7 +51,7 @@
         <div v-for="(requirement, index) in requirementList" :key="index">
             <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background" style="cursor:pointer"
                 :key="i">
-                <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][procedureDocumentId]'" :value="rq.procedureDocumentId">
+                <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][procedureRequirementId]'" :value="rq.procedureRequirementId">
                 <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][name]'" :value="rq.name">
                 <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][number]'" :value="rq.number">
                 <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][isUploaded]'" :value="rq.isUploaded">
@@ -85,10 +85,19 @@
             </div>
         </div>
         <br>
+        <div v-if="aditionalRequirementsUploaded.length > 0">
+            <h4>Documentos adicionales en DBE</h4>
+            <ul>
+                <li v-for="(requirement, index) in aditionalRequirementsUploaded">
+                    @{{requirement.name}}
+                    <input type="hidden" name="aditional_requirements[]" :value="convertToStringJson(requirement)">
+                </li>
+            </ul>
+        </div>
         <div v-if="aditionalRequirements.length > 0"> 
             <h4>Documentos adicionales</h4>
             <select data-placeholder="Documentos adicionales..." class="chosen-select" name="aditional_requirements[]" multiple="" style="width: 350px; display: none;" tabindex="-1">
-                <option v-for="(requirement, index) in aditionalRequirements"  :value="requirement.id" :key="index">@{{ requirement.document }} </option>
+                <option v-for="(requirement, index) in aditionalRequirements"  :value="convertToStringJson(requirement)" :key="index">@{{ requirement.name }} </option>
             </select>                    
         </div>
         <transition

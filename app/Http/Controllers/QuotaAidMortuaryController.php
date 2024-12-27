@@ -273,16 +273,6 @@ class QuotaAidMortuaryController extends Controller
    */
   public function store(Request $request)
   {
-    //format documents
-    $required_requirements = [];
-    foreach ($request->required_requirements as $number) {
-      foreach ($number as $req) {
-        if(isset($req['status']) && $req['status'] == 'checked'){
-          $required_requirements[] = $req;
-        }
-      }
-    } 
-    return $required_requirements;
     $affiliate = Affiliate::find($request->affiliate_id);
     $quota_aid = $affiliate->quota_aid_mortuaries()->where('procedure_modality_id', $request->quota_aid_modality)->get();
     if($quota_aid->isNotEmpty()) {
@@ -430,18 +420,30 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->save();
 
     if($request->required_requirements) {
-      foreach ($request->required_requirements  as  $requirement) {
+      $required_requirements = [];
+      foreach ($request->required_requirements as $number) {
+        foreach ($number as $req) {
+          if(isset($req['status']) && $req['status'] == 'checked'){
+            $required_requirements[] = $req;
+          }
+        }
+      }
+      foreach ($required_requirements  as  $requirement) {
         $submit = new QuotaAidSubmittedDocument();
         $submit->quota_aid_mortuary_id = $quota_aid->id;
-        $submit->procedure_requirement_id = $requirement->procedureRequirementId;
+        $submit->procedure_requirement_id = $requirement['procedureRequirementId'];
         $submit->reception_date = date('Y-m-d');
-        $submit->comment = $requirement->comment;
-        $submit->is_uploaded = $requirement->isUploaded;
+        $submit->comment = $requirement['comment'];
+        $submit->is_uploaded = $requirement['isUploaded'];
         $submit->save();
       }
     }
-    if ($request->additional_requirements) {
-      foreach ($request->additional_requirements  as  $requirement) {
+    if ($request->aditional_requirements) {
+      $additional_requirements = [];
+      foreach ($request->aditional_requirements as $adr) {
+        $additional_requirements[] = json_decode($adr);
+      } 
+      foreach ($additional_requirements  as  $requirement) {
         $submit = new QuotaAidSubmittedDocument();
         $submit->quota_aid_mortuary_id = $quota_aid->id;
         $submit->procedure_requirement_id = $requirement->procedureRequirementId;

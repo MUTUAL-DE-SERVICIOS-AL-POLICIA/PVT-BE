@@ -14,6 +14,7 @@
                 editing: false,
                 requirementList: [],
                 aditionalRequirements: [],
+                aditionalRequirementsUploaded: [],
                 modality: null,
                 show_spinner: false,
                 city_end_id:this.user.city_id,
@@ -63,24 +64,29 @@
                 }
                 else {
                     let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
-                    const data = (await axios.get(uri)).data;
-                    let requiredDocuments = data.requiredDocuments;
+                    const data = (await axios.get(uri)).data;                    
+                    let requiredDocuments = data.requiredDocuments;                    
                     Object.values(requiredDocuments).forEach(value => {
                         value.forEach(r => {
                             r['status'] = r['isUploaded'];
                             r['background'] = r['isUploaded'] ? 'bg-success-blue' : '';
                         });
-                    });                    
+                    });
                     this.requirementList = requiredDocuments;
+                    this.aditionalRequirements = data.additionallyDocuments;
+                    this.aditionalRequirementsUploaded = data.additionallyDocumentsUpload;
                 }                
+            },
+            convertToStringJson(objeto){
+                return JSON.stringify(objeto);
             },
             getAditionalRequirements(){
                 if(!this.modality){this.aditionalRequirements = []}                
-                this.aditionalRequirements = this.requirements.filter((requirement) => {
-                    if (requirement.modality_id == this.modality && requirement.number == 0) {
-                        return requirement;
-                    }
-                });                
+                // this.aditionalRequirements = this.requirements.filter((requirement) => {
+                //     if (requirement.modality_id == this.modality && requirement.number == 0) {
+                //         return requirement;
+                //     }
+                // });                
                 console.log("requerimientos");
                 console.log(this.aditionalRequirements.length  );
                 setTimeout(() => {
