@@ -15,6 +15,7 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'Muserpol\Http\Controllers';
+    protected $namespaceGateway = 'Muserpol\Gateway';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -38,6 +39,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
+
+        $this->mapGatewayRoutes();
 
         //
     }
@@ -69,5 +72,12 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapGatewayRoutes()
+    {
+        Route::prefix('gateway')
+             ->namespace($this->namespaceGateway)
+             ->group(base_path('routes/gateway.php'));
     }
 }

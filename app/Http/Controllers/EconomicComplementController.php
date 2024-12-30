@@ -581,24 +581,37 @@ class EconomicComplementController extends Controller
         /**
          ** save documents
          */
-        $requirements = ProcedureRequirement::where('procedure_modality_id', $request->modality_id)->get();
-        foreach ($requirements  as  $requirement) {
-            if ($request->input('document' . $requirement->id) == 'checked') {
+        if($request->required_requirements) {
+            $required_requirements = [];
+            foreach ($request->required_requirements as $number) {
+                foreach ($number as $req) {
+                    if(isset($req['status']) && $req['status'] == 'checked'){
+                        $required_requirements[] = $req;
+                    }
+                }
+            }
+            foreach($required_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
-                $submit->procedure_requirement_id = $requirement->id;
+                $submit->procedure_requirement_id = $requirement['procedureRequirementId'];
+                $submit->comment = $requirement['comment'];
+                $submit->is_uploaded = $requirement['isUploaded'];
                 $submit->reception_date = date('Y-m-d');
-                $submit->comment = $request->input('comment' . $requirement->id);
                 $submit->save();
             }
         }
         if ($request->aditional_requirements) {
-            foreach ($request->aditional_requirements  as  $requirement) {
+            $additional_requirements = [];
+            foreach ($request->aditional_requirements as $adr) {
+                $additional_requirements[] = json_decode($adr);
+            }
+            foreach ($additional_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
-                $submit->procedure_requirement_id = $requirement;
+                $submit->procedure_requirement_id = $requirement->procedureRequirementId;
                 $submit->reception_date = date('Y-m-d');
                 $submit->comment = null;
+                $submit->is_uploaded = $requirement->isUploaded;
                 $submit->save();
             }
         }
@@ -1585,13 +1598,16 @@ class EconomicComplementController extends Controller
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
 
-        $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
-        if( $last_movement ) {
-            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
-                return response()->json([
-                    'msg' => 'Error',
-                    'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
-                ], 422);
+
+        if($discount_type_id == 6) {//Amortización por Reposición de Fondos
+            $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
+            if( $last_movement ) {
+                if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+                    return response()->json([
+                        'msg' => 'Error',
+                        'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
+                    ], 422);
+                }
             }
         }
         if ($eco_com->discount_types->contains($discount_type->id)) {

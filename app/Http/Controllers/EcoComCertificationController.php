@@ -33,11 +33,11 @@ class EcoComCertificationController extends Controller
    
         $eco_com_submitted_documents = ProcedureRequirement::whereIn('procedure_requirements.id', $submitted_document_ids)
         ->leftJoin('eco_com_submitted_documents', 'procedure_requirements.id', '=', 'eco_com_submitted_documents.procedure_requirement_id')
-        ->select('procedure_requirements.*', 'eco_com_submitted_documents.comment')
+        ->select('procedure_requirements.*', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_uploaded')
         ->where('eco_com_submitted_documents.economic_complement_id','=',$eco_com->id)
         ->orderBy('number')
         ->get();
-
+        
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
