@@ -2085,7 +2085,7 @@ class EconomicComplementController extends Controller
             // descuento por devoluciones por reposicion de fondos
             $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$item->id)->where("discount_type_id",6)->first();
             $exist_movement = EcoComMovement::where('affiliate_id', $item->affiliate_id)->exists();
-            if ($exist_movement) {
+            if ($exist_movement && is_object($item_discount)) {
                 $last_movement = EcoComMovement::where("affiliate_id",$item->affiliate_id)->latest()->orderBy('id', 'desc')->first();
                 if($last_movement->balance > 0){
                     $eco_com_movement = new EcoComMovement();
