@@ -385,7 +385,7 @@
               </div>
             </div>
             <div class="hr-line-dashed"></div>
-              <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am'">
+              <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
                 <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
                   <select 
                   class="col-sm-6"
@@ -485,7 +485,7 @@
                 </div>
               </div>
             </div>
-            <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am'">
+            <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
               <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
                 <select 
                 class="col-sm-6"
