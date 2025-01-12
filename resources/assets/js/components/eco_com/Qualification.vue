@@ -6,7 +6,7 @@
           Calificacion
           <strong>{{ namePensionEntity }}</strong>
         </h2>
-        <div class="ibox-tools" v-if="roleId == 5">
+        <div class="ibox-tools" v-if="roleId == 103">
             <!--Para borrar rentas calificación-->
           <button 
             class="btn btn-success"
