@@ -37,7 +37,7 @@
                         >
                             <quota-aid-create-info :affiliate="{{ $affiliate }}" :hierarchy="{{ $hierarchy }}"></quota-aid-create-info>
                             <tab-content title="Modalidad y Requisitos" ref="one" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
-                                <quota-aid-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ Auth::user() }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :show-requirements-error="showRequirementsError"
+                                <quota-aid-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ Auth::user() }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :show-requirements-error="showRequirementsError" :affiliate="{{ $affiliate }}"
                                         inline-template>
                                     @include('quota_aid.step1_requirements')
                                 </quota-aid-step1-requirements>

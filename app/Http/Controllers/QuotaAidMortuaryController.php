@@ -243,6 +243,25 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
+      ->addColumn('liquidation_code', function ($quota_aid) {
+        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+          return $value['wf_state_id'] == 61;
+        });
+        if (sizeof($filter) > 0) {
+
+          return (reset($filter)['code']);
+        }
+        return null;
+      })
+      ->addColumn('liquidation_date', function ($quota_aid) {
+        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+          return $value['wf_state_id'] == 61;
+        });
+        if (sizeof($filter) > 0) {
+          return (reset($filter)['date']);
+        }
+        return null;
+      })
       ->addColumn('action', function ($quota_aid) {
         return Util::getRol()->id != 70? "<a href='/quota_aid/" . $quota_aid->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
       })
@@ -419,24 +438,37 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->procedure_state_id = 1;
     $quota_aid->save();
 
-    foreach ($requirements  as  $requirement) {
-      if ($request->input('document' . $requirement->id) == 'checked') {
+    if($request->required_requirements) {
+      $required_requirements = [];
+      foreach ($request->required_requirements as $number) {
+        foreach ($number as $req) {
+          if(isset($req['status']) && $req['status'] == 'checked'){
+            $required_requirements[] = $req;
+          }
+        }
+      }
+      foreach ($required_requirements  as  $requirement) {
         $submit = new QuotaAidSubmittedDocument();
         $submit->quota_aid_mortuary_id = $quota_aid->id;
-        $submit->procedure_requirement_id = $requirement->id;
+        $submit->procedure_requirement_id = $requirement['procedureRequirementId'];
         $submit->reception_date = date('Y-m-d');
-        $submit->comment = $request->input('comment' . $requirement->id);
+        $submit->comment = $requirement['comment'];
+        $submit->is_uploaded = $requirement['isUploaded'];
         $submit->save();
       }
     }
-
     if ($request->aditional_requirements) {
-      foreach ($request->aditional_requirements  as  $requirement) {
+      $additional_requirements = [];
+      foreach ($request->aditional_requirements as $adr) {
+        $additional_requirements[] = json_decode($adr);
+      } 
+      foreach ($additional_requirements  as  $requirement) {
         $submit = new QuotaAidSubmittedDocument();
         $submit->quota_aid_mortuary_id = $quota_aid->id;
-        $submit->procedure_requirement_id = $requirement;
+        $submit->procedure_requirement_id = $requirement->procedureRequirementId;
         $submit->reception_date = date('Y-m-d');
-        $submit->comment = "";
+        $submit->comment = null;
+        $submit->is_uploaded = $requirement->isUploaded;
         $submit->save();
       }
     }
@@ -1594,6 +1626,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->quota_aid_procedure_id = $request->quota_aid_procedure_id;
     if ($quota_aid->procedure_state_id == ID::state()->eliminado) {
       $quota_aid->code .= "A";
+      $quota_aid->deleted_at =now();
     }
     $quota_aid->save();
     $datos = array('quota_aid' => $quota_aid, 'procedure_modality' => $quota_aid->procedure_modality, 'city_start' => $quota_aid->city_start, 'city_end' => $quota_aid->city_end);
