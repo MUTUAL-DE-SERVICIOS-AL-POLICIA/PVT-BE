@@ -228,7 +228,7 @@ th.ellipsis-text {
                     <div id="tab-eco-com" class="tab-pane">
                     
                         <!--Fixed-->
-                        @if($role == 5 || $role == 4)
+                        @if($role == 5 || $role == 4 || $role == 103)
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Renta/Pensión para la Calificación</h2>
@@ -253,7 +253,7 @@ th.ellipsis-text {
                                                     <th>Renta Dignidad</th>
                                                 @endif
                                                 <th>Total Renta</th>
-                                                @if($role == 5)
+                                                @if($role == 103)
                                                 <th>Acciones</th>
                                                 @endif
                                             </tr>
@@ -277,7 +277,7 @@ th.ellipsis-text {
                                                         <td>{{ $eco_com_fixed_pension->dignity_pension }}</td>
                                                     @endif
                                                     <td>{{ $eco_com_fixed_pension->total_rent }}</td>
-                                                    @if($role == 5)
+                                                    @if($role == 103)
                                                     <td>
                                                         <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal({{ json_encode($eco_com_fixed_pension) }})">Editar</button>
                                                     </td>
@@ -288,9 +288,8 @@ th.ellipsis-text {
                                     </table>
                                 </div>
                             </div>
+                            <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" ></edit-pension-modal>
                         </div>
-
-                        <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" ></edit-pension-modal>
                         @endif
                         <!---End fixed-->
 
@@ -538,4 +537,3 @@ $(document).ready(function() {
         });
     });
 </script>
-
