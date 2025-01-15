@@ -20,6 +20,7 @@ use Muserpol\Models\ObservationType;
 use Muserpol\Helpers\Util;
 use Muserpol\Helpers\ID;
 use Carbon\Carbon;
+use Muserpol\Models\Spouse;
 use Ramsey\Uuid\Uuid;
 
 class EconomicComplementController extends Controller
@@ -543,23 +544,47 @@ class EconomicComplementController extends Controller
 
     // Por migrar a microservicio
 
-    public static function isInclusion(Affiliate $affiliate)
+    public static function isInclusion($affiliate)
     {
-        $eco_com = EconomicComplement::where('affiliate_id', $affiliate->id)
-            ->where('eco_com_reception_type_id', ID::ecoCom()->inclusion)
-            ->orderBy('eco_com_procedure_id', 'desc')->first();
-        if (!!$eco_com) {
-            $state_type = $eco_com->eco_com_state()->first()->eco_com_state_type_id;
-            if ($state_type == ID::ecoComStateType()->pagado) {
-                return false;
+        if ($affiliate instanceof Affiliate) {
+            $eco_com = EconomicComplement::where('affiliate_id', $affiliate->id)
+                ->where('eco_com_reception_type_id', ID::ecoCom()->inclusion)
+                ->whereIn('eco_com_modality_id', [1, 4, 6, 8])
+                ->orderBy('eco_com_procedure_id', 'desc')->first();
+            if (!!$eco_com) {
+                $state_type = $eco_com->eco_com_state()->first()->eco_com_state_type_id;
+                if ($state_type == ID::ecoComStateType()->pagado) {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
+        if ($affiliate instanceof Spouse) {
+            $eco_com = EconomicComplement::where('affiliate_id', $affiliate->affiliate_id)
+                ->where('eco_com_reception_type_id', ID::ecoCom()->inclusion)
+                ->whereIn('eco_com_modality_id', [2, 5, 7, 9])
+                ->orderBy('eco_com_procedure_id', 'desc')->first();
+            if (!!$eco_com) {
+                $state_type = $eco_com->eco_com_state()->first()->eco_com_state_type_id;
+                if ($state_type == ID::ecoComStateType()->pagado) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     public static function checkAvailability(Request $request)
     {
-        $affiliates[] = Affiliate::where('identity_card', $request->ci)->first();
+        $affiliate = Affiliate::where('identity_card', $request->ci)->first();
+        if ($affiliate) {
+            $affiliates[] = $affiliate;
+        } else {
+            $spouse = Spouse::where('identity_card', $request->ci)->first();
+            if ($spouse) {
+                $affiliates[] = Affiliate::find($spouse->affiliate_id);
+            }
+        }
         if (!$affiliates[0]) {
             return response()->json([
                 'error' => true,
@@ -569,7 +594,7 @@ class EconomicComplementController extends Controller
             ], 404);
         }
 
-        if(self::isInclusion($affiliates[0])){
+        if (self::isInclusion($affiliates[0])) {
             return response()->json([
                 'error' => false,
                 'canCreate' => false,
@@ -592,7 +617,7 @@ class EconomicComplementController extends Controller
         if (($available_procedures->count() > 0)) {
             $complements = [];
             $canCreate = false;
-            
+
             foreach ($affiliates as $affiliate) {
                 foreach ($available_procedures as $procedures) {
                     $month = $procedures->rent_month ?? '';
@@ -601,14 +626,14 @@ class EconomicComplementController extends Controller
                         'procedure_id' => $procedures->id,
                         'month' => $month != '' ? $month . '/' . strval(Carbon::parse($procedures->year)->year) : '',
                         'eco_com_id' => !!$eco_com ? $eco_com->id : null,
-                        'affiliate_id' => $affiliate->id 
+                        'affiliate_id' => $affiliate->id
                     ];
-                    if(!$eco_com){
+                    if (!$eco_com) {
                         $canCreate = true;
                     }
                 }
             }
-            
+
             return response()->json([
                 'error' => false,
                 'canCreate' => $canCreate,
