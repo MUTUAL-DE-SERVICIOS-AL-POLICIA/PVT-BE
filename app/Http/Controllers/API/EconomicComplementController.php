@@ -543,49 +543,90 @@ class EconomicComplementController extends Controller
     }
 
     // Por migrar a microservicio
-
-    public static function isInclusion($affiliate)
+    private function checkObservations($affiliate)
     {
-        if ($affiliate instanceof Affiliate) {
-            $eco_com = EconomicComplement::where('affiliate_id', $affiliate->id)
-                ->where('eco_com_reception_type_id', ID::ecoCom()->inclusion)
-                ->whereIn('eco_com_modality_id', [1, 4, 6, 8])
-                ->orderBy('eco_com_procedure_id', 'desc')->first();
-            if (!!$eco_com) {
-                $state_type = $eco_com->eco_com_state()->first()->eco_com_state_type_id;
-                if ($state_type == ID::ecoComStateType()->pagado) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        if ($affiliate instanceof Spouse) {
-            $eco_com = EconomicComplement::where('affiliate_id', $affiliate->affiliate_id)
-                ->where('eco_com_reception_type_id', ID::ecoCom()->inclusion)
-                ->whereIn('eco_com_modality_id', [2, 5, 7, 9])
-                ->orderBy('eco_com_procedure_id', 'desc')->first();
-            if (!!$eco_com) {
-                $state_type = $eco_com->eco_com_state()->first()->eco_com_state_type_id;
-                if ($state_type == ID::ecoComStateType()->pagado) {
-                    return false;
-                }
-            }
-            return true;
-        }
+        $observation = $affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->where('type', 'like', 'A')->get()->pluck('id'))->get();
+        return $observation;
     }
-
-    public static function checkAvailability(Request $request)
+    public function checkAvailability(Request $request)
     {
+        $affiliates = [];
         $affiliate = Affiliate::where('identity_card', $request->ci)->first();
+        $id = null;
         if ($affiliate) {
-            $affiliates[] = $affiliate;
+            // Verifica si el afiliado esta fallecido
+            if($affiliate->date_death != null) {
+                return response()->json([
+                    'error' => true,
+                    'canCreate' => false,
+                    'message' => 'El afiliado está fallecido',
+                    'data' => (object)[]
+                ], 404);
+            }
+            $id = $affiliate->id;
+            // Verifica si el afiliado tiene observaciones 
+            $observations = $this->checkObservations($affiliate);
+            // Verifica si el afiliado tiene tramites de vejez anteriores o si es inclusion
+            $isInclusion = EconomicComplement::where('affiliate_id', $affiliate->id)
+            ->whereIn('eco_com_modality_id', [1, 4, 6, 8]) // Vejez
+            ->count() == 0;
+            if($observations->count() == 0 && !$isInclusion)
+            {
+                // Verifica si el afiliado es rehabilitación
+                if ($affiliate->stop_eco_com_consecutively()) {
+                    return response()->json([
+                        'error' => true,
+                        'canCreate' => false,
+                        'message' => 'Es rehabilitación',
+                        'data' => (object)[]
+                    ], 404);
+                }
+                $affiliates[] = $affiliate;
+            }
+            if (Util::isDoblePerceptionEcoCom($affiliate->identity_card)) {
+                $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($affiliate->identity_card)->whereIn('eco_com_modality_id', [2, 5, 9, 7])->first();
+                $affiliates[] = $eco_com_beneficiary->economic_complement->affiliate;
+            }
         } else {
             $spouse = Spouse::where('identity_card', $request->ci)->first();
             if ($spouse) {
-                $affiliates[] = Affiliate::find($spouse->affiliate_id);
+                if($spouse->date_death != null) {
+                    return response()->json([
+                        'error' => true,
+                        'canCreate' => false,
+                        'message' => 'El beneficiario/a está fallecido/a',
+                        'data' => (object)[]
+                    ], 404);
+                }
+                $affiliate2 = Affiliate::find($spouse->affiliate_id);
+                if ($affiliate2) {
+                    $observations = $this->checkObservations($affiliate2);
+                    $isInclusion = EconomicComplement::where('affiliate_id', $affiliate2->id)
+                    ->whereIn('eco_com_modality_id', [2, 5, 7, 9]) // Viudedad
+                    ->count() == 0;
+                    if($observations->count() == 0 && !$isInclusion)
+                    {
+                        if ($affiliate2->stop_eco_com_consecutively()) {
+                            return response()->json([
+                                'error' => true,
+                                'canCreate' => false,
+                                'message' => 'Es rehabilitación',
+                                'data' => (object)[]
+                            ], 404);
+                        }
+                        $affiliates[] = $affiliate2;
+                    }
+                }
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'canCreate' => false,
+                    'message' => 'No existe afiliado',
+                    'data' => (object)[]
+                ], 404);
             }
         }
-        if (!$affiliates[0]) {
+        if (count($affiliates) == 0) {
             return response()->json([
                 'error' => true,
                 'canCreate' => false,
@@ -593,27 +634,9 @@ class EconomicComplementController extends Controller
                 'data' => (object)[]
             ], 404);
         }
-
-        if (self::isInclusion($affiliates[0])) {
-            return response()->json([
-                'error' => false,
-                'canCreate' => false,
-                'message' => 'El trámite es de inclusión',
-                'data' => [],
-            ], 400);
-        }
         $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
         $available_procedures = EcoComProcedure::whereIn('id', $current_procedures->values())->orderBy('year')->orderBy('normal_start_date')->get();
 
-        $last_eco_com = $affiliates[0]->economic_complements()->whereHas('eco_com_procedure', function ($q) {
-            $q->orderBy('year')->orderBy('normal_start_date');
-        })->latest()->first();
-        $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
-        //return $last_eco_com_beneficiary;
-        if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
-            $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id', [2, 5, 9, 7])->first();
-            $affiliates[] = $eco_com_beneficiary->economic_complement->affiliate;
-        }
         if (($available_procedures->count() > 0)) {
             $complements = [];
             $canCreate = false;
@@ -638,7 +661,7 @@ class EconomicComplementController extends Controller
                 'error' => false,
                 'canCreate' => $canCreate,
                 'available_procedures' => $available_procedures->pluck('id'),
-                'affiliate_id' => $affiliates[0]->id,
+                'affiliate_id' => $id ?? $affiliates[0]->id,
                 'message' => !!$canCreate ? 'Puede crear trámites' : 'Sin complementos pendientes de creación',
                 'data' => $complements,
             ]);
