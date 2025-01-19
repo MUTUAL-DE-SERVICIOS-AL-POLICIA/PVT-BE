@@ -1585,13 +1585,16 @@ class EconomicComplementController extends Controller
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
 
-        $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
-        if( $last_movement ) {
-            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
-                return response()->json([
-                    'msg' => 'Error',
-                    'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
-                ], 422);
+
+        if($discount_type_id == 6) {//Amortización por Reposición de Fondos
+            $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
+            if( $last_movement ) {
+                if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+                    return response()->json([
+                        'msg' => 'Error',
+                        'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
+                    ], 422);
+                }
             }
         }
         if ($eco_com->discount_types->contains($discount_type->id)) {
@@ -2172,7 +2175,7 @@ class EconomicComplementController extends Controller
             // descuento por devoluciones por reposicion de fondos
             $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$item->id)->where("discount_type_id",6)->first();
             $exist_movement = EcoComMovement::where('affiliate_id', $item->affiliate_id)->exists();
-            if ($exist_movement) {
+            if ($exist_movement && is_object($item_discount)) {
                 $last_movement = EcoComMovement::where("affiliate_id",$item->affiliate_id)->latest()->orderBy('id', 'desc')->first();
                 if($last_movement->balance > 0){
                     $eco_com_movement = new EcoComMovement();
