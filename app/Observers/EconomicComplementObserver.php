@@ -74,9 +74,6 @@ class EconomicComplementObserver
             $message = $message . ' Renta Dignidad ' . $old->dignity_pension . ' a ' . $eco_com->dignity_pension . ', ';
         }
 
-        if ($eco_com->sub_total_rent != $old->sub_total_rent) {
-            $message = $message . ' fecha de recepción ' . $old->sub_total_rent . ' a ' . $eco_com->sub_total_rent . ', ';
-        }
         if ($eco_com->aps_total_fsa != $old->aps_total_fsa) {
             $message = $message . ' Fracción de Saldo Acumulada ' . $old->aps_total_fsa . ' a ' . $eco_com->aps_total_fsa . ', ';
         }

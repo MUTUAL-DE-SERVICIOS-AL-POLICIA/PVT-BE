@@ -243,6 +243,25 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
+      ->addColumn('liquidation_code', function ($quota_aid) {
+        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+          return $value['wf_state_id'] == 61;
+        });
+        if (sizeof($filter) > 0) {
+
+          return (reset($filter)['code']);
+        }
+        return null;
+      })
+      ->addColumn('liquidation_date', function ($quota_aid) {
+        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
+          return $value['wf_state_id'] == 61;
+        });
+        if (sizeof($filter) > 0) {
+          return (reset($filter)['date']);
+        }
+        return null;
+      })
       ->addColumn('action', function ($quota_aid) {
         return Util::getRol()->id != 70? "<a href='/quota_aid/" . $quota_aid->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
       })
@@ -1230,7 +1249,7 @@ class QuotaAidMortuaryController extends Controller
     $kinships = Kinship::get();
 
     $cities = City::get();
-    $degrees = Degree::all();
+    $degrees = Degree::where('is_active', true)->get();
     $data = [
       'requirements' => $procedure_requirements,
       'modalities'    => $modalities,
@@ -1594,6 +1613,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->quota_aid_procedure_id = $request->quota_aid_procedure_id;
     if ($quota_aid->procedure_state_id == ID::state()->eliminado) {
       $quota_aid->code .= "A";
+      $quota_aid->deleted_at =now();
     }
     $quota_aid->save();
     $datos = array('quota_aid' => $quota_aid, 'procedure_modality' => $quota_aid->procedure_modality, 'city_start' => $quota_aid->city_start, 'city_end' => $quota_aid->city_end);

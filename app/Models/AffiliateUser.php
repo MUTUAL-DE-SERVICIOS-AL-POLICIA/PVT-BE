@@ -1,6 +1,6 @@
 <?php
 
-namespace Muserpol;
+namespace Muserpol\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

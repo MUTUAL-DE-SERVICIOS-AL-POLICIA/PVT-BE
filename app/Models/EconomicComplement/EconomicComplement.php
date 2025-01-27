@@ -75,7 +75,10 @@ class EconomicComplement extends Model
     }
     public function discount_types()
     {
-        return $this->belongsToMany('Muserpol\Models\DiscountType')->withPivot(['id','amount', 'date'])->withTimestamps();
+        return $this->belongsToMany('Muserpol\Models\DiscountType')
+        ->withPivot(['id', 'amount', 'date', 'deleted_at'])
+        ->wherePivot('deleted_at', null)
+        ->withTimestamps();
     }
     public function eco_com_fixed_pension()
     {
@@ -576,6 +579,19 @@ class EconomicComplement extends Model
                 $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
             });
     }
+    public function scopeInfoBasic($query)
+    {
+        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
+            ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
+            ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')
+            ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
+            ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
+            ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
+            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->where( function($query) {
+                $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
+            });
+    }
     public function scopeInfoDelete($query) {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
             ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
@@ -697,7 +713,8 @@ class EconomicComplement extends Model
     public static function basic_info_discount()
     {
         return " 
-        sum(DISTINCT case when (discount.shortened='Amortización por Préstamo') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
+        sum(DISTINCT case when (discount.shortened='Amortización por Préstamo en Mora') then  ecocomdiscount.amount else 0 end)  as Amortización_Préstamos_en_Mora,
+        sum(DISTINCT case when (discount.shortened='Descuento por Préstamo Estacional') then  ecocomdiscount.amount else 0 end)  as Descuento_Préstamo_Estacional,
         sum(DISTINCT case when (discount.shortened='Amortización Reposición de Fondos') then  ecocomdiscount.amount else 0 end)  as Amortización_Reposición_de_Fondos,
         sum(DISTINCT case when (discount.shortened='Aporte Auxilio Mortuorio') then  ecocomdiscount.amount else 0 end)  as Amortización_Auxilio_Mortuorio,
         sum(DISTINCT case when (discount.shortened='Amortización Cuentas por Cobrar') then  ecocomdiscount.amount else 0 end)  as Amortización_Cuentas_por_cobrar,

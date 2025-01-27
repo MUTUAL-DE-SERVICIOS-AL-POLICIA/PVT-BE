@@ -33,14 +33,18 @@
                                 <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
                                 <td class="text-bold text-base">{!! $code !!}</td>
                             </tr>
+                            @if(isset($area))
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Área</td>
                                 <td class="text-xs">{!! $area !!}</td>
                             </tr>
+                            @endif
+                            @if(isset($user))
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
                                 <td class="text-xs">{!! $user->username !!}</td>
                             </tr>
+                            @endif
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>
                                 <td class="text-xs uppercase">{!! $date !!}</td>

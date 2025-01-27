@@ -7,7 +7,7 @@
       <!-- :disabled="!can('amortize_economic_complement')" -->
       <i class="fa fa-dollar"></i> Amortizar
     </button>
-    <button
+    <!-- <button
       @click="show()"
       class="btn btn-primary"
     >
@@ -15,7 +15,7 @@
       <i v-else class="fa fa-save"></i>
         &nbsp;
         {{ loading ? 'Actualizando...' : 'Actualizar Cuentas por Cobrar por Reposición de Fondos' }}
-    </button>
+    </button> -->
     <!--<button
       @click="showModald()"
       class="btn btn-primary"
@@ -37,10 +37,21 @@
                   name="Tipo"
                   v-model="discount_type"
                 >
-                  <option v-if="role_id==4" value="6">Reposición de Fondos</option>
-                  <option v-if="role_id==4" value="8">Retenciones según Juzgado</option>
-                  <option v-if="role_id==16" value="5">Amortización por Préstamos en Mora</option>
-                  <option v-if="role_id==7" value="4">Amortización por Cuentas por Cobrar</option>
+                  <option v-if="role_id == 4" value="6">
+                    Reposición de Fondos
+                  </option>
+                  <option v-if="role_id == 4 && availableDiscountTypes.retencionesJuzgado" value="8">
+                    Retenciones según Juzgado
+                  </option>
+                  <option v-if="role_id == 16 && availableDiscountTypes.prestamoEstacional" value="9">
+                    Descuento por Préstamo Estacional
+                  </option>
+                  <option v-if="role_id == 16 && availableDiscountTypes.prestamoMora" value="5">
+                    Amortización por Préstamos en Mora
+                  </option>
+                  <option v-if="role_id == 7" value="4">
+                    Amortización por Cuentas por Cobrar
+                  </option>
                 </select>
               </div>
             </div>
@@ -174,7 +185,7 @@
 import { parseMoney, canOperation, flashErrors } from "../../helper.js";
 import { mapState, mapMutations } from "vuex";
 export default {
-  props: ["permissions","role_id"],
+  props: ["permissions","role_id","observations"],
   data() {
     return {
       form: {},
@@ -186,8 +197,25 @@ export default {
   computed: {
     ecoCom() {
       return this.$store.state.ecoComForm.ecoCom;
-    }
+    },
+  availableDiscountTypes() {
+    const availableTypes = {
+      retencionesJuzgado: false,
+      prestamoEstacional: false,
+      prestamoMora: false,
+    };
+
+    // Itera sobre las observaciones para marcar los tipos disponibles
+    this.observations.forEach((obs) => {
+      if (obs.shortened.includes("Retención de Fondos según Juzgado Coactivo")) availableTypes.retencionesJuzgado = true;
+      if (obs.shortened.includes("Préstamo estacional")) availableTypes.prestamoEstacional = true;
+      if (obs.shortened.includes("Préstamo en mora")) availableTypes.prestamoMora = true;
+    });
+
+    return availableTypes;
   },
+},
+
   methods: {
     can(operation) {
       return canOperation(operation, this.permissions);
