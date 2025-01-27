@@ -36,9 +36,9 @@ th.ellipsis-text {
         {{ Breadcrumbs::render('show_affiliate', $affiliate) }}
     </div>
     <div class="col-lg-5" style="margin-top:12px;">
-        @can('create', new Muserpol\Models\RetirementFund\RetirementFund)
-            @if($has_ret_fun)
-                <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene un tr&aacute;mite de Fondo de Retiro">
+        @can('create', new Muserpol\Models\RetirementFund\RetirementFund)= {{ $count_ret_fun }}
+            @if($count_ret_fun >= 2)
+                <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene tr&aacute;mites de Fondo de Retiro">
                     <button class="btn btn-info btn-sm  dim" type="button"  disabled><i class="fa fa-paste"></i> </button>
                 </a>
             @else
@@ -48,17 +48,17 @@ th.ellipsis-text {
             @endif
         @endcan
         @can('create', new Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary)
-            @if(($active_auxilio >= 1) and ($active_quota >= 1))
+            @if(($count_auxilio >= 1) and ($count_quota >= 1))
                 <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene tr&aacute;mites de Cuota y Auxilio Mortuorio">
                     <button class="btn btn-info btn-sm  dim" type="button"  disabled><i class="fa fa-paste"></i> </button>
                 </a>
             @else
-                @if($active_auxilio >= 2)
+                @if($count_auxilio >= 2)
                         <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene dos tr&aacute;mite de Auxilio Mortuorio">
                             <button class="btn btn-info btn-sm  dim" type="button"  disabled><i class="fa fa-paste"></i> </button>
                         </a>
                     @else
-                        @if($active_quota >= 1)
+                        @if($count_quota >= 1)
                             <a href="{{route('create_quota_aid', $affiliate->id)}}">
                             <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene un tr&aacute;mite de Cuota Mortuoria"><i class="fa fa-paste"></i> </button>
                         </a>
