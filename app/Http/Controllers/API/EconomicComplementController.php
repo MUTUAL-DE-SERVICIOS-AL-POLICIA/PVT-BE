@@ -21,6 +21,8 @@ use Muserpol\Helpers\Util;
 use Muserpol\Helpers\ID;
 use Carbon\Carbon;
 use Muserpol\Models\Spouse;
+use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\User;
 use Ramsey\Uuid\Uuid;
 
 class EconomicComplementController extends Controller
@@ -696,8 +698,10 @@ class EconomicComplementController extends Controller
     {
         $eco_com_procedure_id = $request->eco_com_procedure_id;
         
-        $user_id = 171; // Cambiar por usuario kiosko
-        $wf_current_state_id = 60; // Cambiar por uno del kiosko
+        $user = User::where('username', 'Kiosco Digital')->value('id');
+        $user_id = $user;
+        $wf_state = WorkflowState::where('name', 'Kiosco Digital')->first();
+        $wf_current_state_id = $wf_state->id;
         $affiliate = Affiliate::find($request->affiliate_id);
         $eco_com_id = [];
         
