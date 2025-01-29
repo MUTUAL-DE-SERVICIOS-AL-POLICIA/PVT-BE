@@ -64,6 +64,14 @@ export default {
           console.error('Ocurrió un error al imprimir:', error);
         }
       },
+      printReception: function () {
+        try {
+          printJS({printable:'ret_fun/'+this.retirement_fund.id+'/print/reception',modalMessage:
+              "Generando documentos de impresión, por favor espere un momento.", type:'pdf', showModal:true});
+        } catch (error) {
+          console.error('Ocurrió un error al imprimir:', error);
+        }
+      },
       getState: function(state_id){
           var i;
           for(i =0; i<this.states.length;i++){
