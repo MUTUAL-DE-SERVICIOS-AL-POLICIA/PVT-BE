@@ -2,7 +2,7 @@
 
 @section('title', 'Documentos Analizados')
 
-@php($verification = ($data['nonNumericIds'] && $data['dataErrorReadFolder'] && $data['dataErrorReadFiles']))
+@php($verification = ($data['nonNumericIds'] || $data['dataErrorReadFolder'] || $data['dataErrorReadFiles']))
 
 @section('notice1')
   <div class="content2">
@@ -171,6 +171,8 @@
     <div>
       @if($verification)
         <p> Existen errores en la carpeta de análisis, revise y corrija, para continuar con el proceso </p>
+        <br>
+        <a class="button" style="width: 50%;" href="{{ route('gateway.auth') }}"> Volver a la página de inicio</a>
       @else
         <p>El análisis de los documentos puede realizarse en el siguiente botón</p>
         <br>
