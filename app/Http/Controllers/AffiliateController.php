@@ -258,12 +258,12 @@ class AffiliateController extends Controller
             $nextcode = $nextcode->code;
         else
             $nextcode = "";
-        $active_ret_fun = RetirementFund::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
-        $active_quota = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        $count_ret_fun = RetirementFund::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->count();
+        $count_quota = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
                         ->where('affiliate_id',$affiliate->id)
                         ->where('procedure_modalities.procedure_type_id',3)
                         ->where('code','NOT LIKE','%A')->count();
-        $active_auxilio = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        $count_auxilio = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
                         ->where('affiliate_id',$affiliate->id)
                         ->where('procedure_modalities.procedure_type_id',4)
                         ->where('code','NOT LIKE','%A')->count();
@@ -460,9 +460,9 @@ class AffiliateController extends Controller
             'affiliate_records'=>$affiliate_records,
             'affiliate_police_records'=>$affiliate_police_records,
             'nextcode'  =>  $nextcode,
-            'has_ret_fun'   =>  isset($active_ret_fun->id)?true:false,
-            'active_quota'   =>  $active_quota,
-            'active_auxilio'   =>  $active_auxilio,
+            'count_ret_fun'   =>  $count_ret_fun,
+            'count_quota'   =>  $count_quota,
+            'count_auxilio'   =>  $count_auxilio,
             'contributions' =>  $contributions,
             'aid_contributions' =>  $aid_contributions,
             'month_end' =>  $month_end,
