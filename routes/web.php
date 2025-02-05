@@ -132,6 +132,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('ret_fun/{retirement_fund}/save_certification_note', 'RetirementFundController@saveCertificationNote')->name('save_certification_note');
     Route::post('procedure/print/send', 'InboxController@printSend')->name('inbox_send');
     Route::post('procedure/print/send_eco_com', 'InboxController@printSendEcoCom')->name('inbox_send_eco_com');
+    Route::post('ret_fun/{ret_fun}/save_judicial_retention', 'RetirementFundController@createJudicialRetention');
+    Route::get('ret_fun/{ret_fun}/obtain_judicial_retention', 'RetirementFundController@obtainJudicialRetention');
+    Route::patch('ret_fun/{ret_fun}/modify_judicial_retention', 'RetirementFundController@modifyJudicialRetention');
+    Route::delete('ret_fun/{ret_fun}/cancel_judicial_retention', 'RetirementFundController@cancelJudicialRetention');
 
     //Quota Aid Certification
     Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
@@ -685,6 +689,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('get_eco_com_rents_first_semester', 'EconomicComplementController@getRentsFirstSemester');
     Route::delete('eco_com/{eco_com_id}', 'EconomicComplementController@destroy');
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
+    Route::patch('eco_com_change_rent_type', 'EconomicComplementController@changeRentType');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
     Route::patch('eco_com_save_deposito', 'EconomicComplementController@saveDeposito');
@@ -703,6 +708,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('eco_com/{eco_com_id}/print/paid_cetificate', 'EconomicComplementController@paidCertificate');
     Route::patch('eco_com_recalificacion', 'EconomicComplementController@recalificacion');
+
+    //fixed
+    Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
 
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');
@@ -812,9 +820,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Cargar promedios
     Route::post('eco_com_load_promedio', 'EconomicComplementController@loadPromedio');
+    // eco_com_regulations
     // Cargar promedio segun la regulación actual
     Route::post('eco_com_load_average_with_regulation','EconomicComplementController@loadAverageWithRegulation');
-
+    Route::get('eco_com_procedures_regulation','EconomicComplementController@getProceduresRegulation');
 
     // certificado de revision
     Route::get('review_show/{eco_com_id}', 'EcoComReviewProcedureController@show')->name('show');

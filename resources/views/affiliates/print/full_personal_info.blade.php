@@ -88,6 +88,10 @@
                 </tr>
             </thead>
             <tbody class="table-striped">
+            <tr class="text-sm">
+                    <td class="w-40 text-left px-10 py-3 uppercase">nup</td>
+                    <td class="uppercase font-bold px-5 py-3 text-left"> {{ $affiliate->id ?? 'ERROR' }} </td>
+                </tr>
                 <tr class="text-sm">
                     <td class="w-40 text-left px-10 py-3 uppercase">grado</td>
                     <td class="uppercase font-bold px-5 py-3 text-left"> {{ $affiliate->degree->shortened ?? 'ERROR' }}  ({{ $affiliate->degree->name ?? 'ERROR' }}) </td>

@@ -111,13 +111,28 @@
                                                 <td>Sueldo</td>
                                             </tr>
                                             <tr>
-                                                <td>Antiguidad</td>
+                                                <td>Bono Antigüedad</td>
                                             </tr>
                                             <tr>
                                                 <td>Categor&iacute;a</td>
                                             </tr>
                                             <tr>
+                                                <td>Bono Estudio</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bono Cargo</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bono Frontera</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bono Oriente</td>
+                                            </tr>
+                                            <tr>
                                                 <td>Total Ganado</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Liquido pagable</td>
                                             </tr>
                                             <tr>
                                                 <td>Cotizable</td>
@@ -168,20 +183,44 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                {{-- <select class="" name="category[{{$period}}]">
-                                                                    @foreach($categories as $category)
-                                                                        <option value="{{$category->id}}" @if($category->id == $contributions[$period]->category_id) SELECTED @endif >{{$category->percentage}}</option>
-                                                                    @endforeach
-                                                                </select> --}}
-
                                                                 <div contenteditable="false" class="editcontent numberformat">{{$contributions[$period]->category->percentage ?? '-0'}} </div>
                                                                 <input type="hidden" disabled name="category[{{$period}}]" value="{{$contributions[$period]->percentage ?? 'null'}}">
                                                             </td>
-                                                        </tr>                                                        
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->study_bonus}} </div>
+                                                                <input type="hidden" disabled name="study_bonus[{{$period}}]" value="{{$contributions[$period]->study_bonus}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->position_bonus}} </div>
+                                                                <input type="hidden" disabled name="position_bonus[{{$period}}]" value="{{$contributions[$period]->position_bonus}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->border_bonus}} </div>
+                                                                <input type="hidden" disabled name="border_bonus[{{$period}}]" value="{{$contributions[$period]->border_bonus}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->east_bonus}} </div>
+                                                                <input type="hidden" disabled name="east_bonus[{{$period}}]" value="{{$contributions[$period]->east_bonus}}">
+                                                            </td>
+                                                        </tr>
                                                         <tr>
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->gain}} </div>
                                                                 <input type="hidden" disabled name="gain[{{$period}}]" value="{{$contributions[$period]->gain}}">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat payable_liquid">{{$contributions[$period]->payable_liquid}} </div>
+                                                                <input type="hidden" disabled name="payable_liquid[{{$period}}]" value="{{$contributions[$period]->payable_liquid}}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -253,7 +292,37 @@
                                                         <tr>
                                                             <td>
                                                                 <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="study_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="position_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="border_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="east_bonus[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
                                                                 <input type="hidden" disabled name="gain[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat payable_liquid">0</div>
+                                                                <input type="hidden" disabled name="payable_liquid[{{$period}}]" value="0">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -452,9 +521,6 @@
             }
         });
     }
-function rei(){
-
-}
 $('.editcontent').blur(function() {
     $(this).next('input').val(parseFloat($(this).html().replace(/,/g , '')));
     //if(parseFloat($(this).next('input').val()) > 0 )
@@ -558,7 +624,7 @@ $('.seniority_bonus').blur(function() {
     $(this).closest('td').closest('tr').next('tr').find('td:first').find('input:first').val(total);
     if(base_wage>0) {
         total = (extra*100)/base_wage/100;    
-        $(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').val(total+"");
+        // $(this).closest('td').closest('tr').next('tr').find('td:first').find('div:first').val(total+"");
     }
 });
 

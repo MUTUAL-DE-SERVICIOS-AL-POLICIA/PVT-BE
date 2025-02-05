@@ -104,8 +104,8 @@ class RetirementFundController extends Controller
         $biz_rules = [];
 
         $has_ret_fun = false;
-        $ret_fun = RetirementFund::where('affiliate_id', $request->affiliate_id)->where('code', 'NOT LIKE', '%A')->first();
-        if (isset($ret_fun->id)) {
+        $ret_fun = RetirementFund::where('affiliate_id', $request->affiliate_id)->where('code', 'NOT LIKE', '%A')->count();
+        if ($ret_fun >= 2) {
             $has_ret_fun = true;
             $biz_rules = [
                 'ret_fun_double'  =>  $has_ret_fun ? 'required' : '',
@@ -1670,6 +1670,7 @@ class RetirementFundController extends Controller
         if ($retirement_fund->ret_fun_state_id == ID::state()->eliminado) {
             $count_delete = RetirementFund::where('code','like',$retirement_fund->code.'%')->count('code');
             $retirement_fund->code .= str_repeat("A", $count_delete);
+            $retirement_fund->deleted_at = now();
         }
         $retirement_fund->save();
         $datos = array('retirement_fund' => $retirement_fund, 'procedure_modality' => $retirement_fund->procedure_modality, 'city_start' => $retirement_fund->city_start, 'city_end' => $retirement_fund->city_end);
@@ -2425,4 +2426,82 @@ class RetirementFundController extends Controller
         }
         return null;
     }
+    public function createJudicialRetention(Request $request, $retirement_fund_id) {
+        static $DISCOUNT_TYPE_RETENTION = 11;
+        $retirement_fund = RetirementFund::find($retirement_fund_id);
+        $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_RETENTION)->first();
+        if(!$retirement_fund || !$discount_type)
+            return response()->json([
+              'error' => "No existe el trámite o el tipo de descuento"
+            ], 409);
+        $discount_type_retirement_fund = $retirement_fund->discount_types()
+            ->wherePivot('discount_type_id', $discount_type->id)
+            ->wherePivot('retirement_fund_id', $retirement_fund_id)
+            ->wherePivot('deleted_at', null)
+            ->count();
+        if($discount_type_retirement_fund > 0)
+            return response()->json([
+              'error' => "ya existe la retención"
+            ], 409);
+        $retirement_fund->discount_types()->save($discount_type, ['amount' => 0, 'date' => null, 'code' => null, 'note_code' => $request->detail, 'note_code_date' => Carbon::now(), ]);
+        $discount = $retirement_fund->discount_types()->whereIn('discount_types.id', [$discount_type->id])->get();
+        return response()->json([
+          'message' => 'Registro exitoso',
+          'data' => $discount
+        ]);
+      }
+      public function obtainJudicialRetention($retirement_fund_id) {
+        static $DISCOUNT_TYPE_RETENTION = 11;
+        $retirement_fund = RetirementFund::find($retirement_fund_id);
+        $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_RETENTION)->first();
+        if($retirement_fund && $discount_type) {
+          $discounts = $retirement_fund->discount_types()
+            ->wherePivot('discount_type_id', $discount_type->id)
+            ->wherePivot('retirement_fund_id', $retirement_fund_id)
+            ->wherePivot('deleted_at', null)
+            ->get()
+            ->pluck('pivot');
+    
+          if(count($discounts) > 0) {
+            return response()->json([
+              'message' => 'Obtención exitosa',
+              'data' => $discounts
+            ]);
+          }
+        }
+        return response()->json([
+          'error' => 'No existe la retención',
+          'data' => []
+        ], 200);
+      }
+      public function modifyJudicialRetention(Request $request, $retirement_fund_id) {
+        static $DISCOUNT_TYPE_RETENTION = 11;
+        $retirement_fund = RetirementFund::find($retirement_fund_id);
+        $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_RETENTION)->first();
+        if($retirement_fund && $discount_type) {
+          $updated = $retirement_fund->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, [ 'note_code' => $request->detail ]);
+          return response()->json([
+            'message' => 'Modificación de la retención exitosa',
+            'data' => $updated
+          ]);
+        }
+        return response()->json([
+          'error' => 'No se pudo modificar la retención',
+        ], 409);
+      }
+      public function cancelJudicialRetention($retirement_fund) {
+        static $DISCOUNT_TYPE_RETENTION = 11;
+        $retirement_fund = RetirementFund::find($retirement_fund);
+        $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_RETENTION)->first();
+        if($retirement_fund && $discount_type) {
+          $deleted = $retirement_fund->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, ['deleted_at' => now()]);
+          return response()->json([
+            'message' => 'Se ha eliminado la retención exitosamente',
+            'data' => $deleted
+          ]);
+        }
+        return response()->json([
+          'error' => 'No se pudo eliminar la retención'
+        ], 409);
+      }
 }

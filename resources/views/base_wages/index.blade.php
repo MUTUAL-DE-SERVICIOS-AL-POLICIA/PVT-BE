@@ -26,21 +26,21 @@
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
                                         data-original-title="00 00 - COMANDANTE GENERAL SUPERIOR">CMTE. GRAL.</div>
                                 </th>
-                                <th>
+                                <!-- <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
                                         data-original-title="00 01 - GENERAL SUPERIOR">INSP. GRAL./SUPERVISOR</div>
+                                </th> -->
+                                <th>
+                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
+                                        data-original-title="00 02 - GENERAL SUPERIOR">GRAL.SUP.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 02 - GENERAL SUPERIOR">SBCMTE. GRAL./EXCMDTE</div>
+                                        data-original-title="00 03 - GENERAL MAYOR">GRAL. MY.</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 03 - GENERAL MAYOR">GRAL. SUP.</div>
-                                </th>
-                                <th>
-                                    <div data-toggle="tooltip" data-placement="top" data-container="body"
-                                        data-original-title="00 04 - GENERAL PRIMERO">GRAL.</div>
+                                        data-original-title="00 04 - GENERAL PRIMERO">GRAL. 1RO</div>
                                 </th>
                                 <th>
                                     <div data-toggle="tooltip" data-placement="top" data-container="body"
@@ -354,7 +354,7 @@
                                 <span class="help-block"></span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             {!! Form::label('2', 'INSP. GRAL./SUPERVISOR', ['class' => 'col-md-8 control-label'])
                             !!}
                             <div class="col-md-3">
@@ -362,9 +362,9 @@
                                 'required', 'min' =>  '1', 'oninput' => "this.value = Math.max(this.value, 1)"]) !!}
                                 <span class="help-block"></span>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group">
-                            {!! Form::label('3', 'SBCMTE. GRAL./EXCMDTE', ['class' => 'col-md-8 control-label'])
+                            {!! Form::label('3', 'GRAL. SUP.', ['class' => 'col-md-8 control-label'])
                             !!}
                             <div class="col-md-3">
                                 {!! Form::number('3', null, ['class'=> 'form-control', 'required' =>
@@ -374,7 +374,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            {!! Form::label('4', 'GRAL. SUP.', ['class' => 'col-md-8
+                            {!! Form::label('4', 'GRAL. MY.', ['class' => 'col-md-8
                             control-label']) !!}
                             <div class="col-md-3">
                                 {!! Form::number('4', null, ['class'=> 'form-control', 'required' =>
@@ -383,7 +383,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            {!! Form::label('5', 'GRAL.', ['class' => 'col-md-8
+                            {!! Form::label('5', 'GRAL. 1RO.', ['class' => 'col-md-8
                             control-label']) !!}
                             <div class="col-md-3">
                                 {!! Form::number('5', null, ['class'=> 'form-control', 'required' =>
