@@ -49,4 +49,54 @@ class AffiliateController extends BaseController
     echo $res;
     exit;
   }
+
+  public function authDocuments()
+  {
+      return view('gateway.auth');
+  }
+
+  public function analysisDocuments(Request $request)
+  {
+    $response = $this->gateway->send('POST', "/api/affiliates/documents/analysis", [
+        'form_params' => [
+            'path' => $request->path,
+            'user' => $request->user,
+            'pass' => $request->pass,
+        ]
+    ]);
+
+    if (is_array($response) && isset($response['status']) && $response['status'] === 'error') {
+      $errorData = [
+          'message' => 'NO EXISTEN CARPETAS O ARCHIVOS PARA ANALIZAR',
+      ];
+      return view('gateway.error', ['data' => $errorData]);
+    }
+
+    $data = json_decode($response, true);
+
+    return view('gateway.analysis_documents_affiliate', ['data' => $data]);
+  }
+
+  public function importsDocuments(Request $request)
+  {
+
+    $data_import = json_decode($request->input('data'), true);
+
+    $response = $this->gateway->send('POST', "/api/affiliates/documents/imports", [
+      'json' => $data_import
+    ]);
+
+    if (is_array($response) && isset($response['status']) && $response['status'] === 'error') {
+      $errorData = [
+          'message' => 'NO EXISTEN CARPETAS O ARCHIVOS PARA ANALIZAR',
+      ];
+      return view('gateway.error', ['data' => $errorData]);
+    }
+
+    $data = json_decode($response, true);
+
+    return view('gateway.import_documents_affiliate', ['data' => $data]);
+
+  }
+
 }
