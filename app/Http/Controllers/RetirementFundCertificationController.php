@@ -2206,7 +2206,7 @@ class RetirementFundCertificationController extends Controller
     // }
     $considering_two.= 'Que, el Artículo 61 del Reglamento del Beneficio de Fondo de Retiro Policial Solidario refiere:<i>“(DEFINICIÓN Y CONFORMACIÓN), Parágrafo I refiere: La Comisión de Beneficios Económicos, es la instancia técnica y legal que mediante acto administrativo determina la
     otorgación del beneficio de Fondo de Retiro Policial Solidario. Es designada mediante Resolución Administrativa de la Dirección General Ejecutiva de la Mutual de Servicios al Policía - MUSERPOL.”</i>. Por consiguiente, la Resolución Administrativa
-    N° 002/2024 del 02 de enero de 2024, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
+    N° 004/2025 del 06 de enero de 2025, conforma la Comisión de Beneficios Económicos, en cumplimiento al Reglamento.
     <br><br>
     Que, el Artículo 62 del Reglamento de Fondo de Retiro Policial Solidario refiere:<i>“(ATRIBUCIONES).- La Comisión de Beneﬁcios Económicos tiene las siguientes atribuciones: a) Determinar la otorgación de los beneﬁcios. b) Determinar la otorgación de montos dejados en cuota parte en reserva, c) Resolver los Recursos de Revocatoria, d) Otros, atribuibles dentro de su competencia. Para efectivizar lo establecido, emitirá Resolución, Auto o informe según corresponda”.</i> Es así que la comisión de beneﬁcios económicos 
     en consideración de todos los antecedentes y la documentación adjunta a la presentación del trámite y certiﬁcaciones de las diferentes áreas de la Unidad de Otorgación de Fondo de Retiro Policial Solidario, se emite la presente Resolución.<br>';
