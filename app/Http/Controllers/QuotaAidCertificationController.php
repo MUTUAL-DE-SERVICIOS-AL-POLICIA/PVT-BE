@@ -453,7 +453,7 @@ class QuotaAidCertificationController extends Controller
   public function printLiquidation($id)
   {
     $quota_aid = QuotaAidMortuary::find($id);
-    $discount = $quota_aid->discount_types()->where('discount_type_id', '9')->first();
+    $discount = $quota_aid->discount_types()->where('discount_type_id', '10')->first();
     $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 61)->first();
     $code = $quota_aid->code;
     $area = $next_area_code->wf_state->first_shortened;
