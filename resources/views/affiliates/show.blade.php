@@ -217,10 +217,12 @@ th.ellipsis-text {
                         @include('affiliates.scanned_documents',['affiliate'=>$affiliate,'scanned_documents'=>$affiliate->scanned_documents, 'file'=>$file ])
                     </div>
                     <div id="tab-ret-fun" class="tab-pane">
-                        @if($retirement_fund)
-                            <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" :rf_procedure_type=" {{$retirement_fund->procedure_modality->procedure_type}}" :rf_wf_state ="{{$retirement_fund->wf_state}}" :read="true" inline-template>
-                                @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
-                            </ret-fun-info>
+                        @if($retirement_funds)
+                            @foreach ($retirement_funds as $retirement_fund)
+                                <ret-fun-info :retirement_fund="{{ $retirement_fund }}" :rf_city_start="{{$retirement_fund->city_start}}" :rf_city_end="{{$retirement_fund->city_end}}" :rf_procedure_modality=" {{$retirement_fund->procedure_modality}}" :states="{{ $states }}" :rf_procedure_type=" {{$retirement_fund->procedure_modality->procedure_type}}" :rf_wf_state ="{{$retirement_fund->wf_state}}" :read="true" inline-template>
+                                    @include('ret_fun.info', ['retirement_fund'=>$retirement_fund,'cities'=>$birth_cities])
+                                </ret-fun-info>
+                            @endforeach
                         @else
                             <div class="alert alert-warning">NO SE TIENE REGISTROS DE FONDO DE RETIRO</div>
                         @endif
