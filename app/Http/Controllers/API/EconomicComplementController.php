@@ -559,11 +559,11 @@ class EconomicComplementController extends Controller
             // Verifica si el afiliado esta fallecido
             if($affiliate->date_death != null) {
                 return response()->json([
-                    'error' => true,
+                    'error' => false,
                     'canCreate' => false,
                     'message' => 'El afiliado está fallecido',
                     'data' => (object)[]
-                ], 404);
+                ], 403);
             }
             $id = $affiliate->id;
             // Verifica si el afiliado tiene observaciones 
@@ -572,19 +572,33 @@ class EconomicComplementController extends Controller
             $isInclusion = EconomicComplement::where('affiliate_id', $affiliate->id)
             ->whereIn('eco_com_modality_id', [1, 4, 6, 8]) // Vejez
             ->count() == 0;
-            if($observations->count() == 0 && !$isInclusion)
-            {
-                // Verifica si el afiliado es rehabilitación
-                if ($affiliate->stop_eco_com_consecutively()) {
-                    return response()->json([
-                        'error' => true,
-                        'canCreate' => false,
-                        'message' => 'Es rehabilitación',
-                        'data' => (object)[]
-                    ], 404);
-                }
-                $affiliates[] = $affiliate;
+            if($isInclusion) {
+                return response()->json([
+                    'error' => false,
+                    'canCreate' => false,
+                    'message' => 'Para casos de inclusión apersonarse a ventanilla de Complemento Económico',
+                    'data' => (object)[]
+                ], 403);
             }
+            if($observations->count() > 0)
+            {
+                return response()->json([
+                    'error' => false,
+                    'canCreate' => false,
+                    'message' => 'No puede solicitar el Complemento Económico por observaciones',
+                    'data' => (object)[]
+                ], 403);
+            }
+            // Verifica si el afiliado es rehabilitación
+            if ($affiliate->stop_eco_com_consecutively()) {
+                return response()->json([
+                    'error' => false,
+                    'canCreate' => false,
+                    'message' => 'Para casos de rehabilitación apersonarse a ventanilla de Complemento Económico',
+                    'data' => (object)[]
+                ], 403);
+            }
+            $affiliates[] = $affiliate;
             if (Util::isDoblePerceptionEcoCom($affiliate->identity_card)) {
                 $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($affiliate->identity_card)->whereIn('eco_com_modality_id', [2, 5, 9, 7])->first();
                 $affiliates[] = $eco_com_beneficiary->economic_complement->affiliate;
@@ -594,11 +608,11 @@ class EconomicComplementController extends Controller
             if ($spouse) {
                 if($spouse->date_death != null) {
                     return response()->json([
-                        'error' => true,
+                        'error' => false,
                         'canCreate' => false,
                         'message' => 'El beneficiario/a está fallecido/a',
                         'data' => (object)[]
-                    ], 404);
+                    ], 403);
                 }
                 $affiliate2 = Affiliate::find($spouse->affiliate_id);
                 if ($affiliate2) {
@@ -606,26 +620,33 @@ class EconomicComplementController extends Controller
                     $isInclusion = EconomicComplement::where('affiliate_id', $affiliate2->id)
                     ->whereIn('eco_com_modality_id', [2, 5, 7, 9]) // Viudedad
                     ->count() == 0;
-                    if($observations->count() == 0 && !$isInclusion)
-                    {
-                        if ($affiliate2->stop_eco_com_consecutively()) {
-                            return response()->json([
-                                'error' => true,
-                                'canCreate' => false,
-                                'message' => 'Es rehabilitación',
-                                'data' => (object)[]
-                            ], 404);
-                        }
-                        $affiliates[] = $affiliate2;
+                    if($isInclusion) {
+                        return response()->json([
+                            'error' => false,
+                            'canCreate' => false,
+                            'message' => 'Para casos de inclusión apersonarse a ventanilla de Complemento Económico',
+                            'data' => (object)[]
+                        ], 403);
                     }
+                    if($observations->count() > 0)
+                    {
+                        return response()->json([
+                            'error' => false,
+                            'canCreate' => false,
+                            'message' => 'No puede solicitar el Complemento Económico por observaciones',
+                            'data' => (object)[]
+                        ], 403);
+                    }
+                    if ($affiliate2->stop_eco_com_consecutively()) {
+                        return response()->json([
+                            'error' => false,
+                            'canCreate' => false,
+                            'message' => 'Para casos de rehabilitación apersonarse a ventanilla de Complemento Económico',
+                            'data' => (object)[]
+                        ], 403);
+                    }
+                    $affiliates[] = $affiliate2;
                 }
-            } else {
-                return response()->json([
-                    'error' => true,
-                    'canCreate' => false,
-                    'message' => 'No existe afiliado',
-                    'data' => (object)[]
-                ], 404);
             }
         }
         if (count($affiliates) == 0) {
@@ -661,10 +682,10 @@ class EconomicComplementController extends Controller
 
             return response()->json([
                 'error' => false,
-                'canCreate' => $canCreate,
+                'canCreate' => true,
                 'available_procedures' => $available_procedures->pluck('id'),
                 'affiliate_id' => $id ?? $affiliates[0]->id,
-                'message' => !!$canCreate ? 'Puede crear trámites' : 'Sin complementos pendientes de creación',
+                'message' => '',
                 'data' => $complements,
             ]);
         }

@@ -30,6 +30,7 @@ th.ellipsis-text {
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
 @endsection
 @section('content')
+@php($role = \Muserpol\Helpers\Util::getRol()->id)
 <div class="row  wrapper border-bottom white-bg page-heading">
     <div class="col-lg-7">
         {{ Breadcrumbs::render('show_affiliate', $affiliate) }}
@@ -225,6 +226,73 @@ th.ellipsis-text {
                         @endif
                     </div>
                     <div id="tab-eco-com" class="tab-pane">
+                    
+                        <!--Fixed-->
+                        @if($role == 5 || $role == 4 || $role == 103)
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h2 class="pull-left">Renta/Pensión para la Calificación</h2>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>Periódo vigente</th>
+                                                <th>Periodo renta/pensión</th>
+                                                <th>Tipo de registro</th>
+                                                @if($affiliate->pension_entity->id != 5)
+                                                    <th>Fracción de Saldo Acumulado</th>
+                                                    <th>Fracción de Cotización</th>
+                                                    <th>Fracción Solidaria</th>
+                                                    <th>Renta Invalidez</th>
+                                                    <th>Renta Muerte</th>
+                                                @else
+                                                    <th>Total Ganado Renta o Pensión</th>
+                                                    <th>Reintegro</th>
+                                                    <th>Renta Dignidad</th>
+                                                @endif
+                                                <th>Total Renta</th>
+                                                @if($role == 103)
+                                                <th>Acciones</th>
+                                                @endif
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($eco_com_fixed_pensions as $eco_com_fixed_pension)
+                                                <tr>
+                                                    <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->start_production_date)->format('Y') }} - 
+                                                        {{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->end_production_date)->format('Y') }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_procedure->year)->format('Y') }} - {{ $eco_com_fixed_pension->eco_com_procedure->semester }}</td>
+                                                    <td>{{ $eco_com_fixed_pension->rent_type }}</td>
+                                                    @if($affiliate->pension_entity->id != 5)
+                                                        <td>{{ $eco_com_fixed_pension->aps_total_fsa }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->aps_total_cc }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->aps_total_fs }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->aps_disability }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->aps_total_death }}</td>
+                                                    @else
+                                                        <td>{{ $eco_com_fixed_pension->sub_total_rent }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->reimbursement }}</td>
+                                                        <td>{{ $eco_com_fixed_pension->dignity_pension }}</td>
+                                                    @endif
+                                                    <td>{{ $eco_com_fixed_pension->total_rent }}</td>
+                                                    @if($role == 103)
+                                                    <td>
+                                                        <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal({{ json_encode($eco_com_fixed_pension) }})">Editar</button>
+                                                    </td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" ></edit-pension-modal>
+                        </div>
+                        @endif
+                        <!---End fixed-->
+
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Trámites de Complemento Economico</h2>

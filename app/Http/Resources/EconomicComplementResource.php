@@ -43,10 +43,12 @@ class EconomicComplementResource extends Resource
             ], [
                 'key' => 'Tipo de trámite',
                 'value' => $this->eco_com_reception_type->name,
-            ], [
+            ], 
+            [
                 'key' => 'Estado de trámite',
                 'value' => $this->eco_com_state->name,
-            ], [
+            ], 
+            [
                 'key' => 'Observaciones del trámite',
                 'value' => $observations->count() > 0 ? $observations->values() : 'Ninguna',
             ]

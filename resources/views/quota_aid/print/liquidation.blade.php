@@ -65,28 +65,29 @@
             </tbody>
         </table>
     </div>
+    <p class="text-lg">La Comisión de Beneficios Económicos en uso de sus atribuciones, determina el pago del beneficio de {{$quota_aid->procedure_modality->procedure_type->second_name}} en favor de (el) (los) derechohabiente (s):</p>
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
-                    <td colspan='4' class="px-15 text-center">
-                        CALCULO DE CUOTAS PARTE PARA DERECHOHABIENTES
+                    <td colspan='5' class="px-15 text-center">
+                        DETALLE DE PAGO
                     </td>
                 </tr>
             </thead>
             <tbody class="table-striped">
                 <tr>
-                    <td class="w-40 text-center font-bold px-10 py-3 uppercase">
-                        nombre del beneficiario
-                        <!-- nombre del {{($quota_aid->procedure_modality->id == 1 || $quota_aid->procedure_modality->id == 4) ? 'derechohabiente' : 'titular' }} -->
-                    </td>
+                    <td class="w-40 text-center font-bold px-10 py-3 uppercase">nombre del beneficiario</td>
+                    <td class="w-16 text-center font-bold px-10 py-3 uppercase">c.i.</td>
                     <td class="w-20 text-center font-bold px-10 py-3 uppercase">% de asignacion</td>
                     <td class="w-20 text-center font-bold px-10 py-3 uppercase">monto</td>
                     <td class="w-20 text-center font-bold px-10 py-3 uppercase">parentesco</td>
                 </tr>
                 @foreach ($beneficiaries as $beneficiary)
+                @if ($beneficiary->state)
                 <tr class="text-sm">
                     <td class="text-left uppercase px-5 py-3"> {{ $beneficiary->fullName() }} </td>
+                    <td class="text-center uppercase px-10 py-3"> {{ $beneficiary->identity_card }} </td>
                     <td class="text-center uppercase px-5 py-3">
                         <div class="w-70 text-right">{!! $beneficiary->percentage !!}</div>
                     </td>
@@ -95,6 +96,7 @@
                     </td>
                     <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? 'error' }}</td>
                 </tr>
+                @endif
                 @endforeach
             </tbody>
         </table>
