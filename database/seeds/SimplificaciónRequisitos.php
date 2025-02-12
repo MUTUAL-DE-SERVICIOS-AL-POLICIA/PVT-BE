@@ -70,7 +70,7 @@ class SimplificaciónRequisitos extends Seeder
             ['id' => 269, 'shortened' => 'BOL_JUBC'],
             ['id' => 270, 'shortened' => 'RES_SENASIRV'],
             ['id' => 272, 'shortened' => 'FOR_SIGEP'],
-            ['id' => 284, 'shortened' => 'CER_AM'],
+            ['id' => 439, 'shortened' => 'CER_AM'],
             ['id' => 320, 'shortened' => 'FOR_AUT'],
             ['id' => 324, 'shortened' => 'CD'],
             ['id' => 325, 'shortened' => 'CND'],
