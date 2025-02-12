@@ -307,12 +307,12 @@ export default {
           this.closeModal();
           //this.$modal.hide("")
           flash("Rentas actualizadas con exito")
+          location.reload();
         })
         .catch(error => {
           flashErrors("Error al procesar:", error.response.data.errors);
            this.closeModal();
         })
-      location.reload();
     },
     async getProcedures() {
       this.$scrollTo("#wrapper");
