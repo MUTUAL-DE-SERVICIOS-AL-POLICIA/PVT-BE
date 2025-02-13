@@ -814,19 +814,19 @@ class RetirementFundCertificationController extends Controller
     $pages[] = \View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
 
     $pages[] = \View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
-    // SE REPITE
-    // if ($affiliate->hasAvailability()) {
-    //   if ($retirement_fund->total_availability > 0) {
-    //     $pages[] = \View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
-    //   }
-    //   // if ($retirement_fund->total > 0) {
-    //   //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
-    //   // }
-    // }
 
-    // $pages[] = \View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+    if ($affiliate->hasAvailability()) {
+      if ($retirement_fund->total_availability > 0) {
+        $pages[] = \View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
+      }
+      // if ($retirement_fund->total > 0) {
+      //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
+      // }
+    }
 
-    // $pages[] = \View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+    $pages[] = \View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
+
+    $pages[] = \View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
 
     if (!$affiliate->selectedContributions() > 0 && $retirement_fund->procedure_modality->procedure_type->id == 2) {
       $pages[] = \View::make('ret_fun.print.qualification_average_salary_quotable', self::printQualificationAverageSalaryQuotable($id, false))->render();
