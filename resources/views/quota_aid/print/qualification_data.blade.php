@@ -139,6 +139,6 @@
             </tbody>
         </table>
     </div>
-    @include('ret_fun.print.signature_footer',['user'=>$user]) 
+    @include('ret_fun.print.signature_footer_2',['qualification_users'=>$qualification_users]) 
 </div>
 @endsection

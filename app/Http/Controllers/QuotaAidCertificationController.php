@@ -300,6 +300,7 @@ class QuotaAidCertificationController extends Controller
     $code = $quota_aid->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
@@ -309,6 +310,7 @@ class QuotaAidCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
       'number' => $number,
       'title' => $title,
@@ -336,6 +338,7 @@ class QuotaAidCertificationController extends Controller
     $code = $quota_aid->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
     $contribution_types= ContributionTypeQuotaAid::where('operator','+')->first();
@@ -355,6 +358,7 @@ class QuotaAidCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
       'number' => $number,
       'title' => $title,
