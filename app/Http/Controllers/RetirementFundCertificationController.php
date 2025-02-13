@@ -342,6 +342,7 @@ class RetirementFundCertificationController extends Controller
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
@@ -351,6 +352,7 @@ class RetirementFundCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
       'number' => $number,
 
@@ -378,6 +380,7 @@ class RetirementFundCertificationController extends Controller
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
@@ -388,6 +391,7 @@ class RetirementFundCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
       'number' => $number,
 
@@ -535,6 +539,7 @@ class RetirementFundCertificationController extends Controller
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
@@ -558,6 +563,7 @@ class RetirementFundCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
       'number' => $number,
 
@@ -678,6 +684,7 @@ class RetirementFundCertificationController extends Controller
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
@@ -687,6 +694,7 @@ class RetirementFundCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
       'number' => $number,
 
@@ -806,6 +814,7 @@ class RetirementFundCertificationController extends Controller
     $pages[] = \View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
 
     $pages[] = \View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+
     if ($affiliate->hasAvailability()) {
       if ($retirement_fund->total_availability > 0) {
         $pages[] = \View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();

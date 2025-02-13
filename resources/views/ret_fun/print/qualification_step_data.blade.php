@@ -111,6 +111,7 @@
         </table>
     </div>
     @include('ret_fun.print.qualification_beneficiaries_fair_share', ['beneficiaries'=>$beneficiaries, 'type'=>'normal'])
-    @include('ret_fun.print.signature_footer',['user'=>$user])
+    {{-- @include('ret_fun.print.signature_footer',['user'=>$user]) --}}
+    @include('ret_fun.print.signature_footer_2',['qualification_users'=>$qualification_users])
 </div>
 @endsection
