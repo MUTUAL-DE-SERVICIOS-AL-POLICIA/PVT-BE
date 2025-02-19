@@ -1508,10 +1508,7 @@ class QuotaAidMortuaryController extends Controller
     //mejorar
     $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_ADVANCE)->first();
     if ($advance_payment >= 0) {
-      if ($quota_aid->discount_types->contains($DISCOUNT_TYPE_ADVANCE) || $quota_aid->discount_types->contains($DISCOUNT_TYPE_RETENTION)) {
-        if($judicial_retention_amount !== 0 && $judicial_retention_amount !== null) {
-          $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, ['amount' => $judicial_retention_amount, 'date' => $request->judicialRetentionDate]);
-        }
+      if ($quota_aid->discount_types->contains($DISCOUNT_TYPE_ADVANCE)) {
         if(!$quota_aid->discount_types->contains($DISCOUNT_TYPE_ADVANCE))
           $quota_aid->discount_types()->save($discount_type, ['amount' => $advance_payment, 'date' => $request->advancePaymentDate, 'code' => $request->advancePaymentCode, 'note_code' => $request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
         else
@@ -1522,6 +1519,18 @@ class QuotaAidMortuaryController extends Controller
     } else {
       $quota_aid->discount_types()->detach($discount_type->id);
     }
+
+    $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_RETENTION)->where('module_id', 4)->first();
+    if ($judicial_retention_amount > 0 && $judicial_retention_amount !== null) {
+      if ($quota_aid->discount_types->contains($discount_type->id)) {
+          $quota_aid->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $judicial_retention_amount, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
+      } else {
+          $quota_aid->discount_types()->save($discount_type, ['amount' => $judicial_retention_amount, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
+      }
+    } else {
+      $quota_aid->discount_types()->detach($discount_type->id);
+    }
+    
     $discounts = $quota_aid->discount_types()->whereIn('discount_types.id', [$DISCOUNT_TYPE_ADVANCE, $DISCOUNT_TYPE_RETENTION])->get();
     $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
     //create function search spouse
