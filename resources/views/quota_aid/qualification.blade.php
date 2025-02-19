@@ -132,7 +132,8 @@
                                     <tr>
                                         <th>Tipo</th>
                                         <th>Monto</th>
-                                        <th>Descripción</th>
+                                        <th colspan="2">Descripción</th>
+                                        <th>Documento</th>
                                         <th>Fecha de Registro</th>
                                     </tr>
                                 </thead>
@@ -144,7 +145,7 @@
                                                 <input type="text" class="form-control" v-money v-model="judicialRetentionAmount">
                                             </div>
                                         </td>
-                                        <td>
+                                        <td colspan="2">
                                             <textarea
                                                 class="form-control"
                                                 name="description"
@@ -153,6 +154,14 @@
                                                 v-model="judicialRetentionDetail"
                                                 disabled
                                             ></textarea>
+                                        </td>
+                                        <td>
+                                            <textarea 
+                                                class="form-control" 
+                                                type="text" 
+                                                placeholder="Documento" 
+                                                v-model="judicialRetentionDocument">
+                                            </textarea>
                                         </td>
                                         <td>
                                             <div :class="{ 'has-error': validateRetentionDate(judicialRetentionDate)}">
