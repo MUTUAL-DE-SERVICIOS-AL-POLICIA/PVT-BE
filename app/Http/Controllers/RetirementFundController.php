@@ -1778,13 +1778,17 @@ class RetirementFundController extends Controller
         $procedure_type_id =$retirement_fund->procedure_modality->procedure_type->id;
         $global_pay = false;
         $temp = [];
-
+        $validate_limit_average = false;
+        if($total_salary_quotable['total_average_salary_quotable']>$current_procedure->limit_average){
+            $validate_limit_average = true;
+        }
         if($procedure_type_id == 21){//DA
             $data = [
                 'total_aporte' => $total_salary_quotable['total_retirement_fund'],
                 'global_pay' => true,
                 'total_quotes' => $total_quotes,
                 'total_salary_quotable' => $total_salary_quotable,
+                'validate_limit_average' => false,
             ];
         }else{
             if ($total_quotes >= $current_procedure->contributions_number && $procedure_type_id == 2) { } else {
@@ -1805,6 +1809,7 @@ class RetirementFundController extends Controller
                 'global_pay' => $global_pay,
                 'total_quotes' => $total_quotes,
                 'total_salary_quotable' => $total_salary_quotable,
+                'validate_limit_average' => $validate_limit_average,
             ];
         }
         $data =  array_merge($data, $temp);
@@ -1906,36 +1911,45 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
         $total_quotes = $affiliate->getTotalQuotes();
-
+        $getTotalAverageSalaryQuotable=$affiliate->getTotalAverageSalaryQuotable();
         $current_procedure = Util::getRetFunCurrentProcedure();
         $number_contributions = $current_procedure->contributions_number;
+
+        //DEVOLUCIÓN DE APORTES
         if($retirement_fund->procedure_modality->procedure_type->id == 21){
-            $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_retirement_fund'];
-            $total_average_salary_quotable = $affiliate->getTotalAverageSalaryQuotable()['total_average_salary_quotable'];
+            $total_aporte = $getTotalAverageSalaryQuotable['total_retirement_fund'];
+            $total_average_salary_quotable = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
             $retirement_fund->average_quotable = $total_average_salary_quotable;
-            $retirement_fund->save();
+            $retirement_fund->used_limit_average = $total_average_salary_quotable;
             $sub_total_ret_fun =  $total_aporte;
             $total_ret_fun = $total_aporte;
-        }else{
-            if ($total_quotes >= $number_contributions && $retirement_fund->procedure_modality->procedure_type->id == 2) {
-                $total_average_salary_quotable = $affiliate->getTotalAverageSalaryQuotable()['total_average_salary_quotable'];
-                $retirement_fund->average_quotable = $total_average_salary_quotable;
-                $retirement_fund->save();
-                $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
-                $total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
-            } else {
-                $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_retirement_fund'];
-                $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
-                //$yield = Util::compoundInterest($affiliate->getContributionsPlus(), $affiliate);
-                $administrative_expenses = 0;
-                $less_administrative_expenses = $yield - $administrative_expenses;
-                $sub_total_ret_fun = $less_administrative_expenses;
-                $total_ret_fun = $less_administrative_expenses;
-                $retirement_fund->average_quotable = $total_aporte;
-                $retirement_fund->save();
+        }
+        //PAGO DE FONDO DE RETIRO
+        if ($total_quotes >= $number_contributions && $retirement_fund->procedure_modality->procedure_type->id == 2) {
+            if($getTotalAverageSalaryQuotable['total_average_salary_quotable']>$current_procedure->limit_average){
+                $total_average_salary_quotable = $current_procedure->limit_average;
+                $retirement_fund->used_limit_average = $current_procedure->limit_average;
+            }else{
+                $total_average_salary_quotable = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
+                $retirement_fund->used_limit_average = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
             }
+            $retirement_fund->average_quotable = $total_average_salary_quotable;
+            $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
+            $total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
+        } 
+        //PAGO GLOBAL DE APORTES
+        if($retirement_fund->procedure_modality->procedure_type->id == 1){
+            $total_aporte = $getTotalAverageSalaryQuotable['total_retirement_fund'];
+            $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
+            $administrative_expenses = 0;
+            $less_administrative_expenses = $yield - $administrative_expenses;
+            $sub_total_ret_fun = $less_administrative_expenses;
+            $total_ret_fun = $less_administrative_expenses;
+            $retirement_fund->average_quotable = $total_aporte;
+            $retirement_fund->used_limit_average = $total_aporte;
         }
 
+        $retirement_fund->save();
 
         $discounts = $retirement_fund->discount_types()->whereIn('discount_types.id', [1, 2, 3])->get();
         $guarantors = InfoLoan::where('retirement_fund_id', $retirement_fund->id)->get();
@@ -1980,8 +1994,9 @@ class RetirementFundController extends Controller
         $advance_payment = $request->advancePayment ?? 0;
         $retention_loan_payment = $request->retentionLoanPayment ?? 0;
         $retention_guarantor = $request->retentionGuarantor ?? 0;
+        $retention_judicial = $request->judicialRetentionAmount ?? 0;
         
-        $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor;
+        $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor - $retention_judicial;
 
         $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
         $retirement_fund->total_ret_fun = $total_ret_fun;
@@ -2048,9 +2063,20 @@ class RetirementFundController extends Controller
                 $value->delete();
             }
         }
+
+        $discount_type = DiscountType::where('shortened', 'Judicial o Fiscal')->where('module_id', 3)->first();
+        if ($retention_judicial >= 0 && $retention_judicial !== null) {
+            if ($retirement_fund->discount_types->contains($discount_type->id)) {
+                $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_judicial, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
+            } else {
+                $retirement_fund->discount_types()->save($discount_type, ['amount' => $retention_judicial, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
+            }
+        } else {
+            $retirement_fund->discount_types()->detach($discount_type->id);
+        }
         // fin mejorar
 
-        $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor;
+        $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor - $retention_judicial;
 
         $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
         $retirement_fund->total_ret_fun = $total_ret_fun;
