@@ -19,23 +19,14 @@
                 @if ( $retirement_fund->procedure_modality->procedure_type_id == 1 )
                     <tr class="text-sm">
                         <td class="text-left px-10 py-3 uppercase">TOTAL APORTES</td>
-                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->average_quotable) }} </td>
+                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->used_limit_average) }} </td>
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
                     <tr class="text-sm">
-                        @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
-                            <td class="text-left px-10 py-3 uppercase">5% DE RENDIMIENTO</td>
-                        @else
-                            <td class="text-left px-10 py-3 uppercase">CON RENDIMIENTO DEL 5% ANUAL</td>
-                        @endif
+                        <td class="text-left px-10 py-3 uppercase">5% DE RENDIMIENTO</td>
                         <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($yield) }} </td>
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
-                    <!-- <tr class="text-sm">
-                        <td class="text-left px-10 py-3 uppercase">menos gastos administrativos de 10%</td>
-                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($less_administrative_expenses) }} </td>
-                        <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
-                    </tr> -->
                 @else
                     <tr class="text-sm">
                         <td class="w-60 text-left px-10 py-3 uppercase">ultimo sueldo percibido</td>
@@ -43,8 +34,12 @@
                         <td class="w-15  text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
                     <tr class="text-sm">
-                        <td class="text-left px-10 py-3 uppercase">salario promedio cotizable</td>
-                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->average_quotable) }} </td>
+                        @if($retirement_fund->average_quotable>$retirement_fund->used_limit_average)
+                            <td class="text-left px-10 py-3">SALARIO PROMEDIO COTIZABLE LIMITADO</td>
+                        @else
+                            <td class="text-left px-10 py-3">SALARIO PROMEDIO COTIZABLE</td>
+                        @endif
+                        <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->used_limit_average) }} </td>
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
                     <tr class="text-sm">
@@ -60,7 +55,7 @@
             <thead class="bg-grey-darker">
                 <tr class="font-medium text-white text-sm uppercase">
                     <td colspan='3' class="px-15 text-center">
-                        DATOS ECONOMICOS DEL AFILIADO
+                        DATOS ECONÓMICOS DEL AFILIADO
                     </td>
                 </tr>
             </thead>
