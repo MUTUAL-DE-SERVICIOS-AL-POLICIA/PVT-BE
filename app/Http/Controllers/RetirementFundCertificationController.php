@@ -1466,6 +1466,58 @@ class RetirementFundCertificationController extends Controller
       ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
       ->stream("$namepdf");
   }
+  public function printCertificationDevolution($id)
+  {
+    $retirement_fund = RetirementFund::find($id);
+    $affiliate = $retirement_fund->affiliate;
+    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+      ->where('contribution_type_id', 15) // 15 - Devolución
+      ->orderBy('month_year')
+      ->get();
+    $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+    $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+    $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+    $title = "CERTIFICACIÓN DE DEVOLUCIÓN DE DEPÓSITOS";
+
+    $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
+    $code = $retirement_fund->code;
+    $area = $next_area_code->wf_state->first_shortened;
+    $user = $next_area_code->user;
+    $date = Util::getDateFormat($next_area_code->date);
+    $number = $next_area_code->code;
+
+    $degree = Degree::find($affiliate->degree_id);
+    $exp = City::find($affiliate->city_identity_card_id);
+    $exp = ($exp == Null) ? "-" : $exp->first_shortened;
+    $dateac = Carbon::now()->format('d/m/Y');
+    $place = City::find(Auth::user()->city_id);
+    $num = 0;
+    $pdftitle = "Cuentas Individuales";
+    $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+    $data = [
+      'code' => $code,
+      'area' => $area,
+      'user' => $user,
+      'date' => $date,
+      'number' => $number,
+
+      'num' => $num,
+      'place' => $place,
+      'retirement_fund' => $retirement_fund,
+      //'reimbursements' => $reimbursements,
+      'dateac' => $dateac,
+      'exp' => $exp,
+      'degree' => $degree,
+      'contributions' => $contributions,
+      'affiliate' => $affiliate,
+      'title' => $title,
+      'institution' => $institution,
+      'direction' => $direction,
+      'unit' => $unit,
+    ];
+    return \PDF::loadView('contribution.print.certification_devolution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
+  }
   public function printLegalDictum($id)
   {
     $retirement_fund = RetirementFund::find($id);
