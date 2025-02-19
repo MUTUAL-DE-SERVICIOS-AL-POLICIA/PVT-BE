@@ -25,8 +25,8 @@ class UpdateRetirementFundRegulations2024 extends Seeder
 
         // Insertar tipos de descuento
         DB::table('discount_types')->insert([
-            ['module_id' => 4, 'name' => 'Retención según Resolución Judicial', 'shortened' => 'Retención según Resolución Judicial', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['module_id' => 3, 'name' => 'Retención según Resolución Judicial', 'shortened' => 'Retención según Resolución Judicial', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['module_id' => 4, 'name' => 'Retención según Resolución Judicial', 'shortened' => 'Judicial', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['module_id' => 3, 'name' => 'Retención del Beneficio por Autoridad Judicial o Fiscal', 'shortened' => 'Judicial o Fiscal', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
 
         // Modificar estructura de la tabla discount_type_retirement_fund
