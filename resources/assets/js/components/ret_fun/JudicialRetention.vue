@@ -8,7 +8,7 @@
                @click="register = !register"
                :disabled="retentions != undefined && retentions.length > 0"
                >
-                  <i class="fa">Registrar {{ register }}</i>
+                  <i class="fa">Registrar</i>
                </button>
             </div>
          </div>
