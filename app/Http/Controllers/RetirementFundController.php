@@ -1933,7 +1933,7 @@ class RetirementFundController extends Controller
                 $total_average_salary_quotable = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
                 $retirement_fund->used_limit_average = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
             }
-            $retirement_fund->average_quotable = $total_average_salary_quotable;
+            $retirement_fund->average_quotable = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
             $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
             $total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
         } 
