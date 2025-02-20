@@ -1951,7 +1951,7 @@ class RetirementFundController extends Controller
 
         $retirement_fund->save();
 
-        $discounts = $retirement_fund->discount_types()->whereIn('discount_types.id', [1, 2, 3])->get();
+        $discounts = $retirement_fund->discount_types()->whereIn('discount_types.id', [1, 2, 3, 11])->get();
         $guarantors = InfoLoan::where('retirement_fund_id', $retirement_fund->id)->get();
         foreach ($guarantors as $value) {
             $value->full_name = $value->affiliate_guarantor->fullName();
