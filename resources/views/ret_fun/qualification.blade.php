@@ -380,7 +380,7 @@
                                     <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
                                 </tr>
                             </tbody>
-                            <thead>
+                            <thead v-if="haveJudicialRetention">
                                 <tr>
                                     <th>Tipo</th>
                                     <th>Monto</th>
@@ -389,7 +389,7 @@
                                     <th>Fecha</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody v-if="haveJudicialRetention">
                                 <tr>
                                     <td>Retenciones judiciales</td>
                                     <td>
@@ -424,7 +424,8 @@
                                     <td>% de Retenciones judiciales</td>
                                     <td colspan="5">@{{ percentageRetentionJudicial | percentage }}</td>
                                 </tr>
-                                
+                            </tbody>
+                            <tbody>
                                 <tr class="success">
                                     <td v-if="! globalPay">Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }}</td>
                                     <td v-else>Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }} por {{ $retirement_fund->procedure_modality->name }} </td>

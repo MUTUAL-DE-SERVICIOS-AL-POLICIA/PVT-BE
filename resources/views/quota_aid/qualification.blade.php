@@ -126,9 +126,7 @@
                                     </tr>
 
                                 </tbody>
-                            </table>
-                            <table class="table table-bordered">
-                                <thead>
+                                <thead v-if="haveJudicialRetention">
                                     <tr>
                                         <th>Tipo</th>
                                         <th>Monto</th>
@@ -137,7 +135,7 @@
                                         <th>Fecha de Registro</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody v-if="haveJudicialRetention">
                                     <tr>
                                         <td>Retenciones judiciales</td>
                                         <td>
@@ -169,6 +167,9 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    
+                                </tbody>
+                                <tbody>
                                     <tr class="success">
                                         <td>Total</td>
                                         <td colspan="5"><strong>@{{ totalAnimated | currency }}</strong></td>

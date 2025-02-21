@@ -71,7 +71,7 @@ export default {
       judicialRetentionDate:null,
       judicialRetentionDetail:null,
       judicialRetentionDocument:null,
-      
+      haveJudicialRetention: false,
 
       hasAvailability: false,
       finishRetFun: false,
@@ -458,7 +458,10 @@ export default {
         if(response.data.data) {
           if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
           if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
-          if(response.data.data[0].note_code != undefined) this.judicialRetentionDetail = response.data.data[0].note_code
+          if(response.data.data[0].note_code != undefined){
+            this.judicialRetentionDetail = response.data.data[0].note_code;
+            this.haveJudicialRetention = true;
+          }
           if(response.data.data[0].code != undefined) this.judicialRetentionDocument = response.data.data[0].code
         }
       } catch (error) {
