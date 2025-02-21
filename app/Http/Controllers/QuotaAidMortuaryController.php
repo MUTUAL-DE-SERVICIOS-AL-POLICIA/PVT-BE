@@ -1527,10 +1527,8 @@ class QuotaAidMortuaryController extends Controller
       } else {
           $quota_aid->discount_types()->save($discount_type, ['amount' => $judicial_retention_amount, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
       }
-    } else {
-      $quota_aid->discount_types()->detach($discount_type->id);
     }
-    
+
     $discounts = $quota_aid->discount_types()->whereIn('discount_types.id', [$DISCOUNT_TYPE_ADVANCE, $DISCOUNT_TYPE_RETENTION])->get();
     $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
     //create function search spouse
