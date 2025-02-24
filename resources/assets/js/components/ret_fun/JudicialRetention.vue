@@ -8,7 +8,7 @@
                @click="register = !register"
                :disabled="retentions != undefined && retentions.length > 0"
                >
-                  <i class="fa">Registrar {{ register }}</i>
+                  <i class="fa">Registrar</i>
                </button>
             </div>
          </div>
@@ -101,6 +101,10 @@ export default {
    },
    methods: {
       async registerJudicialRetention() {
+         if (!this.detail || this.detail.trim() === "") {
+            flash('El campo de detalle es obligatorio', 'error');
+            return; 
+         }
          try {
             const response = await axios.post(`/ret_fun/${this.ret_fun_id}/save_judicial_retention`, {
                detail: this.detail
