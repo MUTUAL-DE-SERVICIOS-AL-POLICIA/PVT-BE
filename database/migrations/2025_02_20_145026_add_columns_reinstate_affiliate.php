@@ -14,9 +14,9 @@ class AddColumnsReinstateAffiliate extends Migration
     public function up()
     {
         Schema::table('affiliates', function (Blueprint $table) {
-            $table->date('date_entry_reinstate')->nullable();
-            $table->date('date_derelict_reinstate')->nullable();
-            $table->date('date_last_contribution_reinstate')->nullable();
+            $table->date('date_entry_reinstatement')->nullable();
+            $table->date('date_derelict_reinstatement')->nullable();
+            $table->date('date_last_contribution_reinstatement')->nullable();
         });
     }
 
@@ -28,9 +28,9 @@ class AddColumnsReinstateAffiliate extends Migration
     public function down()
     {
         Schema::table('affiliates', function (Blueprint $table) {
-            $table->dropColumn('date_entry_reinstate');
-            $table->dropColumn('date_derelict_reinstate');
-            $table->dropColumn('date_last_contribution_reinstate');
+            $table->dropColumn('date_entry_reinstatement');
+            $table->dropColumn('date_derelict_reinstatement');
+            $table->dropColumn('date_last_contribution_reinstatement');
         });
     }
 }
