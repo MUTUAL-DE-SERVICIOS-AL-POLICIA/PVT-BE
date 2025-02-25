@@ -18,6 +18,19 @@
                     </button>
                 </div>
             @endif
+            @if(Session::get('rol_id') == 103)
+                <div class="text-right col-md-6">
+                    <button
+                        data-animation="flip"
+                        data-toggle="tooltip"
+                        title="Imprimir Liquidación"
+                        class="btn btn-primary"
+                        @click="printLiquidation"
+                    >
+                        <i class="fa fa-print"></i> Imprimir Liquidación
+                    </button>
+                </div>
+            @endif
             @if(Util::getRol()->id == 10 || Util::isRegionalRole())
                 <div class="text-right col-md-6">
                     <button
