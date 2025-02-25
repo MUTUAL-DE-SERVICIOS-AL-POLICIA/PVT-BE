@@ -296,12 +296,14 @@ class AffiliateController extends Controller
         //GETTIN CONTRIBUTIONS
         $contributions =  collect(Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year'));
         $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
-        
+
         $date_limit_fr = $retirement_funds->sortBy('reception_date')->pluck('last_contribution_date')->toArray();
-        $limits = collect($date_limit_fr)->map(function($value) {
-            return Carbon::createFromFormat('Y-m-d', $value);
-        });
-        //dd($limits);
+        $limits = collect([]);
+        if(count($date_limit_fr) > 0 && $date_limit_fr[0] != null){
+            $limits = collect($date_limit_fr)->map(function($value) {
+                return Carbon::createFromFormat('Y-m-d', $value);
+            });
+        }
         $contributions = $contributions->map(function($value, $key) use ($limits) {
             $fecha = Carbon::createFromFormat('Y-m-d', $key);            
             if ($limits->count() > 0 && $fecha->lessThanOrEqualTo($limits[0])) {
