@@ -47,9 +47,9 @@
                             @endphp
                             <td 
                             @if(isset($reimbursements[$year_start.'-'.$month.'-01'])) style="border: 5px solid #ffe6b3" @endif 
-                            @if(isset($contributions[$year_start.'-'.$month.'-01']) && $contributions[$year_start.'-'.$month.'-01']['fr_procedure'] == 1)
+                            @if(isset($contributions[$year_start.'-'.$month.'-01']['fr_procedure']) && $contributions[$year_start.'-'.$month.'-01']['fr_procedure'] == 1)
                             bgcolor="#a3bbd4"
-                            @elseif(isset($contributions[$year_start.'-'.$month.'-01']) && $contributions[$year_start.'-'.$month.'-01']['fr_procedure'] == 2)
+                            @elseif(isset($contributions[$year_start.'-'.$month.'-01']['fr_procedure']) && $contributions[$year_start.'-'.$month.'-01']['fr_procedure'] == 2)
                             bgcolor="#a897fc"
                             @endif
                             class="numberformat"

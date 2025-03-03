@@ -97,6 +97,27 @@ class Affiliate extends Model
     }
     return Carbon::parse($value)->format('m/Y');
   }
+  public function getDateEntryReinstatementAttribute($value)
+  {
+    if (!$value) {
+      return null;
+    }
+    return Carbon::parse($value)->format('m/Y');
+  }
+  public function getDateDerelictReinstatementAttribute($value)
+  {
+    if (!$value) {
+      return null;
+    }
+    return Carbon::parse($value)->format('m/Y');
+  }
+  public function getDateLastContributionReinstatementAttribute($value)
+  {
+    if (!$value) {
+      return null;
+    }
+    return Carbon::parse($value)->format('m/Y');
+  }
   public function address()
   {
     return $this->morphToMany('\Muserpol\Models\Address', 'addressable')->withTimestamps();

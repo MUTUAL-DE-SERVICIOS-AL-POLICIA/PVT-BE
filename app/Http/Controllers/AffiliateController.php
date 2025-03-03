@@ -297,18 +297,16 @@ class AffiliateController extends Controller
         $contributions =  collect(Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year'));
         $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
 
-        $date_limit_fr = $retirement_funds->sortBy('reception_date')->pluck('last_contribution_date')->toArray();
-        $limits = collect([]);
-        if(count($date_limit_fr) > 0 && $date_limit_fr[0] != null){
-            $limits = collect($date_limit_fr)->map(function($value) {
-                return Carbon::createFromFormat('Y-m-d', $value);
-            });
-        }
-        $contributions = $contributions->map(function($value, $key) use ($limits) {
-            $fecha = Carbon::createFromFormat('Y-m-d', $key);            
-            if ($limits->count() > 0 && $fecha->lessThanOrEqualTo($limits[0])) {
+        $date_entry = Carbon::hasFormat($affiliate->date_entry, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_entry)->startOfMonth() : null;
+        $date_last_contribution = Carbon::hasFormat($affiliate->date_last_contribution, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution)->startOfMonth() : null;
+        $date_entry_reinstatement = Carbon::hasFormat($affiliate->date_entry_reinstatement, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_entry_reinstatement)->startOfMonth() : null;
+        $date_last_contribution_reinstatement = Carbon::hasFormat($affiliate->date_last_contribution_reinstatement, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution_reinstatement)->startOfMonth() : null;
+        
+        $contributions = $contributions->map(function($value, $key) use ($date_entry, $date_last_contribution, $date_entry_reinstatement, $date_last_contribution_reinstatement) {
+            $fecha = Carbon::createFromFormat('Y-m-d', $key)->startOfMonth();
+            if ($fecha->between($date_entry, $date_last_contribution)) {
                 $item['fr_procedure'] = '1';
-            } elseif ($limits->count() > 1 && $fecha->lessThanOrEqualTo($limits[1])) {
+            } elseif ($fecha->between($date_entry_reinstatement, $date_last_contribution_reinstatement)) {
                 $item['fr_procedure'] = '2';
             } else {
                 $item['fr_procedure'] = '0';
@@ -324,8 +322,8 @@ class AffiliateController extends Controller
         $month_end = $end[1];
         $year_end = $end[0];
 
-        if($affiliate->date_last_contribution)
-            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution));
+        if($affiliate->date_last_contribution || $affiliate->date_last_contribution_reinstatement)
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution_reinstatement ?? $affiliate->date_last_contribution));
         else
             $start = explode('-', date('Y-m-d'));
         $month_start = $start[1];

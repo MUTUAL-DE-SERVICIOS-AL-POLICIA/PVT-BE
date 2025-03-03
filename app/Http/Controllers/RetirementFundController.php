@@ -276,6 +276,12 @@ class RetirementFundController extends Controller
         $af = Affiliate::find($request->affiliate_id);
         $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
         $af->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
+        if($request->date_entry_reinstatement != null ) {
+            $af->date_entry_reinstatement = Util::verifyMonthYearDate($request->date_entry_reinstatement) ? Util::parseMonthYearDate($request->date_entry_reinstatement) : $request->date_entry_reinstatement;
+        }
+        if($request->date_derelict_reinstatement != null ) {
+            $af->date_derelict_reinstatement = Util::verifyMonthYearDate($request->date_derelict_reinstatement) ? Util::parseMonthYearDate($request->date_derelict_reinstatement) : $request->date_derelict_reinstatement;
+        }
         switch ($request->ret_fun_modality) {
             case 1:
             case 4:
@@ -1229,6 +1235,8 @@ class RetirementFundController extends Controller
 
         $searcher = new SearcherController();
 
+        $has_ret_fun = $affiliate->retirement_funds()->where('code','not like','%A%')->count() > 0;
+
         $data = [
             'user' => $user,
             'requirements' => $procedure_requirements,
@@ -1240,6 +1248,7 @@ class RetirementFundController extends Controller
             'ret'    =>  $cities,
             'spouse' =>  $spouse,
             'searcher'  =>  $searcher,
+            'has_ret_fun' => $has_ret_fun
         ];
 
         //return $data;
