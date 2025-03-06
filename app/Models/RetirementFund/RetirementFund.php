@@ -144,4 +144,15 @@ class RetirementFund extends Model
     {
         return $this->hasMany('Muserpol\Models\InfoLoan');
     }
+    /*
+    Función que devuelve si el trámite de fondo es el primero o el segundo del afiliado
+    */
+    public function procedureIndex()
+    {
+        $ret_fun_all = RetirementFund::where('affiliate_id', $this->affiliate_id)
+            ->where('code', 'NOT LIKE', '%A')
+            ->orderBy('reception_date')->pluck('id')->all();
+        $index = array_search($this->id, $ret_fun_all);
+        return $index;
+    }
 }

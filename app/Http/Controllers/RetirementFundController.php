@@ -1691,18 +1691,24 @@ class RetirementFundController extends Controller
         $retirement_fund = RetirementFund::find($ret_fun_id);
         // $this->authorize('qualify', $retirement_fund);
         $affiliate = $retirement_fund->affiliate;
+
+        $ret_funds = RetirementFund::where('affiliate_id', $affiliate->id)->where('code', 'NOT LIKE', '%A')
+        ->orderBy('reception_date')->pluck('id')->all();
+        $index = array_search($ret_fun_id, $ret_funds);
+
         $current_procedure = RetFunProcedure::where('is_enabled', '=', true)->first();
         if (!$current_procedure) {
             return "error: Verifique si existen procedures activos";
         }
-        $dates_global = $affiliate->getDatesGlobal();
+        
+        $dates_global = $index == 0 ? $affiliate->getDatesGlobal() : $affiliate->getDatesGlobal(true);
         /*  qualification*/
         // $c=ContributionType::find(1);
         $group_dates = [];
-        $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
+        $total_dates = Util::sumTotalContributions($dates_global);
         $dates = array(
             'id' => 0,
-            'dates' => $affiliate->getDatesGlobal(),
+            'dates' => $dates_global,
             'name' => "Alta y Baja de la Policía Nacional Boliviana",
             'operator' => '**',
             'description' => "Fechas de Alta y Baja de la Policía Nacional Boliviana",
@@ -1712,12 +1718,12 @@ class RetirementFundController extends Controller
         $group_dates[] = $dates;
         foreach (ContributionType::orderBy('id')->get() as $c) {
             // if($c->id != 1){
-            $contributionsWithType = $affiliate->getContributionsWithType($c->id);
+            $contributionsWithType = $affiliate->getContributionsWithType($c->id, $index == 1);
             if (sizeOf($contributionsWithType) > 0) {
                 $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
                 $dates = array(
                     'id' => $c->id,
-                    'dates' => $affiliate->getContributionsWithType($c->id),
+                    'dates' => $affiliate->getContributionsWithType($c->id, $index == 1),
                     'name' => $c->name,
                     'operator' => $c->operator,
                     'description' => $c->description,
@@ -1777,12 +1783,13 @@ class RetirementFundController extends Controller
         }
         $current_procedure = Util::getRetFunCurrentProcedure();
         $retirement_fund = RetirementFund::find($id);
+        $ret_fund_index = $retirement_fund->procedureIndex();
 
         $affiliate = $retirement_fund->affiliate;
         $affiliate->service_years = $request->service_years;
         $affiliate->service_months = $request->service_months;
         $affiliate->save();
-        $total_quotes = $affiliate->getTotalQuotes();
+        $total_quotes = $affiliate->getTotalQuotes($ret_fund_index == 1);
         $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable();
         $procedure_type_id =$retirement_fund->procedure_modality->procedure_type->id;
         $global_pay = false;

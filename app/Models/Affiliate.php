@@ -360,10 +360,12 @@ class Affiliate extends Model
   {
     return Util::sumTotalContributions($this->getDatesWithoutAvailability())+(Util::sumTotalContributions($this->getDatesAvailability()));
   }
-  public function getDatesGlobal()
+  public function getDatesGlobal($reinstatement = false)
   {
-    $date_start = Util::verifyMonthYearDate($this->date_entry) ? Util::parseMonthYearDate($this->date_entry) : $this->date_entry;
-    $date_end = Util::verifyMonthYearDate($this->date_last_contribution) ? Util::parseMonthYearDate($this->date_last_contribution) : $this->date_last_contribution;
+    $start = $reinstatement ? $this->date_entry_reinstatement : $this->date_entry;
+    $end = $reinstatement ? $this->date_last_contribution_reinstatement : $this->date_last_contribution;
+    $date_start = Util::verifyMonthYearDate($start) ? Util::parseMonthYearDate($start) : $start;
+    $date_end = Util::verifyMonthYearDate($end) ? Util::parseMonthYearDate($end) : $end;
     $dates[] = (object)array(
       // 'start' => ($date_start < '1976-05-01' && ) ? "1976-05-01" : $date_start,
       'start' => $date_start,
@@ -371,12 +373,14 @@ class Affiliate extends Model
     );
     return $dates;
   }
-  public function getContributionsWithType($contribution_type_id)
+  public function getContributionsWithType($contribution_type_id, $reinstatement = false)
   {
+    $date_start = $reinstatement ? Util::parseMonthYearDate($this->date_entry_reinstatement) : Util::parseMonthYearDate($this->date_entry);
+    $date_end = $reinstatement ? Util::parseMonthYearDate($this->date_last_contribution_reinstatement) : Util::parseMonthYearDate($this->date_last_contribution);
     $contribution_type = ContributionType::find($contribution_type_id);
     $dates = [];
     if (!$contribution_type) return "error";
-    $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->orderBy('month_year', 'asc')->get();
+    $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->whereBetween('month_year', [$date_start, $date_end])->orderBy('month_year', 'asc')->get();
     if ($length = $contributions->count()) {
       $start = $contributions[0]->month_year;
       for ($i = 0; $i < $length - 1; $i++) {
@@ -446,7 +450,7 @@ class Affiliate extends Model
     return $total;
   }
   //--**OBTIENE EL TOTAL DE CUOTAS**//
-  public function getTotalQuotes()
+  public function getTotalQuotes($reinstatement = false)
   {
     // $total_global_backed = Util::sumTotalContributions($this->getDatesGlobal());
     // $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Servicio Activo'));
@@ -462,44 +466,44 @@ class Affiliate extends Model
     //     - ($total_no_records_backed ?? 0);
 
     // $c = ContributionType::find(1);
-    $group_dates = [];
-    $total_dates = Util::sumTotalContributions($this->getDatesGlobal());
-    $dates = array(
-      'id' => 0,
-      'dates' => $this->getDatesGlobal(),
-      'name' => "perii",
-      'operator' => '**',
-      'description' => "dsds",
-      'years' => intval($total_dates / 12),
-      'months' => $total_dates % 12,
-    );
-    $group_dates[] = $dates;
-    foreach (ContributionType::orderBy('id')->get() as $c) {
-      // if ($c->id != 1) {
-      $contributionsWithType = $this->getContributionsWithType($c->id);
-      if (sizeOf($contributionsWithType) > 0) {
-        if ($c->operator == '-') {
-          $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
-          // $dates = array(
-          //     'id' => $c->id,
-          //     'dates' => $this->getContributionsWithType($c->id),
-          //     'name' => $c->name,
-          //     'operator' => $c->operator,
-          //     'description' => $c->shortened,
-          //     'years' => intval($sub_total_dates / 12),
-          //     'months' => $sub_total_dates % 12,
-          // );
-          eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
-          $group_dates[] = $dates;
-        }
-      }
-      // }
-    }
-    $contributions = array(
-      'contribution_types' => $group_dates,
-      'years' => intval($total_dates / 12),
-      'months' => $total_dates % 12
-    );
+    // $group_dates = [];
+    $total_dates = Util::sumTotalContributions($this->getDatesGlobal($reinstatement));
+    // $dates = array(
+    //   'id' => 0,
+    //   'dates' => $this->getDatesGlobal(),
+    //   'name' => "perii",
+    //   'operator' => '**',
+    //   'description' => "dsds",
+    //   'years' => intval($total_dates / 12),
+    //   'months' => $total_dates % 12,
+    // );
+    // $group_dates[] = $dates;
+    // foreach (ContributionType::orderBy('id')->get() as $c) {
+    //   // if ($c->id != 1) {
+    //   $contributionsWithType = $this->getContributionsWithType($c->id);
+    //   if (sizeOf($contributionsWithType) > 0) {
+    //     if ($c->operator == '-') {
+    //       $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+    //       // $dates = array(
+    //       //     'id' => $c->id,
+    //       //     'dates' => $this->getContributionsWithType($c->id),
+    //       //     'name' => $c->name,
+    //       //     'operator' => $c->operator,
+    //       //     'description' => $c->shortened,
+    //       //     'years' => intval($sub_total_dates / 12),
+    //       //     'months' => $sub_total_dates % 12,
+    //       // );
+    //       eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
+    //       $group_dates[] = $dates;
+    //     }
+    //   }
+    //   // }
+    // }
+    // $contributions = array(
+    //   'contribution_types' => $group_dates,
+    //   'years' => intval($total_dates / 12),
+    //   'months' => $total_dates % 12
+    // );
     return $total_dates;
   }
   public function getLastContributionAttribute(){
