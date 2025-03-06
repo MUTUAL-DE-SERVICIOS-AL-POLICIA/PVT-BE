@@ -10,7 +10,7 @@
         @include('ret_fun.print.legal_guardian', ['legal_guardian'=>$quota_aid->quota_aid_beneficiaries()->where('type', 'S')->first()->quota_aid_legal_guardians()->first()])
     @endif
     <div class="block">
-    @if ($discount != null && $discount->id == 9)
+    @if ($discount != null && $discount->id == 10)
     <table class="table-info w-100 m-b-10">
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white text-sm uppercase">
@@ -51,7 +51,7 @@
                     <td class="text-left px-10 py-3 uppercase">SUB TOTAL {{$quota_aid->procedure_modality->procedure_type->second_name}}</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($quota_aid->subtotal) }}  Bs.</td>
                 </tr>
-                @if ($discount->id == 9)
+                @if ($discount->id == 10)
                 <tr class="text-md">
                     <td class="text-left px-10 py-3 uppercase"> - {{$discount->shortened}}</td>
                     <td class="text-right uppercase px-5 py-3">- {{ Util::formatMoney($discount->pivot->amount) }}  Bs.</td>
@@ -65,7 +65,7 @@
             </tbody>
         </table>
     </div>
-    <p class="text-lg">La Comisión de Beneficios Económicos en uso de sus atribuciones, determina el pago del beneficio de {{$quota_aid->procedure_modality->procedure_type->second_name}} en favor de (el) (los) derechohabientes (s):</p>
+    <p class="text-lg">La Comisión de Beneficios Económicos en uso de sus atribuciones, determina el pago del beneficio de {{$quota_aid->procedure_modality->procedure_type->second_name}} en favor de (el) (los) derechohabiente (s):</p>
     <div class="block">
         <table class="table-info w-100 m-b-10">
             <thead class="bg-grey-darker">

@@ -1218,6 +1218,9 @@ class Util
       case 31:
         return 7;
         break;
+      case 62:
+        return 9;
+        break;
       default:
         return [];
         break;
