@@ -556,6 +556,14 @@ class EconomicComplementController extends Controller
         $affiliate = Affiliate::where('identity_card', $request->ci)->first();
         $id = null;
         if ($affiliate) {
+            if ($affiliate->affiliate_state->id == 1){
+                return response()->json([
+                    'error' => true,
+                    'canCreate' => false,
+                    'message' => 'El afiliado esta activo',
+                    'data' => (object)[]
+                ], 403);
+            }
             // Verifica si el afiliado esta fallecido
             if($affiliate->date_death != null) {
                 return response()->json([
@@ -690,9 +698,9 @@ class EconomicComplementController extends Controller
             ]);
         }
         return response()->json([
-            'error' => true,
+            'error' => false,
             'canCreate' => false,
-            'message' => 'No es posible crear trámites',
+            'message' => 'No es posible crear trámites el periodo de creación de trámites no esta habilitado',
             'data' => [],
         ], 400);
     }
