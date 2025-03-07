@@ -15,9 +15,14 @@ use Muserpol\Models\EconomicComplement\EcoComModality;
 use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\Address;
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\ObservationType;
 use Muserpol\Helpers\Util;
 use Muserpol\Helpers\ID;
 use Carbon\Carbon;
+use Muserpol\Models\Spouse;
+use Muserpol\Models\Workflow\WorkflowState;
+use Muserpol\User;
 use Ramsey\Uuid\Uuid;
 
 class EconomicComplementController extends Controller
@@ -538,4 +543,359 @@ class EconomicComplementController extends Controller
             }
         }
     }
+
+    // Por migrar a microservicio
+    private function checkObservations($affiliate)
+    {
+        $observation = $affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->where('type', 'like', 'A')->get()->pluck('id'))->get();
+        return $observation;
+    }
+    public function checkAvailability(Request $request)
+    {
+        $affiliates = [];
+        $affiliate = Affiliate::where('identity_card', $request->ci)->first();
+        $id = null;
+        if ($affiliate) {
+            if ($affiliate->affiliate_state->id == 1){
+                return response()->json([
+                    'error' => true,
+                    'canCreate' => false,
+                    'message' => 'El afiliado esta activo',
+                    'data' => (object)[]
+                ], 403);
+            }
+            // Verifica si el afiliado esta fallecido
+            if($affiliate->date_death != null) {
+                return response()->json([
+                    'error' => false,
+                    'canCreate' => false,
+                    'message' => 'El afiliado está fallecido',
+                    'data' => (object)[]
+                ], 403);
+            }
+            $id = $affiliate->id;
+            // Verifica si el afiliado tiene observaciones 
+            $observations = $this->checkObservations($affiliate);
+            // Verifica si el afiliado tiene tramites de vejez anteriores o si es inclusion
+            $isInclusion = EconomicComplement::where('affiliate_id', $affiliate->id)
+            ->whereIn('eco_com_modality_id', [1, 4, 6, 8]) // Vejez
+            ->count() == 0;
+            if($isInclusion) {
+                return response()->json([
+                    'error' => false,
+                    'canCreate' => false,
+                    'message' => 'Para casos de inclusión apersonarse a ventanilla de Complemento Económico',
+                    'data' => (object)[]
+                ], 403);
+            }
+            if($observations->count() > 0)
+            {
+                return response()->json([
+                    'error' => false,
+                    'canCreate' => false,
+                    'message' => 'No puede solicitar el Complemento Económico por observaciones',
+                    'data' => (object)[]
+                ], 403);
+            }
+            // Verifica si el afiliado es rehabilitación
+            if ($affiliate->stop_eco_com_consecutively()) {
+                return response()->json([
+                    'error' => false,
+                    'canCreate' => false,
+                    'message' => 'Para casos de rehabilitación apersonarse a ventanilla de Complemento Económico',
+                    'data' => (object)[]
+                ], 403);
+            }
+            $affiliates[] = $affiliate;
+            if (Util::isDoblePerceptionEcoCom($affiliate->identity_card)) {
+                $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($affiliate->identity_card)->whereIn('eco_com_modality_id', [2, 5, 9, 7])->first();
+                $affiliates[] = $eco_com_beneficiary->economic_complement->affiliate;
+            }
+        } else {
+            $spouse = Spouse::where('identity_card', $request->ci)->first();
+            if ($spouse) {
+                if($spouse->date_death != null) {
+                    return response()->json([
+                        'error' => false,
+                        'canCreate' => false,
+                        'message' => 'El beneficiario/a está fallecido/a',
+                        'data' => (object)[]
+                    ], 403);
+                }
+                $affiliate2 = Affiliate::find($spouse->affiliate_id);
+                if ($affiliate2) {
+                    $observations = $this->checkObservations($affiliate2);
+                    $isInclusion = EconomicComplement::where('affiliate_id', $affiliate2->id)
+                    ->whereIn('eco_com_modality_id', [2, 5, 7, 9]) // Viudedad
+                    ->count() == 0;
+                    if($isInclusion) {
+                        return response()->json([
+                            'error' => false,
+                            'canCreate' => false,
+                            'message' => 'Para casos de inclusión apersonarse a ventanilla de Complemento Económico',
+                            'data' => (object)[]
+                        ], 403);
+                    }
+                    if($observations->count() > 0)
+                    {
+                        return response()->json([
+                            'error' => false,
+                            'canCreate' => false,
+                            'message' => 'No puede solicitar el Complemento Económico por observaciones',
+                            'data' => (object)[]
+                        ], 403);
+                    }
+                    if ($affiliate2->stop_eco_com_consecutively()) {
+                        return response()->json([
+                            'error' => false,
+                            'canCreate' => false,
+                            'message' => 'Para casos de rehabilitación apersonarse a ventanilla de Complemento Económico',
+                            'data' => (object)[]
+                        ], 403);
+                    }
+                    $affiliates[] = $affiliate2;
+                }
+            }
+        }
+        if (count($affiliates) == 0) {
+            return response()->json([
+                'error' => true,
+                'canCreate' => false,
+                'message' => 'No existe afiliado',
+                'data' => (object)[]
+            ], 404);
+        }
+        $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
+        $available_procedures = EcoComProcedure::whereIn('id', $current_procedures->values())->orderBy('year')->orderBy('normal_start_date')->get();
+
+        if (($available_procedures->count() > 0)) {
+            $complements = [];
+            $canCreate = false;
+
+            foreach ($affiliates as $affiliate) {
+                foreach ($available_procedures as $procedures) {
+                    $month = $procedures->rent_month ?? '';
+                    $eco_com = EconomicComplement::where('eco_com_procedure_id', $procedures->id)->where('affiliate_id', $affiliate->id)->first();
+                    $complements[] = [
+                        'procedure_id' => $procedures->id,
+                        'month' => $month != '' ? $month . '/' . strval(Carbon::parse($procedures->year)->year) : '',
+                        'eco_com_id' => !!$eco_com ? $eco_com->id : null,
+                        'affiliate_id' => $affiliate->id
+                    ];
+                    if (!$eco_com) {
+                        $canCreate = true;
+                    }
+                }
+            }
+
+            return response()->json([
+                'error' => false,
+                'canCreate' => true,
+                'available_procedures' => $available_procedures->pluck('id'),
+                'affiliate_id' => $id ?? $affiliates[0]->id,
+                'message' => '',
+                'data' => $complements,
+            ]);
+        }
+        return response()->json([
+            'error' => false,
+            'canCreate' => false,
+            'message' => 'No es posible crear trámites el periodo de creación de trámites no esta habilitado',
+            'data' => [],
+        ], 400);
+    }
+
+    public static function showFormatedEcoCom(Request $request)
+    {
+        $eco_com = EconomicComplement::find($request->eco_com_id);
+        if(!!$eco_com){
+            return response()->json([
+                'error' => false,
+                'message' => 'Puede crear trámites',
+                'data' => new EconomicComplementResource($eco_com),
+            ]);
+        } else {
+            return response()->json([
+                'error' => true,
+                'message' => 'No existe el complemento',
+                'data' => [],
+            ], 400);
+        }
+    }
+
+    public function createEcoCom(Request $request)
+    {
+        $eco_com_procedure_id = $request->eco_com_procedure_id;
+        
+        $user = User::where('username', 'Kiosco Digital')->value('id');
+        $user_id = $user;
+        $wf_state = WorkflowState::where('name', 'Kiosco Digital')->first();
+        $wf_current_state_id = $wf_state->id;
+        $affiliate = Affiliate::find($request->affiliate_id);
+        $eco_com_id = [];
+        
+        $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
+        $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();        
+        $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
+        if (!$has_economic_complement) {
+            /**
+             ** Create Economic Complement 
+            */
+            $economic_complement = $this->createEconomicComplement($user_id, $affiliate, $wf_current_state_id, $last_eco_com, $eco_com_procedure_id);
+            $eco_com_id[] = $economic_complement->id;
+            
+            /**
+             ** Save eco com beneficiary
+            */
+            $eco_com_beneficiary = $this->replicateBeneficiary($economic_complement, $last_eco_com_beneficiary);
+            
+            $this->addObservations($economic_complement, $affiliate, $eco_com_beneficiary);
+            
+            $economic_complement->procedure_records()->create([
+                'user_id' => $user_id,
+                'record_type_id' => 7,
+                'wf_state_id' =>  $wf_current_state_id,
+                'date' => Carbon::now(),
+                'message' => 'Se creó el trámite mediante kiosko.'
+            ]);
+            /*creación de doble percepción*/
+            if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
+                $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id',[2,5,9,7])->first();
+                $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
+                
+                $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
+                $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
+                $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
+                if (!$has_economic_complement) {
+                    /**
+                     ** Create Economic Complement 
+                    */
+                    $economic_complement = $this->createEconomicComplement($user_id, $affiliate, $wf_current_state_id, $last_eco_com, $eco_com_procedure_id);
+                    $eco_com_id[] = $economic_complement->id;
+                    /**
+                     ** Save eco com beneficiary
+                    */
+                    $eco_com_beneficiary = $this->replicateBeneficiary($economic_complement, $last_eco_com_beneficiary);
+                    /**
+                     ** has affiliate observation
+                    */
+                    $this->addObservations($economic_complement, $affiliate, $eco_com_beneficiary);
+
+                    $economic_complement->procedure_records()->create([
+                        'user_id' => $user_id,
+                        'record_type_id' => 7,
+                        'wf_state_id' => $wf_current_state_id,
+                        'date' => Carbon::now(),
+                        'message' => 'Se creó el trámite mediante kiosko.'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'error' => false,
+                'message' => 'Complemento Económico creado.',
+                'eco_com_id' => $eco_com_id
+            ]);
+        } else {
+            return response()->json([
+                'error' => true,
+                'message' => 'Complemento Económico ya fue registrado.',
+                'data' => (object)[],
+            ], 403);
+        }
+    }
+
+    private function createEconomicComplement($user_id, $affiliate, $wf_current_state_id, $last_eco_com, $eco_com_procedure_id) {
+        $now = Carbon::now()->toDateString();
+        $eco_com_modality = EcoComModality::where('procedure_modality_id', '=', $last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
+        $workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
+        $economic_complement = new EconomicComplement([
+            'user_id' => $user_id,
+            'affiliate_id' => $affiliate->id,
+            'eco_com_modality_id' => $eco_com_modality,
+            'eco_com_state_id' => ID::ecoComState()->in_process,
+            'eco_com_procedure_id' => $eco_com_procedure_id,
+            'workflow_id' => $workflow_id,
+            'wf_current_state_id' => $wf_current_state_id,
+            'city_id' => $last_eco_com->city_id,
+            'degree_id' => $affiliate->degree->id,
+            'category_id' => $affiliate->category->id,
+            'code' => Util::getLastCodeEconomicComplement($eco_com_procedure_id),
+            'reception_date' => now(),
+            'inbox_state' => false,
+            'eco_com_reception_type_id' => ID::ecoCom()->habitual,
+            'uuid' => Uuid::uuid1()->toString(),
+        ]);
+        $economic_complement->save();
+
+        //Desactivar Observers
+        EconomicComplement::FlushEventListeners(); 
+        $this->updateEcoComWithFixedPension($economic_complement->id);    
+        //Activar Observers
+        EconomicComplement::Boot();
+
+        return $economic_complement;
+    }
+
+    private function replicateBeneficiary($eco_com, $last_eco_com_beneficiary)
+    {
+        $eco_com_beneficiary = new EcoComBeneficiary();
+        $eco_com_beneficiary->economic_complement_id = $eco_com->id;
+        $eco_com_beneficiary->city_identity_card_id = $last_eco_com_beneficiary->city_identity_card_id;
+        $eco_com_beneficiary->identity_card = $last_eco_com_beneficiary->identity_card;
+        $eco_com_beneficiary->last_name = $last_eco_com_beneficiary->last_name;
+        $eco_com_beneficiary->mothers_last_name = $last_eco_com_beneficiary->mothers_last_name;
+        $eco_com_beneficiary->first_name = $last_eco_com_beneficiary->first_name;
+        $eco_com_beneficiary->second_name = $last_eco_com_beneficiary->second_name;
+        $eco_com_beneficiary->surname_husband = $last_eco_com_beneficiary->surname_husband;
+        $eco_com_beneficiary->birth_date = Util::verifyBarDate($last_eco_com_beneficiary->birth_date) ? Util::parseBarDate($last_eco_com_beneficiary->birth_date) : $last_eco_com_beneficiary->birth_date;
+        $eco_com_beneficiary->nua = $last_eco_com_beneficiary->nua;
+        $eco_com_beneficiary->gender = $last_eco_com_beneficiary->gender;
+        $eco_com_beneficiary->civil_status = $last_eco_com_beneficiary->civil_status;
+        $eco_com_beneficiary->phone_number = $last_eco_com_beneficiary->phone_number;
+        //$eco_com_beneficiary->cell_phone_number = $cell_phone_number;
+        $eco_com_beneficiary->city_birth_id = $last_eco_com_beneficiary->city_birth_id;
+        $eco_com_beneficiary->due_date = Util::verifyBarDate($last_eco_com_beneficiary->due_date) ? Util::parseBarDate($last_eco_com_beneficiary->due_date) : $last_eco_com_beneficiary->due_date;
+        $eco_com_beneficiary->is_duedate_undefined = $last_eco_com_beneficiary->is_duedate_undefined;
+        $eco_com_beneficiary->save();
+
+        if ($last_eco_com_beneficiary->address()->first()) {
+            $eco_com_beneficiary->address()->attach($last_eco_com_beneficiary->address()->first()->id);
+        } 
+
+        return $eco_com_beneficiary;
+    }
+
+    private function addObservations($economic_complement, $affiliate, $eco_com_beneficiary){
+        /**
+         ** has affiliate observation
+         */
+        $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->get();
+        foreach ($observations as $observation) {
+            $enabled = false;
+            if ($observation->id == 31) // Descuento - Aporte para el Auxilio Mortuorio mediante el Complemento Económico.
+                $enabled = true;
+            $economic_complement->observations()->save($observation, [
+                'user_id' => $observation->pivot->user_id,
+                'date' => $observation->pivot->date,
+                'message' => $observation->pivot->message,
+                'enabled' => $enabled
+            ]);
+        }
+        /**
+         ** observacion mayor de 25 en orfandad
+         */
+        if ($economic_complement->eco_com_modality_id == ID::ecoCom()->orphanhood && $eco_com_beneficiary->birth_date) {
+            $beneficiary_years = intval(explode(' ', Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
+            if ($beneficiary_years > 25) {
+                $economic_complement->observations()->save(ObservationType::find(36), [
+                    'user_id' => auth()->id(),
+                    'date' => now(),
+                    'message' => 'Excluido - Huerfano(a) cumplio 25 años. (Observación adicionada automáticamente)',
+                    'enabled' => false
+                ]);
+            }
+        }    
+    }
+    
 }

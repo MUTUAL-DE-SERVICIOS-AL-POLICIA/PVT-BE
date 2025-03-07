@@ -109,19 +109,23 @@
           :class="rq.background"
           style="cursor:pointer"
           :key="rq.id"
-        >
+        > 
+        <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][procedureRequirementId]'" :value="rq.procedureRequirementId">
+                <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][name]'" :value="rq.name">
+                <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][number]'" :value="rq.number">
+                <input type="hidden" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][isUploaded]'" :value="rq.isUploaded">
           <div class="row">
             <div class="col-md-10">
               <div class="vote-actions">
                 <h1>{{rq.number}}</h1>
               </div>
-              <span class="vote-title">{{rq.procedure_document.name}}</span>
+              <span class="vote-title">{{rq.name}}</span>
               <div class="vote-info">
                 <div class="col-md-2 no-margins no-padding">
                   <i class="fa fa-comments-o"></i> Comentario:
                 </div>
                 <div class="col-md-6 no-margins no-padding">
-                  <input type="text" :name="'comment'+rq.id" class="form-control" maxlength="80">
+                  <input type="text" :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][comment]'" class="form-control" maxlength="80">
                 </div>
                 <br>
               </div>
@@ -136,7 +140,7 @@
                     type="checkbox"
                     v-model="rq.status"
                     value="checked"
-                    :name="'document'+rq.id"
+                    :name="'required_requirements['+rq.number+']['+rq.procedureDocumentId+'][status]'"
                     class="largerCheckbox"
                   >
                 </div>
@@ -147,6 +151,15 @@
       </div>
     </div>
     <br>
+    <div v-if="aditionalRequirementsUploaded.length > 0">
+            <h4>Documentos adicionales en DBE</h4>
+            <ul>
+                <li v-for="(requirement, index) in aditionalRequirementsUploaded">
+                    {{requirement.name}}
+                    <input type="hidden" name="aditional_requirements[]" :value="convertToStringJson(requirement)">
+                </li>
+            </ul>
+        </div>
     <div v-if="additionalRequirements.length > 0" style="margin-bottom:180px">
       <h4>Documentos adicionales</h4>
       <select
@@ -159,9 +172,9 @@
       >
         <option
           v-for="(requirement, index) in additionalRequirements"
-          :value="requirement.id"
+          :value="convertToStringJson(requirement)"
           :key="index"
-        >{{ requirement.procedure_document.name }}</option>
+        >{{ requirement.name }}</option>
       </select>
     </div>
     <transition name="show-requirements-error" enter-active-class="animated bounceInLeft">
@@ -198,6 +211,7 @@ export default {
       requirements: [],
       requirementList: [],
       additionalRequirements: [],
+      aditionalRequirementsUploaded: [],
       modality_id: !!this.lastEcoCom
         ? this.lastEcoCom.procedure_modality_id
         : null,
@@ -205,15 +219,15 @@ export default {
       pension_entity_id: !!this.affiliate.pension_entity_id
         ? this.affiliate.pension_entity_id
         : null,
-      reception_type_id: null
+      reception_type_id: null,
     };
   },
-  mounted() {
+  async mounted() {
     this.setReceptionType();
     this.setPensionEntity();
     this.setModality();
     this.setCity();
-    this.getRequirements();
+    await this.getRequirements();
   },
   methods: {
     async onChooseModality(event) {
@@ -310,17 +324,22 @@ export default {
       if (!this.modality_id) {
         this.requirementList = [];
       }
+      let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality_id}/collate`;
       await axios
-        .get("/get_procedure_requirements", {
-          params: {
-            affiliate_id: this.affiliate.id,
-            procedure_modality_id: this.modality_id,
-            reception_type_id: this.reception_type_id
-          }
-        })
+        .get(uri)
         .then(response => {
-          this.requirementList = response.data.requirements;
-          this.additionalRequirements = response.data.additional_requirements;
+          let requiredDocuments = response.data.requiredDocuments;                    
+          Object.values(requiredDocuments).forEach(value => {
+            value.forEach(r => {
+              r['status'] = r['isUploaded'];
+              r['background'] = r['isUploaded'] ? 'bg-success-blue' : '';
+            });
+          });
+          if (this.reception_type_id != 1) {
+            this.requirementList = requiredDocuments;
+          }     
+          this.additionalRequirements = response.data.additionallyDocuments;
+          this.aditionalRequirementsUploaded = response.data.additionallyDocumentsUpload;          
           setTimeout(() => {
             $(".chosen-select")
               .chosen({ width: "100%" })
@@ -335,6 +354,9 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    convertToStringJson(objeto){
+      return JSON.stringify(objeto);
     },
     verifyOneNumber(){
       let sw = true;
@@ -352,6 +374,7 @@ export default {
       }
     },
     checked(index, i) {
+      if(this.requirementList[index][i].isUploaded) return;
       for (var k = 0; k < this.requirementList[index].length; k++) {
         if (k != i) {
           this.requirementList[index][k].status = false;
