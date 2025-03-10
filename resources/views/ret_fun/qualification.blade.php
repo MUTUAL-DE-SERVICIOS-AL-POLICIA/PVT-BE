@@ -202,7 +202,7 @@
                                     <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                                 </td>
                             </tr>
-                            <tr v-if="validateLimitAverageQuotable">
+                            <tr v-if="validateLimitAverageQuotableVerified">
                                 <td>Salario Promedio Cotizable Limitado</td>
                                 <td>Bs {{ Util::formatMoney($retirement_fund->ret_fun_procedure->limit_average) ?? '10800' }}</td>
                             </tr>

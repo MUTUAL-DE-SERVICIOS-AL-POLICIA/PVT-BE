@@ -479,7 +479,7 @@ export default {
       return this.totalAverageSalaryQuotable;
     },
 
-    validateLimitAverageQuotable: function() {
+    validateLimitAverageQuotableVerified: function() {
       return this.validateLimitAverageQuotable;
     },
 
