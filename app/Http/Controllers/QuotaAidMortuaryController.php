@@ -7,6 +7,7 @@ use Muserpol\Models\Affiliate;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\Models\Kinship;
+use Muserpol\Models\KinshipBeneficiary;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Auth;
@@ -638,6 +639,8 @@ class QuotaAidMortuaryController extends Controller
         $b->advisor_name_court = $beneficiary_advisor->name_court;
         $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;
         $b->advisor_resolution_date = $beneficiary_advisor->resolution_date;
+        $kinship = $beneficiary_advisor->kinship_beneficiaries($b->id)->first();
+        $b->kinship_beneficiary_id = $kinship ? $kinship->id : null;
       }
       if ($beneficiary_legal_guardian = $b->quota_aid_legal_guardians->first()) {
         $b->legal_representative = 2;
@@ -689,6 +692,7 @@ class QuotaAidMortuaryController extends Controller
     $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
     $cities = City::get();
     $kinships = Kinship::get();
+    $kinship_beneficiaries = KinshipBeneficiary::get();
 
     $cities_pluck = City::all()->pluck('first_shortened', 'id');
     $birth_cities = City::all()->pluck('name', 'id');
@@ -806,6 +810,7 @@ class QuotaAidMortuaryController extends Controller
       'documents' => $documents,
       'cities'    =>  $cities,
       'kinships'   =>  $kinships,
+      'kinship_beneficiaries' => $kinship_beneficiaries,
       'cities_pluck' => $cities_pluck,
       'birth_cities' => $birth_cities,
       'financial_entities'    =>  $financial_entities,
@@ -830,7 +835,6 @@ class QuotaAidMortuaryController extends Controller
       'discounts' => $discounts
     ];
     //return $procedures_modalities;
-
     return view('quota_aid.show', $data);
   }
   public function updateBeneficiaries(Request $request, $id)
@@ -910,13 +914,21 @@ class QuotaAidMortuaryController extends Controller
               $ben_advisor->resolution_date = isset($new_ben['advisor_resolution_date']) ? (Util::verifyBarDate($new_ben['advisor_resolution_date']) ? Util::parseBarDate($new_ben['advisor_resolution_date']) : $new_ben['advisor_resolution_date']) : null;
               $ben_advisor->type = "Natural";
               $ben_advisor->save();
-              if ($old_ben->quota_aid_advisors->first()) { } else {
-                $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
-                $advisor_beneficiary->quota_aid_beneficiary_id = $old_ben->id;
-                $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
-                $advisor_beneficiary->save();
-              }
-
+              if (!empty($new_ben['kinship_beneficiary_id'])) {
+                $advisor_beneficiary = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $old_ben->id)
+                    ->where('quota_aid_advisor_id', $ben_advisor->id)
+                    ->first();
+                if (!$advisor_beneficiary) {
+                    $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
+                    $advisor_beneficiary->quota_aid_beneficiary_id = $old_ben->id;
+                    $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
+                    $advisor_beneficiary->kinship_beneficiary_id = $new_ben['kinship_beneficiary_id'];
+                    $advisor_beneficiary->save();
+                } else {
+                    $advisor_beneficiary->kinship_beneficiary_id = $new_ben['kinship_beneficiary_id'];
+                    $advisor_beneficiary->save();
+                }
+            }
               break;
               //apoderado
             case 2:
@@ -1070,12 +1082,12 @@ class QuotaAidMortuaryController extends Controller
             $ben_advisor->resolution_date = Util::verifyBarDate($new_ben['advisor_resolution_date']) ? Util::parseBarDate($new_ben['advisor_resolution_date']) : $new_ben['advisor_resolution_date'];
             $ben_advisor->type = "Natural";
             $ben_advisor->save();
-            if ($old_ben->quota_aid_advisors->first()) { } else {
-              $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
-              $advisor_beneficiary->quota_aid_beneficiary_id = $beneficiary->id;
-              $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
-              $advisor_beneficiary->save();
-            }
+
+            $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
+            $advisor_beneficiary->quota_aid_beneficiary_id = $beneficiary->id;
+            $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
+            $advisor_beneficiary->kinship_beneficiary_id = $new_ben['kinship_beneficiary_id'] ?? null;
+            $advisor_beneficiary->save();
 
             break;
             //apoderado
@@ -1105,12 +1117,12 @@ class QuotaAidMortuaryController extends Controller
             $ben_legal_guardian->notary = $new_ben['legal_guardian_notary_of_public_faith'];
             $ben_legal_guardian->date_authority = Util::verifyBarDate($new_ben['legal_guardian_date_authority']) ? Util::parseBarDate($new_ben['legal_guardian_date_authority']) : $new_ben['legal_guardian_date_authority'];
             $ben_legal_guardian->save();
-            if ($old_ben->quota_aid_legal_guardians->first()) { } else {
-              $ben_legal_guardian_new = new QuotaAidBeneficiaryLegalGuardian();
-              $ben_legal_guardian_new->quota_aid_beneficiary_id = $beneficiary->id;
-              $ben_legal_guardian_new->quota_aid_legal_guardian_id = $ben_legal_guardian->id;
-              $ben_legal_guardian_new->save();
-            }
+
+            $ben_legal_guardian_new = new QuotaAidBeneficiaryLegalGuardian();
+            $ben_legal_guardian_new->quota_aid_beneficiary_id = $beneficiary->id;
+            $ben_legal_guardian_new->quota_aid_legal_guardian_id = $ben_legal_guardian->id;
+            $ben_legal_guardian_new->save();
+
             break;
           default:
             # code...
@@ -1144,6 +1156,8 @@ class QuotaAidMortuaryController extends Controller
         $b->advisor_name_court = $beneficiary_advisor->name_court;
         $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;
         $b->advisor_resolution_date = $beneficiary_advisor->resolution_date;
+        $kinship = $beneficiary_advisor->kinship_beneficiaries($b->id)->first();
+        $b->kinship_beneficiary_id = $kinship ? $kinship->id : null;
       }
       if ($beneficiary_legal_guardian = $b->quota_aid_legal_guardians->first()) {
         $b->legal_representative = 2;
