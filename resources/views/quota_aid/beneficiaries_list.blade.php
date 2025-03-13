@@ -6,6 +6,7 @@
     :original-beneficiaries-backend="{{ $beneficiaries }}" 
     :cities="{{$cities}}" 
     :kinships="{{$kinships}}" 
+    :kinship_beneficiaries="{{$kinship_beneficiaries}}"
     inline-template>
 
     <div class="col-lg-12">
@@ -28,6 +29,7 @@
                     :beneficiary="beneficiary"
                     :cities="cities"
                     :kinships="kinships"
+                    :kinship_beneficiaries="kinship_beneficiaries"
                     :editable="editing"
                     :index="index"
                     v-on:remove="removeBeneficiary(index)"
@@ -51,7 +53,7 @@
             </div>
         </div>
         
-       
+        
     </div>
 </quota-aid-beneficiaries-show>
 <ret-fun-beneficiary-testimony-list :beneficiaries="{{ $beneficiaries }}" :doc-id="{{ $quota_aid->id }}" type="quotaAid">
