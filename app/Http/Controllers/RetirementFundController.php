@@ -798,9 +798,9 @@ class RetirementFundController extends Controller
         $date_entry = $affiliate->date_entry;
         $date_derelict = $affiliate->date_derelict;
 
-
+        $ret_fun_index = $retirement_fund->procedureIndex();
         // summary qualification
-        $last_base_wage = $affiliate->getLastBaseWage();
+        $last_base_wage = $affiliate->getLastBaseWage($ret_fun_index == 1);
         $total_average_salary_quotable = $affiliate->selectedContributions() > 0 ? 0 : $affiliate->getTotalAverageSalaryQuotable()['total_average_salary_quotable'];
 
         $array_discounts = array();
@@ -1235,7 +1235,7 @@ class RetirementFundController extends Controller
 
         $searcher = new SearcherController();
 
-        $has_ret_fun = $affiliate->retirement_funds()->where('code','not like','%A%')->count() > 0;
+        $has_ret_fun = $affiliate->retirement_funds()->where('code','not like','%A%')->count() > 0 ? 1 : 0;
 
         $data = [
             'user' => $user,
@@ -1760,7 +1760,7 @@ class RetirementFundController extends Controller
             'total_availability_aporte' => $total_availability_aporte,
             'total_availability_aporte_frps' => $total_availability_aporte_frps,
         ];
-        $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable());
+        $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable(true, $index == 1));
         return view('ret_fun.qualification', $data);
     }
 //--**OBTIENE LOS DATOS DE DATOS ECONOMICOS **--//
@@ -1783,14 +1783,15 @@ class RetirementFundController extends Controller
         }
         $current_procedure = Util::getRetFunCurrentProcedure();
         $retirement_fund = RetirementFund::find($id);
-        $ret_fund_index = $retirement_fund->procedureIndex();
+        $isReinstatement = $retirement_fund->procedureIndex() == 1;
 
         $affiliate = $retirement_fund->affiliate;
         $affiliate->service_years = $request->service_years;
         $affiliate->service_months = $request->service_months;
         $affiliate->save();
-        $total_quotes = $affiliate->getTotalQuotes($ret_fund_index == 1);
-        $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable();
+        $lastBaseWage = $affiliate->getLastBaseWage($isReinstatement);
+        $total_quotes = $affiliate->getTotalQuotes($isReinstatement);
+        $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable(true, $isReinstatement);
         $procedure_type_id =$retirement_fund->procedure_modality->procedure_type->id;
         $global_pay = false;
         $temp = [];
@@ -1803,6 +1804,7 @@ class RetirementFundController extends Controller
                 'total_aporte' => $total_salary_quotable['total_retirement_fund'],
                 'global_pay' => true,
                 'total_quotes' => $total_quotes,
+                'lastBaseWage' => $lastBaseWage,
                 'total_salary_quotable' => $total_salary_quotable,
                 'validate_limit_average' => false,
             ];
@@ -1824,6 +1826,7 @@ class RetirementFundController extends Controller
             $data = [
                 'global_pay' => $global_pay,
                 'total_quotes' => $total_quotes,
+                'lastBaseWage' => $lastBaseWage,
                 'total_salary_quotable' => $total_salary_quotable,
                 'validate_limit_average' => $validate_limit_average,
             ];
@@ -1850,9 +1853,9 @@ class RetirementFundController extends Controller
     public function getDataQualificationCertification(DataTables $datatables, $retirement_fund_id)
     {
         $retirement_fund = RetirementFund::find($retirement_fund_id);
+        $ret_fund_index = $retirement_fund->procedureIndex();
         $affiliate = $retirement_fund->affiliate;
-        $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
-        $contributions = $affiliate->getContributionsPlus();
+        $contributions = $affiliate->getContributionsPlus(true, $ret_fund_index == 1);
         return $datatables->of($contributions)
             ->editColumn('month_year', function ($contribution) {
                 return Util::getDateFormat($contribution->month_year);
@@ -1924,13 +1927,15 @@ class RetirementFundController extends Controller
 //--**METODO PARA GUARDAR LOS DATOS ECONOMICOS***--//
     public function saveAverageQuotable(Request $request, $id)
     {
+        
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $total_quotes = $affiliate->getTotalQuotes();
-        $getTotalAverageSalaryQuotable=$affiliate->getTotalAverageSalaryQuotable();
+        $ret_fund_index = $retirement_fund->procedureIndex();
+        $total_quotes = $affiliate->getTotalQuotes($ret_fund_index == 1);
+        $getTotalAverageSalaryQuotable=$affiliate->getTotalAverageSalaryQuotable(true, $ret_fund_index == 1);
         $current_procedure = Util::getRetFunCurrentProcedure();
         $number_contributions = $current_procedure->contributions_number;
-
+        
         //DEVOLUCIÓN DE APORTES
         if($retirement_fund->procedure_modality->procedure_type->id == 21){
             $total_aporte = $getTotalAverageSalaryQuotable['total_retirement_fund'];
@@ -1985,20 +1990,22 @@ class RetirementFundController extends Controller
     public function saveTotalRetFun(Request $request, $id)
     {
         $retirement_fund = RetirementFund::find($id);
+        $ret_fund_index = $retirement_fund->procedureIndex();
         $affiliate = $retirement_fund->affiliate;
-
-        $total_quotes = $affiliate->getTotalQuotes();
+        $isReinstatement = $ret_fund_index == 1;
+        $total_quotes = $affiliate->getTotalQuotes($isReinstatement);
         $current_procedure = Util::getRetFunCurrentProcedure();
+        $totalAverageSalaryQuotable = $affiliate->getTotalAverageSalaryQuotable(true, $isReinstatement);
         $number_contributions = $current_procedure->contributions_number;
         if($retirement_fund->procedure_modality->procedure_type->id == 21){
-            $total_aporte= $affiliate->getTotalAverageSalaryQuotable()['total_retirement_fund'];
+            $total_aporte= $totalAverageSalaryQuotable['total_retirement_fund'];
             $sub_total_ret_fun = $total_aporte;
         }else{
             if ($total_quotes >= $number_contributions && $retirement_fund->procedure_modality->procedure_type->id == 2 ) {
-                $total_average_salary_quotable = $affiliate->getTotalAverageSalaryQuotable()['total_average_salary_quotable'];
+                $total_average_salary_quotable = $totalAverageSalaryQuotable['total_average_salary_quotable'];
                 $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
             } else {//PGA
-                $total_aporte = $affiliate->getTotalAverageSalaryQuotable()['total_retirement_fund'];
+                $total_aporte = $totalAverageSalaryQuotable['total_retirement_fund'];
                 // $yield = Util::compoundInterest($affiliate->getContributionsPlus(), $affiliate);
                 $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
                 $administrative_expenses = 0;

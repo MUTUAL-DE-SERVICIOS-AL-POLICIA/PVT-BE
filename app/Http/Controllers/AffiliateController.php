@@ -301,13 +301,18 @@ class AffiliateController extends Controller
         $date_last_contribution = Carbon::hasFormat($affiliate->date_last_contribution, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution)->startOfMonth() : null;
         $date_entry_reinstatement = Carbon::hasFormat($affiliate->date_entry_reinstatement, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_entry_reinstatement)->startOfMonth() : null;
         $date_last_contribution_reinstatement = Carbon::hasFormat($affiliate->date_last_contribution_reinstatement, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution_reinstatement)->startOfMonth() : null;
-        
-        $contributions = $contributions->map(function($value, $key) use ($date_entry, $date_last_contribution, $date_entry_reinstatement, $date_last_contribution_reinstatement) {
+
+        $contributions = $contributions->map(function ($value, $key) use (
+            $date_entry,
+            $date_last_contribution,
+            $date_entry_reinstatement,
+            $date_last_contribution_reinstatement
+        ) {
             $fecha = Carbon::createFromFormat('Y-m-d', $key)->startOfMonth();
-            if ($fecha->between($date_entry, $date_last_contribution)) {
-                $item['fr_procedure'] = '1';
-            } elseif ($fecha->between($date_entry_reinstatement, $date_last_contribution_reinstatement)) {
-                $item['fr_procedure'] = '2';
+            if ($date_entry_reinstatement != null && $date_last_contribution_reinstatement != null) {
+                if ($fecha->between($date_entry_reinstatement, $date_last_contribution_reinstatement)) $item['fr_procedure'] = '2';
+            } else if ($date_entry != null && $date_last_contribution != null) {
+                if ($fecha->between($date_entry, $date_last_contribution)) $item['fr_procedure'] = '1';
             } else {
                 $item['fr_procedure'] = '0';
             }
