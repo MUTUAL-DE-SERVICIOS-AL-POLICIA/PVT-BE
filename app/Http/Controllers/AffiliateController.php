@@ -294,7 +294,7 @@ class AffiliateController extends Controller
         }
 
         //GETTIN CONTRIBUTIONS
-        $contributions =  collect(Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year'));
+        $contributions =  collect(Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year', 'desc')->pluck('total','month_year'));
         $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
 
         $date_entry = Carbon::hasFormat($affiliate->date_entry, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_entry)->startOfMonth() : null;
@@ -311,7 +311,8 @@ class AffiliateController extends Controller
             $fecha = Carbon::createFromFormat('Y-m-d', $key)->startOfMonth();
             if ($date_entry_reinstatement != null && $date_last_contribution_reinstatement != null) {
                 if ($fecha->between($date_entry_reinstatement, $date_last_contribution_reinstatement)) $item['fr_procedure'] = '2';
-            } else if ($date_entry != null && $date_last_contribution != null) {
+            } 
+            if ($date_entry != null && $date_last_contribution != null) {
                 if ($fecha->between($date_entry, $date_last_contribution)) $item['fr_procedure'] = '1';
             } else {
                 $item['fr_procedure'] = '0';
@@ -326,9 +327,8 @@ class AffiliateController extends Controller
             $end = explode('-', '1976-05-01');
         $month_end = $end[1];
         $year_end = $end[0];
-
-        if($affiliate->date_last_contribution || $affiliate->date_last_contribution_reinstatement)
-            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution_reinstatement ?? $affiliate->date_last_contribution));
+        if($contributions->keys()->first())
+            $start = explode('-', $contributions->keys()->first());
         else
             $start = explode('-', date('Y-m-d'));
         $month_start = $start[1];
