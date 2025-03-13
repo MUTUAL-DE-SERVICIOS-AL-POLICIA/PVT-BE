@@ -36,7 +36,7 @@ th.ellipsis-text {
         {{ Breadcrumbs::render('show_affiliate', $affiliate) }}
     </div>
     <div class="col-lg-5" style="margin-top:12px;">
-        @can('create', new Muserpol\Models\RetirementFund\RetirementFund)= {{ $count_ret_fun }}
+        @can('create', new Muserpol\Models\RetirementFund\RetirementFund)
             @if($count_ret_fun >= 2)
                 <a href="#" id="disabled-button-wrapper" class="tooltip-wrapper disabled" data-toggle="tooltip" data-placement="top" title="El Afiliado ya tiene tr&aacute;mites de Fondo de Retiro">
                     <button class="btn btn-info btn-sm  dim" type="button"  disabled><i class="fa fa-paste"></i> </button>

@@ -1,11 +1,10 @@
 @extends('print_global.print')
 @section('content')
 <div>
-
     @include('affiliates.print.full_personal_info', ['affiliate'=>$affiliate, 'ret_fun'=>$ret_fun, 'type'=>'ret_fun'])
     @include('ret_fun.print.applicant', ['applicant'=>$applicant])
     @if($ret_fun->hasLegalGuardian())
-        @include('ret_fun.print.legal_guardian', ['legal_guardian'=>$ret_fun->ret_fun_beneficiaries()->where('type', 'S')->first()->ret_fun_legal_guardians()->first()])
+        @include('ret_fun.print.legal_guardian', ['legal_guardian'=>$ret_fun->ret_fun_beneficiaries()->where('type', 'S')->first()->legal_guardian()->first()])
     @endif
     <div class="block">
         <table class="table-info w-100 m-b-10">
@@ -124,7 +123,7 @@
                         </tr>
                         @foreach ($beneficiaries as $beneficiary)
                             <tr class="text-sm">
-                                <td class="text-left uppercase px-5 py-3"> {{ $beneficiary->fullName() }} </td>
+                                <td class="text-left uppercase px-5 py-3">{{ $beneficiary->fullName() }}</td>
                                 <td class="text-center uppercase px-10 py-3"> {{ $beneficiary->identity_card }} </td>
                                 <td class="text-center uppercase px-5 py-3">
                                     <div class="w-70 text-right">{{ $beneficiary->percentage }}</div>
@@ -138,6 +137,7 @@
                     </tbody>
                 @endif
             </table>
+
             @if($beneficiaries_minor->isNotEmpty())
                 <table class="table-info w-100 m-b-10">
                     <thead class="bg-grey-darker">
@@ -157,8 +157,10 @@
                             <td class="text-center font-bold">C.I.</td>
                             <td class="text-center font-bold">PARENTESCO</td>
                         </tr>
+                        
                         @foreach ($beneficiaries_minor as $beneficiary)
                             @php($advisor = $beneficiary->ret_fun_advisors->first())
+                            @php($advisorKinship = $advisor ? $advisor->kinship_beneficiaries($beneficiary->id)->first() : null)   
                             <tr class="text-sm">
                                 <td class="text-left uppercase px-5 py-3"> {{ $beneficiary->fullName() }} </td>
                                 <td class="text-center uppercase px-10 py-3"> {{ $beneficiary->identity_card }} </td>
@@ -168,10 +170,10 @@
                                 <td class="text-center uppercase px-5 py-3">
                                     {!! Util::formatMoney($beneficiary->amount_ret_fun) !!}
                                 </td>
-                                <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? 'error' }}</td>
-                                <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->last_name : ''}}  {{$advisor ? $advisor->first_name : ''}}</td>
-                                <td class="text-center uppercase px-5 py-3">{{$advisor ?$advisor->identity_card : ''}}</td>
-                                <td class="text-center uppercase px-5 py-3">{{ str_contains(strtoupper($advisor ? $advisor->surname_husband : '' ), 'VDA.') ? 'MADRE DEL MENOR' : '' }}</td>
+                                <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
+                                <td class="text-center uppercase px-5 py-3">{{ $advisor ? $advisor->last_name : ''}}  {{$advisor ? $advisor->first_name : ''}}</td>
+                                <td class="text-center uppercase px-5 py-3">{{ $advisor ? $advisor->identity_card : ''}}</td>
+                                <td class="text-center uppercase px-5 py-3">{{ $advisorKinship ? $advisorKinship->name : ''}}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -179,7 +181,6 @@
             @endif
         </div>
     @endif
-
     @if(!empty($ret_fun->total_availability))
         <p> Asimismo, la Comisión de Beneficios Económicos en uso de sus atribuciones, determina la 
             devolución de los descuentos realizados al Titular para {{$ret_fun->procedure_modality->procedure_type->second_name}} durante su permanencia
@@ -220,7 +221,7 @@
                                     <td class="text-center uppercase font-bold px-5 py-3">
                                         {{Util::formatMoney($ret_fun->total_availability*($beneficiary->percentage/100))}}
                                     </td>
-                                    <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? 'error' }}</td>
+                                    <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -247,6 +248,7 @@
                             </tr>
                             @foreach ($beneficiaries_minor as $beneficiary)
                                 @php($advisor = $beneficiary->ret_fun_advisors->first())
+                                @php($advisorKinship = $advisor ? $advisor->kinship_beneficiaries($beneficiary->id)->first() : null)   
                                 <tr class="text-sm">
                                     <td class="text-left uppercase px-5 py-3"> {{ $beneficiary->fullName() }} </td>
                                     <td class="text-center uppercase px-10 py-3"> {{ $beneficiary->identity_card }} </td>
@@ -256,10 +258,10 @@
                                     <td class="text-center uppercase px-5 py-3">
                                         {{Util::formatMoney($ret_fun->total_availability*($beneficiary->percentage/100))}}
                                     </td>
-                                    <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? 'error' }}</td>
+                                    <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
                                     <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->last_name : ''}}  {{$advisor ? $advisor->first_name : ''}}</td>
-                                    <td class="text-center uppercase px-5 py-3">{{$advisor ?$advisor->identity_card : ''}}</td>
-                                    <td class="text-center uppercase px-5 py-3">{{ str_contains(strtoupper($advisor ? $advisor->surname_husband : '' ), 'VDA.') ? 'MADRE DEL MENOR' : '' }}</td>
+                                    <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->identity_card : ''}}</td>
+                                    <td class="text-center uppercase px-5 py-3">{{$advisorKinship ? $advisorKinship->name : ''}}</td>
                                 </tr>
                             @endforeach
                         </tbody>

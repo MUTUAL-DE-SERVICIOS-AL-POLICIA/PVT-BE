@@ -48,7 +48,7 @@
                                 </ret-fun-step2-applicant>
                             </tab-content>
                             <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
-                                <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
+                                <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" :kinship_beneficiaries="{{ $kinship_beneficiaries }}" inline-template>
                                     @include('ret_fun.step3_beneficiaries')
                                 </ret-fun-step3-beneficiaries>
                             </tab-content>
