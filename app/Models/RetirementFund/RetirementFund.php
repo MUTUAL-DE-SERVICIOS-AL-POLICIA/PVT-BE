@@ -133,9 +133,15 @@ class RetirementFund extends Model
             return "El afiliado no tiene documentos referidos";
         }
     }
-    public function hasLegalGuardian(){
-        return $this->ret_fun_beneficiaries()->where('type', 'S')->first()->legal_guardian()->count();
+    public function hasLegalGuardian()
+    {
+        $beneficiary = $this->ret_fun_beneficiaries()->where('type', 'S')->first();
+        if (!$beneficiary) {
+            return 0;
+        }
+        return $beneficiary->legal_guardian()->count();
     }
+
     public function getCorrelative($area_id)
     {
         return RetFunCorrelative::where('retirement_fund_id', $this->id)->where('wf_state_id', $area_id)->first();
