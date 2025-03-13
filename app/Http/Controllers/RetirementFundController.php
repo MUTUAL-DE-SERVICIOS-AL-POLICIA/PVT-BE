@@ -2059,7 +2059,7 @@ class RetirementFundController extends Controller
         }
 
         $discount_type = DiscountType::where('shortened', 'Judicial o Fiscal')->where('module_id', 3)->first();
-        if ($retention_judicial > 0 && $retention_judicial !== null) {
+        if ($retention_judicial >= 0 && $retention_judicial !== null) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
                 $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_judicial, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
             } else {
@@ -2178,8 +2178,6 @@ class RetirementFundController extends Controller
                 array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
             }
         }
-
-
         if ($has_availability) {
             $availability = ContributionType::find(12);
             $subtotal_availability = ($retirement_fund->subtotal_availability);
