@@ -89,6 +89,7 @@ export default {
       beneficiariesRetFunAvailability: [],
 
       // perecentageAdvancePayment: 0,
+      lastBaseWage: 0,
       totalAverageSalaryQuotable: 0,
       validateLimitAverageQuotable: false,
       totalQuotes:0,
@@ -216,7 +217,7 @@ export default {
         }}
       ).then(response =>{
           flash("Verificacion Correcta");
-
+          
           this.showEconomicData = true;
           this.globalPay = response.data.global_pay;
           if (this.globalPay) {
@@ -226,6 +227,7 @@ export default {
           }
 
           TweenLite.to(this.$data, 0.5, { 
+            lastBaseWage: response.data.lastBaseWage,
             totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,
             totalQuotes: response.data.total_quotes,
             validateLimitAverageQuotable: response.data.validate_limit_average

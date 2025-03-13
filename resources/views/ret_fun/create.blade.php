@@ -43,7 +43,7 @@
                                 </ret-fun-step1-requirements>
                             </tab-content>
                             <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
-                                <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
+                                <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" :has_ret_fun="{{ $has_ret_fun }}" inline-template>
                                     @include('ret_fun.step2_applicant')
                                 </ret-fun-step2-applicant>
                             </tab-content>

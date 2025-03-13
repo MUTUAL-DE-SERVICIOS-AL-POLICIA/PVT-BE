@@ -887,22 +887,54 @@ class ContributionController extends Controller
         $ret_fun = RetirementFund::find($ret_fun_id);
         $affiliate = $ret_fun->affiliate;
 
-        if (!(isset($affiliate->date_entry) && isset($affiliate->date_last_contribution))) {
-            Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte del afiliado existan antes de continuar');
-            return redirect('ret_fun/' . $ret_fun_id);
-        }
-        if (Util::parseMonthYearDate($affiliate->date_last_contribution) < Util::parseMonthYearDate($affiliate->date_entry)) {
-            Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte del afiliado estén correctas antes de continuar');
-            return redirect('ret_fun/' . $ret_fun_id);
+        $date_entry = Util::parseMonthYearDate($affiliate->date_entry);
+        $date_last_contribution = Util::parseMonthYearDate($affiliate->date_last_contribution);
+
+        $date_entry_reinstatement = Util::parseMonthYearDate($affiliate->date_entry_reinstatement);
+        $date_last_contribution_reinstatement = Util::parseMonthYearDate($affiliate->date_last_contribution_reinstatement);
+        $number_rf_procedures = RetirementFund::where('affiliate_id', $affiliate->id)
+            ->where('code', 'NOT LIKE', '%A')
+            ->orderBy('reception_date')->pluck('id')->all();
+
+        $index = array_search($ret_fun_id, $number_rf_procedures);
+        if($index === false) {
+            return "Error";
         }
 
-        $contributions = $affiliate->contributions()->orderBy('month_year')->get();
+        $start_date = '';
+        $end_date = '';
+        if ($index == 0) {
+            if (!(Carbon::hasFormat($date_entry, 'Y-m-d') && Carbon::hasFormat($date_last_contribution, 'Y-m-d'))) {
+                Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte del afiliado existan antes de continuar');
+                return redirect('ret_fun/' . $ret_fun_id);
+            }
+            if ($date_last_contribution < $date_entry) {
+                Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte del afiliado estén correctas antes de continuar');
+                return redirect('ret_fun/' . $ret_fun_id);
+            }
+            $start_date = $date_entry;
+            $end_date = $date_last_contribution;
+        } elseif ($index == 1) {
+            if (!(Carbon::hasFormat($date_entry_reinstatement, 'Y-m-d') && Carbon::hasFormat($date_last_contribution_reinstatement, 'Y-m-d'))) {
+                Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte de la reincorporación del afiliado existan antes de continuar');
+                return redirect('ret_fun/' . $ret_fun_id);
+            }
+            if ($end_date < $start_date) {
+                Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte de la reincorporación del afiliado estén correctas antes de continuar');
+                return redirect('ret_fun/' . $ret_fun_id);
+            }
+            $start_date = $date_entry_reinstatement;
+            $end_date = $date_last_contribution_reinstatement;
+        }
+
+        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->whereBetween('month_year', [$start_date, $end_date])->orderby('month_year')->get();
+
         $first_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->first()->month_year)->format('m/Y'));
         $last_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->last()->month_year)->format('m/Y'));
 
         /* first contribution and date entry comparision */
-        if (Util::parseMonthYearDate($affiliate->date_entry) < $first_contribution) {
-            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_entry));
+        if ($start_date < $first_contribution) {
+            $month = Carbon::parse($start_date);
             $months = array();
             while($month < $first_contribution){
                 array_push($months, [
@@ -930,11 +962,11 @@ class ContributionController extends Controller
                 $month->addMonth();
             }
             DB::table('contributions')->insert($months);
-        }elseif(Util::parseMonthYearDate($affiliate->date_entry) > $first_contribution){
-            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_entry));
+        }elseif($start_date > $first_contribution){
+            $month = Carbon::parse($start_date);
             $temp_ids = array();
             foreach ($contributions as $value) {
-                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) < Util::parseMonthYearDate($affiliate->date_entry) ){
+                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) < $start_date ){
                     array_push($temp_ids, $value->id);
                 }
             }
@@ -944,8 +976,8 @@ class ContributionController extends Controller
 
         /* last contributions and date derelict comparision */
 
-        if (Util::parseMonthYearDate($affiliate->date_last_contribution) > $last_contribution) {
-            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_last_contribution));
+        if ($end_date > $last_contribution) {
+            $month = Carbon::parse($end_date);
             $months = array();
             while($month->toDateString() > $last_contribution){
                 array_push($months, [
@@ -973,11 +1005,11 @@ class ContributionController extends Controller
                 $month->subMonth();
             }
             DB::table('contributions')->insert($months);
-        }elseif(Util::parseMonthYearDate($affiliate->date_last_contribution) < $last_contribution){
-            $month = Carbon::parse(Util::parseMonthYearDate($affiliate->date_last_contribution));
+        }elseif($end_date < $last_contribution){
+            $month = Carbon::parse($end_date);
             $temp_ids = array();
             foreach ($contributions->reverse() as $value) {
-                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > Util::parseMonthYearDate($affiliate->date_last_contribution) ){
+                if(Util::parseMonthYearDate(Carbon::parse($value->month_year)->format('m/Y')) > $end_date ){
                     array_push($temp_ids, $value->id);
                 }
             }
@@ -985,7 +1017,7 @@ class ContributionController extends Controller
             // DB::table('contributions')->where('affiliate_id', $affiliate->id)->whereIn('id', $temp_ids)->delete();
         }
 
-        $contributions = DB::table('contributions')->where('affiliate_id', $affiliate->id)->orderBy('month_year')->get()->pluck('month_year');
+        $contributions = $affiliate->contributions()->select('id', 'month_year')->whereBetween('month_year', [$start_date, $end_date])->orderby('month_year')->get()->pluck('month_year');
         $months = array();
         if(sizeof($contributions) != (1 + Carbon::parse($contributions->last())->diffInMonths(Carbon::parse($contributions->first()))) ){
             for($month = Carbon::parse($contributions->first()); $month<=$contributions->last(); $month=Carbon::parse($month)->addMonth()){
@@ -1018,52 +1050,20 @@ class ContributionController extends Controller
             DB::table('contributions')->insert($months);
         }
 
-
-        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->orderbyDesc('month_year')->get();
+        // Obtener los aportes dependiento de cuantos trámites de fondo de retiro tiene
+        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->whereBetween('month_year', [$start_date, $end_date])->orderbyDesc('month_year')->get();
 
         foreach ($contributions as $c) {
             $c->contribution_type_id = Util::classificationContribution($c->contribution_type_id, $c->breakdown_id, $c->total);
         }
-        // dd($contributions->first());
-        // $con_type = false;
-        // $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
-        //                                         ->join('contribution_types','contribution_types.id','contributions.contribution_type_id')
-        //                                         ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-        //                                         ->where('contributions.month_year','>=', Util::parseMonthYearDate($affiliate->date_entry))
-        //                                         //   ->whereNull('contributions.deleted_at')
-        //                                         ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.contribution_type_id as breakdown_id','contribution_types.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-        //                                         //   ->take(10)
-        //                                         ->orderBy('contributions.month_year', 'desc')
-        //                                         ->get();
-        //                                         // $contributions = [];
-        //                                         //    return $contributions->count();
-                                                
-        // if(sizeof($contributions) == 0){
-        //   $contributions= DB::table('contributions')->join('categories','contributions.category_id','categories.id')
-        //                                             ->join('breakdowns','contributions.breakdown_id','breakdowns.id')
-        //                                             ->where('contributions.affiliate_id',$ret_fun->affiliate_id)
-        //                                             ->where('contributions.month_year','>=',Util::parseMonthYearDate($affiliate->date_entry))
-        //                                             // ->whereNull('contributions.deleted_at')
-        //                                             ->select('contributions.id','contributions.base_wage','contributions.total','contributions.gain','contributions.retirement_fund','contributions.breakdown_id','breakdowns.name as breakdown_name','contributions.category_id','categories.name as category_name','contributions.month_year')
-        //                                         //   ->take(10)
-        //                                             ->orderBy('contributions.month_year', 'desc')
-        //                                             ->get();
-        //    $con_type=true;
-        // }  
         
-        
-       
         $contribution_types = ContributionType::select('id', 'name')->orderBy('id')->get();
-        $date_entry = $ret_fun->affiliate->date_entry;
-        $date_last_contribution = $ret_fun->affiliate->date_last_contribution;
-        // return $date_last_contribution;
-        // return $contribution_types;
-        //return $contributions;
-        if($date_entry && $date_last_contribution){
+       
+        if($start_date && $end_date){
             $data =   array('contributions' => $contributions,
                             'contribution_types'=> $contribution_types,
-                            'date_entry' => Util::parseMonthYearDate($date_entry),
-                            'date_last_contribution' => Util::parseMonthYearDate($date_last_contribution),
+                            'date_entry' => $start_date,
+                            'date_last_contribution' => $end_date,
                             'ret_fun'=>$ret_fun);
             return view('contribution.select',$data);
         }
@@ -1075,23 +1075,28 @@ class ContributionController extends Controller
     public function saveContributions(Request $request)
     {
         // return $request->all();
-        $request_contributions = $request->contributions;
+        $request_contributions = collect($request->contributions);
         $ret_fun = RetirementFund::find($request->ret_fun_id);
         $affiliate = $ret_fun->affiliate;
-        $contributions = $affiliate->contributions()->orderBy('month_year')->get();
-        foreach ($contributions as $c) {
-            foreach($request_contributions as $rc){
-                if($rc['id'] == $c->id){
-                    $c->contribution_type_id = $rc['contribution_type_id'];
-                    $c->save();
+        DB::transaction(function () use ($request_contributions, $ret_fun, $affiliate) {
+            // Guardamos el ultimo aporte calificado
+            $ret_fun->last_contribution_date = $request_contributions->sortByDesc('month_year')->first()['month_year'];
+
+            // Actualizamos el tipo de contribución
+            $affiliateContributions = $affiliate->contributions()->orderBy('month_year')->get();
+            $RequestContributionsById = $request_contributions->keyBy('id');
+            foreach ($affiliateContributions as $contribution) {
+                if ($RequestContributionsById->has($contribution->id)) {
+                    $contribution->contribution_type_id = $RequestContributionsById->get($contribution->id)['contribution_type_id'];
+                    $contribution->save();
                 }
             }
 
-        }
-        $availability = $affiliate->getContributionsAvailability();
-        $subtotal_availability = array_sum(array_column($availability, 'retirement_fund'));
-        $ret_fun->subtotal_availability = $subtotal_availability;
-        $ret_fun->save();
+            $availability = $affiliate->getContributionsAvailability();
+            $subtotal_availability = array_sum(array_column($availability, 'retirement_fund'));
+            $ret_fun->subtotal_availability = $subtotal_availability;
+            $ret_fun->save();
+        });
         $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
         Util::getNextAreaCode($ret_fun->id);
         foreach($contribution_types as $index =>$c){
