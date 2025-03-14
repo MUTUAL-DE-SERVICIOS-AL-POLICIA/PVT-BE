@@ -1079,8 +1079,6 @@ class ContributionController extends Controller
         $ret_fun = RetirementFund::find($request->ret_fun_id);
         $affiliate = $ret_fun->affiliate;
         DB::transaction(function () use ($request_contributions, $ret_fun, $affiliate) {
-            // Guardamos el ultimo aporte calificado
-            $ret_fun->last_contribution_date = $request_contributions->sortByDesc('month_year')->first()['month_year'];
 
             // Actualizamos el tipo de contribución
             $affiliateContributions = $affiliate->contributions()->orderBy('month_year')->get();
