@@ -687,7 +687,8 @@ class AffiliateController extends Controller
         $this->authorize('update', $affiliate);
         $affiliate->affiliate_state_id = $request->affiliate_state_id;
         $affiliate->type = $request->type;
-        $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;;
+        $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
+        $affiliate->date_entry_reinstatement = Util::verifyMonthYearDate($request->date_entry_reinstatement) ? Util::parseMonthYearDate($request->date_entry_reinstatement) : $request->date_entry_reinstatement;
         // $affiliate->category_id = $request->category_id;
         $service_year = $request->service_years;
         $service_month = $request->service_months;
@@ -711,7 +712,9 @@ class AffiliateController extends Controller
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        $affiliate->date_derelict_reinstatement = Util::verifyMonthYearDate($request->date_derelict_reinstatement) ? Util::parseMonthYearDate($request->date_derelict_reinstatement) : $request->date_derelict_reinstatement;
         $affiliate->date_last_contribution =Util::verifyMonthYearDate($request->date_last_contribution) ? Util::parseMonthYearDate($request->date_last_contribution) : $request->date_last_contribution;
+        $affiliate->date_last_contribution_reinstatement =Util::verifyMonthYearDate($request->date_last_contribution_reinstatement) ? Util::parseMonthYearDate($request->date_last_contribution_reinstatement) : $request->date_last_contribution_reinstatement;
         $affiliate->save();
 
         $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity);
