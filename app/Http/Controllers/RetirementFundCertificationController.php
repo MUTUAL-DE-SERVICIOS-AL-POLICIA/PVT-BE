@@ -132,6 +132,7 @@ class RetirementFundCertificationController extends Controller
   public function printReception($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $isReinstatement = $retirement_fund->procedureIndex() == 1;
     $affiliate = $retirement_fund->affiliate;
     $degree = $affiliate->degree;
     $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
@@ -188,6 +189,7 @@ class RetirementFundCertificationController extends Controller
       'degree' => $degree,
       'submitted_documents' => $submitted_documents,
       'retirement_fund' => $retirement_fund,
+      'isReinstatement' => $isReinstatement,
       'legend_ret_fun'=> $legend_ret_fun,
       'article'=> $article,
     ];

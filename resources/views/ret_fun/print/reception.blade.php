@@ -19,7 +19,7 @@
         <div class="font-bold uppercase m-b-5 counter">
             Datos Policiales del Titular
         </div>
-        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate,'procedure_modality'=>$retirement_fund->procedure_modality])
+        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate,'procedure_modality'=>$retirement_fund->procedure_modality, 'isReinstatement'=>$isReinstatement])
         <div class="m-t-15">
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
