@@ -758,11 +758,13 @@ class RetirementFundController extends Controller
         }
         //
         //summary individuals account
+        $ret_fun_index = $retirement_fund->procedureIndex();
+        $dates_global = $affiliate->getDatesGlobal($ret_fun_index == 1);
         $group_dates = [];
-        $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
+        $total_dates = Util::sumTotalContributions($dates_global);
         $dates = array(
             'id' => 0,
-            'dates' => $affiliate->getDatesGlobal(),
+            'dates' => $dates_global,
             'name' => "Alta y Baja de la Policía Nacional Boliviana",
             'operator' => '**',
             'description' => "Fechas de Alta y Baja de la Policía Nacional Boliviana",
@@ -772,12 +774,12 @@ class RetirementFundController extends Controller
         $group_dates[] = $dates;
         foreach (ContributionType::orderBy('id')->get() as $c) {
             // if($c->id != 1){
-            $contributionsWithType = $affiliate->getContributionsWithType($c->id);
+            $contributionsWithType = $affiliate->getContributionsWithType($c->id, $ret_fun_index == 1);
             if (sizeOf($contributionsWithType) > 0) {
                 $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
                 $dates = array(
                     'id' => $c->id,
-                    'dates' => $affiliate->getContributionsWithType($c->id),
+                    'dates' => $contributionsWithType,
                     'name' => $c->name,
                     'operator' => $c->operator,
                     'description' => $c->description,
@@ -833,7 +835,9 @@ class RetirementFundController extends Controller
             if ($sw) {
                 $temp_total_discount = 0;
                 foreach ($value as $id) {
-                    $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
+                    if ($retirement_fund->discount_types()->find($id)) {
+                        $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
+                    }
                 }
                 $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
                 array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
@@ -1687,16 +1691,13 @@ class RetirementFundController extends Controller
         // $this->authorize('qualify', $retirement_fund);
         $affiliate = $retirement_fund->affiliate;
 
-        $ret_funds = RetirementFund::where('affiliate_id', $affiliate->id)->where('code', 'NOT LIKE', '%A')
-        ->orderBy('reception_date')->pluck('id')->all();
-        $index = array_search($ret_fun_id, $ret_funds);
-
         $current_procedure = RetFunProcedure::where('is_enabled', '=', true)->first();
         if (!$current_procedure) {
             return "error: Verifique si existen procedures activos";
         }
-        
-        $dates_global = $index == 0 ? $affiliate->getDatesGlobal() : $affiliate->getDatesGlobal(true);
+
+        $ret_fun_index = $retirement_fund->procedureIndex();
+        $dates_global = $affiliate->getDatesGlobal($ret_fun_index == 1);
         /*  qualification*/
         // $c=ContributionType::find(1);
         $group_dates = [];
@@ -1713,12 +1714,12 @@ class RetirementFundController extends Controller
         $group_dates[] = $dates;
         foreach (ContributionType::orderBy('id')->get() as $c) {
             // if($c->id != 1){
-            $contributionsWithType = $affiliate->getContributionsWithType($c->id, $index == 1);
+            $contributionsWithType = $affiliate->getContributionsWithType($c->id, $ret_fun_index == 1);
             if (sizeOf($contributionsWithType) > 0) {
                 $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
                 $dates = array(
                     'id' => $c->id,
-                    'dates' => $affiliate->getContributionsWithType($c->id, $index == 1),
+                    'dates' => $contributionsWithType,
                     'name' => $c->name,
                     'operator' => $c->operator,
                     'description' => $c->description,
@@ -1755,7 +1756,7 @@ class RetirementFundController extends Controller
             'total_availability_aporte' => $total_availability_aporte,
             'total_availability_aporte_frps' => $total_availability_aporte_frps,
         ];
-        $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable(true, $index == 1));
+        $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable(true, $ret_fun_index == 1));
         return view('ret_fun.qualification', $data);
     }
     //--**OBTIENE LOS DATOS DE DATOS ECONOMICOS **--//
