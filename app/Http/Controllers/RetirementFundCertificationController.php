@@ -1019,14 +1019,14 @@ class RetirementFundCertificationController extends Controller
   {
     // 60 aportes
     $retirement_fund = RetirementFund::find($id);
+    $ret_fund_index = $retirement_fund->procedureIndex();
     $affiliate = $retirement_fund->affiliate;
     $valid_contributions = ContributionType::select('id')->where('operator', '+')->pluck('id');
     $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
-    $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
-      ->whereIn('contribution_type_id', $valid_contributions)
-      ->orderByDesc('month_year')
-      ->take($quantity)
-      ->get();
+    $contributions_sixty = $affiliate->contributionsInRange($ret_fund_index == 1)->whereIn('contribution_type_id', $valid_contributions)
+    ->orderByDesc('month_year')
+    ->take($quantity)
+    ->get();
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
       ->orderBy('month_year')
       ->get();
@@ -1085,9 +1085,10 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationAvailability($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $disponibilidad = ContributionType::where('name', '=', 'Disponibilidad')->first();
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsByRange($ret_fun_index == 1)
       ->orderBy('month_year')
       ->get();
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)

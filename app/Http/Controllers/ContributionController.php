@@ -1077,11 +1077,13 @@ class ContributionController extends Controller
         // return $request->all();
         $request_contributions = collect($request->contributions);
         $ret_fun = RetirementFund::find($request->ret_fun_id);
+        $ret_fun_index = $ret_fun->procedureIndex();
         $affiliate = $ret_fun->affiliate;
-        DB::transaction(function () use ($request_contributions, $ret_fun, $affiliate) {
+        $aff_contributions = $affiliate->contributionsInRange($ret_fun_index == 1);
+        DB::transaction(function () use ($request_contributions, $ret_fun, $affiliate, $aff_contributions) {
 
             // Actualizamos el tipo de contribución
-            $affiliateContributions = $affiliate->contributions()->orderBy('month_year')->get();
+            $affiliateContributions = $aff_contributions->orderBy('month_year')->get();
             $RequestContributionsById = $request_contributions->keyBy('id');
             foreach ($affiliateContributions as $contribution) {
                 if ($RequestContributionsById->has($contribution->id)) {
@@ -1095,7 +1097,8 @@ class ContributionController extends Controller
             $ret_fun->subtotal_availability = $subtotal_availability;
             $ret_fun->save();
         });
-        $contribution_types = ContributionType::whereIn('id',$ret_fun->affiliate->contributions()->select('contribution_type_id')->distinct()->get()->pluck('contribution_type_id'))->orderBy('sequence')->select('name','id')->get();
+        $contribution_types_ids = $affiliate->contributionsInRange($ret_fun_index == 1)->select('contribution_type_id')->distinct()->pluck('contribution_type_id');
+        $contribution_types = ContributionType::whereIn('id',$contribution_types_ids)->orderBy('sequence')->select('name','id')->get();
         Util::getNextAreaCode($ret_fun->id);
         foreach($contribution_types as $index =>$c){
             switch ($c->id) {
