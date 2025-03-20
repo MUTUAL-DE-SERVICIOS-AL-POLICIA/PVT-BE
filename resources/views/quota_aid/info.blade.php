@@ -18,6 +18,19 @@
                     </button>
                 </div>
                 @endif
+                @if(Session::get('rol_id') == 102)
+                <div class="text-right col-md-6">
+                    <button
+                        data-animation="flip"
+                        data-toggle="tooltip"
+                        title="Imprimir Liquidación"
+                        class="btn btn-primary"
+                        @click="printLiquidation"
+                    >
+                        <i class="fa fa-print"></i> Imprimir Liquidación
+                    </button>
+                </div>
+            @endif
             </div>
                 @can('update',new Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary)
                 <div class="text-right" v-if="!read">

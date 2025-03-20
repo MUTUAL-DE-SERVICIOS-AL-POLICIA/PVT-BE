@@ -19,7 +19,7 @@
         <div class="font-bold uppercase m-b-5 counter">
             Datos Policiales del Titular
         </div>
-        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate,'procedure_modality'=>$retirement_fund->procedure_modality])
+        @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate,'procedure_modality'=>$retirement_fund->procedure_modality, 'isReinstatement'=>$isReinstatement])
         <div class="m-t-15">
             <div class="text-left block">
                 <span class="capitalize">Señor:</span><br>
@@ -106,8 +106,8 @@
         @endif
         <div class="text-justify text-xxs">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial
             Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidario.</div>
-        <div class="text-justify text-xxs">{{$legend_ret_fun}}
-        </div>
+        <div class="text-justify text-xxs">{{$legend_ret_fun}}</div>
+        <div class="text-justify text-xxs">Se pone en conocimiento del afiliado que en el plazo de 30 días hábiles se procederá al desembolso de su tramite, emitiéndose la notificación de pago vía mensaje de texto (sms) dirigido al celular de referencia.</div>
         <!-- <div class="text-justify text-xxs">En mi calidad de solicitante del beneficio, autorizo de forma expresa a la MUSERPOL para notificarme con el desembolso del beneficio por medio de mensaje de texto al celular detallado en el presente formulario.</div>
         <div class="text-justify text-xxs">El trámite iniciado, será desembolsado en su cuenta bancaria en el plazo de 12 días hábiles, iniciando a partir de este momento, el plazo de 10 días hábiles para presentar la solicitud de revisión del monto calificado.
             Posterior a este plazo y de no registrarse ninguna solicitud de revisión en este plazo de tiempo, se procederá a la ejecutoría de la liquidación de pago

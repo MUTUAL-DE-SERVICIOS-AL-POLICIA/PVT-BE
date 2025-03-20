@@ -339,6 +339,7 @@ Vue.component('summary-select-contributions', require('./components/contribution
 
 Vue.component('generate-charge', require('./components/voucher/GenerateCharge.vue'));
 Vue.component('ret-fun-alert', require('./components/ret_fun/Alert.vue'));
+Vue.component('ret-fun-judicial-retention', require('./components/ret_fun/JudicialRetention.vue'));
 /**
  * Treasury components
  */
