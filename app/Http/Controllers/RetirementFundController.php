@@ -125,32 +125,33 @@ class RetirementFundController extends Controller
             'applicant_identity_card'   =>  'required',
         ];
 
-        $requirements = ProcedureRequirement::where('procedure_modality_id', $request->ret_fun_modality)->whereNull('deleted_at')->select('id', 'number')->orderBy('number', 'asc')->get();
-        $array_requirements = [];
-        foreach ($requirements as $requirement) {
-            $array_requirements[$requirement->number] = 0;
-        }
 
-        foreach ($requirements as $requirement) {
-            if ($request->input('document' . $requirement->id) == 'checked') {
-                $array_requirements[$requirement->number]++;
-            }
-        }
+        // $requirements = ProcedureRequirement::where('procedure_modality_id', $request->ret_fun_modality)->whereNull('deleted_at')->select('id', 'number')->orderBy('number', 'asc')->get();
+        // $array_requirements = [];
+        // foreach ($requirements as $requirement) {
+        //     $array_requirements[$requirement->number] = 0;
+        // }
+
+        // foreach ($requirements as $requirement) {
+        //     if ($request->input('document' . $requirement->id) == 'checked') {
+        //         $array_requirements[$requirement->number]++;
+        //     }
+        // }
         //return $array_requirements;
-        foreach ($array_requirements as $key => $requirement) {
+        // foreach ($array_requirements as $key => $requirement) {
 
-            if ($requirement == 0 && $key != 0) {
-                $biz_rules = [
-                    'no_document' . $key   =>  'required'
-                ];
-            }
-            if ($requirement > 1) {
-                $biz_rules = [
-                    'double_document' . $key  =>  'required'
-                ];
-            }
-            $rules = array_merge($rules, $biz_rules);
-        }
+        //     if ($requirement == 0 && $key != 0) {
+        //         $biz_rules = [
+        //             'no_document' . $key   =>  'required'
+        //         ];
+        //     }
+        //     if ($requirement > 1) {
+        //         $biz_rules = [
+        //             'double_document' . $key  =>  'required'
+        //         ];
+        //     }
+        //     $rules = array_merge($rules, $biz_rules);
+        // }
 
 
         $has_lastname = false;
@@ -308,24 +309,36 @@ class RetirementFundController extends Controller
         $af->save();
 
         //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
-        //Guarda los requisitos requeridos
-        foreach ($requirements  as  $requirement) {
-            if ($request->input('document' . $requirement->id) == 'checked') {
+       //Guarda los requisitos requeridos
+        if($request->required_requirements){
+            $required_requirements = [];
+            foreach ($request->required_requirements as $number) {
+                foreach ($number as $req) {
+                    if (isset($req['status']) && $req['status'] == 'checked') {
+                        $required_requirements[] = $req;
+                    }
+                }
+            }
+            foreach ($required_requirements  as  $requirement) {
                 $submit = new RetFunSubmittedDocument();
-                $submit->retirement_fund_id = $retirement_fund->id;
-                $submit->procedure_requirement_id = $requirement->id;
-                $submit->comment = $request->input('comment' . $requirement->id);
+                $submit->retirement_fund_id = $retirement_fund['id'];
+                $submit->procedure_requirement_id = $requirement['procedureRequirementId'];
+                $submit->comment = $requirement['comment'];
+                $submit->is_uploaded = $requirement['isUploaded'];
                 $submit->save();
             }
         }
-
-        //storing aditional documents
         if ($request->aditional_requirements) {
-            foreach ($request->aditional_requirements  as  $requirement) {
+            $additional_requirements = [];
+            foreach ($request->aditional_requirements as $adr) {
+                $additional_requirements[] = json_decode($adr);
+            }
+            foreach ($additional_requirements  as  $requirement) {
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_fund->id;
-                $submit->procedure_requirement_id = $requirement;
-                $submit->comment = "";
+                $submit->procedure_requirement_id = $requirement->procedureRequirementId;
+                $submit->comment = null;
+                $submit->is_uploaded = $requirement->isUploaded;
                 $submit->save();
             }
         }
@@ -1252,7 +1265,7 @@ class RetirementFundController extends Controller
 
         $data = [
             'user' => $user,
-            'requirements' => $procedure_requirements,
+            //'requirements' => $procedure_requirements,
             'procedure_types'    => $procedure_types,
             'modalities'    => $modalities,
             'affiliate'  => $affiliate,
