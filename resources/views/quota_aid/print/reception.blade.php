@@ -117,7 +117,7 @@
             </table>
         @endif
         <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario,
-             Cuota y Auxilio Mortuorio procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme el Artículo {!! $quota_aid->procedure_modality->procedure_type->second_name == 'Cuota Mortuoria'? '42':'40' !!} del Reglamento de {!! $quota_aid->procedure_modality->procedure_type->second_name !!}.
+             Cuota y Auxilio Mortuorio procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme el Artículo {!! $quota_aid->procedure_modality->procedure_type->second_name == 'Cuota Mortuoria'? '44':'42' !!} del Reglamento de {!! $quota_aid->procedure_modality->procedure_type->second_name !!}.
         </div>
         <div class="text-justify text-xxs">En mi calidad de solicitante del beneficio, autorizo de forma expresa a la MUSERPOL para notificarme con el desembolso del beneficio por medio de mensaje de texto al celular detallado en el presente formulario.</div>
         <div class="text-justify text-xxs">El trámite iniciado, será desembolsado en su cuenta bancaria en el plazo de 12 días hábiles, iniciando a partir de este momento, el plazo de 10 días hábiles para presentar la solicitud de revisión del monto calificado.
