@@ -34,6 +34,39 @@
                         </div>
                     </div>
                 </div>
+                <template v-if="has_ret_fun">
+                    <div class="col-md-3" :class="{'has-error': errors.has('date_entry_reinstatement') }">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">
+                                Fecha de Ingreso (Reincorporación)</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="date_entry_reinstatement" v-model="date_entry_reinstatement" v-month-year class="form-control" v-validate.initial="'required|max_current_date_month_year'">
+                                <i v-show="errors.has('date_entry_reinstatement')" class="fa fa-warning text-danger"></i>
+                                    <span v-show="errors.has('date_entry_reinstatement')" class="text-danger">@{{ errors.first('date_entry_reinstatement') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" :class="{'has-error': errors.has('date_derelict_reinstatement') }" v-if="!validDateDerelict">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">
+                                Fecha de desvinculaci&oacute;n</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="date_derelict_reinstatement" v-model="date_derelict_reinstatement" v-month-year class="form-control" v-validate.initial="'required|max_current_date_month_year'">
+                                <i v-show="errors.has('date_derelict_reinstatement')" class="fa fa-warning text-danger"></i>
+                                    <span v-show="errors.has('date_derelict_reinstatement')" class="text-danger">@{{ errors.first('date_derelict_reinstatement') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" v-if="validDateDerelict" >
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">
+                                Fecha de desvinculaci&oacute;n</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="date_derelict_reinstatement" v-model="date_derelict_reinstatement" v-month-year class="form-control" v-validate.initial="'required|max_current_date_month_year'">
+                            </div>
+                        </div>
+                    </div>
+                </template>
                 <div class="col-md-3" :class="{'has-error': errors.has('date_death') }" v-if="isDeathMode">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">

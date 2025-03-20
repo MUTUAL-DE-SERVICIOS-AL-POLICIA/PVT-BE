@@ -305,7 +305,7 @@
                             <div id="tab-beneficiaries" class="tab-pane">
 
                                     {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary) --}}
-                                        @include('quota_aid.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
+                                        @include('quota_aid.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships, 'kinship_beneficiaries' => $kinship_beneficiaries])
                                     {{-- @endcan --}}
 
                             </div>

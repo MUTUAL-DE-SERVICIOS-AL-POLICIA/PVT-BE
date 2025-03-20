@@ -249,6 +249,9 @@ export default {
 		case 14:
 		  color = "#FF80AB";
 		  break;
+		case 15:
+		  color = "#c6a7fa"
+		  break;
 		case 18:
 		  color = "#545050";
 		  break;

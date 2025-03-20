@@ -97,6 +97,27 @@ class Affiliate extends Model
     }
     return Carbon::parse($value)->format('m/Y');
   }
+  public function getDateEntryReinstatementAttribute($value)
+  {
+    if (!$value) {
+      return null;
+    }
+    return Carbon::parse($value)->format('m/Y');
+  }
+  public function getDateDerelictReinstatementAttribute($value)
+  {
+    if (!$value) {
+      return null;
+    }
+    return Carbon::parse($value)->format('m/Y');
+  }
+  public function getDateLastContributionReinstatementAttribute($value)
+  {
+    if (!$value) {
+      return null;
+    }
+    return Carbon::parse($value)->format('m/Y');
+  }
   public function address()
   {
     return $this->morphToMany('\Muserpol\Models\Address', 'addressable')->withTimestamps();
@@ -124,6 +145,38 @@ class Affiliate extends Model
   public function contributions()
   {
     return $this->hasMany('Muserpol\Models\Contribution\Contribution'::class);
+  }
+
+  public function contributionsInRange($reinstatement = false)
+  {
+    $date_start = '';
+    $date_end = '';
+    if ($reinstatement) {
+      if (Util::verifyMonthYearDate($this->date_entry_reinstatement)) {
+        $date_start = Util::parseMonthYearDate($this->date_entry_reinstatement);
+      }
+      if (Util::verifyMonthYearDate($this->date_last_contribution_reinstatement)) {
+        $date_end = Util::parseMonthYearDate($this->date_last_contribution_reinstatement);
+      } else {
+        $date_end = Carbon::now()->startOfMonth()->toDateString();
+      }
+    } else {
+      if (Util::verifyMonthYearDate($this->date_entry)) {
+        $date_start = Util::parseMonthYearDate($this->date_entry);
+      }
+      if (Util::verifyMonthYearDate($this->date_last_contribution)) {
+        $date_end = Util::parseMonthYearDate($this->date_last_contribution);
+      } else {
+        $date_end = Carbon::now()->startOfMonth()->toDateString();
+      }
+    }
+
+    if($date_start == '' || $date_end == '') {
+      $contributions = $this->contributions();
+    } else {
+      $contributions = $this->contributions()->whereBetween('month_year', [$date_start, $date_end]);
+    }
+    return $contributions;
   }
 
   public function reimbursements()
@@ -251,15 +304,15 @@ class Affiliate extends Model
     );
     return $contributions;
   }
-  public function getLastBaseWage()
+  public function getLastBaseWage($reinstatement = false)
   {
-    $contributions = $this->contributions()
+    $contributions = $this->contributionsInRange($reinstatement)
       ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
       ->where('contribution_types.operator', '=', '+')
       ->orderBy('contributions.month_year', 'desc')
       ->get();
     if ($contributions->count()) {
-      return $contributions->first()->gain;
+      return (float)$contributions->first()->gain;
     }
     return null;
   }
@@ -339,10 +392,12 @@ class Affiliate extends Model
   {
     return Util::sumTotalContributions($this->getDatesWithoutAvailability())+(Util::sumTotalContributions($this->getDatesAvailability()));
   }
-  public function getDatesGlobal()
+  public function getDatesGlobal($reinstatement = false)
   {
-    $date_start = Util::verifyMonthYearDate($this->date_entry) ? Util::parseMonthYearDate($this->date_entry) : $this->date_entry;
-    $date_end = Util::verifyMonthYearDate($this->date_last_contribution) ? Util::parseMonthYearDate($this->date_last_contribution) : $this->date_last_contribution;
+    $start = $reinstatement ? $this->date_entry_reinstatement : $this->date_entry;
+    $end = $reinstatement ? $this->date_last_contribution_reinstatement : $this->date_last_contribution;
+    $date_start = Util::verifyMonthYearDate($start) ? Util::parseMonthYearDate($start) : $start;
+    $date_end = Util::verifyMonthYearDate($end) ? Util::parseMonthYearDate($end) : $end;
     $dates[] = (object)array(
       // 'start' => ($date_start < '1976-05-01' && ) ? "1976-05-01" : $date_start,
       'start' => $date_start,
@@ -350,12 +405,12 @@ class Affiliate extends Model
     );
     return $dates;
   }
-  public function getContributionsWithType($contribution_type_id)
+  public function getContributionsWithType($contribution_type_id, $reinstatement = false)
   {
     $contribution_type = ContributionType::find($contribution_type_id);
     $dates = [];
     if (!$contribution_type) return "error";
-    $contributions = $this->contributions()->where('contribution_type_id', '=', $contribution_type->id)->orderBy('month_year', 'asc')->get();
+    $contributions = $this->contributionsInRange($reinstatement)->where('contribution_type_id', '=', $contribution_type->id)->orderBy('month_year', 'asc')->get();
     if ($length = $contributions->count()) {
       $start = $contributions[0]->month_year;
       for ($i = 0; $i < $length - 1; $i++) {
@@ -411,7 +466,7 @@ class Affiliate extends Model
 
     return $dates;
   }
-  public function getTotalContributionsAmount($name_contribution_type)
+  public function getTotalContributionsAmount($name_contribution_type) // sin usar
   {
     $contribution_type = ContributionType::where('name', '=', $name_contribution_type)->first();
     if (!$contribution_type) {
@@ -425,64 +480,12 @@ class Affiliate extends Model
     return $total;
   }
   //--**OBTIENE EL TOTAL DE CUOTAS**//
-  public function getTotalQuotes()
+  public function getTotalQuotes($reinstatement = false)
   {
-    // $total_global_backed = Util::sumTotalContributions($this->getDatesGlobal());
-    // $total_contributions_backed = Util::sumTotalContributions($this->getContributionsWithType('Servicio Activo'));
-    // $total_item_zero_backed = Util::sumTotalContributions($this->getContributionsWithType('Período en item 0 Con Aporte'));
-    // $total_availability_backed = Util::sumTotalContributions($this->getContributionsWithType('Disponibilidad'));
-    // $total_security_battalion_backed = Util::sumTotalContributions($this->getContributionsWithType('Período de Batallón de Seguridad Física Con Aporte'));
-    // $total_cas_backed = Util::sumTotalContributions($this->getContributionsWithType('Período Certificación Con Aporte'));
-    // $total_no_records_backed = Util::sumTotalContributions($this->getContributionsWithType('Período no Trabajado'));
-    // $total_quotes = ($total_global_backed ?? 0)
-    //     - ($total_availability_backed ?? 0)
-    //     - ($total_security_battalion_backed ?? 0)
-    //     - ($total_cas_backed ?? 0)
-    //     - ($total_no_records_backed ?? 0);
-
-    // $c = ContributionType::find(1);
-    $group_dates = [];
-    $total_dates = Util::sumTotalContributions($this->getDatesGlobal());
-    $dates = array(
-      'id' => 0,
-      'dates' => $this->getDatesGlobal(),
-      'name' => "perii",
-      'operator' => '**',
-      'description' => "dsds",
-      'years' => intval($total_dates / 12),
-      'months' => $total_dates % 12,
-    );
-    $group_dates[] = $dates;
-    foreach (ContributionType::orderBy('id')->get() as $c) {
-      // if ($c->id != 1) {
-      $contributionsWithType = $this->getContributionsWithType($c->id);
-      if (sizeOf($contributionsWithType) > 0) {
-        if ($c->operator == '-') {
-          $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
-          // $dates = array(
-          //     'id' => $c->id,
-          //     'dates' => $this->getContributionsWithType($c->id),
-          //     'name' => $c->name,
-          //     'operator' => $c->operator,
-          //     'description' => $c->shortened,
-          //     'years' => intval($sub_total_dates / 12),
-          //     'months' => $sub_total_dates % 12,
-          // );
-          eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
-          $group_dates[] = $dates;
-        }
-      }
-      // }
-    }
-    $contributions = array(
-      'contribution_types' => $group_dates,
-      'years' => intval($total_dates / 12),
-      'months' => $total_dates % 12
-    );
+    $total_dates = Util::sumTotalContributions($this->getDatesGlobal($reinstatement));
     return $total_dates;
   }
-  public function getLastContributionAttribute(){
-
+  public function getLastContributionAttribute(){ // sin usar
     return $this->contributions()->latest('month_year')->first();
   }
   // public function globalPayRetFun()
@@ -635,16 +638,24 @@ class Affiliate extends Model
     return $data;
   }
   //--**SUMA LAS CONTRIBUCIONES CON SIGNO + **//
-  public function getContributionsPlus($with_reimbursements = true)
+  public function getContributionsPlus($with_reimbursements = true, $reinstatement = false)
   {
-
     if ($this->selectedContributions() > 0 || $this->contributions()->count() == 0) {
       return [];
     }
-    if($this->retirement_funds()->where('code','not like','%A%')->first()->procedure_modality->procedure_type->id == 21){
-      $number_contributions = $this->getTotalQuotes();
-     }else{
+    $ret_fun = $this->retirement_funds()->where('code','not like','%A%')->orderBy('reception_date');
+    $retirement_fund = $reinstatement ? $ret_fun->get()->last() : $ret_fun->first();
+    if ($retirement_fund->procedure_modality->procedure_type->id == 21) {
+      $number_contributions = $this->getTotalQuotes($reinstatement);
+    } else {
       $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
+    }
+    if(!$reinstatement) {
+      $start_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_entry);
+      $end_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_last_contribution);
+    } else {
+      $start_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_entry_reinstatement);
+      $end_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_last_contribution_reinstatement);
     }
     if ($with_reimbursements) {
       $contributions = DB::select("
@@ -687,7 +698,7 @@ class Affiliate extends Model
                     and month_year in (SELECT contributions.month_year
                                         FROM contributions
                                         LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
-                                        WHERE contributions.affiliate_id = " . $this->id . " and  contributions.deleted_at is null and contribution_types.operator LIKE '+')
+                                        WHERE contributions.affiliate_id = " . $this->id . " and  contributions.deleted_at is null and contribution_types.operator LIKE '+' and contributions.month_year BETWEEN '".$start_date."' and '".$end_date."')
                     UNION ALL
                     SELECT
                     contributions.id,
@@ -713,7 +724,7 @@ class Affiliate extends Model
                 contributions.total
                     FROM contributions
                     LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
-                    WHERE affiliate_id = " . $this->id . " and  contributions.deleted_at is null and contribution_types.operator LIKE '+'
+                    WHERE affiliate_id = " . $this->id . " and  contributions.deleted_at is null and contribution_types.operator LIKE '+' and contributions.month_year BETWEEN '".$start_date."' and '".$end_date."'
             ) as contributions_reimbursements
                 GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id
                 ORDER BY month_year DESC
@@ -813,13 +824,15 @@ class Affiliate extends Model
     }
   }
   //--**OBTIENE EL TOTAL DEL SALARIO COTIZABLE PARA FONDO**--//
-  public function getTotalAverageSalaryQuotable($with_reimbursements = true)
+  public function getTotalAverageSalaryQuotable($with_reimbursements = true, $reinstatement = false)
   {
-    if($this->retirement_funds->last()->procedure_modality->procedure_type->id == 21){
-      $number_contributions = $this->getTotalQuotes();
-     }else{
+    $ret_fun = $this->retirement_funds()->where('code','not like','%A%')->orderBy('reception_date');
+    $retirement_fund = $reinstatement ? $ret_fun->get()->last() : $ret_fun->first();
+    if($retirement_fund->procedure_modality->procedure_type->id == 21){
+      $number_contributions = $this->getTotalQuotes($reinstatement);
+    }else{
       $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
-    }
+    } 
     // $availability = $this->getContributionsWithType(10);#disponibilidad
 
     // if (sizeOf($availability) > 0) {
@@ -827,13 +840,13 @@ class Affiliate extends Model
     // $start_date_availability = Carbon::parse(end($availability)->start)->subMonth(1)->toDateString();
 
     if ($with_reimbursements) {
-      $contributions = self::getContributionsPlus();
+      $contributions = self::getContributionsPlus(true, $reinstatement);
       $total_base_wage = array_sum(array_column($contributions, 'base_wage'));
       $total_seniority_bonus = array_sum(array_column($contributions, 'seniority_bonus'));
       $total_aporte = array_sum(array_column($contributions, 'total'));
       $total_retirement_fund = array_sum(array_column($contributions, 'retirement_fund'));
     } else {
-      $contributions = self::getContributionsPlus(false);
+      $contributions = self::getContributionsPlus(false, $reinstatement);
       $total_base_wage =  $contributions->sum('base_wage');
       $total_seniority_bonus = $contributions->sum('seniority_bonus');
       $total_aporte = $contributions->sum('total');
@@ -842,23 +855,7 @@ class Affiliate extends Model
 
     $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
     $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
-    // } else {
-    //si no tiene periodos en disponibilidad
-    // $last_date_contribution = Carbon::parse(end($contributions)->end)->toDateString();
-    // $contributions = $this->contributions()
-    // ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
-    // ->where("contribution_types.id", '=', 1)
-    // ->where('contributions.month_year', '<=', $last_date_contribution)
-    // ->where('contribution_types.operator', '=', '+')
-    // ->orderBy('contributions.month_year', 'desc')
-    // ->take($number_contributions)
-    // ->get();
-    //     $total_base_wage = $contributions->sum('base_wage');
-    //     $total_seniority_bonus = $contributions->sum('seniority_bonus');
-    //     $total_retirement_fund = $contributions->sum('retirement_fund');
-    //     $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
-    //     $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
-    // }
+    
     $data = [
       'contributions' => $contributions,
       'total_base_wage' => $total_base_wage,

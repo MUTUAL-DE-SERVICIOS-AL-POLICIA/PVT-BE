@@ -133,9 +133,15 @@ class RetirementFund extends Model
             return "El afiliado no tiene documentos referidos";
         }
     }
-    public function hasLegalGuardian(){
-        return $this->ret_fun_beneficiaries()->where('type', 'S')->first()->legal_guardian()->count();
+    public function hasLegalGuardian()
+    {
+        $beneficiary = $this->ret_fun_beneficiaries()->where('type', 'S')->first();
+        if (!$beneficiary) {
+            return 0;
+        }
+        return $beneficiary->legal_guardian()->count();
     }
+
     public function getCorrelative($area_id)
     {
         return RetFunCorrelative::where('retirement_fund_id', $this->id)->where('wf_state_id', $area_id)->first();
@@ -143,5 +149,16 @@ class RetirementFund extends Model
     public function info_loans()
     {
         return $this->hasMany('Muserpol\Models\InfoLoan');
+    }
+    /*
+    Función que devuelve si el trámite de fondo es el primero o el segundo del afiliado
+    */
+    public function procedureIndex()
+    {
+        $ret_fun_all = RetirementFund::where('affiliate_id', $this->affiliate_id)
+            ->where('code', 'NOT LIKE', '%A')
+            ->orderBy('reception_date')->pluck('id')->all();
+        $index = array_search($this->id, $ret_fun_all);
+        return $index;
     }
 }

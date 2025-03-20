@@ -4,12 +4,15 @@
          <div class="ibox-title">
             <h5>Retenciones judiciales</h5>
             <div class="ibox-tools">
-               <button class="btn btn-primary" @click="register = !register">
+               <button class="btn btn-primary" 
+               @click="register = !register"
+               :disabled="retentions != undefined && retentions.length > 0"
+               >
                   <i class="fa">Registrar</i>
                </button>
             </div>
          </div>
-         <div class="ibox-content" v-if="register">
+         <div class="ibox-content">
             <div class="row">
                <div class="col-md-12" v-if="retentions != undefined && retentions.length > 0">
                   <table class="table table-striped table-hover table-bordered">
@@ -41,7 +44,7 @@
                      <label class="control-label">Detalle:</label>
                   </div>
                   <div class="col-md-6">
-                     <textarea type="text" class="form-control" v-model="detail" placeholder="descripción..."></textarea>
+                     <textarea type="text" class="form-control" v-model="detail" placeholder="descripción..." :disabled="!register"></textarea>
                   </div>
                </div>
             </div>
@@ -82,7 +85,7 @@
 </template>
 <script>
 export default {
-   props: ['quotaAidId'],
+   props: ['ret_fun_id'],
    data() {
       return {
          showModal: false,
@@ -94,6 +97,7 @@ export default {
    },
    mounted() {
       this.obtainJudicialRetention();
+      console.log(this.ret_fun_id)
    },
    methods: {
       async registerJudicialRetention() {
@@ -102,12 +106,12 @@ export default {
             return; 
          }
          try {
-            const response = await axios.post(`/quota_aid/${this.quotaAidId}/save_judicial_retention`, {
+            const response = await axios.post(`/ret_fun/${this.ret_fun_id}/save_judicial_retention`, {
                detail: this.detail
             })
             this.retentions.push(response.data.data);
             flash(response.data.message);
-            window.location.reload()
+            //window.location.reload()
          } catch( error ) {
             if(error.response) {
                if(error.response.status == 409) {
@@ -130,7 +134,7 @@ export default {
       },
       async obtainJudicialRetention() {
          try {
-            const response = await axios.get(`/quota_aid/${this.quotaAidId}/obtain_judicial_retention`)
+            const response = await axios.get(`/ret_fun/${this.ret_fun_id}/obtain_judicial_retention`)
             if(response.data) {
                this.retentions = response.data.data
                console.log(this.retentions[0])
@@ -141,7 +145,7 @@ export default {
       },
       async modifiyJudicialRetention() {
          try {
-            const response = await axios.patch(`/quota_aid/${this.quotaAidId}/modify_judicial_retention`, {
+            const response = await axios.patch(`/ret_fun/${this.ret_fun_id}/modify_judicial_retention`, {
                detail: this.detail
             })
             const index = this.retentions.findIndex(r => r.id === this.editRetention.id);
@@ -166,7 +170,7 @@ export default {
             cancelButtonText: "Cancelar <i class='fa fa-times'></i>",
             showLoaderOnConfirm: true,
             preConfirm: async () => {
-               await axios.delete(`/quota_aid/${this.quotaAidId}/cancel_judicial_retention`)
+               await axios.delete(`/ret_fun/${this.ret_fun_id}/cancel_judicial_retention`)
                flash("Se ha eliminado la retención exitosamente");
                this.retentions = this.retentions.filter(r => r.id !== this.editRetention.id);
                return true

@@ -6,6 +6,7 @@ export default {
     'kinships',
     'spouse',
     'affiliate',
+    'has_ret_fun'
   ],
   data(){
     return{
@@ -51,6 +52,8 @@ export default {
       applicant_types:[{name:'Beneficiario', id:1}, {name:'Tutor', id:2}, {name:'Apoderado', id:3}],
       date_entry: this.affiliate.date_entry,
       date_derelict: this.affiliate.date_derelict,
+      date_entry_reinstatement: this.affiliate.date_entry_reinstatement,
+      date_derelict_reinstatement: this.affiliate.date_derelict_reinstatement,
       date_death: this.affiliate.date_death,
       reason_death: this.affiliate.reason_death,
       beneficiary_city_address_id: null,

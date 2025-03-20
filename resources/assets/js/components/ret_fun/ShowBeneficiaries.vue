@@ -9,6 +9,7 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
             'kinships',
             'retFunId',
             'procedureModalityId',
+            'kinship_beneficiaries'
 		],
         data(){
             return{
@@ -19,16 +20,6 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
             }
         },
         computed:{
-            // age: function(){
-            //     var birthday = +new Date(this.beneficiary.birth_date); 
-            //     if(this.beneficiary.birth_date!=null){
-
-            //         return~~ ((Date.now() - birthday) / (31557600000));
-            //     }else
-            //     {
-            //         return '';
-            //     }
-            // },
         },
         methods:{
             toggle_editing () {
@@ -67,7 +58,7 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                     this.editing = false;
                     this.show_spinner=false;
                     this.beneficiaries = response.data.beneficiaries;
-                    flash('Informacion del Afiliado Actualizada  '+response.data);
+                    flash('Información del Afiliado Actualizado');
                 }).catch((response)=>{
                     this.show_spinner=false;
                     this.beneficiaries = this.ben;
@@ -101,6 +92,7 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
                         advisor_name_court: null,
                         advisor_resolution_number: null,
                         advisor_resolution_date: null,
+                        kinship_beneficiary: null,
 
                         legal_guardian_identity_card: null,
                         legal_guardian_city_identity_card: null,
