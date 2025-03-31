@@ -235,7 +235,6 @@ class RetirementFundCertificationController extends Controller
      */
     $cite = $number; // RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
 
-    $subtitle = $cite;
     $pdftitle = "Certificación de Archivo";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     //aqui
@@ -250,7 +249,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'cite' => $cite,
-      'subtitle' => $subtitle,
       'title' => $title,
       'retirement_fund' => $retirement_fund,
       'affiliate' => $affiliate,
@@ -296,8 +294,6 @@ class RetirementFundCertificationController extends Controller
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_retirement_fund($retirement_fund->id), "QRCODE");
     // $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $this->generateBarCode($retirement_fund)])->render();
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
-    $cite = $number; //RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
-    $subtitle = $cite;
     $pdftitle = "Revision Legal";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
@@ -308,7 +304,6 @@ class RetirementFundCertificationController extends Controller
       'date' => $date,
       'number' => $number,
 
-      'subtitle' => $subtitle,
       'title' => $title,
       'retirement_fund' => $retirement_fund,
       'affiliate' => $affiliate,
@@ -348,7 +343,6 @@ class RetirementFundCertificationController extends Controller
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
-    $subtitle = $number;
 
     $data = [
       'code' => $code,
@@ -359,7 +353,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'affiliate' => $affiliate,
       'applicant' => $applicant,
       'beneficiaries' => $beneficiaries,
@@ -386,7 +379,6 @@ class RetirementFundCertificationController extends Controller
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
-    $subtitle = $number;
 
     $title = "SALARIO PROMEDIO COTIZABLE";
     $data = [
@@ -398,7 +390,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'retirement_fund' => $retirement_fund,
       'affiliate' => $affiliate,
       'number_contributions' => $number_contributions,
@@ -545,7 +536,6 @@ class RetirementFundCertificationController extends Controller
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
-    $subtitle = $number;
 
     $current_procedure = Util::getRetFunCurrentProcedure();
     $temp = [];
@@ -570,7 +560,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'contributions' => $contributions,
       'total_quotes' => $total_quotes,
       'discounts' => $discounts,
@@ -690,7 +679,6 @@ class RetirementFundCertificationController extends Controller
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
-    $subtitle = $number;
 
     $data = [
       'code' => $code,
@@ -701,7 +689,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'contributions' => $contributions,
       'total_quotes' => $total_quotes,
       'discounts' => $discounts,
@@ -774,7 +761,6 @@ class RetirementFundCertificationController extends Controller
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
-    $subtitle = $number;
 
     $data = [
       'code' => $code,
@@ -784,7 +770,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'array_discounts_availability' => $array_discounts_availability,
 
       'affiliate' => $affiliate,
@@ -1036,7 +1021,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE APORTES";
-    $subtitle = "Cuenta Individual";
 
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
@@ -1056,7 +1040,6 @@ class RetirementFundCertificationController extends Controller
     $pdftitle = "Cuentas Individuales";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
@@ -1066,7 +1049,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'num' => $num,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'reimbursements' => $reimbursements,
@@ -1098,7 +1080,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE APORTES EN DISPONIBILIDAD";
-    $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
@@ -1117,7 +1098,6 @@ class RetirementFundCertificationController extends Controller
     $pdftitle = "Cuentas Individuales";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
-    $subtitle = $next_area_code->code;
 
     //total de los aportes
     $aporte = $retirement_fund->subtotal_availability;
@@ -1131,7 +1111,6 @@ class RetirementFundCertificationController extends Controller
       'num' => $num,
       'disponibilidad' => $disponibilidad,
       'aporte' => $aporte,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'reimbursements' => $reimbursements,
@@ -1204,7 +1183,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE CUENTAS INDIVIDUALES ITEM 0";
-    $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
@@ -1223,7 +1201,6 @@ class RetirementFundCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $item0_type = 2;
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
@@ -1231,7 +1208,6 @@ class RetirementFundCertificationController extends Controller
       'user' => $user,
       'date' => $date,
       'number' => $number,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'dateac' => $dateac,
@@ -1267,7 +1243,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE CUENTAS INDIVIDUALES DISPONIBILIDAD";
-    $subtitle = "Cuenta Individual";
 
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
     $code = $retirement_fund->code;
@@ -1285,7 +1260,6 @@ class RetirementFundCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $num=0;
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
@@ -1293,7 +1267,6 @@ class RetirementFundCertificationController extends Controller
       'user' => $user,
       'date' => $date,
       'number' => $number,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'reimbursements' => $reimbursements,
@@ -1335,7 +1308,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "BATALLÓN DE SEGURIDAD FÍSICA PRIVADA";
-    $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
@@ -1355,7 +1327,6 @@ class RetirementFundCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     // $total = Util::formatMoney($contributions_total);
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
@@ -1365,7 +1336,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'num' => $num,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       // 'total'=>$total,
@@ -1419,7 +1389,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE APORTES";
-    $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
@@ -1439,7 +1408,6 @@ class RetirementFundCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $total = Util::formatMoney($contributions_total);
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
@@ -1449,7 +1417,6 @@ class RetirementFundCertificationController extends Controller
       'number' => $number,
 
       'num' => $num,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'total' => $total,
