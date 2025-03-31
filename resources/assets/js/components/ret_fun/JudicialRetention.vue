@@ -8,7 +8,7 @@
                @click="register = !register"
                :disabled="retentions != undefined && retentions.length > 0"
                >
-                  <i class="fa">Registrar</i>
+                  <i class="fa">Registrar{{ register }}</i>
                </button>
             </div>
          </div>
@@ -110,6 +110,7 @@ export default {
                detail: this.detail
             })
             this.retentions.push(response.data.data);
+            this.obtainJudicialRetention();
             flash(response.data.message);
             //window.location.reload()
          } catch( error ) {
@@ -176,7 +177,9 @@ export default {
                return true
             },
          });
-         window.location.reload();
+         this.retentions = []
+         this.detail= null
+         
       }
    }
 }
