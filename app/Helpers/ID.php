@@ -200,7 +200,8 @@ class ID
 	public static function module()
 	{
 		$ids = [
-			'eco_com' => 2
+			'eco_com' => 2,
+			'ret_fun' => 3
 		];
 		return ((object)$ids);
 	}
