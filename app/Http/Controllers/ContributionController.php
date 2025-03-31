@@ -1133,11 +1133,12 @@ class ContributionController extends Controller
     public function printCertification($id)
     {
         $retirement_fund = RetirementFund::find($id);
+        $ret_fun_index = $retirement_fund->procedureindex();
         $affiliate = $retirement_fund->affiliate;
         $servicio = ContributionType::where('name','=','Servicio Activo')->first();
         $item_cero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
         $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
-        $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
+        $contributions_sixty = $affiliate->contributionsInRange($ret_fun_index == 1)
                         ->where(function ($query) use ($servicio,$item_cero){
                             $query->where('contribution_type_id',$servicio->id)
                             ->orWhere('contribution_type_id',$item_cero->id);
@@ -1171,9 +1172,10 @@ class ContributionController extends Controller
     public function printCertificationAvailability($id)
     {
         $retirement_fund = RetirementFund::find($id);
+        $ret_fun_index = $retirement_fund->procedureindex();
         $affiliate = $retirement_fund->affiliate;
         $disponibilidad = ContributionType::where('name','=','Disponibilidad')->first();
-        $contributions = Contribution::where('affiliate_id', $affiliate->id)
+        $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
                         ->orderBy('month_year')
                         ->get();
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
@@ -1205,9 +1207,10 @@ class ContributionController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
+        $ret_fun_index = $retirement_fund->procedureindex();
         $itemcero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
         $itemcero_sin_aporte = ContributionType::where('name','=','Período en item 0 Sin Aporte')->first();
-        $contributions = Contribution::where('affiliate_id', $affiliate->id)
+        $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
                         ->orderBy('month_year')
                         ->get();
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
