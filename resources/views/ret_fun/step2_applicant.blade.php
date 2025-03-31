@@ -49,7 +49,7 @@
                     <div class="col-md-3" :class="{'has-error': errors.has('date_derelict_reinstatement') }" v-if="!validDateDerelict">
                         <div class="form-group">
                             <label class="col-sm-4 control-label">
-                                Fecha de desvinculaci&oacute;n</label>
+                                Fecha de desvinculaci&oacute;n (Reincorporación)</label>
                             <div class="col-sm-8">
                                 <input type="text" name="date_derelict_reinstatement" v-model="date_derelict_reinstatement" v-month-year class="form-control" v-validate.initial="'required|max_current_date_month_year'">
                                 <i v-show="errors.has('date_derelict_reinstatement')" class="fa fa-warning text-danger"></i>

@@ -1088,7 +1088,7 @@ class RetirementFundCertificationController extends Controller
     $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $disponibilidad = ContributionType::where('name', '=', 'Disponibilidad')->first();
-    $contributions = $affiliate->contributionsByRange($ret_fun_index == 1)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->orderBy('month_year')
       ->get();
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
@@ -1151,9 +1151,10 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationItem0($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $item_cero_ids = [2, 3];
-    $contributions =  $affiliate->contributions()->whereIn('contribution_type_id', $item_cero_ids)->get();
+    $contributions =  $affiliate->contributionsInRange($ret_fun_index == 1)->whereIn('contribution_type_id', $item_cero_ids)->get();
     $month_years = $contributions->pluck('month_year');
     $months = implode(",", array_map(function ($item) {
       return "'" . $item . "'";
@@ -1249,9 +1250,10 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationAvailabilityNew($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $item_cero_ids = [12, 13];
-    $contributions =  $affiliate->contributions()->whereIn('contribution_type_id', $item_cero_ids)->orderBy('month_year')->get();
+    $contributions =  $affiliate->contributionsInRange($ret_fun_index == 1)->whereIn('contribution_type_id', $item_cero_ids)->orderBy('month_year')->get();
     $month_years = $contributions->pluck('month_year');
     $months = implode(",", array_map(function ($item) {
       return "'" . $item . "'";
@@ -1312,19 +1314,20 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationSecurity($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $security_contributions = ContributionType::where('name', '=', 'Período de Batallón de Seguridad Física Con Aporte')->first();
     $security_no_contributions = ContributionType::where('name', '=', 'Período de Batallón de Seguridad Física Sin Aporte')->first();
 
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->where(function ($query) use ($security_contributions, $security_no_contributions) {
         $query->where('contribution_type_id', $security_contributions->id)
           ->orWhere('contribution_type_id', $security_no_contributions->id);
       })
       ->orderBy('month_year')
       ->get();
-    $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id', $security_contributions->id)->count();
-    $contributions_total = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id', $security_contributions->id)->sum('total');
+    $contributions_number = $affiliate->contributionsInRange($ret_fun_index == 1)->where('contribution_type_id', $security_contributions->id)->count();
+    $contributions_total = $affiliate->contributionsInRange($ret_fun_index == 1)->where('contribution_type_id', $security_contributions->id)->sum('total');
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
       ->orderBy('month_year')
       ->get();
@@ -1391,11 +1394,12 @@ class RetirementFundCertificationController extends Controller
   {
 
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $certification_contribution = ContributionType::where('name', '=', 'Período Certificación Con Aporte')->first();
     $certification_no_contribution = ContributionType::where('name', '=', 'Período Certificación Sin Aporte')->first();
 
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->where(function ($query) use ($certification_contribution, $certification_no_contribution) {
         $query->where('contribution_type_id', $certification_contribution->id)
           ->orWhere('contribution_type_id', $certification_no_contribution->id)
@@ -1406,8 +1410,8 @@ class RetirementFundCertificationController extends Controller
       ->orderBy('month_year')
       ->get();
     // 9 id periodo no  trabajado
-    $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->count();
-    $contributions_total = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->sum('total');
+    $contributions_number = $affiliate->contributionsInRange($ret_fun_index == 1)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->count();
+    $contributions_total = $affiliate->contributionsInRange($ret_fun_index == 1)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->sum('total');
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
       ->orderBy('month_year')
       ->get();
@@ -1472,8 +1476,9 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationDevolution($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->where('contribution_type_id', 15) // 15 - Devolución
       ->orderBy('month_year')
       ->get();
@@ -1664,7 +1669,8 @@ class RetirementFundCertificationController extends Controller
     $accounts_id = 22;
     $accounts = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', $accounts_id)->first();
     $availability_code = 10;
-    $availability_number_contributions = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id', $availability_code)->count();
+    $ret_fun_index = $retirement_fund->procedureindex();
+    $availability_number_contributions = $affiliate->contributionsInRange($ret_fun_index == 1)->where('contribution_type_id', $availability_code)->count();
 
     $end_contributions = [
       '1'  => 'del fallecimiento del Titular.',
@@ -1949,6 +1955,7 @@ class RetirementFundCertificationController extends Controller
   {
     $retirement_fund =  RetirementFund::find($ret_fun_id);
     $affiliate = Affiliate::find($retirement_fund->affiliate_id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     //$correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
     //$wf_states = WorkflowState::where('sequence_number','!=',0)->where('role_id','<','28')->where('module_id',3)->orderBy('sequence_number')->get();
     $documents = array();
@@ -1957,21 +1964,21 @@ class RetirementFundCertificationController extends Controller
     array_push($documents, 'CERTIFICACIÓN Y VALIDACIÓN DE DOCUMENTOS POR EL ÁREA LEGAL');
     $valid_contributions = ContributionType::select('id')->where('operator', '+')->pluck('id');
     $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
-    $contributions_count = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions_count = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->whereIn('contribution_type_id', $valid_contributions)
       ->count();
     if ($contributions_count >= $quantity) {
       array_push($documents, 'CERTIFICACIÓN DE APORTES EN EL SERVICIO ACTIVO');
     }
     $item_cero_ids = [2, 3];
-    $item0 =  Contribution::where('affiliate_id', $affiliate->id)
+    $item0 =  $affiliate->contributionsInRange($ret_fun_index == 1)
       ->whereIn('contribution_type_id', $item_cero_ids)
       ->count();
     if ($item0 > 0) {
       array_push($documents, 'CERTIFICACIÓN DE APORTES ITEM "0"');
     }
     $valid_contributions = ContributionType::where('name', '=', 'Disponibilidad Con Aporte')->select('id')->pluck('id');
-    $availability = Contribution::where('affiliate_id', $affiliate->id)
+    $availability = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->whereIn('contribution_type_id', $valid_contributions)
       ->count();
     if ($availability > 0) {
@@ -1980,7 +1987,7 @@ class RetirementFundCertificationController extends Controller
     $security_contributions = ContributionType::where('name', '=', 'Período de Batallón de Seguridad Física Con Aporte')->first();
     $security_no_contributions = ContributionType::where('name', '=', 'Período de Batallón de Seguridad Física Sin Aporte')->first();
 
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->where(function ($query) use ($security_contributions, $security_no_contributions) {
         $query->where('contribution_type_id', $security_contributions->id)
           ->orWhere('contribution_type_id', $security_no_contributions->id);
@@ -1992,7 +1999,7 @@ class RetirementFundCertificationController extends Controller
     $certification_contribution = ContributionType::where('name', '=', 'Período Certificación Con Aporte')->first();
     $certification_no_contribution = ContributionType::where('name', '=', 'Período Certificación Sin Aporte')->first();
     $no_work_period = 9;
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->whereIn('contribution_type_id', [$certification_contribution->id, $certification_no_contribution->id, $no_work_period])
       ->count();
     if ($contributions > 0) {
