@@ -470,15 +470,12 @@ class QuotaAidCertificationController extends Controller
     $beneficiaries_minor = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) < 18")->get();
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
     $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
-    $cite = $number;
-    $subtitle = $cite;
     $pdftitle = "Revision Legal";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $data = [
       'code' => $code,
       'date' => $date,
       'number' => $number,
-      'subtitle' => $subtitle,
       'title' => $title,
       'quota_aid' => $quota_aid,
       'affiliate' => $affiliate,

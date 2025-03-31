@@ -2786,16 +2786,13 @@ class RetirementFundCertificationController extends Controller
     $beneficiaries_minor = $ret_fun->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) < 18")->get();
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_retirement_fund($ret_fun->id), "QRCODE");
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
-    $cite = $number;
     $subtitletwo = $ret_fun->procedure_modality->procedure_type->name;
-    $subtitle = $cite;
     $pdftitle = "Liquidación de Pago";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $data = [
       'code' => $code,
       'date' => $date,
       'number' => $number,
-      'subtitle' => $subtitle,
       'title' => $title,
       'subtitletwo' => $subtitletwo,
       'ret_fun' => $ret_fun,
