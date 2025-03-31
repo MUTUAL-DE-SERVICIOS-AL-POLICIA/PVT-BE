@@ -13,7 +13,7 @@ class CreateDevolutionContributionType13022025 extends Seeder
     public function run()
     {
 
-        $contribution = ContributionType::create(['name'=>'Devolución','shortened'=>'D','description'=>'Período devuelto al funcionario por falta de regularización','operator'=>'-']);
+        $contribution = ContributionType::create(['name'=>'Devolución','shortened'=>'D','description'=>'Período devuelto al funcionario por falta de regularización','operator'=>'-', 'sequence'=>'15']);
         
         $this->command->info("Contribution type - Devolución creado");
     }
