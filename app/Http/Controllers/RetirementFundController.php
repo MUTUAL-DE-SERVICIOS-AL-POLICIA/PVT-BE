@@ -825,7 +825,7 @@ class RetirementFundController extends Controller
         $ret_fun_index = $retirement_fund->procedureIndex();
         // summary qualification
         $last_base_wage = $affiliate->getLastBaseWage($ret_fun_index == 1);
-        $total_average_salary_quotable = $affiliate->selectedContributions() > 0 ? 0 : $affiliate->getTotalAverageSalaryQuotable()['total_average_salary_quotable'];
+        $total_average_salary_quotable = $affiliate->selectedContributions() > 0 ? 0 : $affiliate->getTotalAverageSalaryQuotable(true, $ret_fun_index == 1)['total_average_salary_quotable'];
 
         $array_discounts = array();
         $array = DiscountType::where('module_id', 3)->get()->pluck('id');
