@@ -173,13 +173,13 @@ export default {
             preConfirm: async () => {
                await axios.delete(`/ret_fun/${this.ret_fun_id}/cancel_judicial_retention`)
                flash("Se ha eliminado la retención exitosamente");
-               this.retentions = this.retentions.filter(r => r.id !== this.editRetention.id);
+               //this.retentions = this.retentions.filter(r => r.id !== this.editRetention.id);
+               this.retentions = []
+               this.detail= null
+               this.register=false
                return true
             },
          });
-         this.retentions = []
-         this.detail= null
-         
       }
    }
 }
