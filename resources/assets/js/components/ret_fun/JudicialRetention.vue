@@ -8,7 +8,7 @@
                @click="register = !register"
                :disabled="retentions != undefined && retentions.length > 0"
                >
-                  <i class="fa">Registrar</i>
+                  <i class="fa">Registrar{{ register }}</i>
                </button>
             </div>
          </div>
@@ -110,6 +110,7 @@ export default {
                detail: this.detail
             })
             this.retentions.push(response.data.data);
+            this.obtainJudicialRetention();
             flash(response.data.message);
             //window.location.reload()
          } catch( error ) {
@@ -172,11 +173,13 @@ export default {
             preConfirm: async () => {
                await axios.delete(`/ret_fun/${this.ret_fun_id}/cancel_judicial_retention`)
                flash("Se ha eliminado la retención exitosamente");
-               this.retentions = this.retentions.filter(r => r.id !== this.editRetention.id);
+               //this.retentions = this.retentions.filter(r => r.id !== this.editRetention.id);
+               this.retentions = []
+               this.detail= null
+               this.register=false
                return true
             },
          });
-         window.location.reload();
       }
    }
 }
