@@ -4,12 +4,15 @@
          <div class="ibox-title">
             <h5>Retenciones judiciales</h5>
             <div class="ibox-tools">
-               <button class="btn btn-primary" @click="register = !register">
+               <button class="btn btn-primary" 
+               @click="register = !register"
+               :disabled="retentions != undefined && retentions.length > 0"
+               >
                   <i class="fa">Registrar</i>
                </button>
             </div>
          </div>
-         <div class="ibox-content" v-if="register">
+         <div class="ibox-content">
             <div class="row">
                <div class="col-md-12" v-if="retentions != undefined && retentions.length > 0">
                   <table class="table table-striped table-hover table-bordered">
@@ -41,7 +44,7 @@
                      <label class="control-label">Detalle:</label>
                   </div>
                   <div class="col-md-6">
-                     <textarea type="text" class="form-control" v-model="detail" placeholder="descripción..."></textarea>
+                     <textarea type="text" class="form-control" v-model="detail" placeholder="descripción..." :disabled="!register"></textarea>
                   </div>
                </div>
             </div>
@@ -106,8 +109,9 @@ export default {
                detail: this.detail
             })
             this.retentions.push(response.data.data);
+            this.obtainJudicialRetention();
             flash(response.data.message);
-            window.location.reload()
+            //window.location.reload()
          } catch( error ) {
             if(error.response) {
                if(error.response.status == 409) {
@@ -168,11 +172,13 @@ export default {
             preConfirm: async () => {
                await axios.delete(`/quota_aid/${this.quotaAidId}/cancel_judicial_retention`)
                flash("Se ha eliminado la retención exitosamente");
-               this.retentions = this.retentions.filter(r => r.id !== this.editRetention.id);
+               //this.retentions = this.retentions.filter(r => r.id !== this.editRetention.id);
+               this.retentions = []
+               this.detail= null
+               this.register=false
                return true
             },
          });
-         window.location.reload();
       }
    }
 }
