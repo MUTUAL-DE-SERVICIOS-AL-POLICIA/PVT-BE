@@ -49,3 +49,9 @@
 </ret-fun-beneficiaries-show>
 <ret-fun-beneficiary-testimony-list :beneficiaries="{{ $beneficiaries }}" :doc-id="{{ $retirement_fund->id }}" type="retFun">
 </ret-fun-beneficiary-testimony-list>
+
+@if(Util::getRol()->id == 11)
+    <ret-fun-judicial-retention 
+        :ret_fun_id="{{ $retirement_fund->id }}"
+    ></ret-fun-judicial-retention>
+@endif
