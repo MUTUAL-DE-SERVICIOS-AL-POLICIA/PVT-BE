@@ -16,6 +16,7 @@
                         <tr>
                             <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
@@ -56,6 +57,7 @@
                         <tr>
                             <th># de Trámite</th>
                             <th>Fecha de Recepción</th>
+                            <th>NUP</th>
                             <th>C.I</th>
                             <th>Primer Nombre</th>
                             <th>Segundo Nombre</th>
@@ -169,6 +171,7 @@
                 // { data: 'id' },
                 { data: 'code' },
                 { data: 'reception_date' },
+                { data: 'affiliate.id'},
                 { data: 'affiliate.identity_card' },
                 { data: 'affiliate.first_name' },
                 { data: 'affiliate.second_name' },

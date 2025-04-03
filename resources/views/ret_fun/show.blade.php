@@ -318,10 +318,6 @@
                                         @include('ret_fun.step1_requirements_edit')
                                     </ret-fun-step1-requirements-edit>
                                 @endcan
-                                @if(Muserpol\Helpers\Util::getRol()->id == 11)                                    
-                                    <ret-fun-judicial-retention :ret_fun_id="{{ $retirement_fund->id }}"
-                                    ></ret-fun-judicial-retention>
-                                @endif
                             </div>
                             <div id="tab-headship" class="tab-pane">
                                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
