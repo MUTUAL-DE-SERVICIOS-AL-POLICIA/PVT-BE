@@ -7,6 +7,7 @@
         v-on:getUpdateRecords="getRecord()"
       >
         <v-tab title="Modificaciones" icon="fa fa-edit">
+          <h2>Historial de Modificaciones Afiliado</h2>
           <div class="ibox-content inspinia-timeline">
             <div class="timeline-item" v-for="dr in affiliateRecords" :key="dr.id">
               <div class="row">
@@ -29,6 +30,24 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div>
+            <h2>Historial de Modificaciones Cónyuge</h2>
+            <div class="ibox-content inspinia-timeline">
+            <div class="timeline-item" v-for="dr in spouseRecords" :key="dr.id">
+              <div class="row">
+                <div class="col-md-3 date">
+                  <h3>{{ dr.created_at | recordDate | uppercase }}</h3>
+                  {{ dr.created_at | recordHour }}
+                  <br>
+                  <small class="text-navy">{{ }}</small>
+                </div>
+                <div class="col-md-9 content">
+                  <p style="font-size:medium" class="p-sm">{{ dr.action }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
           </div>
         </v-tab>
         <v-tab title="Anotaciones" icon="fa fa-file">
@@ -75,6 +94,7 @@ export default {
       affiliateRecords: [],
       records: [],
       affiliateActivities:[],
+      spouseRecords: [],
 
       recordTypeIcons: [
         { id: 1, icon: "fa-check", active: true },
@@ -100,6 +120,7 @@ export default {
       "click",
       () => {
         this.getRecord();
+        this.getRecordSpouse();
       },
       { passive: true }
     );
@@ -121,6 +142,17 @@ export default {
           this.records = response.data.records;
           this.affiliateRecords = response.data.affiliate_records;
           this.affiliateActivities = response.data.affiliate_activities;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    async getRecordSpouse() {
+      this.$scrollTo("#wrapper");
+      await axios
+        .get(`/spouse_record/${this.affiliate.id}`)
+        .then(response => {
+          this.spouseRecords = response.data.spouse_records;
         })
         .catch(error => {
           console.log(error);

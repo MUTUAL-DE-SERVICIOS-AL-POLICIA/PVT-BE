@@ -35,6 +35,10 @@ class Spouse extends Model
     {
         return $this->belongsTo(City::class, 'city_birth_id', 'id');
     }
+    public function records()
+    {
+        return $this->morphMany(Record::class, 'recordable');
+    }
     public function getBirthDateAttribute($value)
     {
         if (!$value) {
