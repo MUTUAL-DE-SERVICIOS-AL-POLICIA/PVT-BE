@@ -20,48 +20,20 @@ class GatewayService
 
     public function send(string $method, string $route, array $params = [])
     {
-        $username = env('GATEWAY_USERNAME');
-        $password = env('GATEWAY_PASSWORD');
+        $api_key = env('GATEWAY_API_KEY');
 
         try {
-            $response = $this->client->request('POST', '/api/auth/login', [
-                'form_params' => [
-                    'username' => $username,
-                    'password' => $password,
-                ]
-            ]);
-
-            if ($response->getStatusCode() === 200) {
-                $data = json_decode($response->getBody(), true);
-                $cookies = $response->getHeader('Set-Cookie');
-
-                $cookie = array_map(function ($cookie) {
-                    return strtok($cookie, ';');
-                }, $cookies);
-
-                $options = [
-                    'headers' => [
-                        'Set-Cookie' => $cookie[0],
-                    ],
-                ];
-                
-                if (!empty($params)) {
-                    $options = array_merge($options, $params);
-                }
-                
-                $res = $this->client->request($method,$route, $options);
-
-                $this->client->request('GET', '/api/auth/logout');
-
-                return $res->getBody();
-            }
-
-            return [
-                'status' => 'error',
-                'message' => 'Error al autenticar',
-                'data' => $response->getBody(),
+            $options = [
+                'headers' => [
+                    'x-api-key' => $api_key,
+                ],
             ];
 
+            if (!empty($params)) {
+                $options = array_merge($options, $params);
+            }
+            $res = $this->client->request($method, $route, $options);
+            return $res->getBody();
         } catch (RequestException $e) {
             return [
                 'status' => 'error',
