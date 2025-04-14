@@ -2096,7 +2096,7 @@ class RetirementFundController extends Controller
             }
         }
 
-        $discount_type = DiscountType::where('shortened', 'Judicial o Fiscal')->where('module_id', 3)->first();
+        $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->where('module_id', 3)->first();
         if ($retention_judicial >= 0 && $retention_judicial !== null) {
             if ($retirement_fund->discount_types->contains($discount_type->id)) {
                 $retirement_fund->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $retention_judicial, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
