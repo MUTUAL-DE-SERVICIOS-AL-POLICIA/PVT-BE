@@ -2,6 +2,9 @@
 
 namespace Muserpol\Helpers;
 
+use Muserpol\Models\Role;
+use Muserpol\Models\Workflow\WorkflowState;
+
 class ID
 {
 	/**
@@ -239,6 +242,20 @@ class ID
 			'habitual' => 1,
 			'inclusion' => 2,
 			'rehabilitacion'=>3,
+		];
+		return ((object)$ids);
+	}
+	public static function wf_state()
+	{
+		$ids = [
+			'liquidationFR' => WorkflowState::select('id')->where('name', 'Área de Liquidación Fondo de Retiro')->first()->id
+		];
+		return ((object)$ids);
+	}
+	public static function roles()
+	{
+		$ids = [
+			'liquidationFR' => Role::select('id')->where('display_name', 'Área de Liquidación')->where('module_id',3)->first()->id
 		];
 		return ((object)$ids);
 	}

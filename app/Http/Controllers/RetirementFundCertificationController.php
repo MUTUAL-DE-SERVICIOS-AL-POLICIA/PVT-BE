@@ -2749,7 +2749,7 @@ class RetirementFundCertificationController extends Controller
   public function printLiquidation($id)
   {
     $ret_fun = RetirementFund::find($id);
-    $next_area_code = RetFunCorrelative::where('retirement_fund_id', $ret_fun->id)->where('wf_state_id', 62)->first();
+    $next_area_code = RetFunCorrelative::where('retirement_fund_id', $ret_fun->id)->where('wf_state_id', ID::wf_state()->liquidationFR)->first();
     $code = $ret_fun->code;
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;

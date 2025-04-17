@@ -98,7 +98,7 @@
             <div class="pull-left">
                 <correlative doc-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}" type="retFun"></correlative>
             
-            @if(Util::getRol()->id == 103)
+            @if(Util::getRol()->id == Muserpol\Helpers\ID::roles()->liquidationFR)
                 <ret-fun-certification-button
                     title="Imprimir Liquidación"
                     ret-fun-id="{{ $retirement_fund->id }}"
