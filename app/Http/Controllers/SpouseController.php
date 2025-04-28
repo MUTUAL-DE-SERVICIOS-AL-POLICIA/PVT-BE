@@ -139,12 +139,17 @@ class SpouseController extends Controller
         //
     }
     public function getRecord($affiliate_id)
-{
-    $affiliate = Affiliate::find($affiliate_id);
-    if (!$affiliate) {
-        return response()->json(['error' => 'Affiliate not found'], 404);
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        if (!$affiliate) {
+            return response()->json(['error' => 'Affiliate not found'], 404);
+        }
+        $spouse = $affiliate->spouse->first();
+        if (!$spouse) {
+            return response()->json(['error' => 'Spouse not found'], 404);
+        }
+        $spouse_records = $spouse->records()->orderByDesc('created_at')->get();
+        return response()->json(['spouse_records' => $spouse_records]);
     }
-    $spouse_records = $affiliate->spouse->first()->records()->orderByDesc('created_at')->get();
-    return response()->json(['spouse_records' => $spouse_records]);
-}
+
 }
