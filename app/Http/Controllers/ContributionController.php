@@ -538,7 +538,7 @@ class ContributionController extends Controller
             return redirect('affiliate/'.$affiliate->id);
         }
         
-        $contributions = Contribution::where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
+        $contributions = Contribution::with('category')->where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         
         $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
         $group = [];
@@ -547,7 +547,7 @@ class ContributionController extends Controller
             $group_reim[$reim->month_year] = $reim;        
         }
         foreach ($contributions as $contribution) {
-            $group[$contribution->month_year] = $contribution;            
+            $group[$contribution->month_year] = $contribution;
         }    
         $summary = array(
             'fondoret' => $contributions->sum('retirement_fund'),
@@ -567,9 +567,13 @@ class ContributionController extends Controller
         $month_end = $end[1];
         $year_end = $end[0];
         
-        $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution));      
-        if(!$affiliate->date_last_contribution)
-        $start = explode('-', date('Y-m-d'));              
+        if($affiliate->date_last_contribution_reinstatement) {
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution_reinstatement));      
+        } elseif ($affiliate->date_last_contribution) {
+            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution));      
+        } else {
+            $start = explode('-', date('Y-m-d'));              
+        }
         $month_start = $start[1];
         $year_start = $start[0];                
         // $commitment = ContributionCommitment::where('affiliate_id',$affiliate->id)->where('state','ALTA')->first();        
