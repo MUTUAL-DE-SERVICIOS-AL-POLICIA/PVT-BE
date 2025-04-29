@@ -892,18 +892,14 @@ class ContributionController extends Controller
 
         $date_entry_reinstatement = Util::parseMonthYearDate($affiliate->date_entry_reinstatement);
         $date_last_contribution_reinstatement = Util::parseMonthYearDate($affiliate->date_last_contribution_reinstatement);
-        $number_rf_procedures = RetirementFund::where('affiliate_id', $affiliate->id)
-            ->where('code', 'NOT LIKE', '%A')
-            ->orderBy('reception_date')->pluck('id')->all();
-
-        $index = array_search($ret_fun_id, $number_rf_procedures);
-        if($index === false) {
+        $ret_fun_index = $ret_fun->procedureIndex();
+        if($ret_fun_index === false) {
             return "Error";
         }
 
         $start_date = '';
         $end_date = '';
-        if ($index == 0) {
+        if ($ret_fun_index == 0) {
             if (!(Carbon::hasFormat($date_entry, 'Y-m-d') && Carbon::hasFormat($date_last_contribution, 'Y-m-d'))) {
                 Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte del afiliado existan antes de continuar');
                 return redirect('ret_fun/' . $ret_fun_id);
@@ -914,7 +910,7 @@ class ContributionController extends Controller
             }
             $start_date = $date_entry;
             $end_date = $date_last_contribution;
-        } elseif ($index == 1) {
+        } elseif ($ret_fun_index == 1) {
             if (!(Carbon::hasFormat($date_entry_reinstatement, 'Y-m-d') && Carbon::hasFormat($date_last_contribution_reinstatement, 'Y-m-d'))) {
                 Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte de la reincorporación del afiliado existan antes de continuar');
                 return redirect('ret_fun/' . $ret_fun_id);
