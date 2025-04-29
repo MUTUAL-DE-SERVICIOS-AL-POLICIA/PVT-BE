@@ -157,7 +157,9 @@ class RetirementFund extends Model
     {
         $ret_fun_all = RetirementFund::where('affiliate_id', $this->affiliate_id)
             ->where('code', 'NOT LIKE', '%A')
-            ->orderBy('reception_date')->pluck('id')->all();
+            ->orderBy('reception_date')
+            ->orderBy('id', 'ASC')
+            ->pluck('id')->all();
         $index = array_search($this->id, $ret_fun_all);
         return $index;
     }
