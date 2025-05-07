@@ -16,7 +16,7 @@ class AffiliateDevolutionController extends Controller
 {
     public function getDevolutions($affiliate_id)
     {
-        $devolutions = Devolution::where('affiliate_id',$affiliate_id)->get();
+        $devolutions = Devolution::where('affiliate_id',$affiliate_id)->where('observation_type_id',13)->with('dues')->get();
         $list_devolution= collect();
         foreach ($devolutions as $devolution ) {
             $devolution_object = new \stdClass();
