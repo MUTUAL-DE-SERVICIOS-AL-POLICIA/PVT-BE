@@ -32,6 +32,9 @@
     <thead class="bg-grey-darker">
         <tr class="font-medium text-white text-sm uppercase">
             <td class="px-15 text-center">
+                NUP
+            </td>
+            <td class="px-15 text-center">
                 C.I
             </td>
             <td class="px-15 text-center">
@@ -47,6 +50,7 @@
     </thead>
     <tbody>
         <tr class="text-sm">
+            <td class="text-center uppercase font-bold px-5 py-3">{!! $affiliate->id !!} </td>
             <td class="text-center uppercase font-bold px-5 py-3">{!! $affiliate->identity_card !!} </td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->registration }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened }}</td>

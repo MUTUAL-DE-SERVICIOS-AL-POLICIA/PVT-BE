@@ -18,7 +18,7 @@ class AffiliateHasRetFun
     {        
         $ret_fun = RetirementFund::where('affiliate_id',$request->affiliate->id)->where('code','LIKE','%A')->get();        
         $cant = $ret_fun->count();
-        if($request->affiliate->retirement_funds->count()-$cant > 0){
+        if($request->affiliate->retirement_funds->count()-$cant > 1){
             return redirect()->route('affiliate.show', $request->affiliate->id);
         }
         return $next($request);

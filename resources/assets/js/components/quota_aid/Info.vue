@@ -61,6 +61,14 @@ export default {
           console.error('Ocurrió un error al imprimir:', error);
         }
       },
+      printLiquidation: function () {
+        try {
+          printJS({printable:'quota_aid/'+this.quota_aid.id+'/print/liquidation',modalMessage:
+              "Generando documentos de impresión, por favor espere un momento.", type:'pdf', showModal:true});
+        } catch (error) {
+          console.error('Ocurrió un error al imprimir:', error);
+        }
+      },
       update: function () {  
         let uri = `/update_information_quota_aid`;
         this.show_spinner=true;

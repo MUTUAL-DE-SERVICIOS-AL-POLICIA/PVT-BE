@@ -87,6 +87,10 @@
                         </thead>
                         <tbody class="table-striped">
                             <tr class="text-sm">
+                                <td class="w-40 text-left px-10 py-3 uppercase">nup</td>
+                                <td class="text-left uppercase font-bold px-5 py-3"> {{ $affiliate->id }} </td>
+                            </tr>
+                            <tr class="text-sm">
                                 <td class="w-40 text-left px-10 py-3 uppercase">grado</td>
                                 <td class="text-left uppercase font-bold px-5 py-3"> {{ $affiliate->degree->name }} </td>
                             </tr>

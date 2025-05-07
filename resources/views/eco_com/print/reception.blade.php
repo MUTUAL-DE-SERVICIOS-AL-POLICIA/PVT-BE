@@ -48,72 +48,76 @@
             </div>
         @endif
         @if(sizeof($eco_com_submitted_documents) > 0)
-        <div class="font-bold uppercase m-b-5  m-t-5 counter">DOCUMENTOS RECEPCIONADOS</div>
-        <table class="table-info w-100 m-b-5">
-            <thead class="bg-grey-darker">
-                <tr class="font-medium text-white text-sm">
-                    <td class="text-center p-5">N°</td>
-                    <td class="text-center p-5">REQUISITOS</td>
-                    <td class="text-center p-5">V°B°</td>
-                </tr>
-            </thead>
-            <tbody class="text-sm">
-                @foreach($eco_com_submitted_documents as $item)
-                @if($item->number > 0)
-                <tr>
-                    <td class='text-center p-5'>{!! $item->number !!}</td>
-                        <td class='text-justify p-5'>{!! $item->procedure_document->name !!}</br>
-                    @if(trim($item->comment) != null && trim($item->comment) != '')
-                        <span class="text-justify text-xs">* {!! $item->comment !!}</span>
+            <div class="font-bold uppercase m-b-5  m-t-5 counter">DOCUMENTOS</div>
+            <table class="table-info w-100 m-b-5">
+                <thead class="bg-grey-darker">
+                    <tr class="font-medium text-white text-sm">
+                        <td class="text-center p-5">N°</td>
+                        <td class="text-center p-5">REQUISITOS</td>
+                        <td class="text-center p-5"  style="width: 100px">PRESENTADOS</td>
+                        <td class="text-center p-5"  style="width: 100px">EN ARCHIVO D.B.E.</td>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    @foreach($eco_com_submitted_documents as $item)
+                    @if($item->number > 0)
+                    <tr>
+                        <td class='text-center p-5'>{!! $item->number !!}</td>
+                            <td class='text-justify p-5'>{!! $item->procedure_document->name !!}</br>
+                        @if(trim($item->comment) != null && trim($item->comment) != '')
+                            <span class="text-justify text-xs">* {!! $item->comment !!}</span>
+                        @endif
+                        </td>
+                        @if($item->is_uploaded)
+                        <td class="text-center p-5"></td>
+                        <td class="text-center">
+                            <img
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
+                        </td>
+                        @else
+                        <td class="text-center">
+                            <img
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
+                        </td>
+                        <td class="text-center p-5"></td>
+                        @endif
+                    </tr>
                     @endif
-                    </td>
-                    @if (true)
-                    <td class="text-center">
-                        <img
-                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
-                        {{-- <i class="mdi mdi-checkbox-marked-outline mdi-24px"></i> --}}
-                    </td>
-                    @else
-                    <td class="text-center">
-                        <img
-                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEHSURBVEhL7ZVNCsIwEIXrz1HUYwiuBA8jbkU8h4ILxZ14J0X0DoKI+p5mIAzNJLZ1IfTBh3Uw81EzTbM6v0jbfaamCRqfy/SMwQ0sQIuFSLrgCA6gx0JKJuDpsQGWjJIzkN9fQAeYYcM78EUkJGNDXyIsQTQroBcSLQtJrqAPomEzNtUNiMgsyRAkx5LtQSUSiSXTFJZIUmSlJRLKdiBP8gAjUElCGy/IgJRKTCKUkuknXuDfpWukkCwk4cZzT9ZezecrmSWR6WKz0DQmyXjM8xTWi/NG2JLNgBm+U07AX2Q9JyHZFETD9wmP+phEomVbV0sKx5pH/eD9LR425l3M3XWdv0uWvQDq/6w9IEeDKwAAAABJRU5ErkJggg==">
-                        {{-- <i class="mdi mdi-close-box-outline"></i> --}}
-                    </td>
-                    @endif
-                </tr>
-                @endif
-                @endforeach
-            </tbody>
-        </table>
+                    @endforeach
+                </tbody>
+            </table>
+            @if($eco_com_submitted_documents[0]->number == 0)
+            <table class="table-info w-100 m-b-5">
+                <thead class="bg-grey-darker">
+                    <tr class="font-medium text-white text-sm">
+                        <td class="text-center p-5">DOCUMENTOS ADICIONALES</td>
+                        <td class="text-center p-5" style="width: 100px">PRESENTADOS</td>
+                        <td class="text-center p-5" style="width: 100px">EN ARCHIVO D.B.E.</td>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    @foreach($eco_com_submitted_documents as $i=>$item) @if($item->number == 0)
+                    <tr>
+                        <td class='text-justify p-5'>{!! $item->procedure_document->name !!} </td>
+                        @if($item->is_uploaded)
+                        <td class="text-center p-5"></td>
+                        <td class="text-center">
+                            <img
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
+                        </td>
+                        @else
+                        <td class="text-center">
+                            <img
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
+                        </td>
+                        <td class="text-center p-5"></td>
+                        @endif
+                    </tr>
+                    @endif @endforeach
+                </tbody>
+            </table>
+            @endif
         @endif
-    @if(sizeof($eco_com_submitted_documents) > 0)
-        @if($eco_com_submitted_documents[0]->number == 0)
-        <table class="table-info w-100 m-b-5">
-            <thead class="bg-grey-darker">
-                <tr class="font-medium text-white text-sm">
-                    <td class="text-center p-5">DOCUMENTOS ADICIONALES</td>
-                    <td class="text-center p-5">V°B°</td>
-                </tr>
-            </thead>
-            <tbody class="text-sm">
-                @foreach($eco_com_submitted_documents as $i=>$item) @if($item->number == 0)
-                <tr>
-                    <td class='text-justify p-5'>{!! $item->procedure_document->name !!} </td>
-                    @if (true)
-                    <td class="text-center">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
-                    </td>
-                    @else
-                    <td class="text-center">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEHSURBVEhL7ZVNCsIwEIXrz1HUYwiuBA8jbkU8h4ILxZ14J0X0DoKI+p5mIAzNJLZ1IfTBh3Uw81EzTbM6v0jbfaamCRqfy/SMwQ0sQIuFSLrgCA6gx0JKJuDpsQGWjJIzkN9fQAeYYcM78EUkJGNDXyIsQTQroBcSLQtJrqAPomEzNtUNiMgsyRAkx5LtQSUSiSXTFJZIUmSlJRLKdiBP8gAjUElCGy/IgJRKTCKUkuknXuDfpWukkCwk4cZzT9ZezecrmSWR6WKz0DQmyXjM8xTWi/NG2JLNgBm+U07AX2Q9JyHZFETD9wmP+phEomVbV0sKx5pH/eD9LR425l3M3XWdv0uWvQDq/6w9IEeDKwAAAABJRU5ErkJggg==">
-                    </td>
-                    @endif
-                </tr>
-                @endif @endforeach
-            </tbody>
-        </table>
-        @endif
-    @endif
             @if($habitual)
             <br>
             <div class="text-justify text-sm">{{ $text }}</div>

@@ -126,17 +126,16 @@
                                     </tr>
 
                                 </tbody>
-                            </table>
-                            <table class="table table-bordered">
-                                <thead>
+                                <thead v-if="haveJudicialRetention">
                                     <tr>
                                         <th>Tipo</th>
                                         <th>Monto</th>
-                                        <th>Descripción</th>
+                                        <th colspan="2">Descripción</th>
+                                        <th>Documento</th>
                                         <th>Fecha de Registro</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody v-if="haveJudicialRetention">
                                     <tr>
                                         <td>Retenciones judiciales</td>
                                         <td>
@@ -144,7 +143,7 @@
                                                 <input type="text" class="form-control" v-money v-model="judicialRetentionAmount">
                                             </div>
                                         </td>
-                                        <td>
+                                        <td colspan="2">
                                             <textarea
                                                 class="form-control"
                                                 name="description"
@@ -155,11 +154,22 @@
                                             ></textarea>
                                         </td>
                                         <td>
+                                            <textarea 
+                                                class="form-control" 
+                                                type="text" 
+                                                placeholder="Documento" 
+                                                v-model="judicialRetentionDocument">
+                                            </textarea>
+                                        </td>
+                                        <td>
                                             <div :class="{ 'has-error': validateRetentionDate(judicialRetentionDate)}">
                                                 <input class="form-control" type="date" v-model="judicialRetentionDate">
                                             </div>
                                         </td>
                                     </tr>
+                                    
+                                </tbody>
+                                <tbody>
                                     <tr class="success">
                                         <td>Total</td>
                                         <td colspan="5"><strong>@{{ totalAnimated | currency }}</strong></td>

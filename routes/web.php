@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('ret_fun/{ret_fun_id}/info', 'RetirementFundController@info')->name('ret_fun_info');
 
     //Retirement Fund Certification
+    Route::get('ret_fun/{retirement_fund}/print/liquidation', 'RetirementFundCertificationController@printLiquidation')->name('ret_fun_print_liquidation');
     Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
     Route::get('affiliate/{affiliate}/print/file', 'RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
     Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
@@ -132,6 +133,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('ret_fun/{retirement_fund}/save_certification_note', 'RetirementFundController@saveCertificationNote')->name('save_certification_note');
     Route::post('procedure/print/send', 'InboxController@printSend')->name('inbox_send');
     Route::post('procedure/print/send_eco_com', 'InboxController@printSendEcoCom')->name('inbox_send_eco_com');
+    Route::post('ret_fun/{ret_fun}/save_judicial_retention', 'RetirementFundController@createJudicialRetention');
+    Route::get('ret_fun/{ret_fun}/obtain_judicial_retention', 'RetirementFundController@obtainJudicialRetention');
+    Route::patch('ret_fun/{ret_fun}/modify_judicial_retention', 'RetirementFundController@modifyJudicialRetention');
+    Route::delete('ret_fun/{ret_fun}/cancel_judicial_retention', 'RetirementFundController@cancelJudicialRetention');
 
     //Quota Aid Certification
     Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
@@ -228,6 +233,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('ret_fun/{retirement_fund}/print/security_certification', 'RetirementFundCertificationController@printCertificationSecurity')->name('ret_fun_print_security_certification');
     Route::get('ret_fun/{retirement_fund}/print/contributions_certification', 'RetirementFundCertificationController@printCertificationContributions')->name('ret_fun_print_contributions_certification');
     Route::get('ret_fun/{retirement_fund}/print/cer_availability_new', 'RetirementFundCertificationController@printCertificationAvailabilityNew')->name('ret_fun_print_certification_availability_new');
+    Route::get('ret_fun/{retirement_fund}/print/cer_devolution', 'RetirementFundCertificationController@printCertificationDevolution')->name('ret_fun_print_certification_devolution');
     //AidContributions
     Route::resource('aid_contribution', 'AidContributionController');
     Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');

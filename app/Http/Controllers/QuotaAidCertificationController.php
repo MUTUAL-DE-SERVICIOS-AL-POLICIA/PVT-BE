@@ -300,6 +300,7 @@ class QuotaAidCertificationController extends Controller
     $code = $quota_aid->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
 
@@ -309,6 +310,7 @@ class QuotaAidCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
       'number' => $number,
       'title' => $title,
@@ -336,6 +338,7 @@ class QuotaAidCertificationController extends Controller
     $code = $quota_aid->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
     $contribution_types= ContributionTypeQuotaAid::where('operator','+')->first();
@@ -355,6 +358,7 @@ class QuotaAidCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
       'number' => $number,
       'title' => $title,
@@ -456,35 +460,29 @@ class QuotaAidCertificationController extends Controller
     $discount = $quota_aid->discount_types()->where('discount_type_id', '10')->first();
     $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 61)->first();
     $code = $quota_aid->code;
-    $area = $next_area_code->wf_state->first_shortened;
-    $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
     $number = $next_area_code->code;
     $title = "LIQUIDACI&Oacute;N DE PAGO";
     $affiliate = $quota_aid->affiliate;
     $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
     $spouse = $affiliate->spouse()->first();
-    $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
+    $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) >= 18")->get();
+    $beneficiaries_minor = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) < 18")->get();
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
     $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
-    //$footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
-    $cite = $number; //RetFunIncrement::getIncrement(Session::get('rol_id'), $quota_aid->id);
-    $subtitle = $cite;
     $pdftitle = "Revision Legal";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $data = [
       'code' => $code,
-      //'area' => $area,
-      //'user' => $user,
       'date' => $date,
       'number' => $number,
-      'subtitle' => $subtitle,
       'title' => $title,
       'quota_aid' => $quota_aid,
       'affiliate' => $affiliate,
       'applicant' => $applicant,
       'spouse' => $spouse,
       'beneficiaries' => $beneficiaries,
+      'beneficiaries_minor' => $beneficiaries_minor,
       'discount' => $discount 
     ];
     $pages = [];

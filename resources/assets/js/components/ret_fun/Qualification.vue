@@ -1,6 +1,7 @@
 <script>
 import {scroller} from 'vue-scrollto/src/scrollTo'
 import { dateInputMask, moneyInputMask, parseMoney, moneyInputMaskAll, flashErrors }  from "../../helper.js";
+import { valid } from 'mockjs';
 export default {
   props: [
     'contributions',
@@ -66,6 +67,11 @@ export default {
       retentionGuarantorNoteCode:null,
       retentionGuarantorCode:null,
       retentionGuarantorDate:null,
+      judicialRetentionAmount: 0,
+      judicialRetentionDate:null,
+      judicialRetentionDetail:null,
+      judicialRetentionDocument:null,
+      haveJudicialRetention: false,
 
       hasAvailability: false,
       finishRetFun: false,
@@ -83,7 +89,9 @@ export default {
       beneficiariesRetFunAvailability: [],
 
       // perecentageAdvancePayment: 0,
+      lastBaseWage: 0,
       totalAverageSalaryQuotable: 0,
+      validateLimitAverageQuotable: false,
       totalQuotes:0,
       guarantors:[],
 
@@ -98,6 +106,9 @@ export default {
 
     };
   },
+  mounted(){
+      this.obtainDetailsOfJudicialRetention();
+  },
   methods: {
     updateTotalGuarantor(){
       this.retentionGuarantor = this.guarantors.reduce((acc, g)=>{
@@ -109,6 +120,12 @@ export default {
         this.retentionGuarantorNoteCodeDate = null;
         this.retentionGuarantorDate = null;
       }
+    },
+    validateRetentionAmount(amount) {
+        return !isNaN(amount)
+    },
+    validateRetentionDate(date) {
+        return date == undefined
     },
     addGuarantor(){
       let guarantor = {
@@ -200,7 +217,7 @@ export default {
         }}
       ).then(response =>{
           flash("Verificacion Correcta");
-
+          
           this.showEconomicData = true;
           this.globalPay = response.data.global_pay;
           if (this.globalPay) {
@@ -209,7 +226,12 @@ export default {
             this.lessAdministrativeExpenses = response.data.less_administrative_expenses;
           }
 
-          TweenLite.to(this.$data, 0.5, { totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,totalQuotes: response.data.total_quotes });
+          TweenLite.to(this.$data, 0.5, { 
+            lastBaseWage: response.data.lastBaseWage,
+            totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,
+            totalQuotes: response.data.total_quotes,
+            validateLimitAverageQuotable: response.data.validate_limit_average
+          });
           setTimeout(() => {
             this.$scrollTo('#showEconomicData');
           }, 800);
@@ -250,6 +272,14 @@ export default {
             this.retentionGuarantorCode = retentionGuarantorResponse[0].pivot.code;
             this.retentionGuarantorDate = retentionGuarantorResponse[0].pivot.date;
           }
+
+          let retentionJudicialResponse = response.data.discounts.filter(d => d.id == 4);
+          if (retentionJudicialResponse.length) {
+            this.judicialRetentionAmount = retentionJudicialResponse[0].pivot.amount;
+            this.judicialRetentionDate = retentionJudicialResponse[0].pivot.date;
+            this.judicialRetentionDetail = retentionJudicialResponse[0].pivot.note_code;
+            this.judicialRetentionDocument = retentionJudicialResponse[0].pivot.code;
+          }
         }
         if (response.data.guarantors) {
           this.guarantors=[];
@@ -280,6 +310,7 @@ export default {
           advancePayment: parseMoney(this.advancePayment),
           retentionLoanPayment: parseMoney(this.retentionLoanPayment),
           retentionGuarantor: parseMoney(this.retentionGuarantor),
+          judicialRetentionAmount: parseMoney(this.judicialRetentionAmount),
 
           advancePaymentNoteCode:this.advancePaymentNoteCode,
           advancePaymentNoteCodeDate:this.advancePaymentNoteCodeDate,
@@ -293,6 +324,9 @@ export default {
           retentionGuarantorNoteCode:this.retentionGuarantorNoteCode,
           retentionGuarantorCode:this.retentionGuarantorCode,
           retentionGuarantorDate:this.retentionGuarantorDate,
+          judicialRetentionDate:this.judicialRetentionDate,
+          judicialRetentionDetail:this.judicialRetentionDetail,
+          judicialRetentionDocument:this.judicialRetentionDocument,
           guarantors: this.guarantors,
           reload,
         }
@@ -419,12 +453,38 @@ export default {
           'text-warning':true,
         }
       }
-    }
+    },
+    async obtainDetailsOfJudicialRetention() {
+      try {
+        const response = await axios.get(`/ret_fun/${this.retirementFundId}/obtain_judicial_retention`)
+        if(response.data.data) {
+          if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
+          if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
+          if(response.data.data[0].note_code != undefined){
+            this.judicialRetentionDetail = response.data.data[0].note_code;
+            this.haveJudicialRetention = true;
+          }
+          if(response.data.data[0].code != undefined) this.judicialRetentionDocument = response.data.data[0].code
+        }
+      } catch (error) {
+        if(error.response) {
+          if(error.response.status == 409) {
+              flash(error.response.data.error, 'error')
+          }
+        }
+        console.error(error)
+      }
+    },
   },
   computed: {
     totalAverageSalaryQuotableAnimated: function() {
       return this.totalAverageSalaryQuotable;
     },
+
+    validateLimitAverageQuotableVerified: function() {
+      return this.validateLimitAverageQuotable;
+    },
+
     totalQuotesAnimated: function() {
       return this.totalQuotes;
     },
@@ -432,7 +492,7 @@ export default {
       return this.subTotalRetFun;
     },
     totalAnimated(){
-      return this.subTotalRetFun - parseMoney(this.advancePayment) -parseMoney(this.retentionLoanPayment) -parseMoney(this.retentionGuarantor);
+      return this.subTotalRetFun - parseMoney(this.advancePayment) -parseMoney(this.retentionLoanPayment) -parseMoney(this.retentionGuarantor)-parseMoney(this.judicialRetentionAmount);
     },
     percentageAdvancePayment(){
       return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.advancePayment))/this.subTotalRetFun : 0;
@@ -443,6 +503,11 @@ export default {
     percentageRetentionGuarantor(){
       return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.retentionGuarantor))/this.subTotalRetFun : 0;
     },
+
+    percentageRetentionJudicial(){
+      return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.judicialRetentionAmount))/this.subTotalRetFun : 0;
+    },
+
     totalPercentageRetFun(){
       const sum = this.beneficiaries.reduce((accumulator, current) => {
         return accumulator + parseFloat(current.temp_percentage);
