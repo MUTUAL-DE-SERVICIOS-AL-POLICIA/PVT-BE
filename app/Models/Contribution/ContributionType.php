@@ -12,5 +12,5 @@ class ContributionType extends Model
     {
         return $this->hasMany('Muserpol\Models\Contribution\Contribution');
     }
-    protected $fillable = ['name', 'shortened', 'operator','description'];
+    protected $fillable = ['name', 'shortened', 'operator', 'description', 'sequence'];
 }

@@ -1,146 +1,107 @@
-
 <script>
-import { mapState, mapMutations } from 'vuex';
-	export default{
-		props:[
-			'modalities',
-            'requirements',
-            'user',
-            'cities',
-            'procedureTypes',
-            'showRequirementsError'
-		],
-        data(){
-            return{
-                editing: false,
-                requirementList: [],
-                aditionalRequirements: [],
-                modality: null,
-                show_spinner: false,
-                modality_id: 3,
-                actual_target: 1,
-                city_end_id:this.user.city_id,
-                procedure_type_id:2,
-                my_index: 1,
-                modalitiesFilter: [],
+export default {
+    props: [
+        'affiliate',
+        'modalities',
+        'user',
+        'cities',
+        'procedureTypes',
+        'showRequirementsError'
+    ],
+    data() {
+        return {
+            editing: false,
+            requirementList: [],
+            aditionalRequirements: [],
+            aditionalRequirementsUploaded: [],
+            modality: null,
+            show_spinner: false,
+            modality_id: 3,
+            actual_target: 1,
+            city_end_id: this.user.city_id,
+            procedure_type_id: 2,
+            my_index: 1,
+            modalitiesFilter: [],
+        }
+    },
+    mounted() {
+        this.$store.commit('retFunForm/setCity', this.cities.filter(city => city.id == this.city_end_id)[0].name);
+        this.onChooseProcedureType();
+    },
+    methods: {
+        onChooseProcedureType() {
+            this.modalitiesFilter = this.modalities.filter((m) => {
+                return m.procedure_type_id == this.procedure_type_id;
+            })
+            this.modality = null;
+            this.getRequirements();
+        },
+        onChooseModality(event) {
+            const mod = this.modalities.filter(e => e.id == this.modality)[0];
+            if (mod) {
+                let object = {
+                    name: mod.name,
+                    id: mod.id,
+                    shortened: mod.shortened
+                }
+                this.$store.commit('retFunForm/setModality', object);
+            }
+            this.getRequirements();
+            this.getAditionalRequirements();
+        },
+        async getRequirements() {
+            if (!this.modality) { this.requirementList = [] }
+            else {
+                let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
+                const data = (await axios.get(uri)).data;
+                const requiredDocuments = data.requiredDocuments;
+                Object.values(requiredDocuments).forEach(value => {
+                    value.forEach(r => {
+                        r['status'] = r['isUploaded'];
+                        r['background'] = r['isUploaded'] ? 'bg-success-blue' : '';
+                    });
+                });
+                this.requirementList = requiredDocuments;
+                this.aditionalRequirements = data.additionallyDocuments;
+                this.aditionalRequirementsUploaded = data.additionallyDocumentsUpload;
             }
         },
-        mounted(){
-            this.$store.commit('retFunForm/setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
-            this.onChooseProcedureType();                        
+        convertToStringJson(objeto) {
+            return JSON.stringify(objeto);
         },
-        methods:{
-            onChooseProcedureType(){
-                this.modalitiesFilter = this.modalities.filter((m) => {
-                    return m.procedure_type_id == this.procedure_type_id;
-                })
-                this.modality = null;
-                this.getRequirements();
-            },
-            onChooseModality(event){
-                const options = event.target.options;
-                const selectedOption = options[options.selectedIndex];
-                if (selectedOption) {
-                    const selectedText = selectedOption.textContent;
-                    var object={
-                        name:selectedText,
-                        id: this.modality
-                    }
-                    this.$store.commit('retFunForm/setModality',object);//solo se puede enviar un(1) argumento 
-                }
-                this.getRequirements();
-                this.getAditionalRequirements();
-            },
-            getRequirements(){
-                if(!this.modality){this.requirementList = []}
-                this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality && r.number != 0) {
-                        r['status'] = false;
-                        r['background'] = '';
-                        return r;
-                    }
-                });
-                Array.prototype.groupBy = function(prop) {
-                    return this.reduce(function(groups, item) {
-                        const val = item[prop]
-                        groups[val] = groups[val] || []
-                        groups[val].push(item)
-                        return groups
-                    }, {})
-                }
+        getAditionalRequirements() {
+            if (!this.modality) { this.aditionalRequirements = [] }
+            setTimeout(() => {
+                $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
+            }, 500);
+        },
 
-                this.requirementList =  this.requirementList.groupBy('number');
-                // this.requirementList = this.requirementList.reduce(function(r, v) {
-                //     r[v.number] = r[v.number] || [];
-                //     r[v.number].push(v);
-                //     return r;
-                // }, Object.create(null));
-                // console.log(this.requirementList);
-            },
-            getAditionalRequirements(){
-                if(!this.modality){this.aditionalRequirements = []}                
-                this.aditionalRequirements = this.requirements.filter((requirement) => {                    
-                    if (requirement.modality_id == this.modality && requirement.number == 0) {
-                        return requirement;
-                    }
-                });                
-                setTimeout(() => {
-                    $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-                }, 500);                
-            },
-            checked(index, i){
-                for(var k = 0; k < this.requirementList[index].length; k++ ){
-                    if (k != i ) {
+        checked(index, i) {
+            if (this.requirementList[index][i].isUploaded) return;
+            for (var k = 0; k < this.requirementList[index].length; k++) {
+                if (k != i) {
                     this.requirementList[index][k].status = false;
                     this.requirementList[index][k].background = 'bg-warning-yellow';
 
+                }
+            }
+            this.requirementList[index][i].status = !this.requirementList[index][i].status;
+            this.requirementList[index][i].background = this.requirementList[index][i].background == 'bg-success-green' ? '' : 'bg-success-green';
+            if (this.requirementList[index].every(r => !r.status)) {
+                for (var k = 0; k < this.requirementList[index].length; k++) {
+                    if (!this.requirementList[index][k].status) {
+                        this.requirementList[index][k].background = '';
                     }
                 }
-                this.requirementList[index][i].status =  ! this.requirementList[index][i].status;
-                this.requirementList[index][i].background = this.requirementList[index][i].background == 'bg-success-green' ? '' : 'bg-success-green';
-                // this.requirementList[index][i].status = true;
-                if (this.requirementList[index].every(r => !r.status )) {
-                    for(var k = 0; k < this.requirementList[index].length; k++ ){
-                        if (!this.requirementList[index][k].status) {
-                            this.requirementList[index][k].background = '';
-                        }
-                    }
-                }
+            }
 
-            },
-            onChooseCity(event){
-                const options = event.target.options;
-                const selectedOption = options[options.selectedIndex];
-                const selectedText = selectedOption.textContent;
-                this.$store.commit('retFunForm/setCity',selectedText)
-            },
-            groupNumbers(number){
-                // return (parseInt(number) % 2) == 0;
-                // console.log(`number: ${number}, index: ${this.my_index}, bool: ${number == this.my_index}`);
-                if (parseInt(number) == parseInt(this.my_index)) {
-                    this.my_index++;
-                    return true;
-                }
-                return false;
-            },
-        //   actualTarget:function(data){
-        //         var tar = this.actual_target;
-        //         this.actual_target = data;
-        //         return tar;
-        //     }
         },
-        // computed:{
-        //     requirementsList(){
-        //         if (this.modality) {
-        //             var list = [];
-        //             for(var i=0;i<this.requirements.length;i++){
-        //                 if(this.modality == this.requirements[i].modality_id)
-        //                     list.push(this.requirements[i]);
-        //             }
-        //             return list;
-        //         }
-        //         return [];
-        //     },
-        // },
-	}
+        onChooseCity(event) {
+            const options = event.target.options;
+            const selectedOption = options[options.selectedIndex];
+            const selectedText = selectedOption.textContent;
+            this.$store.commit('retFunForm/setCity', selectedText)
+        },
+    },
+}
 </script>

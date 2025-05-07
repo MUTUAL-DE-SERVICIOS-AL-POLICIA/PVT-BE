@@ -132,6 +132,12 @@ class AffiliateObserver
 
         }
 
+        if($affiliate->date_entry_reinstatement != $old->date_entry_reinstatement)
+        {
+            $message = $message . ' fecha de ingreso (reincorporación)  '.$old->date_entry_reinstatement.' a '.$affiliate->date_entry_reinstatement.', ';
+
+        }
+
         if($affiliate->degree_id != $old->degree_id)
         {
             $message = $message . ' grado '.optional($old->degree)->name.' a '.optional($affiliate->degree)->name.', ';
@@ -194,9 +200,17 @@ class AffiliateObserver
         {
             $message = $message . ' fecha de último aporte '.$old->date_last_contribution.' a '.$affiliate->date_last_contribution.', ';
         }
+        if($affiliate->date_last_contribution_reinstatement != $old->date_last_contribution_reinstatement)
+        {
+            $message = $message . ' fecha de último aporte (reincorporación) '.$old->date_last_contribution_reinstatement.' a '.$affiliate->date_last_contribution_reinstatement.', ';
+        }
         if($affiliate->date_derelict != $old->date_derelict)
         {
             $message = $message . ' fecha de desvinculación '.$old->date_derelict.' a '.$affiliate->date_derelict.', ';
+        }
+        if($affiliate->date_derelict_reinstatement != $old->date_derelict_reinstatement)
+        {
+            $message = $message . ' fecha de desvinculación (reincorporación) '.$old->date_derelict_reinstatement.' a '.$affiliate->date_derelict_reinstatement.', ';
         }
         if($affiliate->account_number != $old->account_number)
         {

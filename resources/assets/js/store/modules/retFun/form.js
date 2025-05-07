@@ -106,6 +106,15 @@ const mutations = {
         message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
       });
     }
+    if (obj.contributionTypes.some(item => item.id == 15)) {
+      let message = obj.contributionTypes.filter(item => item.id == 15);
+      state.contributionTypes.push({
+        id: 15,
+        name: "Aportes Devueltos",
+        path: "print/cer_devolution",
+        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
+      });
+    }
   },
   resetContributionTypes(state, array){
       state.contributionTypes = array;

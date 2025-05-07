@@ -194,13 +194,17 @@
                         <tbody>
                             <tr>
                                 <td>Ultimo Sueldo Percibido</td>
-                                <td>Bs {{ Util::formatMoney($affiliate->getLastBaseWage()) ?? '-' }}</td>
+                                <td>@{{ lastBaseWage | currency }}</td>
                             </tr>
                             <tr>
                                 <td>Salario Promedio Cotizable</td>
                                 <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
                                     <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                                 </td>
+                            </tr>
+                            <tr v-if="validateLimitAverageQuotableVerified">
+                                <td>Salario Promedio Cotizable Limitado</td>
+                                <td>Bs {{ Util::formatMoney($retirement_fund->ret_fun_procedure->limit_average) ?? '10800' }}</td>
                             </tr>
                             <tr>
                                 <td>Densidad Total de Cotizaciones</td>
@@ -309,7 +313,7 @@
                                     <td>@{{ percentageAdvancePayment | percentage }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Retencion para pago de prestamo</td>
+                                    <td>Retención para pago de préstamo</td>
                                     <td>
                                         <input class="form-control" type="text" v-model="retentionLoanPayment" data-money='true' style="width:130px">
                                     </td>
@@ -327,7 +331,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>% de Retencion para pago de prestamo</td>
+                                    <td>% de Retención para pago de préstamo</td>
                                     <td>@{{ percentageRetentionLoanPayment | percentage }}</td>
                                 </tr>
                                 <tr>
@@ -353,7 +357,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Retencion para garantes
+                                        Retención para garantes
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" :value="retentionGuarantor" disabled>
@@ -365,16 +369,63 @@
                                         <input class="form-control" type="date" v-model="retentionGuarantorDate">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="# de Contrato de Préstamo" v-model="retentionGuarantorNoteCode">
+                                        <input class="form-control" type="text" v-model="retentionGuarantorNoteCode">
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="retentionGuarantorNoteCodeDate">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>% de Retencion para garantes</td>
+                                    <td>% de Retención para garantes</td>
                                     <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
                                 </tr>
+                            </tbody>
+                            <thead v-if="haveJudicialRetention">
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Monto</th>
+                                    <th colspan="2">Descripción</th>
+                                    <th>Documento</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="haveJudicialRetention">
+                                <tr>
+                                    <td>Retenciones judiciales</td>
+                                    <td>
+                                        <div :class="{ 'has-error': validateRetentionAmount(judicialRetentionAmount)}">
+                                            <input type="text" class="form-control" v-money v-model="judicialRetentionAmount">
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                        <textarea
+                                            class="form-control"
+                                            name="description"
+                                            placeholder="No registrado"
+                                            v-model="judicialRetentionDetail"
+                                            disabled
+                                        ></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea 
+                                            class="form-control" 
+                                            type="text" 
+                                            placeholder="Documento" 
+                                            v-model="judicialRetentionDocument">
+                                        </textarea>
+                                    </td>
+                                    <td>
+                                        <div :class="{ 'has-error': validateRetentionDate(judicialRetentionDate)}">
+                                            <input class="form-control" type="date" v-model="judicialRetentionDate">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>% de Retenciones judiciales</td>
+                                    <td colspan="5">@{{ percentageRetentionJudicial | percentage }}</td>
+                                </tr>
+                            </tbody>
+                            <tbody>
                                 <tr class="success">
                                     <td v-if="! globalPay">Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }}</td>
                                     <td v-else>Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }} por {{ $retirement_fund->procedure_modality->name }} </td>

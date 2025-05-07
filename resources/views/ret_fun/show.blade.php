@@ -97,6 +97,16 @@
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
                 <correlative doc-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}" type="retFun"></correlative>
+            
+            @if(Util::getRol()->id == Muserpol\Helpers\ID::roles()->liquidationFR)
+                <ret-fun-certification-button
+                    title="Imprimir Liquidación"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_liquidation', $retirement_fund->id) }}"
+                >
+                </ret-fun-certification-button>
+            @endif
+
             @if(Util::getRol()->id == 10 || Util::isRegionalRole())
                 <ret-fun-certification-button
                     title="Imprimir recepción"
@@ -296,7 +306,7 @@
                             <div id="tab-beneficiaries" class="tab-pane">
 
                                     @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
-                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
+                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships,'kinship_beneficiaries'=>$kinship_beneficiaries])
                                     @endcan
 
                             </div>
@@ -308,7 +318,6 @@
                                         @include('ret_fun.step1_requirements_edit')
                                     </ret-fun-step1-requirements-edit>
                                 @endcan
-
                             </div>
                             <div id="tab-headship" class="tab-pane">
                                 {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}

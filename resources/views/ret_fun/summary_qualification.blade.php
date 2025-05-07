@@ -34,6 +34,18 @@
                                 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                             </div>
                         </div>
+                        @if ($retirement_fund->procedure_modality->procedure_type_id == 2)
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-sm-6">
+                                    <label class="control-label">Salario Promedio Cotizable Limitado</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    Bs {{ Util::formatMoney($retirement_fund->used_limit_average) }}
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="row">
                         <div class="col-md-6">
