@@ -136,6 +136,7 @@
                 Beneficio del Complemento Económico a partir de la presente gestión en adelante al número de WhatsApp y/o correo electronico señalado en el presente formulario.
             </div>
         @endif
+        <br>
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
         @if($eco_com->eco_com_reception_type_id == 2 || $eco_com->eco_com_reception_type_id == 3)
         <table style="margin-top: {{$size_down}}px;" class="m-t-50 table-info">
@@ -152,10 +153,11 @@
                         <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
                         <br />
                         <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
+                        <br>
                         <span class="font-bold">TEL. CEL. {{ $eco_com_beneficiary->phone_number }} {{ $eco_com_beneficiary->cell_phone_number }}</span>
                             <br>
                             <span class="font-bold">
-                                CORREO ELECTRONICO:
+                                CORREO ELECTRÓNICO:
                             </span>
                             <span class="inline-block w-60"></span>
                     </td>
