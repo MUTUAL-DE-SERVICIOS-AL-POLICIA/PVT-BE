@@ -483,6 +483,15 @@ class Affiliate extends Model
   public function getTotalQuotes($reinstatement = false)
   {
     $total_dates = Util::sumTotalContributions($this->getDatesGlobal($reinstatement));
+    foreach (ContributionType::orderBy('id')->get() as $c) {
+      $contributionsWithType = $this->getContributionsWithType($c->id,$reinstatement);
+      if (sizeOf($contributionsWithType) > 0) {
+        if ($c->operator == '-') {
+          $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+          $total_dates = $total_dates - $sub_total_dates;
+        }
+      }
+    }
     return $total_dates;
   }
   public function getLastContributionAttribute(){ // sin usar
