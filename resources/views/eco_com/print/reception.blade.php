@@ -117,16 +117,29 @@
                 </tbody>
             </table>
             @endif
-        @endif 
+        @endif
             @if($habitual)
             <br>
             <div class="text-justify text-sm">{{ $text }}</div>
             <br>
             @endif
+        <div class="font-bold text-xxs">
+            Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos de Servicio de Registro Cívico - SERECI, 
+            Servicio General de Información Personal – SEGIP, Autoridad de Fiscalización y Control de Pensiones y Seguros - APS, 
+            Servicio Nacional del Sistema De Reparto - SENASIR, Comando General de la Policía Boliviana y otras Instituciones Públicas y/o 
+            Privadas para su verificación o contrastación.
+        </div>
+        @if($eco_com->eco_com_reception_type_id == 2 || $eco_com->eco_com_reception_type_id == 3)
+            <div class="font-bold text-xxs">
+            <br>
+                En mi calidad de solicitante del beneficio, autorizo de forma expresa a la MUSERPOL para notificarme con cualquier acto administrativo relacionado al 
+                Beneficio del Complemento Económico a partir de la presente gestión en adelante al número de WhatsApp y/o correo electronico señalado en el presente formulario.
+            </div>
+        @endif
+        <br>
         <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
         @if($eco_com->eco_com_reception_type_id == 2 || $eco_com->eco_com_reception_type_id == 3)
         <table style="margin-top: {{$size_down}}px;" class="m-t-50 table-info">
-       
                 <tr>
                     <td class="no-border text-center text-base w-20 align-bottom"
                         style="border-radius: 0.5em 0 0 0!important;">
@@ -140,24 +153,22 @@
                         <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
                         <br />
                         <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
+                        <br>
                         <span class="font-bold">TEL. CEL. {{ $eco_com_beneficiary->phone_number }} {{ $eco_com_beneficiary->cell_phone_number }}</span>
+                            <br>
+                            <span class="font-bold">
+                                CORREO ELECTRÓNICO:
+                            </span>
+                            <span class="inline-block w-60"></span>
                     </td>
                 </tr>
-    
         </table>
         @endif
-        
         @if($habitual)
             <div style="margin-top: {{$size}}px;" class="font-bold text-xxs">
         @else
             <div style="margin-top: 20px;" class="font-bold text-xxs">
         @endif
-        </div>
-        <div class="font-bold text-xxs">
-        Autorizo a la MUSERPOL acceder a mi información personal (y causante si corresponde) en las bases de datos de Servicio de Registro Cívico - SERECI, 
-        Servicio General de Información Personal – SEGIP, Autoridad de Fiscalización y Control de Pensiones y Seguros - APS, 
-        Servicio Nacional del Sistema De Reparto - SENASIR, Comando General de la Policía Boliviana y otras Instituciones Públicas y/o 
-        Privadas para su verificación o contrastación.
         </div>
     </div>
 </div>
