@@ -1225,6 +1225,15 @@ class RetirementFundController extends Controller
                 }
                 return null;
             })
+            ->addColumn('liquidation_date', function ($ret_fun) {
+                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
+                    return $value['wf_state_id'] == 85;
+                });
+                if (sizeof($filter) > 0) {
+                    return (reset($filter)['date']);
+                }
+                return null;
+            })
             ->addColumn('action', function ($ret_fun) {
                 return Util::getRol()->id != 69? "<a href='/ret_fun/" . $ret_fun->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
             })
