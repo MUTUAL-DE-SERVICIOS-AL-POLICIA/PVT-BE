@@ -51,6 +51,7 @@
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                         </tr>
                     </tfoot>
                     <thead>
@@ -91,6 +92,7 @@
                             <th>Fecha Jefatura</th>
                             <th># de Resolución</th>
                             <th>Fecha Resolución</th>
+                            <th>Fecha Liquidación</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -205,6 +207,7 @@
                 { data: 'headship_date', visible: false },
                 { data: 'resolution_code', visible: false },
                 { data: 'resolution_date', visible: false },
+                { data: 'liquidation_date', visible: false },
                 { data: 'action' },
             ],
         });
