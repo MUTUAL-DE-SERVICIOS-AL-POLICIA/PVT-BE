@@ -6,10 +6,7 @@ use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Carbon\Carbon;
 use Yajra\Datatables\DataTables;
-use Ixudra\Curl\Facades\Curl;
-use Muserpol\Models\User;
 use Validator;
-use Log;
 use Muserpol\Models\Voucher;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\City;
@@ -301,21 +298,24 @@ class AidContributionController extends Controller
         $input_data = $request->all();
         if(!empty($request->iterator))
         {
-            foreach ($request->iterator as $key => $iterator)
-            {
-                if(isset($input_data['rent'][$key]))
-                    $input_data['rent'][$key]= strip_tags($request->rent[$key]);
-                if(isset($input_data['dignity_rent'][$key]))
-                $input_data['dignity_rent'][$key]= strip_tags($request->dignity_rent[$key]);
-                $input_data['total'][$key]= strip_tags($request->total[$key]);
+            foreach ($request->iterator as $key => $iterator) {
+                $aidContribution = AidContribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
+                $input_data['rent'][$key] = isset($input_data['rent'][$key]) ? strip_tags($request->rent[$key]) : $aidContribution->rent;
+                $input_data['dignity_rent'][$key] = isset($input_data['dignity_rent'][$key]) ? strip_tags($request->dignity_rent[$key]) : $aidContribution->dignity_rent;
+                $input_data['total'][$key] = isset($input_data['total'][$key]) ? strip_tags($request->total[$key]) : $aidContribution->total;
+
                 $array_rules = [
-                    'rent_pension.'.$key =>  'numeric',
-                    'dignity_rent.'.$key =>  'numeric|min:0',
-                    'total.'.$key =>  'required|numeric|min:1'
+                    'rent_pension.' . $key =>  'numeric|min:0',
+                    'dignity_rent.' . $key =>  'numeric|min:0',
+                    'total.' . $key =>  'required|numeric|min:1'
                 ];
-                $rules=array_merge($rules,$array_rules);
+                $array_messages = [
+                    'total.' . $key . '.min'  =>  'El aporte de ' . $key . ' debe ser mayor a 0.'
+                ];
+                $rules = array_merge($rules, $array_rules);
+                $messages = array_merge($messages, $array_messages);
             }
-            $validator = Validator::make($input_data,$rules);
+            $validator = Validator::make($input_data,$rules,$messages);
             if($validator->fails()){
                 return response()->json($validator->errors(), 400);
             }
