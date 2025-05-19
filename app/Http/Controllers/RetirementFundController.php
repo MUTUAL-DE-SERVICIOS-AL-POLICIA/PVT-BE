@@ -1393,7 +1393,7 @@ class RetirementFundController extends Controller
                             $ben_advisor->mothers_last_name = strtoupper(trim($new_ben['advisor_mothers_last_name'] ?? null));
                             $ben_advisor->first_name = strtoupper(trim($new_ben['advisor_first_name'] ?? null));
                             $ben_advisor->second_name = strtoupper(trim($new_ben['advisor_second_name'] ?? null));
-                            $ben_advisor->birth_date = strtoupper(trim($new_ben['advisor_birth_date'] ?? null));
+                            $ben_advisor->birth_date = Util::verifyBarDate($new_ben['advisor_birth_date']) ? Util::parseBarDate($new_ben['advisor_birth_date']) : $new_ben['advisor_birth_date'];
                             $ben_advisor->surname_husband = strtoupper(trim($new_ben['advisor_surname_husband'] ?? null));
                             $ben_advisor->gender = strtoupper(trim($new_ben['advisor_gender'] ?? null));
                             // $ben_advisor->phone_number = trim(implode(",", $new_ben['advisor_phone_number'] ?? []));
