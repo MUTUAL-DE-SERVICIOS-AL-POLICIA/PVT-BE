@@ -472,11 +472,13 @@ class QuotaAidCertificationController extends Controller
     $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
     $pdftitle = "Revision Legal";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
+    $subtitletwo = $quota_aid->procedure_modality->procedure_type->name;
     $data = [
       'code' => $code,
       'date' => $date,
       'number' => $number,
       'title' => $title,
+      'subtitletwo' => $subtitletwo,
       'quota_aid' => $quota_aid,
       'affiliate' => $affiliate,
       'applicant' => $applicant,

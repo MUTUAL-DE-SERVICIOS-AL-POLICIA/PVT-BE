@@ -171,7 +171,7 @@
                                     {!! Util::formatMoney($beneficiary->amount_ret_fun) !!}
                                 </td>
                                 <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
-                                <td class="text-center uppercase px-5 py-3">{{ $advisor ? $advisor->last_name : ''}}  {{$advisor ? $advisor->first_name : ''}}</td>
+                                <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->fullName() : ''}}</td>
                                 <td class="text-center uppercase px-5 py-3">{{ $advisor ? $advisor->identity_card : ''}}</td>
                                 <td class="text-center uppercase px-5 py-3">{{ $advisorKinship ? $advisorKinship->name : ''}}</td>
                             </tr>
@@ -259,7 +259,7 @@
                                         {{Util::formatMoney($ret_fun->total_availability*($beneficiary->percentage/100))}}
                                     </td>
                                     <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
-                                    <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->last_name : ''}}  {{$advisor ? $advisor->first_name : ''}}</td>
+                                    <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->fullName() : ''}}</td>
                                     <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->identity_card : ''}}</td>
                                     <td class="text-center uppercase px-5 py-3">{{$advisorKinship ? $advisorKinship->name : ''}}</td>
                                 </tr>
