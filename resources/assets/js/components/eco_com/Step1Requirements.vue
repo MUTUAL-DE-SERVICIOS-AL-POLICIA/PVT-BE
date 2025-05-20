@@ -337,9 +337,13 @@ export default {
           });
           if (this.reception_type_id != 1) {
             this.requirementList = requiredDocuments;
-          }     
-          this.additionalRequirements = response.data.additionallyDocuments;
-          this.aditionalRequirementsUploaded = response.data.additionallyDocumentsUpload;          
+            this.additionalRequirements = response.data.additionallyDocuments;
+            this.aditionalRequirementsUploaded = response.data.additionallyDocumentsUpload;          
+          } else {
+            this.requirementList = [];
+            this.additionalRequirements = [];
+            this.aditionalRequirementsUploaded = [];
+          }   
           setTimeout(() => {
             $(".chosen-select")
               .chosen({ width: "100%" })
