@@ -224,7 +224,6 @@ class QuotaAidCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
     $submitted_documents = QuotaAidSubmittedDocument::leftJoin('procedure_requirements', 'procedure_requirements.id', '=', 'quota_aid_submitted_documents.procedure_requirement_id')->where('quota_aid_mortuary_id', $quota_aid->id)->orderBy('procedure_requirements.number', 'asc')->get();
 
     /*
@@ -246,8 +245,6 @@ class QuotaAidCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'bar_code' => $bar_code,
       'title' => $title,
       'institution' => $institution,
@@ -302,9 +299,6 @@ class QuotaAidCertificationController extends Controller
     $user = $next_area_code->user;
     $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
-    $subtitle = $number;
 
     $data = [
       'code' => $code,
@@ -312,9 +306,7 @@ class QuotaAidCertificationController extends Controller
       'user' => $user,
       'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
       'title' => $title,
-      'subtitle' => $subtitle,
       'affiliate' => $affiliate,
       'applicant' => $applicant,
       'beneficiaries' => $beneficiaries,
@@ -340,7 +332,6 @@ class QuotaAidCertificationController extends Controller
     $user = $next_area_code->user;
     $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
     $contribution_types= ContributionTypeQuotaAid::where('operator','+')->first();
 
     $dates = $affiliate->getContributionsWithTypeQuotaAid($id);//aqui
@@ -353,16 +344,13 @@ class QuotaAidCertificationController extends Controller
     );
 
     $title = 'CALIFICACIÓN ' . $quota_aid->procedure_modality->procedure_type->second_name;
-    $subtitle = $number;
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
       'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
       'title' => $title,
-      'subtitle' => $subtitle,
       'quota_aid' => $quota_aid,
       'affiliate' => $affiliate,
       'beneficiaries' => $beneficiaries,
@@ -411,7 +399,6 @@ class QuotaAidCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
     $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
     $submitted_documents = QuotaAidSubmittedDocument::select(
       'quota_aid_submitted_documents.id',
@@ -427,8 +414,6 @@ class QuotaAidCertificationController extends Controller
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
     $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
     //$footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
-    $cite = $number; //RetFunIncrement::getIncrement(Session::get('rol_id'), $quota_aid->id);
-    $subtitle = $cite;
     $pdftitle = "Revision Legal";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $data = [
@@ -436,8 +421,6 @@ class QuotaAidCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-      'subtitle' => $subtitle,
       'title' => $title,
       'quota_aid' => $quota_aid,
       'affiliate' => $affiliate,
@@ -461,7 +444,6 @@ class QuotaAidCertificationController extends Controller
     $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 61)->first();
     $code = $quota_aid->code;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
     $title = "LIQUIDACI&Oacute;N DE PAGO";
     $affiliate = $quota_aid->affiliate;
     $applicant = QuotaAidBeneficiary::where('type', 'S')->where('quota_aid_mortuary_id', $quota_aid->id)->first();
@@ -476,7 +458,6 @@ class QuotaAidCertificationController extends Controller
     $data = [
       'code' => $code,
       'date' => $date,
-      'number' => $number,
       'title' => $title,
       'subtitletwo' => $subtitletwo,
       'quota_aid' => $quota_aid,
@@ -511,7 +492,6 @@ class QuotaAidCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
     // $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
     $title = "CERTIFICACIÓN DE ARCHIVO";
     $affiliate_folders = AffiliateFolder::where('affiliate_id', $affiliate->id)->get();
@@ -520,8 +500,6 @@ class QuotaAidCertificationController extends Controller
      * !!TODO
      *!!revisar
      */
-    $cite = $number; // RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
-    $subtitle = $cite;
     $pdftitle = "Certificación de Archivo";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     // aqui
@@ -533,9 +511,6 @@ class QuotaAidCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-      'cite' => $cite,
-      'subtitle' => $subtitle,
       'title' => $title,
       'quota_aid' => $quota_aid,
       'affiliate' => $affiliate,
@@ -563,7 +538,6 @@ class QuotaAidCertificationController extends Controller
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
     Carbon::useMonthsOverflow(false);
-    $number = $next_area_code->code;
     $affiliate = Affiliate::find($quota_aid->affiliate_id);
 
     if (($quota_aid->procedure_modality_id == 15 && $affiliate->pension_entity_id == 5) || $quota_aid->procedure_modality_id == 14) {
@@ -626,7 +600,6 @@ class QuotaAidCertificationController extends Controller
     $num = 0;
     $pdftitle = "Cuentas Individuales";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
-    $subtitle = $next_area_code->code;
     $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
@@ -638,10 +611,8 @@ class QuotaAidCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
       'contributions_number' => $contributions_number,
       'num' => $num,
-      'subtitle' => $subtitle,
       'place' => $place,
       'quota_aid' => $quota_aid,
       'reimbursements' => $reimbursements,
@@ -673,7 +644,6 @@ class QuotaAidCertificationController extends Controller
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
     Carbon::useMonthsOverflow(false);
-    $number = $next_area_code->code;
     $affiliate = Affiliate::find($quota_aid->affiliate_id);
     $spouse = null;
     $reimbursements = [];
@@ -704,7 +674,6 @@ class QuotaAidCertificationController extends Controller
     $num = 0;
     $pdftitle = "Cuentas Individuales";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
-    $subtitle = $next_area_code->code;
     $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
@@ -717,10 +686,8 @@ class QuotaAidCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
       'contributions_number' => $contributions_number,
       'num' => $num,
-      'subtitle' => $subtitle,
       'place' => $place,
       'quota_aid' => $quota_aid,
       'reimbursements' => $reimbursements,
@@ -1139,14 +1106,13 @@ class QuotaAidCertificationController extends Controller
     $data = [
       'quota_aid' => $quota_aid,
       'documents' =>  $documents,
-      'correlative'   =>  $number,
       'user'  =>  $user,
       'affiliate' =>  $affiliate,
       'spouse'  =>  $spouse,
       'title' =>  $quota_aid->procedure_modality->procedure_type->second_name,
       'area'  =>  $number->wf_state->first_shortened,
       'date'  =>   Util::getDateFormat($number->date),
-      'code'  =>  $number->code
+      'code'  =>  $quota_aid->code
     ];
     return \PDF::loadView('quota_aid.print.headship_review', $data)
       ->setOption('encoding', 'utf-8')

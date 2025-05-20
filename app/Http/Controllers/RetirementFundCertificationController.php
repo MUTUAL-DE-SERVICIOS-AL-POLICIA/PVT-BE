@@ -151,7 +151,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $submitted_documents = RetFunSubmittedDocument::leftJoin('procedure_requirements', 'procedure_requirements.id', '=', 'ret_fun_submitted_documents.procedure_requirement_id')->where('retirement_fund_id', $retirement_fund->id)->orderBy('procedure_requirements.number', 'asc')->get();
 
@@ -176,8 +175,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'bar_code' => $bar_code,
       'title' => $title,
       'institution' => $institution,
@@ -222,7 +219,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     // $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
     $title = "CERTIFICACIÓN DE ARCHIVO";
@@ -233,7 +229,6 @@ class RetirementFundCertificationController extends Controller
      * !!TODO
      *!!revisar
      */
-    $cite = $number; // RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
 
     $pdftitle = "Certificación de Archivo";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
@@ -246,9 +241,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
-      'cite' => $cite,
       'title' => $title,
       'retirement_fund' => $retirement_fund,
       'affiliate' => $affiliate,
@@ -277,7 +269,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
     $submitted_documents = RetFunSubmittedDocument::select(
@@ -302,8 +293,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'title' => $title,
       'retirement_fund' => $retirement_fund,
       'affiliate' => $affiliate,
@@ -341,8 +330,6 @@ class RetirementFundCertificationController extends Controller
     $user = $next_area_code->user;
     $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
 
     $data = [
       'code' => $code,
@@ -350,7 +337,6 @@ class RetirementFundCertificationController extends Controller
       'user' => $user,
       'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
       'affiliate' => $affiliate,
@@ -377,8 +363,6 @@ class RetirementFundCertificationController extends Controller
     $user = $next_area_code->user;
     $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
 
     $title = "SALARIO PROMEDIO COTIZABLE";
     $data = [
@@ -387,7 +371,6 @@ class RetirementFundCertificationController extends Controller
       'user' => $user,
       'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
       'retirement_fund' => $retirement_fund,
@@ -534,8 +517,6 @@ class RetirementFundCertificationController extends Controller
     $user = $next_area_code->user;
     $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
 
     $current_procedure = Util::getRetFunCurrentProcedure();
     $temp = [];
@@ -557,7 +538,6 @@ class RetirementFundCertificationController extends Controller
       'user' => $user,
       'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
       'contributions' => $contributions,
@@ -677,8 +657,6 @@ class RetirementFundCertificationController extends Controller
     $user = $next_area_code->user;
     $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
 
     $data = [
       'code' => $code,
@@ -686,7 +664,6 @@ class RetirementFundCertificationController extends Controller
       'user' => $user,
       'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
       'contributions' => $contributions,
@@ -759,15 +736,12 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
       'array_discounts_availability' => $array_discounts_availability,
@@ -1029,7 +1003,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1046,7 +1019,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
 
       'num' => $num,
       'place' => $place,
@@ -1087,7 +1059,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1106,7 +1077,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
 
       'num' => $num,
       'disponibilidad' => $disponibilidad,
@@ -1190,7 +1160,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1207,7 +1176,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'dateac' => $dateac,
@@ -1249,7 +1217,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1266,7 +1233,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'reimbursements' => $reimbursements,
@@ -1315,7 +1281,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1333,8 +1298,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'num' => $num,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
@@ -1396,7 +1359,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1414,8 +1376,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'num' => $num,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
@@ -1459,7 +1419,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1475,8 +1434,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'num' => $num,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
@@ -2001,7 +1958,6 @@ class RetirementFundCertificationController extends Controller
     $data = [
       'retirement_fund' => $retirement_fund,
       'documents' =>  $documents,
-      'correlative'   =>  $number,
       'user'  =>  $user,
       'affiliate' =>  $affiliate,
       'title' =>  $retirement_fund->procedure_modality->procedure_type->second_name,
@@ -2752,7 +2708,6 @@ class RetirementFundCertificationController extends Controller
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $ret_fun->id)->where('wf_state_id', ID::wf_state()->liquidationFR)->first();
     $code = $ret_fun->code;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
     $title = 'LIQUIDACIÓN DE PAGO';
     $affiliate = $ret_fun->affiliate;
     $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $ret_fun->id)->first();
@@ -2766,7 +2721,6 @@ class RetirementFundCertificationController extends Controller
     $data = [
       'code' => $code,
       'date' => $date,
-      'number' => $number,
       'title' => $title,
       'subtitletwo' => $subtitletwo,
       'ret_fun' => $ret_fun,
