@@ -112,31 +112,12 @@ class QuotaAidMortuaryController extends Controller
             }
             return null;
         })
-      ->addColumn('file_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 34;
-        });
-        if (sizeof($filter) > 0) {
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('file_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 34;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('review_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 35;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -149,32 +130,12 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('individuals_account_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 36;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('individuals_account_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 36;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('qualification_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 37;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -187,32 +148,12 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('dictum_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 39;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('dictum_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 39;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('headship_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 38;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -225,32 +166,12 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('resolution_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 40;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('resolution_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 40;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('liquidation_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 61;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
