@@ -74,13 +74,19 @@
                                     <td class="px-10 text-left">CERTIFICACIÓN @if($discount->id == 1) DAA @else DESI @endif</td>
                                     <td class="px-10 text-left">{{$discount->pivot->code}}</td>
                                     @if($discount->id != 1) 
-                                        <td rowspan="2" class="text-right uppercase px-5 py-3"><b>{{$discount->pivot->amount}} Bs.</b></td>
+                                        <td rowspan="3" class="text-right uppercase px-5 py-3"><b>{{$discount->pivot->amount}} Bs.</b></td>
                                     @endif
                                 </tr>
                                 <tr class="text-sm">
                                     <td class="px-10 text-left">FECHA</td>
                                     <td class="px-10 text-left">{{$discount->pivot->date}}</td>
                                 </tr>
+                                @if($discount->id != 1) 
+                                    <tr class="text-sm">
+                                        <td class="px-10 text-left">NÚMERO DE PRÉSTAMO</td>
+                                        <td class="px-10 text-left">{{$discount->pivot->note_code}} </td>
+                                    </tr>
+                                @endif
                             @endif
                         @endif
                     @endforeach
