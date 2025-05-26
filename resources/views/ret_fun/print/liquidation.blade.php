@@ -46,7 +46,7 @@
                                     <tr class="text-sm">
                                         <td class="px-10 text-left">DOCUMENTO</td>
                                         <td class="px-10 text-left">{{$discount->pivot->code}} </td>
-                                        <td rowspan="3" class="text-right uppercase px-5 py-3"><b>{{$discount->pivot->amount}} Bs.</b></td>
+                                        <td rowspan="3" class="text-right uppercase px-5 py-3"><b>{{Util::formatMoney($discount->pivot->amount)}} Bs.</b></td>
                                     </tr>
                                     <tr class="text-sm">
                                         <td class="px-10 text-left">DESCRIPCIÓN</td>
@@ -60,7 +60,7 @@
                                     <tr class="text-sm">
                                         <td class="px-10 text-left">DOCUMENTO</td>
                                         <td class="px-10 text-left">{{$discount->pivot->note_code}} </td>
-                                        <td rowspan="4" class="text-right uppercase px-5 py-3"><b>{{$discount->pivot->amount}} Bs.</b></td>
+                                        <td rowspan="4" class="text-right uppercase px-5 py-3"><b>{{Util::formatMoney($discount->pivot->amount)}} Bs.</b></td>
                                     </tr>
                                     <tr class="text-sm">
                                         <td class="px-10 text-left">FECHA</td>
@@ -74,13 +74,19 @@
                                     <td class="px-10 text-left">CERTIFICACIÓN @if($discount->id == 1) DAA @else DESI @endif</td>
                                     <td class="px-10 text-left">{{$discount->pivot->code}}</td>
                                     @if($discount->id != 1) 
-                                        <td rowspan="2" class="text-right uppercase px-5 py-3"><b>{{$discount->pivot->amount}} Bs.</b></td>
+                                        <td rowspan="3" class="text-right uppercase px-5 py-3"><b>{{Util::formatMoney($discount->pivot->amount)}} Bs.</b></td>
                                     @endif
                                 </tr>
                                 <tr class="text-sm">
                                     <td class="px-10 text-left">FECHA</td>
                                     <td class="px-10 text-left">{{$discount->pivot->date}}</td>
                                 </tr>
+                                @if($discount->id != 1) 
+                                    <tr class="text-sm">
+                                        <td class="px-10 text-left">NÚMERO DE PRÉSTAMO</td>
+                                        <td class="px-10 text-left">{{$discount->pivot->note_code}} </td>
+                                    </tr>
+                                @endif
                             @endif
                         @endif
                     @endforeach
@@ -96,7 +102,15 @@
         @endif
     </div>
     @if($beneficiaries->isNotEmpty() || $beneficiaries_minor->isNotEmpty())
-        <p class="text-lg">La Comisión de Beneficios Económicos en uso de sus atribuciones, determina el pago del beneficio de {{$ret_fun->procedure_modality->procedure_type->second_name}} en favor de (el) (los) derechohabiente (s):</p>
+        <p class="text-lg">La Comisión de Beneficios Económicos en uso de sus atribuciones, determina el pago del beneficio de 
+            {{$ret_fun->procedure_modality->procedure_type->second_name}} en favor de (el) (los) 
+            @if($ret_fun->procedure_modality->procedure_type->id == 2 && $ret_fun->procedure_modality->id == 4) //fondo de retiro - fallecimiento
+                derechohabiente
+            @else
+                beneficiario
+            @endif
+            (s):
+        </p>
         <div class="block">
             <table class="table-info w-100 m-b-10">
                 <thead class="bg-grey-darker">
@@ -184,7 +198,13 @@
     @if(!empty($ret_fun->total_availability))
         <p> Asimismo, la Comisión de Beneficios Económicos en uso de sus atribuciones, determina la 
             devolución de los descuentos realizados al Titular para {{$ret_fun->procedure_modality->procedure_type->second_name}} durante su permanencia
-            en el destino de disponibilidad de las letras, en favor de (el) beneficiario (s):</p>
+            en el destino de disponibilidad de las letras, en favor de (el) (los)
+            @if($ret_fun->procedure_modality->procedure_type->id == 2 && $ret_fun->procedure_modality->id == 4) //fondo de retiro - fallecimiento
+                derechohabiente
+            @else
+                beneficiario
+            @endif
+            (s):</p>
 
         @if($beneficiaries->isNotEmpty() || $beneficiaries_minor->isNotEmpty())
             <div class="block">
