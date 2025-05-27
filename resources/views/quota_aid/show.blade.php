@@ -94,7 +94,6 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
-                {{-- <correlative doc-id="{{ $quota_aid->id }}" wf-state-id="{{ $quota_aid->wf_state_current_id }}" :type="`quotaAid`"></correlative> --}}
             @if(Util::getRol()->id == 40 || Util::isRegionalRole())
                 <quota-aid-certification-button
                     title="Imprimir recepción"
