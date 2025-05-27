@@ -1001,22 +1001,10 @@ class RetirementFundController extends Controller
                 return $ret_fun->inbox_state ? 'Validado' : 'Pendiente';
             })
             ->addColumn('phone_number', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_beneficiaries->toArray(), function ($value) {
-                    return $value['type'] == 'S';
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['phone_number']);
-                }
-                return null;
+                return optional($ret_fun->ret_fun_beneficiaries->where('type', 'S')->first())->phone_number;
             })
             ->addColumn('cell_phone_number', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_beneficiaries->toArray(), function ($value) {
-                    return $value['type'] == 'S';
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['cell_phone_number']);
-                }
-                return null;
+                return optional($ret_fun->ret_fun_beneficiaries->where('type', 'S')->first())->cell_phone_number;
             })
             ->addColumn('file_date', function ($ret_fun) {
                 return $this->getCorrelativeDate($ret_fun, 20);
@@ -1050,8 +1038,7 @@ class RetirementFundController extends Controller
 
     private function getCorrelativeDate($ret_fun, $stateId)
     {
-        $match = collect($ret_fun->ret_fun_correlative)->firstWhere('wf_state_id', $stateId);
-        return $match['date'] ?? null;
+        return optional($ret_fun->ret_fun_correlative->firstWhere('wf_state_id', $stateId))->date;
     }
 
     public function generateProcedure(Affiliate $affiliate)
