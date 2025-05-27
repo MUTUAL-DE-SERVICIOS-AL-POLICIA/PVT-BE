@@ -1085,7 +1085,7 @@ class RetirementFundController extends Controller
             })
             ->addColumn('liquidation_date', function ($ret_fun) {
                 $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 85;
+                    return $value['wf_state_id'] == ID::wf_state()->liquidationFR;
                 });
                 if (sizeof($filter) > 0) {
                     return (reset($filter)['date']);
