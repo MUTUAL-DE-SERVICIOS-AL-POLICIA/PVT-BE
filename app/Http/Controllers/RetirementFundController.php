@@ -972,8 +972,10 @@ class RetirementFundController extends Controller
             'city_start:id,name,first_shortened',
             'wf_state:id,name,first_shortened',
             'procedure_modality:id,name,shortened,procedure_type_id',
+            'procedure_modality.procedure_type:id,name',
             'workflow:id,name',
             'ret_fun_correlative',
+            'ret_fun_beneficiaries'
         ])->select(
             'id',
             'code',
@@ -993,14 +995,10 @@ class RetirementFundController extends Controller
             ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"));
         return $datatables->eloquent($retirement_funds)
             ->addColumn('type', function ($ret_fun) {
-                return ProcedureType::find($ret_fun->procedure_modality->procedure_type_id)->name;
+                return $ret_fun->procedure_modality->procedure_type->name ?? null;
             })
             ->editColumn('inbox_state', function ($ret_fun) {
                 return $ret_fun->inbox_state ? 'Validado' : 'Pendiente';
-            })
-            ->editColumn('affiliate.city_identity_card_id', function ($ret_fun) {
-                $city = City::find($ret_fun->affiliate->city_identity_card_id);
-                return $city ? $city->first_shortened : null;
             })
             ->addColumn('phone_number', function ($ret_fun) {
                 $filter = array_filter($ret_fun->ret_fun_beneficiaries->toArray(), function ($value) {
@@ -1021,81 +1019,39 @@ class RetirementFundController extends Controller
                 return null;
             })
             ->addColumn('file_date', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 20;
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['date']);
-                }
-                return null;
+                return $this->getCorrelativeDate($ret_fun, 20);
             })
             ->addColumn('review_date', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 21;
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['date']);
-                }
-                return null;
+                return $this->getCorrelativeDate($ret_fun, 21);
             })
             ->addColumn('individuals_account_date', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 22;
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['date']);
-                }
-                return null;
+                return $this->getCorrelativeDate($ret_fun, 22);
             })
             ->addColumn('qualification_date', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 23;
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['date']);
-                }
-                return null;
+                return $this->getCorrelativeDate($ret_fun, 23);
             })
             ->addColumn('dictum_date', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 25;
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['date']);
-                }
-                return null;
+                return $this->getCorrelativeDate($ret_fun, 25);
             })
             ->addColumn('headship_date', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 24;
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['date']);
-                }
-                return null;
+                return $this->getCorrelativeDate($ret_fun, 24);
             })
             ->addColumn('resolution_date', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == 26;
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['date']);
-                }
-                return null;
+                return $this->getCorrelativeDate($ret_fun, 26);
             })
             ->addColumn('liquidation_date', function ($ret_fun) {
-                $filter = array_filter($ret_fun->ret_fun_correlative->toArray(), function ($value) {
-                    return $value['wf_state_id'] == ID::wf_state()->liquidationFR;
-                });
-                if (sizeof($filter) > 0) {
-                    return (reset($filter)['date']);
-                }
-                return null;
+                return $this->getCorrelativeDate($ret_fun, ID::wf_state()->liquidationFR);
             })
             ->addColumn('action', function ($ret_fun) {
                 return Util::getRol()->id != 69? "<a href='/ret_fun/" . $ret_fun->id . "' class='btn btn-default'><i class='fa fa-eye'></i></a>":"";
             })
             ->make(true);
+    }
+
+    private function getCorrelativeDate($ret_fun, $stateId)
+    {
+        $match = collect($ret_fun->ret_fun_correlative)->firstWhere('wf_state_id', $stateId);
+        return $match['date'] ?? null;
     }
 
     public function generateProcedure(Affiliate $affiliate)
