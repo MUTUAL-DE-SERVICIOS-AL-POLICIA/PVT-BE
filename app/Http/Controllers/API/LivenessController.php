@@ -190,8 +190,7 @@ class LivenessController extends Controller
             $remaining_actions = 1;
         }
 
-        if (env('USER_TEST_DEVICE') == $request->affiliate['identity_card']) {
-            logger("positivo");
+        if ((env('USER_TEST_DEVICE') == $request->affiliate['identity_card']) && env('TEST_APP')) {
             return response()->json([
                 'error' => false,
                 'message' => ($device->enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado exitosamente.',
