@@ -248,14 +248,14 @@ class ID
 	public static function wf_state()
 	{
 		$ids = [
-			'liquidationFR' => WorkflowState::select('id')->where('name', 'Área de Liquidación Fondo de Retiro')->first()->id
+			'liquidationFR' => 86,
 		];
 		return ((object)$ids);
 	}
 	public static function roles()
 	{
 		$ids = [
-			'liquidationFR' => Role::select('id')->where('display_name', 'Área de Liquidación')->where('module_id',3)->first()->id
+			'liquidationFR' => 106
 		];
 		return ((object)$ids);
 	}

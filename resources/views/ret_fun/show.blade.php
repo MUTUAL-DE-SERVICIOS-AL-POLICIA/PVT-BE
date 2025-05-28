@@ -95,9 +95,7 @@
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
-            <div class="pull-left">
-                <correlative doc-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}" type="retFun"></correlative>
-            
+            <div class="pull-left">            
             @if(Util::getRol()->id == Muserpol\Helpers\ID::roles()->liquidationFR)
                 <ret-fun-certification-button
                     title="Imprimir Liquidación"
