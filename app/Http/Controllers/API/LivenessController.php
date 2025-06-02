@@ -185,7 +185,6 @@ class LivenessController extends Controller
         $remaining_actions = $liveness_actions->where('successful', false)->count();
         $current_action = $liveness_actions->where('successful', false)->first();
         $current_action_index = $total_actions - $remaining_actions;
-
         if ($request->device_id) {
             $remaining_actions = 1;
         }
@@ -212,7 +211,7 @@ class LivenessController extends Controller
                 'http_errors' => false,
             ]);
             if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
-            if ($res->getStatusCode() == 200) $continue = false;
+            if ($res->getStatusCode() != 200) $continue = false;
             if ($continue) {
                 $files = Storage::files($path);
                 if (count(array_filter($files, function ($item) {
@@ -305,7 +304,7 @@ class LivenessController extends Controller
                                                 $device->update();
                                                 return response()->json([
                                                     'error' => false,
-                                                    'message' => 'Reconocimiento facila realizado exitosamente',
+                                                    'message' => 'Reconocimiento facial realizado exitosamente',
                                                     'data' => [
                                                         'completed' => true,
                                                         'type' => 'Face recognition',
