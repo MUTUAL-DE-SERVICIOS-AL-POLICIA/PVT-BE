@@ -63,9 +63,9 @@
                     @if($item->number > 0)
                     <tr>
                         <td class='text-center p-5'>{!! $item->number !!}</td>
-                            <td class='text-justify p-5'>{!! $item->procedure_document->name !!}</br>
+                            <td class='text-justify p-5'>{!! $item->procedure_document->name !!}
                         @if(trim($item->comment) != null && trim($item->comment) != '')
-                            <span class="text-justify text-xs">* {!! $item->comment !!}</span>
+                            <span class="text-justify text-xs"> <i>* ({!! $item->comment !!})</i></span>
                         @endif
                         </td>
                         @if($item->is_uploaded)
