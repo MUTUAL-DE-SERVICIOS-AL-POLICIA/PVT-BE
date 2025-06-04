@@ -35,7 +35,7 @@ switch (app) {
         path.join(__dirname, "resources/assets/js/**/*.vue")
       ],
       extensions: ["html", "js", "php", "vue"],
-      whitelistPatterns: [/language/, /hljs/]
+      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/]
     })
     ;
    break;
