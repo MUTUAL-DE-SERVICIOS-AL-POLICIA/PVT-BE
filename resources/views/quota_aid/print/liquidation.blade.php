@@ -85,7 +85,7 @@
                     </thead>
                     <tbody class="table-striped">
                         <tr class="text-xs">
-                            <td class="w-40 text-center font-bold px-10 py-3">NOMBRE DEL DERECHOHABIENTE Y BENEFICIARIO</td>
+                            <td class="w-40 text-center font-bold px-10 py-3">NOMBRE DEL DERECHOHABIENTE / BENEFICIARIO</td>
                             <td class="w-16 text-center font-bold px-10 py-3">C.I.</td>
                             <td class="w-20 text-center font-bold px-10 py-3">% DE ASIGNACIÓN</td>
                             <td class="w-20 text-center font-bold px-10 py-3">MONTO</td>
