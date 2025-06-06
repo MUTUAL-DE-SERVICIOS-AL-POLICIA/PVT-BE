@@ -37,6 +37,11 @@ export default {
       await this.$refs.uno.$children[0].$validator.validateAll();
       await this.$refs.dos.$children[0].$validator.validateAll();
       let x = this.$refs.uno.$children[0].requirementList;
+      let documentLoaded = this.$refs.uno.$children[0].documentsLoaded;
+      if (!documentLoaded) {
+        this.showRequirementsError = true;
+        return false;
+      }
       var someRequirement = true;
       Object.keys(x).forEach(function(key) {
         if (!x[key].some(rq => rq.status)) {

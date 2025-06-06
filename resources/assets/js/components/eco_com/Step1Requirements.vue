@@ -100,6 +100,10 @@
       </div>
     </div>
     <h2>Lista de Requisitos</h2>
+    <div v-if="!documentsLoaded && modality_id" class="alert alert-info">
+      <p>Cargando requisitos...</p>
+    </div>
+    <div v-else>
     <div class="wrapper wrapper-content animated fadeInRight">
       <div v-for="(requirement, key)  in requirementList" :key="key">
         <div
@@ -177,6 +181,7 @@
         >{{ requirement.name }}</option>
       </select>
     </div>
+    </div>
     <transition name="show-requirements-error" enter-active-class="animated bounceInLeft">
       <div class="alert alert-danger" v-if="showRequirementsError">
         <h2>Debe seleccionar los requisitos</h2>
@@ -208,6 +213,7 @@ export default {
   },
   data() {
     return {
+      documentsLoaded: false,
       requirements: [],
       requirementList: [],
       additionalRequirements: [],
@@ -230,6 +236,7 @@ export default {
   },
   methods: {
     async onChooseModality() {
+      this.documentsLoaded = false;
       await this.setReceptionType();
       await this.setModality();
       if (this.modality_id) {
@@ -323,6 +330,8 @@ export default {
     async getRequirements() {
       if (!this.modality_id) {
         this.requirementList = [];
+        this.additionalRequirements = [];
+        this.aditionalRequirementsUploaded = [];
       }
       let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality_id}/collate`;
       await axios
@@ -358,6 +367,7 @@ export default {
         .catch(error => {
           console.log(error);
         });
+        this.documentsLoaded = true;
     },
     convertToStringJson(objeto){
       return JSON.stringify(objeto);
