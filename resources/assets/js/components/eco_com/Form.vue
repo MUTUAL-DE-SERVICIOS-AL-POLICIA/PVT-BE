@@ -36,11 +36,25 @@ export default {
       }
       await this.$refs.uno.$children[0].$validator.validateAll();
       await this.$refs.dos.$children[0].$validator.validateAll();
+      let x = this.$refs.uno.$children[0].requirementList;
+      let documentLoaded = this.$refs.uno.$children[0].documentsLoaded;
+      if (!documentLoaded) {
+        this.showRequirementsError = true;
+        return false;
+      }
+      var someRequirement = true;
+      Object.keys(x).forEach(function(key) {
+        if (!x[key].some(rq => rq.status)) {
+          someRequirement = false;
+        }
+      });
+      if (!someRequirement) {
+        this.showRequirementsError = !this.showRequirementsError;
+        return false;
+      }
       const scrollToFooter = scroller();
       scrollToFooter("#eco-com-form-header");
-      return ! await this.$refs.uno.$children[0].$validator.errors.items
-        .map(x => x.field)
-        .some(r => keys.indexOf(r) >= 0);
+      return true;
     },
     async validateSecondStep() {
       await this.$refs.dos.$children[0].$validator.validateAll();
