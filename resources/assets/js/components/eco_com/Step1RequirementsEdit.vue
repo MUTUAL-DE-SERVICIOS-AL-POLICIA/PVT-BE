@@ -1,9 +1,98 @@
+<template>
+  <div class="ibox">
+    <div class="ibox-content">
+      <div class="row">
+        <div class="pull-left">
+          <legend> Documentos Presentados</legend>
+        </div>
+        <div class="pull-right">
+          <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active' : ''"
+            @click="toggle_editing"><i class="fa" :class="editing ? 'fa-edit' : 'fa-pencil'"></i>
+            Editar</button>
+        </div>
+      </div>
+      <div class="row" v-if="errorsValidate.length > 0">
+        <div v-for="err in errorsValidate" :key="err" class="alert alert-danger">
+          <i class="fa fa-exclamation-triangle"></i> {{ err }}
+        </div>
+      </div>
+      <form id="brianytati">
+        <div class="row">
+          <div v-for="(requirement, index) in requirementList" :key="index">
+            <div class="vote-item" @click="checked(index, i)" v-for="(rq, i) in requirement" :class="rq.background"
+              style="cursor:pointer" :key="i" v-if="isVisible(rq)">
+              <div class="row">
+                <div :class="editing ? 'col-md-10' : 'col-md-10'">
+                  <div class="vote-actions">
+                    <h1 v-if="rq.number < 1000">
+                      {{ rq.number }}
+                    </h1>
+                    <h1 v-else>
+                      A
+                    </h1>
+                  </div>
+                  <span class="vote-title">{{ rq.name }}</span>
+                  <div class="vote-info">
+                    <div class="col-md-2 no-margins no-padding">
+                      <i class="fa fa-comments-o"></i> Comentario:
+                    </div>
+                    <div class="col-md-6 no-margins no-padding">
+                      <input type="text" :name="'comment' + rq.id" class="form-control" maxlength="80"
+                        :disabled="!editing" v-model="rq.comment">
+                    </div>
+                    <br>
+                  </div>
+                </div>
+                <div class="col-md-2 ">
+                  <div class="vote-icon">
+                    <span style="color:#3c3c3c"><i class="fa "
+                        :class="rq.status ? 'fa-check-square' : 'fa-square-o'"></i></span>
+                    <div style="opacity:0" v-if="rol != 11">
+                      <input type="checkbox" v-model="rq.status" value="checked" :name="'document' + rq.id"
+                        class="largerCheckbox">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div v-if="aditionalRequirementsUploaded.length > 0">
+          <h4>Documentos adicionales en DBE</h4>
+          <ul>
+            <li v-for="(requirement, index) in aditionalRequirementsUploaded">
+              {{ requirement.name }}
+              <input type="hidden" id="aditionalRequirementsUploaded" name="aditionalRequirementsUploaded" :value="convertToStringJson(requirement)">
+            </li>
+          </ul>
+        </div>
+        <div v-if="aditionalRequirements.length > 0" style="margin-bottom:180px">
+          <h4>Documentos adicionales</h4>
+          <select data-placeholder="Documentos adicionales..." class="chosen-select" id="aditionalRequirementsSelected" name="aditionalRequirementsSelected[]"
+            multiple style="width: 350px; display: none;" tabindex="-1" v-model="aditionalRequirementsSelected"
+            v-bind:disabled="!editing">
+            <option v-for="(requirement, index) in aditionalRequirements" :value="convertToStringJson(requirement)"
+              :key="index">{{ requirement.name }}</option>
+          </select>
+        </div>
+        <br>
+        <div class="text-center" v-if="editing">
+          <button class="btn btn-danger" type="button" @click="toggle_editing"><i
+              class="fa fa-times-circle"></i>&nbsp;&nbsp;<span cla ss="bold">Cancelar</span></button>
+          <button type="button" class="btn btn-primary" @click="store()"><i
+              class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
 <script>
 export default {
   props: [
+    "affiliate",
     "ecoCom",
     "procedureModalities",
-    "requirements",
     "user",
     "cities",
     "procedureTypes",
@@ -14,15 +103,11 @@ export default {
     return {
       requirementList: [],
       aditionalRequirements: [],
+      aditionalRequirementsUploaded: [],
       aditionalRequirementsSelected: [],
       modality: null,
-      show_spinner: false,
-      city_end_id: this.user.city_id,
-      procedure_type_id: 2,
-      my_index: 1,
-      modalitiesFilter: [],
       editing: false,
-      counter_aditional_document: 1000
+      errorsValidate: []
     };
   },
   mounted() {
@@ -30,7 +115,7 @@ export default {
     this.getRequirements();
   },
   methods: {
-    toggle_editing: function() {
+    toggle_editing: function () {
       this.editing = !this.editing;
       setTimeout(() => {
         $(".chosen-select")
@@ -44,57 +129,60 @@ export default {
       }, 500);
 
     },
-    getRequirements() {
-      this.requirementList = this.requirements.filter(r => {
-        if (r.number == 0 && this.rol == 11) {
-          r.number = r.number + this.counter_aditional_document;
-          this.counter_aditional_document++;
-        }
-        if (r.modality_id == this.modality && r.number != 0) {
-          let submit_document = this.submitted.find(function(document) {
-            return document.procedure_requirement_id === r.id;
-          });
-          if (this.rol != 11) {
-            //revision legal
-            if (submit_document) {
-              r["status"] = true;
-              r["background"] = "bg-success-green";
-              r["comment"] = submit_document.comment;
-            } else {
-              r["status"] = false;
-              r["background"] = "";
-              r["comment"] = null;
-            }
-            return r;
-          } else {
-            if (submit_document) {
-              if (submit_document.is_valid) {
-                r["status"] = true;
-                r["background"] = "bg-success-green";
-                r["comment"] = submit_document.comment;
-                r["submit_document_id"] = submit_document.id;
+    async getRequirements() {
+      let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
+
+      await axios
+        .get(uri)
+        .then(response => {
+          let requiredDocuments = response.data.requiredDocuments;
+          Object.values(requiredDocuments).forEach(value => {
+            value.forEach(r => {
+              let submit_document = this.submitted.find(function (document) {
+                return document.procedure_requirement_id === r.procedureRequirementId;
+              });
+              if (this.rol != 11) {
+                //revision legal
+                if (submit_document) {
+                  if (submit_document.is_uploaded != r['isUploaded']) {
+                    this.errorsValidate.push(`El documento "${r.name}" no coincide con el archivo escaneado.`);
+                  }
+                  r["status"] = true;
+                  r["background"] = r['isUploaded'] ? 'bg-success-blue' : "bg-success-green";
+                  r["comment"] = submit_document.comment;
+                } else {
+                  r["status"] = false;
+                  r["background"] = "";
+                  r["comment"] = null;
+                }
+                return r;
               } else {
-                r["status"] = false;
-                r["background"] = "";
-                r["comment"] = submit_document.comment;
-                r["submit_document_id"] = submit_document.id;
+                if (submit_document) {
+                  if (submit_document.is_valid) {
+                    r["status"] = true;
+                    r["background"] = "bg-success-green";
+                    r["comment"] = submit_document.comment;
+                    r["submit_document_id"] = submit_document.id;
+                  } else {
+                    r["status"] = false;
+                    r["background"] = "";
+                    r["comment"] = submit_document.comment;
+                    r["submit_document_id"] = submit_document.id;
+                  }
+                  return r;
+                }
               }
-              return r;
-            }
-          }
-        }
-      });
+            });
+          });
+          this.requirementList = requiredDocuments
 
-      Array.prototype.groupBy = function(prop) {
-        return this.reduce(function(groups, item) {
-          const val = item[prop];
-          groups[val] = groups[val] || [];
-          groups[val].push(item);
-          return groups;
-        }, {});
-      };
+          this.aditionalRequirementsUploaded = response.data.additionallyDocumentsUpload;
+          this.aditionalRequirements = response.data.additionallyDocuments;
+        })
+        .catch(error => {
+          console.log(error);
+        });
 
-      this.requirementList = this.requirementList.groupBy("number");
       this.getAditionalRequirements();
     },
     getAditionalRequirements() {
@@ -104,31 +192,15 @@ export default {
       if (!this.modality) {
         this.aditionalRequirementsSelected = [];
       }
-      this.aditionalRequirements = this.requirements.filter(requirement => {
-        if (
-          requirement.modality_id == this.modality &&
-          requirement.number == 0
-        ) {
-          let submit_document = this.submitted.find(function(document) {
-            return document.procedure_requirement_id === requirement.id;
-          });
-          if (!submit_document) return requirement;
+      this.aditionalRequirements.forEach(element => {
+        let submit_document = this.submitted.find(function (document) {
+          return document.procedure_requirement_id === element.procedureRequirementId;
+        });
+        if (submit_document) {
+          this.aditionalRequirementsSelected.push(this.convertToStringJson(element));
         }
       });
-      this.aditionalRequirementsSelected = this.requirements.filter(
-        requirement => {
-          if (
-            requirement.modality_id == this.modality &&
-            requirement.number == 0
-          ) {
-            let submit_document = this.submitted.find(function(document) {
-              return document.procedure_requirement_id === requirement.id;
-            });
-            if (submit_document) return requirement;
-          }
-        }
-      );
-
+      
       setTimeout(() => {
         $(".chosen-select")
           .chosen({ width: "100%" })
@@ -136,27 +208,24 @@ export default {
       }, 500);
     },
     checked(index, i) {
-      if (this.editing) {
-        for (var k = 0; k < this.requirementList[index].length; k++) {
-          if (k != i) {
-            this.requirementList[index][k].status = false;
-            this.requirementList[index][k].background = "bg-warning-yellow";
-          }
+      if (!this.editing) return;
+      if (this.requirementList[index][i].isUploaded) return;
+      const list = this.requirementList[index];
+
+      // Desactiva todos los ítems excepto el actual
+      list.forEach((item, k) => {
+        if (k !== i) {
+          item.status = false;
+          item.background = 'bg-warning-yellow';
+        } else {
+          item.status = !item.status;
+          item.background = item.status ? 'bg-success-green' : '';
         }
-        this.requirementList[index][i].status = !this.requirementList[index][i]
-          .status;
-        this.requirementList[index][i].background =
-          this.requirementList[index][i].background == "bg-success-green"
-            ? ""
-            : "bg-success-green";
-        if (this.requirementList[index].every(r => !r.status)) {
-          for (var k = 0; k < this.requirementList[index].length; k++) {
-            if (!this.requirementList[index][k].status) {
-              this.requirementList[index][k].background = "";
-            }
-          }
-        }
-      } else {
+      });
+
+      // Si todos los ítems están inactivos, limpia los backgrounds
+      if (list.every(item => !item.status)) {
+        list.forEach(item => item.background = '');
       }
     },
     isVisible(requeriment) {
@@ -170,25 +239,16 @@ export default {
         return true;
       }
     },
-    onChooseCity(event) {
-      const options = event.target.options;
-      const selectedOption = options[options.selectedIndex];
-      const selectedText = selectedOption.textContent;
-    },
-    groupNumbers(number) {
-      if (parseInt(number) == parseInt(this.my_index)) {
-        this.my_index++;
-        return true;
-      }
-      return false;
+    convertToStringJson(objeto) {
+      return JSON.stringify(objeto);
     },
     store() {
       let uri = `/eco_com/${this.ecoCom.id}/edit_requirements`;
-      let req = $("#aditional_requirements").val();
+      let reqSelected = $("#aditionalRequirementsSelected").val();
       axios
         .post(uri, {
           requirements: this.requirementList,
-          aditional_requirements: req
+          aditional_requirements: [...reqSelected.map(e => JSON.parse(e)), ...this.aditionalRequirementsUploaded]
         })
         .then(response => {
           flash("Verificacion Correcta");
