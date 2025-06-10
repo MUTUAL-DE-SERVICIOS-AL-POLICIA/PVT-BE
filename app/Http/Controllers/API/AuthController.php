@@ -125,7 +125,6 @@ class AuthController extends Controller
 
                 $token = null;
                 if (!$affiliate->affiliate_token && !$affiliate_token) { // Primer ingreso
-                    logger("sssss");
                     $token = $this->getToken($device_id);
                     $affiliate_token = $affiliate->affiliate_token()->create([
                         'api_token' => $token,
@@ -199,7 +198,7 @@ class AuthController extends Controller
                                 $affiliate->affiliate_token()->update($update);
                             }
                         }
-                    } elseif (AffiliateDevice::find($affiliate_token->id) == null) { 
+                    } elseif (AffiliateDevice::find($affiliate_token->id) == null) {
                         $token = $this->getToken($device_id);
                         $update = [
                             'api_token' => $token,
