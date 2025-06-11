@@ -70,7 +70,6 @@ class AuthController extends Controller
     {
         $identity_card = mb_strtoupper($request->identity_card);
         $birth_date = Carbon::parse($request->birth_date)->format('Y-m-d');
-        //$device_id = $request->device_id;
         $firebase_token = $request->firebase_token;
         $is_new_app = isset($request->is_new_app) ? $request->is_new_app : false;
         $is_new_version = isset($request->is_new_version) ? $request->is_new_version : false;
@@ -145,14 +144,10 @@ class AuthController extends Controller
                     $affiliate->affiliate_token()->update($update);
 
                     if ($affiliate_token->affiliate_device) {
-
-
-
                         if ($affiliate_token->affiliate_device->enrolled) {
                             $affiliate_token->firebase_token = $firebase_token;
                             $affiliate_token->update();
                         }
-
                         $device = (object)[];
                         $device->enrolled = $affiliate_token->affiliate_device->enrolled;
                         $device->verified = $affiliate_token->affiliate_device->verified;
