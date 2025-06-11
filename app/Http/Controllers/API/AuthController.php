@@ -70,12 +70,9 @@ class AuthController extends Controller
     {
         $identity_card = mb_strtoupper($request->identity_card);
         $birth_date = Carbon::parse($request->birth_date)->format('Y-m-d');
-        $device_id = $request->device_id;
         $firebase_token = $request->firebase_token;
         $is_new_app = isset($request->is_new_app) ? $request->is_new_app : false;
         $is_new_version = isset($request->is_new_version) ? $request->is_new_version : false;
-        $update_device_id = false;
-        $code = 200;
         $is_doble_perception = false;
 
         if ($is_new_app && $is_new_version) {
@@ -85,9 +82,10 @@ class AuthController extends Controller
             } else {
                 $eco_com_beneficiary = EcoComBeneficiary::whereIdentityCard($identity_card)->whereBirthDate($birth_date)->first();
             }
+
             if ($eco_com_beneficiary) {
                 $affiliate = $eco_com_beneficiary->economic_complement->affiliate;
-                $affiliate_device = AffiliateDevice::whereDeviceId($device_id)->first();
+
                 $last_eco_com = $affiliate->economic_complements()->whereHas('eco_com_procedure', function ($q) {
                     $q->orderBy('year')->orderBy('normal_start_date');
                 })->latest()->first();
@@ -114,6 +112,8 @@ class AuthController extends Controller
                         'data' => (object)[]
                     ], 403);
                 }
+
+                //revisar firebase token
                 $affiliate_token = AffiliateToken::whereAffiliateId($affiliate->id)->first();
                 $incomming_firebase = AffiliateToken::whereFirebaseToken($firebase_token)->latest()->first();  // get()
                 if (!is_null($incomming_firebase)) {
@@ -124,8 +124,8 @@ class AuthController extends Controller
                 }
 
                 $token = null;
-                if (!$affiliate->affiliate_token && !$affiliate_token) { // Primer ingreso
-                    $token = $this->getToken($device_id);
+                if (!$affiliate_token) { // Primer ingreso
+                    $token = $this->getToken($affiliate->id);
                     $affiliate_token = $affiliate->affiliate_token()->create([
                         'api_token' => $token,
                     ]);
@@ -135,75 +135,24 @@ class AuthController extends Controller
                         'enrolled' => false,
                         'verified' => false
                     ]);
-                } elseif ($affiliate_token && $affiliate) {
+                } else {
+
+                    $token = $this->getToken($affiliate->id);
+                    $update = [
+                        'api_token' => $token,
+                    ];
+                    $affiliate->affiliate_token()->update($update);
+
                     if ($affiliate_token->affiliate_device) {
-                        if ($device_id == $affiliate_token->affiliate_device->device_id || $affiliate_token->affiliate_device->device_id == null) {
-
-                            if ($affiliate_token->affiliate_device->device_id == null) {
-                                if ($affiliate_token->affiliate_device->enrolled && $affiliate_token->affiliate_device->verified) {
-                                    $update_device_id = true;
-                                    $token = $this->getToken($device_id);
-                                    $update = [
-                                        'api_token' => $token,
-                                    ];
-                                    $affiliate->affiliate_token()->update($update);
-                                } elseif ($affiliate_token->affiliate_device->enrolled == false && $affiliate_token->affiliate_device->verified == false) {
-                                    $token = $this->getToken($device_id);
-                                    $update = [
-                                        'api_token' => $token,
-                                    ];
-                                    $affiliate->affiliate_token()->update($update);
-                                } else {
-                                    $update = [
-                                        'api_token' => null
-                                    ];
-                                    $affiliate->affiliate_token()->update($update);
-                                }
-                            } else {
-                                $token = $this->getToken($device_id);
-                                $update = [
-                                    'api_token' => $token,
-                                ];
-                                $affiliate->affiliate_token()->update($update);
-                            }
-                            $var = $affiliate_token->affiliate_device;
-                            if ($var->enrolled && !is_null($token) && !$update_device_id) {
-                                $affiliate_token->firebase_token = $firebase_token;
-                                $affiliate_token->update();
-                            }
-
-                            $device = (object)[];
-                            $device->enrolled = $affiliate_token->affiliate_device->enrolled;
-                            $device->verified = $affiliate_token->affiliate_device->verified;
-                        } elseif ($device_id != $affiliate_token->affiliate_device->device_id) {
-                            $device = (object)[];
-                            if ($affiliate_token->affiliate_device->enrolled == true && $affiliate_token->affiliate_device->verified == true) {
-                                $update_device_id = $device->enrolled = $device->verified = true;
-                                $token = $this->getToken($device_id);
-                                $update = [
-                                    'api_token' => $token,
-                                ];
-                                $affiliate->affiliate_token()->update($update);
-                            } elseif ($affiliate_token->affiliate_device->enrolled == false && $affiliate_token->affiliate_device->verified == false) {
-                                $update_device_id = $device->enrolled = $device->verified = false;
-                                $token = $this->getToken($device_id);
-                                $update = [
-                                    'api_token' => $token,
-                                ];
-                                $affiliate->affiliate_token()->update($update);
-                            } else {
-                                $update = [
-                                    'api_token' => null
-                                ];
-                                $affiliate->affiliate_token()->update($update);
-                            }
+                        if ($affiliate_token->affiliate_device->enrolled) {
+                            $affiliate_token->firebase_token = $firebase_token;
+                            $affiliate_token->update();
                         }
-                    } elseif (AffiliateDevice::find($affiliate_token->id) == null) {
-                        $token = $this->getToken($device_id);
-                        $update = [
-                            'api_token' => $token,
-                        ];
-                        $affiliate->affiliate_token()->update($update);
+                        $device = (object)[];
+                        $device->enrolled = $affiliate_token->affiliate_device->enrolled;
+                        $device->verified = $affiliate_token->affiliate_device->verified;
+                    } else {
+
                         $affiliate_device = new AffiliateDevice;
                         $device = $affiliate_device->create([
                             'affiliate_token_id' => $affiliate_token->id,
@@ -212,7 +161,6 @@ class AuthController extends Controller
                         ]);
                     }
                 }
-                $code = $update_device_id ? 201 : 200;
                 if ($token) {
                     return response()->json([
                         'error' => false,
@@ -229,10 +177,9 @@ class AuthController extends Controller
                                 'enrolled' => $device->enrolled,
                                 'verified' => $device->verified,
                             ],
-                            'update_device_id' => $update_device_id,
                             'is_doble_perception' => $is_doble_perception
                         ]
-                    ], $code);
+                    ], 200);
                 } else {
                     return response()->json([
                         'error' => true,
