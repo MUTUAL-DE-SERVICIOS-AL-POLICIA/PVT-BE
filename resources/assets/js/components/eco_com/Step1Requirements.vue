@@ -286,6 +286,9 @@ export default {
         .catch(error => {
           console.log(error);
         });
+        if (this.reception_type_id == 1) { // habitual
+          this.documentsLoaded = true;
+        }       
       await this.$store.commit(
         "ecoComForm/setReceptionType",
         this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id)
