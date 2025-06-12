@@ -276,7 +276,7 @@ class LivenessController extends Controller
                                                 $affiliate_token = $request->affiliate->affiliate_token;
                                                 $affiliate_token->firebase_token = $request->firebase_token;
                                                 $affiliate_token->update();
-                                                $device->device_id = $new_device_id;
+                                                //$device->device_id = $new_device_id;
                                                 $device->update();
                                                 return response()->json([
                                                     'error' => false,
@@ -299,7 +299,7 @@ class LivenessController extends Controller
                                             $affiliate_token = $request->affiliate->affiliate_token;
                                             $affiliate_token->firebase_token = $request->firebase_token;
                                             $affiliate_token->update();
-                                            $device->device_id = $new_device_id;
+                                            //$device->device_id = $new_device_id;
                                             $device->update();
                                         }
                                         return response()->json([
