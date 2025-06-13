@@ -9,7 +9,9 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
         data(){
             return{
                 editing: false,
+                editingIdentityCard: false,
                 show_spinner: false,
+                backup: {},
                 form:this.spouse,
                 city_birth: !!this.spouse.city_birth?this.spouse.city_birth:null,
                 city_identity_card: !!this.spouse.city_identity_card?this.spouse.city_identity_card:null,
@@ -75,6 +77,9 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                     return false;
                 }
                 return Object.keys(this.$validator.errors.collect()).length > 0;
+            },
+            isLoading() {
+                return this.show_spinner;
             }
 
         },
@@ -106,8 +111,23 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                 });
                 return name;
             },
+
+            toggle_editing_ci() {
+                this.backup = JSON.parse(JSON.stringify(this.form));
+                if (this.editingIdentityCard) {
+                    this.editingIdentityCard = false;
+                    this.form.identity_card = this.values.identity_card;
+                } else {
+                    this.editingIdentityCard = true;
+                    this.validateBeforeSubmit();
+                }
+                if (this.editing) {
+                    this.cancel_editing_ci();
+                }
+            },
+
             toggle_editing:function () {
-                this.editing = !this.editing;
+                this.editing = true;
                 dateInputMaskAll();
                 if(this.editing==false)
                 {
@@ -129,7 +149,54 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                     this.validateBeforeSubmit();
                 }
             },
-            update () {
+            async getDataSpouse () {
+                this.editingIdentityCard = false;
+                this.toggle_editing();
+                if (!this.form.identity_card) {
+                    flash("Debe ingresar una cédula", "error");
+                    return;
+                }
+                this.show_spinner = true;
+                try {
+                    this.backup = JSON.parse(JSON.stringify(this.form));
+                    const response = await axios.get(`/person-data/${this.form.identity_card}`);
+                    const data = response.data.spouses;
+                    if (!data) {
+                        flash("No se encontraron datos para la cédula ingresada", "warning");
+                        return;
+                    }
+                    this.editingIdentityCard = false;
+
+                    this.form.first_name = data.first_name;
+                    this.form.second_name = data.second_name;
+                    this.form.last_name = data.last_name;
+                    this.form.mothers_last_name = data.mothers_last_name;
+                    this.form.surname_husband = data.surname_husband;
+                    this.form.birth_date = data.birth_date;
+                    this.form.city_birth_id = data.city_birth_id;
+                    this.form.civil_status = data.civil_status;
+                    this.form.date_death = data.date_death;
+                    this.form.reason_death = data.reason_death;
+                    this.form.death_certificate_number = data.death_certificate_number;
+
+                    Object.assign(this.values, data);
+                    flash("Persona encontrada exitosamente", "success");
+                    return response.data;
+                } catch (error) {
+                    flash("Error al obtener datos del cónyuge", "error");
+                }finally {
+                this.show_spinner = false;
+                }
+            },
+            cancel_editing_ci() {
+                this.editingIdentityCard = false;
+                this.editing = false;
+                if (this.backup) {
+                    this.form = JSON.parse(JSON.stringify(this.backup));
+                }
+            },
+
+            update() {
                 this.validateBeforeSubmit();
                 if (this.validAll) {
                     flash("Debe completar el formulario", 'error')

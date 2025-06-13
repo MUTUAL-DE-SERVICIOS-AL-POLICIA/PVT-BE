@@ -77,7 +77,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/CIDevice/{affiliate}/{valor}', 'AffiliateController@CIDevice')->name('CIDevice');
     //SpouseControler
     Route::patch('/update_spouse/{affiliate_id}', 'SpouseController@update')->name('update_spouse');
-
+    Route::get('/person-data/{identityCard}', 'SpouseController@findSpouseOrAffiliateData');
     Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 
     //Scanned Documents
