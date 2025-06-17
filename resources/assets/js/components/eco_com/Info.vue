@@ -814,6 +814,8 @@ export default {
     },
     canDelete(roleUser, wfCurrentState) {
       const roleProcedure = wfCurrentState.role_id
+      if(roleUser == 5)
+        return true // si es jefatura puede eliminar todo
       if(this.isInclusion) {
         if(this.ecoCom.city_id == 4 && this.ecoCom.wf_state.id == 1) { // ciudad de La Paz y es recepción
           return true
