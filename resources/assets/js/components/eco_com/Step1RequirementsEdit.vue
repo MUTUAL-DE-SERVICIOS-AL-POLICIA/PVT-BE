@@ -92,10 +92,6 @@ export default {
   props: [
     "affiliate",
     "ecoCom",
-    "procedureModalities",
-    "user",
-    "cities",
-    "procedureTypes",
     "submitted",
     "rol"
   ],
@@ -127,7 +123,6 @@ export default {
           .find('.chosen-choices') // Para selects múltiples
           .css("border", "4px solid #ceebd6");
       }, 500);
-
     },
     async getRequirements() {
       let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
