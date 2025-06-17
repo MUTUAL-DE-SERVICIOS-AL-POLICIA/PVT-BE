@@ -312,8 +312,7 @@
 
                                 @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
                                         {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}                                        
-                                    <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
-                                        @include('ret_fun.step1_requirements_edit')
+                                    <ret-fun-step1-requirements-edit :affiliate="{{ $affiliate }}" :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
                                     </ret-fun-step1-requirements-edit>
                                 @endcan
                             </div>
