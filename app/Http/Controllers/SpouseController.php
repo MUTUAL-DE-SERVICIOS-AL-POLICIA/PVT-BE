@@ -138,6 +138,44 @@ class SpouseController extends Controller
     {
         //
     }
+    public function findSpouseOrAffiliateData($identityCard){
+        $datos = Affiliate::select([
+            'identity_card as cedula',
+            'first_name',
+            'second_name',
+            'last_name',
+            'mothers_last_name',
+            'surname_husband',
+            'birth_date',
+            'city_birth_id',
+            'civil_status',
+            'date_death',
+            'reason_death',
+            'death_certificate_number'
+        ])
+        ->where('identity_card', $identityCard)
+        ->first();
+        if (!$datos) {
+            $datos = Spouse::select([
+                'identity_card as cedula',
+                'first_name',
+                'second_name',
+                'last_name',
+                'mothers_last_name',
+                'surname_husband',
+                'birth_date',
+                'city_birth_id',
+                'civil_status',
+                'date_death',
+                'reason_death',
+                'death_certificate_number'
+            ])
+            ->where('identity_card', $identityCard)
+            ->first();
+        }
+        return response()->json(['spouses' => $datos]);
+        }
+
     public function getRecord($affiliate_id)
     {
         $affiliate = Affiliate::find($affiliate_id);
