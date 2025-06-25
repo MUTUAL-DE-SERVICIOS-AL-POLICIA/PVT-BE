@@ -76,6 +76,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/deleteEnrolled_affiliate/{affiliate}', 'AffiliateController@deleteEnrolled')->name('deleteEnrolled_affiliate');
     Route::get('/CIDevice/{affiliate}/{valor}', 'AffiliateController@CIDevice')->name('CIDevice');
     //SpouseControler
+    Route::post('spouse/{affiliate_id}', 'SpouseController@store')->name('spouse_store');
     Route::patch('/update_spouse/{affiliate_id}', 'SpouseController@update')->name('update_spouse');
     Route::get('/person-data/{identityCard}', 'SpouseController@findSpouseOrAffiliateData');
     Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');

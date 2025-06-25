@@ -283,7 +283,7 @@ class AffiliateController extends Controller
         $affiliate->phone_number = explode(',', $affiliate->phone_number);
         $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
 
-        $spouse = $affiliate->spouse->first();
+        $spouse = $affiliate->spouse()->latest('updated_at')->first();
         if (!$spouse) {
             $spouse = new Spouse();
         }else{
