@@ -1094,20 +1094,21 @@ class RetirementFundController extends Controller
         return view('ret_fun.create', $data);
     }
 
-    public function storeLegalReview(Request $request, $id)
+    public function storeLegalReview(Request $request)
     {
-        $retirement_fund = RetirementFund::find($id);
         $this->authorize('update', new RetFunSubmittedDocument);
-        foreach ($request->submit_documents as $document_array) {
+        DB::transaction(function () use ($request) {
+            foreach ($request->submit_documents as $document_array) {
 
-            foreach ($document_array as $document) {
-                $submit_document = RetFunSubmittedDocument::find($document['id']);
-                $submit_document->is_valid = $document['status'];
-                $submit_document->comment = $document['comment'];
-                $submit_document->save();
+                foreach ($document_array as $document) {
+                    $submit_document = RetFunSubmittedDocument::find($document['id']);
+                    $submit_document->is_valid = $document['status'];
+                    $submit_document->comment = $document['comment'];
+                    $submit_document->save();
+                }
             }
-        }
-        return $request;
+            return $request;
+        });
     }
     public function updateBeneficiaries(Request $request, $id)
     {
@@ -2162,53 +2163,63 @@ class RetirementFundController extends Controller
 
     public function editRequirements(Request $request, $id)
     {
-        $requirements = [];
-        foreach ($request->requirements as $requirement) {
-            $requirements = array_merge($requirements, $requirement);
-        }
-        $retirement_fund = RetirementFund::select('id', 'procedure_modality_id')->find($id);
-        // Obtener documentos actuales indexados por procedure_requirement_id
-        $existingDocs = $retirement_fund->submitted_documents->keyBy('procedure_requirement_id');
-        // Nueva colección con todos los nuevos requisitos del request
-        $newRequirements = collect($request->requirements)
-            ->flatten(1)
-            ->filter(function ($r) { return $r['status']; });
+        DB::transaction(function () use ($request, $id) {
+            $requirements = [];
+            foreach ($request->requirements as $requirement) {
+                $requirements = array_merge($requirements, $requirement);
+            }
+            $retirement_fund = RetirementFund::select('id', 'procedure_modality_id')->find($id);
+            // Obtener documentos actuales indexados por procedure_requirement_id
+            $existingDocs = $retirement_fund->submitted_documents->keyBy('procedure_requirement_id');
+            $onlyDeleted = $retirement_fund->submitted_documents()->onlyTrashed()->get()->keyBy('procedure_requirement_id');
+            // Nueva colección con todos los nuevos requisitos del request
+            $newRequirements = collect($request->requirements)
+                ->flatten(1)
+                ->filter(function ($r) {
+                    return $r['status'];
+                });
 
-        $additionalRequirements = collect($request->aditional_requirements);
-        
-        // Unimos ambos arreglos por procedure_requirement_id
-        $incoming = $newRequirements->concat($additionalRequirements)
-                    ->mapWithKeys(function ($r) {
-                        return [
-                            $r['procedureRequirementId'] => [
-                                'is_uploaded' => $r['isUploaded'],
-                                'comment' => $r['comment'] ?? null,
-                            ]
-                        ];
-                    });
+            $additionalRequirements = collect($request->aditional_requirements);
 
-        // Determinar los IDs actuales y los nuevos
-        $currentIds = $existingDocs->keys();
-        $incomingIds = $incoming->keys();
+            // Unimos ambos arreglos por procedure_requirement_id
+            $incoming = $newRequirements->concat($additionalRequirements)
+                ->mapWithKeys(function ($r) {
+                    return [
+                        $r['procedureRequirementId'] => [
+                            'is_uploaded' => $r['isUploaded'],
+                            'comment' => $r['comment'] ?? null,
+                        ]
+                    ];
+                });
 
-        // 1. Eliminar los que ya no existen en el request
-        $toDelete = $currentIds->diff($incomingIds);
-        RetFunSubmittedDocument::where('retirement_fund_id', $retirement_fund->id)
-            ->whereIn('procedure_requirement_id', $toDelete)
-            ->delete();
+            // Determinar los IDs actuales y los nuevos
+            $currentIds = $existingDocs->keys();
+            $incomingIds = $incoming->keys();
 
-        // 2. Crear o actualizar
-        foreach ($incoming as $procedureRequirementId => $data) {
-            $doc = $existingDocs->get($procedureRequirementId) ?? new RetFunSubmittedDocument();
+            // 1. Eliminar los que ya no existen en el request
+            $toDelete = $currentIds->diff($incomingIds);
+            RetFunSubmittedDocument::where('retirement_fund_id', $retirement_fund->id)
+                ->whereIn('procedure_requirement_id', $toDelete)
+                ->delete();
 
-            $doc->retirement_fund_id = $retirement_fund->id;
-            $doc->procedure_requirement_id = $procedureRequirementId;
-            $doc->is_uploaded = $data['is_uploaded'];
-            $doc->comment = $data['comment'];
-            $doc->save();
-        }
+            // 2. Crear o actualizar
+            foreach ($incoming as $procedureRequirementId => $data) {
+                if ($onlyDeleted->has($procedureRequirementId)) {
+                    // Si el documento está eliminado, restaurarlo
+                    $doc = $onlyDeleted->get($procedureRequirementId);
+                    $doc->restore();
+                } else {
+                    $doc = $existingDocs->get($procedureRequirementId) ?? new RetFunSubmittedDocument();
+                    $doc->retirement_fund_id = $retirement_fund->id;
+                    $doc->procedure_requirement_id = $procedureRequirementId;
+                    $doc->is_uploaded = $data['is_uploaded'];
+                }
+                $doc->comment = $data['comment'];
+                $doc->save();
+            }
 
-        return ['deleted' => $toDelete];
+            return ['deleted' => $toDelete];
+        });
     }
     private function getLastCode($retirement_funds)
     {
