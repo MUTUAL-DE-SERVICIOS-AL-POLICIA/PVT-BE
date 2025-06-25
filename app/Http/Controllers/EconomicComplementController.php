@@ -555,7 +555,7 @@ class EconomicComplementController extends Controller
                 $spouse->official = $request->eco_com_beneficiary_official?? $request->eco_com_beneficiary_official;
                 $spouse->book = $request->eco_com_beneficiary_book ?? $request->eco_com_beneficiary_book;
                 $spouse->departure = $request->eco_com_beneficiary_departure ?? $request->eco_com_beneficiary_departure;
-                $spouse->marriage_date = $request->eco_com_beneficiary_marriage_date ?? $request->eco_com_beneficiary_marriage_date;
+                $spouse->marriage_date = Util::verifyBarDate($request->eco_com_beneficiary_marriage_date) ? Util::parseBarDate($request->eco_com_beneficiary_marriage_date) : $request->eco_com_beneficiary_marriage_date;
                 $spouse->save();
 
                 /**
