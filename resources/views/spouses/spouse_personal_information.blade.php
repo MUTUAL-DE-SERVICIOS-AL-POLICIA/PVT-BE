@@ -7,7 +7,9 @@
                 </div>
                 @can('update',$spouse)
                 <div class="text-right">
-                    <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing_ci()"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'"></i> Editar</button>
+                  {{-- <p>@{{ textAction }}</p> --}}
+                  <button v-if = 'createButton' data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="create()"  ><i class="fa" :class="editing ?'fa-edit':'fa-plus'" v-cloak v-bind:disabled= "false"></i> Crear Cónyuge</button>
+                  <button v-if="editingButton" data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="editingForm()"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar</button>
                 </div>
                 @endcan
             </div>
@@ -210,10 +212,10 @@
                 </div>
                 <br>
               </div>
-            <div class="row" v-if="editing">
+            <div class="row">
                 <div class="text-center">
-                    <button class="btn btn-danger" type="button" @click="cancel_editing_ci()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
-                    <button class="btn btn-primary" type="button" @click="update" :disabled="validAll"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+                    <button class="btn btn-danger" type="button" @click="cancel_editing_ci()" v-if="cancelButton"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
+                    <button class="btn btn-primary" type="button" @click="update" :disabled="validAll" v-if="editing"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
                 </div>
             </div>
         </div>
