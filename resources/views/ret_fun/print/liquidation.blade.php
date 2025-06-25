@@ -104,7 +104,7 @@
     @if($beneficiaries->isNotEmpty() || $beneficiaries_minor->isNotEmpty())
         <p class="text-lg">La Comisión de Beneficios Económicos en uso de sus atribuciones, determina el pago del beneficio de 
             {{$ret_fun->procedure_modality->procedure_type->second_name}} en favor de (el) (los) 
-            @if($ret_fun->procedure_modality->procedure_type->id == 2 && $ret_fun->procedure_modality->id == 4) //fondo de retiro - fallecimiento
+            @if($ret_fun->procedure_modality->procedure_type->id == 2 && $ret_fun->procedure_modality->id == 4)
                 derechohabiente
             @else
                 beneficiario
@@ -199,7 +199,7 @@
         <p> Asimismo, la Comisión de Beneficios Económicos en uso de sus atribuciones, determina la 
             devolución de los descuentos realizados al Titular para {{$ret_fun->procedure_modality->procedure_type->second_name}} durante su permanencia
             en el destino de disponibilidad de las letras, en favor de (el) (los)
-            @if($ret_fun->procedure_modality->procedure_type->id == 2 && $ret_fun->procedure_modality->id == 4) //fondo de retiro - fallecimiento
+            @if($ret_fun->procedure_modality->procedure_type->id == 2 && $ret_fun->procedure_modality->id == 4)
                 derechohabiente
             @else
                 beneficiario
