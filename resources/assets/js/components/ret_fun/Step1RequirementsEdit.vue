@@ -85,7 +85,7 @@
                 <div class="text-center" v-if="editing">
                     <button class="btn btn-danger" type="button" @click="toggle_editing"><i
                             class="fa fa-times-circle"></i>&nbsp;&nbsp;<span cla ss="bold">Cancelar</span></button>
-                    <button type="button" class="btn btn-primary" @click="store(ret_fun_id)"><i
+                    <button type="button" class="btn btn-primary" @click="store()"><i
                             class="fa fa-check-circle"></i>&nbsp;Guardar</button>
                 </div>
             </form>
@@ -99,14 +99,6 @@ export default {
         'ret_fun',
         'submitted',
         'rol',
-
-        'modalities',
-        'requirements',
-        'user',
-        'cities',
-        'procedureTypes',
-        //'showRequirementsError',
-
     ],
     data() {
         return {
@@ -117,13 +109,7 @@ export default {
             modality: null,
             editing: false,
             errorsValidate: [],
-
-            procedure_type_id: 2,
-            my_index: 1,
-            modalitiesFilter: [],
-            ret_fun_id: 428,
-            editing: false,
-            counter_aditional_document: 1000
+            additionalCounter: 100, // Este numero se usa como indice en los requisitos con numero 0 para que se grafiquen al final de la lista
         }
     },
     mounted() {
@@ -144,23 +130,16 @@ export default {
                     .css("border", "4px solid #ceebd6");
             }, 500);
         },
-        onChooseProcedureType() {
-            this.modalitiesFilter = this.modalities.filter((m) => {
-                return m.procedure_type_id == this.procedure_type_id;
-            })
-            this.modality = null;
-        },
         async getRequirements() {
-            console.log('this.submitted', this.submitted);
-
             // Si el rol es 11, mapear directamente la lista sin llamar al backend
             if (this.rol === 11) {
                 const temp = {};
                 this.submitted.map(submit => {
-                    if (!temp[submit.number]) {
-                        temp[submit.number] = [];
+                    const index = submit.number > 0 ? submit.number : this.additionalCounter;
+                    if (!temp[index]) {
+                        temp[index] = [];
                     }
-                    temp[submit.number].push({
+                    temp[index].push({
                         id: submit.id,
                         name: submit.name,
                         status: submit.is_valid,
@@ -171,8 +150,6 @@ export default {
                         number: submit.number
                     });
                 });
-                console.log('temp', temp);
-
                 this.requirementList = temp;
                 this.aditionalRequirements = [];
                 this.aditionalRequirementsSelected = [];
@@ -310,8 +287,6 @@ export default {
                 });
             } else {
                 let uri = `/ret_fun/${this.ret_fun.id}/legal_review/create`;
-                console.log('save', this.requirementList);
-
                 axios.post(uri,
                     {
                         submit_documents: this.requirementList
