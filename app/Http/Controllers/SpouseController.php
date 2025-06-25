@@ -6,6 +6,7 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\City;
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Log;
 use Validator;
 use Muserpol\Helpers\Util;
@@ -37,14 +38,11 @@ class SpouseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $affiliate_id)
     {
-        $spouse = Affiliate::find($request->affiliate_id)->spouse->first();
-        if (!$spouse) {
-            $spouse = new Spouse();
-        }
+        $spouse = new Spouse();
         $spouse->user_id = Auth::user()->id;
-        $spouse->affiliate_id = $request->affiliate_id;
+        $spouse->affiliate_id = $affiliate_id;
         $spouse->city_identity_card_id = $request->city_identity_card_id;
         $spouse->identity_card = $request->identity_card;
         $spouse->registration = $request->registration;
@@ -151,7 +149,8 @@ class SpouseController extends Controller
             'civil_status',
             'date_death',
             'reason_death',
-            'death_certificate_number'
+            'death_certificate_number',
+            'uuid_reference as uuid_column'
         ])
         ->where('identity_card', $identityCard)
         ->first();
@@ -168,9 +167,11 @@ class SpouseController extends Controller
                 'civil_status',
                 'date_death',
                 'reason_death',
-                'death_certificate_number'
+                'death_certificate_number',
+                'uuid_column'
             ])
             ->where('identity_card', $identityCard)
+            ->latest('updated_at')
             ->first();
         }
         return response()->json(['spouses' => $datos]);
