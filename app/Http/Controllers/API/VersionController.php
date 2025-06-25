@@ -28,7 +28,7 @@ class VersionController extends Controller
                 return $version == "2.2.1" ? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
             case 'appgallery':
                 $url_store = 'https://appgallery.huawei.com/app/C106440831';
-                return ($version == "3.0.5" || $version == "3.0.6")? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
+                return ($version == "3.0.5" || $version == "3.0.6" || $version == "3.0.7" || $version == "3.0.8")? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
             default:
                 return response()->json([
                     'error' => true,

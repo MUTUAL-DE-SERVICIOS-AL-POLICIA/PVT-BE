@@ -93,7 +93,7 @@
                         class="nav-label">Aportes</span></a>
                 @endif
             </li>
-            @if(Util::rolIsEcoCom() && Util::getRol()->id == 5)
+            @if(Util::rolIsEcoCom() && Util::getRol()->id == 5 || Util::getRol()->id == 103)
             <li data-toggle="tooltip" data-placement="right"
                 title="Paramentros para la calificacion del Complemento Economico">
                 <a href="{{ url('/eco_com_qualification_parameters') }}"><i

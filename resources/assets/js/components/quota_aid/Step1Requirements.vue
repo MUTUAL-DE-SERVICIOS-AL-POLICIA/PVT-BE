@@ -1,6 +1,7 @@
 <script>
 	export default{
 		props:[
+            'affiliate',
 			'modalities',
             'requirements',
             'user',
@@ -13,6 +14,7 @@
                 editing: false,
                 requirementList: [],
                 aditionalRequirements: [],
+                aditionalRequirementsUploaded: [],
                 modality: null,
                 show_spinner: false,
                 city_end_id:this.user.city_id,
@@ -56,32 +58,35 @@
                 this.getRequirements();
                 this.getAditionalRequirements();
             },
-            getRequirements(){
-                if(!this.modality){ this.requirementList = [] }
-                this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality && r.number != 0) {
-                        r['status'] = false;
-                        r['background'] = '';
-                        return r;
-                    }
-                });
-                Array.prototype.groupBy = function(prop) {
-                    return this.reduce(function(groups, item) {
-                        const val = item[prop]
-                        groups[val] = groups[val] || []
-                        groups[val].push(item)
-                        return groups
-                    }, {})
+            async getRequirements(){
+                if(!this.modality) { 
+                    this.requirementList = [] 
                 }
-                this.requirementList =  this.requirementList.groupBy('number')
+                else {
+                    let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
+                    const data = (await axios.get(uri)).data;                    
+                    let requiredDocuments = data.requiredDocuments;                    
+                    Object.values(requiredDocuments).forEach(value => {
+                        value.forEach(r => {
+                            r['status'] = r['isUploaded'];
+                            r['background'] = r['isUploaded'] ? 'bg-success-blue' : '';
+                        });
+                    });
+                    this.requirementList = requiredDocuments;
+                    this.aditionalRequirements = data.additionallyDocuments;
+                    this.aditionalRequirementsUploaded = data.additionallyDocumentsUpload;
+                }                
+            },
+            convertToStringJson(objeto){
+                return JSON.stringify(objeto);
             },
             getAditionalRequirements(){
                 if(!this.modality){this.aditionalRequirements = []}                
-                this.aditionalRequirements = this.requirements.filter((requirement) => {
-                    if (requirement.modality_id == this.modality && requirement.number == 0) {
-                        return requirement;
-                    }
-                });                
+                // this.aditionalRequirements = this.requirements.filter((requirement) => {
+                //     if (requirement.modality_id == this.modality && requirement.number == 0) {
+                //         return requirement;
+                //     }
+                // });                
                 console.log("requerimientos");
                 console.log(this.aditionalRequirements.length  );
                 setTimeout(() => {
@@ -89,6 +94,7 @@
                 }, 500);                
             },
             checked(index, i){
+                if(this.requirementList[index][i].isUploaded) return;
                 for(var k = 0; k < this.requirementList[index].length; k++ ){
                     if (k != i ) {
                     this.requirementList[index][k].status = false;

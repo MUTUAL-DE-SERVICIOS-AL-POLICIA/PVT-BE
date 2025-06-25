@@ -7,6 +7,7 @@ use Muserpol\Models\Affiliate;
 use Muserpol\Models\ProcedureRequirement;
 use Muserpol\Models\ProcedureModality;
 use Muserpol\Models\Kinship;
+use Muserpol\Models\KinshipBeneficiary;
 use Muserpol\Models\City;
 use Muserpol\Models\Degree;
 use Auth;
@@ -111,31 +112,12 @@ class QuotaAidMortuaryController extends Controller
             }
             return null;
         })
-      ->addColumn('file_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 34;
-        });
-        if (sizeof($filter) > 0) {
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('file_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 34;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('review_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 35;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -148,32 +130,12 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('individuals_account_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 36;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('individuals_account_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 36;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('qualification_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 37;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -186,32 +148,12 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('dictum_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 39;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('dictum_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 39;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('headship_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 38;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -224,19 +166,18 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('resolution_code', function ($quota_aid) {
+      ->addColumn('resolution_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 40;
         });
         if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
+          return (reset($filter)['date']);
         }
         return null;
       })
-      ->addColumn('resolution_date', function ($quota_aid) {
+      ->addColumn('liquidation_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 40;
+          return $value['wf_state_id'] == 61;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
@@ -419,24 +360,37 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->procedure_state_id = 1;
     $quota_aid->save();
 
-    foreach ($requirements  as  $requirement) {
-      if ($request->input('document' . $requirement->id) == 'checked') {
+    if($request->required_requirements) {
+      $required_requirements = [];
+      foreach ($request->required_requirements as $number) {
+        foreach ($number as $req) {
+          if(isset($req['status']) && $req['status'] == 'checked'){
+            $required_requirements[] = $req;
+          }
+        }
+      }
+      foreach ($required_requirements  as  $requirement) {
         $submit = new QuotaAidSubmittedDocument();
         $submit->quota_aid_mortuary_id = $quota_aid->id;
-        $submit->procedure_requirement_id = $requirement->id;
+        $submit->procedure_requirement_id = $requirement['procedureRequirementId'];
         $submit->reception_date = date('Y-m-d');
-        $submit->comment = $request->input('comment' . $requirement->id);
+        $submit->comment = $requirement['comment'];
+        $submit->is_uploaded = $requirement['isUploaded'];
         $submit->save();
       }
     }
-
     if ($request->aditional_requirements) {
-      foreach ($request->aditional_requirements  as  $requirement) {
+      $additional_requirements = [];
+      foreach ($request->aditional_requirements as $adr) {
+        $additional_requirements[] = json_decode($adr);
+      } 
+      foreach ($additional_requirements  as  $requirement) {
         $submit = new QuotaAidSubmittedDocument();
         $submit->quota_aid_mortuary_id = $quota_aid->id;
-        $submit->procedure_requirement_id = $requirement;
+        $submit->procedure_requirement_id = $requirement->procedureRequirementId;
         $submit->reception_date = date('Y-m-d');
-        $submit->comment = "";
+        $submit->comment = null;
+        $submit->is_uploaded = $requirement->isUploaded;
         $submit->save();
       }
     }
@@ -619,6 +573,8 @@ class QuotaAidMortuaryController extends Controller
         $b->advisor_name_court = $beneficiary_advisor->name_court;
         $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;
         $b->advisor_resolution_date = $beneficiary_advisor->resolution_date;
+        $kinship = $beneficiary_advisor->kinship_beneficiaries($b->id)->first();
+        $b->kinship_beneficiary_id = $kinship ? $kinship->id : null;
       }
       if ($beneficiary_legal_guardian = $b->quota_aid_legal_guardians->first()) {
         $b->legal_representative = 2;
@@ -670,6 +626,7 @@ class QuotaAidMortuaryController extends Controller
     $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
     $cities = City::get();
     $kinships = Kinship::get();
+    $kinship_beneficiaries = KinshipBeneficiary::get();
 
     $cities_pluck = City::all()->pluck('first_shortened', 'id');
     $birth_cities = City::all()->pluck('name', 'id');
@@ -787,6 +744,7 @@ class QuotaAidMortuaryController extends Controller
       'documents' => $documents,
       'cities'    =>  $cities,
       'kinships'   =>  $kinships,
+      'kinship_beneficiaries' => $kinship_beneficiaries,
       'cities_pluck' => $cities_pluck,
       'birth_cities' => $birth_cities,
       'financial_entities'    =>  $financial_entities,
@@ -811,7 +769,6 @@ class QuotaAidMortuaryController extends Controller
       'discounts' => $discounts
     ];
     //return $procedures_modalities;
-
     return view('quota_aid.show', $data);
   }
   public function updateBeneficiaries(Request $request, $id)
@@ -891,13 +848,21 @@ class QuotaAidMortuaryController extends Controller
               $ben_advisor->resolution_date = isset($new_ben['advisor_resolution_date']) ? (Util::verifyBarDate($new_ben['advisor_resolution_date']) ? Util::parseBarDate($new_ben['advisor_resolution_date']) : $new_ben['advisor_resolution_date']) : null;
               $ben_advisor->type = "Natural";
               $ben_advisor->save();
-              if ($old_ben->quota_aid_advisors->first()) { } else {
-                $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
-                $advisor_beneficiary->quota_aid_beneficiary_id = $old_ben->id;
-                $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
-                $advisor_beneficiary->save();
-              }
-
+              if (!empty($new_ben['kinship_beneficiary_id'])) {
+                $advisor_beneficiary = QuotaAidAdvisorBeneficiary::where('quota_aid_beneficiary_id', $old_ben->id)
+                    ->where('quota_aid_advisor_id', $ben_advisor->id)
+                    ->first();
+                if (!$advisor_beneficiary) {
+                    $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
+                    $advisor_beneficiary->quota_aid_beneficiary_id = $old_ben->id;
+                    $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
+                    $advisor_beneficiary->kinship_beneficiary_id = $new_ben['kinship_beneficiary_id'];
+                    $advisor_beneficiary->save();
+                } else {
+                    $advisor_beneficiary->kinship_beneficiary_id = $new_ben['kinship_beneficiary_id'];
+                    $advisor_beneficiary->save();
+                }
+            }
               break;
               //apoderado
             case 2:
@@ -1051,12 +1016,12 @@ class QuotaAidMortuaryController extends Controller
             $ben_advisor->resolution_date = Util::verifyBarDate($new_ben['advisor_resolution_date']) ? Util::parseBarDate($new_ben['advisor_resolution_date']) : $new_ben['advisor_resolution_date'];
             $ben_advisor->type = "Natural";
             $ben_advisor->save();
-            if ($old_ben->quota_aid_advisors->first()) { } else {
-              $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
-              $advisor_beneficiary->quota_aid_beneficiary_id = $beneficiary->id;
-              $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
-              $advisor_beneficiary->save();
-            }
+
+            $advisor_beneficiary = new QuotaAidAdvisorBeneficiary();
+            $advisor_beneficiary->quota_aid_beneficiary_id = $beneficiary->id;
+            $advisor_beneficiary->quota_aid_advisor_id = $ben_advisor->id;
+            $advisor_beneficiary->kinship_beneficiary_id = $new_ben['kinship_beneficiary_id'] ?? null;
+            $advisor_beneficiary->save();
 
             break;
             //apoderado
@@ -1086,12 +1051,12 @@ class QuotaAidMortuaryController extends Controller
             $ben_legal_guardian->notary = $new_ben['legal_guardian_notary_of_public_faith'];
             $ben_legal_guardian->date_authority = Util::verifyBarDate($new_ben['legal_guardian_date_authority']) ? Util::parseBarDate($new_ben['legal_guardian_date_authority']) : $new_ben['legal_guardian_date_authority'];
             $ben_legal_guardian->save();
-            if ($old_ben->quota_aid_legal_guardians->first()) { } else {
-              $ben_legal_guardian_new = new QuotaAidBeneficiaryLegalGuardian();
-              $ben_legal_guardian_new->quota_aid_beneficiary_id = $beneficiary->id;
-              $ben_legal_guardian_new->quota_aid_legal_guardian_id = $ben_legal_guardian->id;
-              $ben_legal_guardian_new->save();
-            }
+
+            $ben_legal_guardian_new = new QuotaAidBeneficiaryLegalGuardian();
+            $ben_legal_guardian_new->quota_aid_beneficiary_id = $beneficiary->id;
+            $ben_legal_guardian_new->quota_aid_legal_guardian_id = $ben_legal_guardian->id;
+            $ben_legal_guardian_new->save();
+
             break;
           default:
             # code...
@@ -1125,6 +1090,8 @@ class QuotaAidMortuaryController extends Controller
         $b->advisor_name_court = $beneficiary_advisor->name_court;
         $b->advisor_resolution_number = $beneficiary_advisor->resolution_number;
         $b->advisor_resolution_date = $beneficiary_advisor->resolution_date;
+        $kinship = $beneficiary_advisor->kinship_beneficiaries($b->id)->first();
+        $b->kinship_beneficiary_id = $kinship ? $kinship->id : null;
       }
       if ($beneficiary_legal_guardian = $b->quota_aid_legal_guardians->first()) {
         $b->legal_representative = 2;
@@ -1230,7 +1197,7 @@ class QuotaAidMortuaryController extends Controller
     $kinships = Kinship::get();
 
     $cities = City::get();
-    $degrees = Degree::all();
+    $degrees = Degree::where('is_active', true)->get();
     $data = [
       'requirements' => $procedure_requirements,
       'modalities'    => $modalities,
@@ -1466,7 +1433,7 @@ class QuotaAidMortuaryController extends Controller
   }
   public function saveDiscounts(Request $request, $quota_aid_id)
   {
-    static $DISCOUNT_TYPE_RETENTION = 9;
+    static $DISCOUNT_TYPE_RETENTION = 10;
     static $DISCOUNT_TYPE_ADVANCE = 1;
 
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
@@ -1489,10 +1456,7 @@ class QuotaAidMortuaryController extends Controller
     //mejorar
     $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_ADVANCE)->first();
     if ($advance_payment >= 0) {
-      if ($quota_aid->discount_types->contains($DISCOUNT_TYPE_ADVANCE) || $quota_aid->discount_types->contains($DISCOUNT_TYPE_RETENTION)) {
-        if($judicial_retention_amount !== 0 && $judicial_retention_amount !== null) {
-          $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, ['amount' => $judicial_retention_amount, 'date' => $request->judicialRetentionDate]);
-        }
+      if ($quota_aid->discount_types->contains($DISCOUNT_TYPE_ADVANCE)) {
         if(!$quota_aid->discount_types->contains($DISCOUNT_TYPE_ADVANCE))
           $quota_aid->discount_types()->save($discount_type, ['amount' => $advance_payment, 'date' => $request->advancePaymentDate, 'code' => $request->advancePaymentCode, 'note_code' => $request->advancePaymentNoteCode, 'note_code_date' => $request->advancePaymentNoteCodeDate]);
         else
@@ -1503,6 +1467,16 @@ class QuotaAidMortuaryController extends Controller
     } else {
       $quota_aid->discount_types()->detach($discount_type->id);
     }
+
+    $discount_type = DiscountType::where('id', $DISCOUNT_TYPE_RETENTION)->where('module_id', 4)->first();
+    if ($judicial_retention_amount > 0 && $judicial_retention_amount !== null) {
+      if ($quota_aid->discount_types->contains($discount_type->id)) {
+          $quota_aid->discount_types()->updateExistingPivot($discount_type->id, ['amount' => $judicial_retention_amount, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
+      } else {
+          $quota_aid->discount_types()->save($discount_type, ['amount' => $judicial_retention_amount, 'date' => $request->judicialRetentionDate, 'code' => $request->judicialRetentionDocument]);
+      }
+    }
+
     $discounts = $quota_aid->discount_types()->whereIn('discount_types.id', [$DISCOUNT_TYPE_ADVANCE, $DISCOUNT_TYPE_RETENTION])->get();
     $beneficiaries = $quota_aid->quota_aid_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
     //create function search spouse
@@ -1594,14 +1568,16 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid->quota_aid_procedure_id = $request->quota_aid_procedure_id;
     if ($quota_aid->procedure_state_id == ID::state()->eliminado) {
       $quota_aid->code .= "A";
+      $quota_aid->deleted_at =now();
     }
     $quota_aid->save();
     $datos = array('quota_aid' => $quota_aid, 'procedure_modality' => $quota_aid->procedure_modality, 'city_start' => $quota_aid->city_start, 'city_end' => $quota_aid->city_end);
     return $datos;
   }
   public function createJudicialRetention(Request $request, $quota_aid_id) {
+    static $DISCOUNT_TYPE_RETENTION = 10;
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->first();
+    $discount_type = DiscountType::find($DISCOUNT_TYPE_RETENTION);
     if(!$quota_aid || !$discount_type)
         return response()->json([
           'error' => "No existe el trámite o el tipo de descuento"
@@ -1623,8 +1599,9 @@ class QuotaAidMortuaryController extends Controller
     ]);
   }
   public function obtainJudicialRetention($quota_aid_id) {
+    static $DISCOUNT_TYPE_RETENTION = 10;
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->first();
+    $discount_type = DiscountType::find($DISCOUNT_TYPE_RETENTION);
     if($quota_aid && $discount_type) {
       $discounts = $quota_aid->discount_types()
         ->wherePivot('discount_type_id', $discount_type->id)
@@ -1645,9 +1622,9 @@ class QuotaAidMortuaryController extends Controller
     ], 200);
   }
   public function modifyJudicialRetention(Request $request, $quota_aid_id) {
-    static $DISCOUNT_TYPE_RETENTION = 9;
+    static $DISCOUNT_TYPE_RETENTION = 10;
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->first();
+    $discount_type = DiscountType::find($DISCOUNT_TYPE_RETENTION);
     if($quota_aid && $discount_type) {
       $updated = $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, [ 'note_code' => $request->detail ]);
       return response()->json([
@@ -1660,9 +1637,9 @@ class QuotaAidMortuaryController extends Controller
     ], 409);
   }
   public function cancelJudicialRetention($quota_aid) {
-    static $DISCOUNT_TYPE_RETENTION = 9;
+    static $DISCOUNT_TYPE_RETENTION = 10;
     $quota_aid = QuotaAidMortuary::find($quota_aid);
-    $discount_type = DiscountType::where('shortened', 'Retención según Resolución Judicial')->first();
+    $discount_type = DiscountType::find($DISCOUNT_TYPE_RETENTION);
     if($quota_aid && $discount_type) {
       $deleted = $quota_aid->discount_types()->updateExistingPivot($DISCOUNT_TYPE_RETENTION, ['deleted_at' => now()]);
       return response()->json([

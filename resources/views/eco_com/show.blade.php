@@ -171,14 +171,13 @@ El trámite es de tipo <strong>{{$economic_complement->eco_com_reception_type->n
                 </eco-com-legal-guardian>
             </div>
             <div id="tab-eco-com-summited-document" class="tab-pane">
-                <eco-com-step1-requirements-edit :eco-com="{{ $economic_complement }}" :procedure-modalities="{{ $procedure_modalities }}"
-                    :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
-                    :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
-    @include('eco_com.step1_requirements_edit')
+                <eco-com-step1-requirements-edit :affiliate="{{ $affiliate }}" :eco-com="{{ $economic_complement }}" :procedure-modalities="{{ $procedure_modalities }}"
+                    :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}"
+                    :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
                 </eco-com-step1-requirements-edit>
             </div>
             <div id="tab-eco-com-qualification" class="tab-pane">
-            <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}">
+            <eco-com-qualification :eco-com-id="{{ $economic_complement->id }}" :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :role-id="{{ Util::getRol()->id }}" :observations="{{ $observations }}">
                 </eco-com-qualification>
             </div>
             <div id="tab-eco-com-review" class="tab-pane">

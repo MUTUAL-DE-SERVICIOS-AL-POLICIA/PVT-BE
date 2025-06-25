@@ -33,14 +33,18 @@
                                 <td class="text-center bg-grey-darker text-xxs text-white">Nº de Trámite</td>
                                 <td class="text-bold text-base">{!! $code !!}</td>
                             </tr>
+                            @if(isset($area))
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Área</td>
                                 <td class="text-xs">{!! $area !!}</td>
                             </tr>
+                            @endif
+                            @if(isset($user))
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
                                 <td class="text-xs">{!! $user->username !!}</td>
                             </tr>
+                            @endif
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>
                                 <td class="text-xs uppercase">{!! $date !!}</td>
@@ -71,6 +75,9 @@
         <tr>
             <td colspan="3" class="font-bold text-center text-xl uppercase">
                 {{ $title }}
+                @if (isset($subtitletwo))
+                <br><span class="font-bold text-lg">{!! $subtitletwo ?? '' !!}</span>
+                @endif
                 @if (isset($subtitle))
                 <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span>
                 @endif

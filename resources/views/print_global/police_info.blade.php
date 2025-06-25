@@ -3,6 +3,9 @@
     <thead class="bg-grey-darker">
         <tr class="font-medium text-white text-xxs">
             <td class="px-15 py text-center ">
+                NUP
+            </td>
+            <td class="px-15 py text-center ">
                 GRADO
             </td>
             <td class="px-15 py text-center ">
@@ -27,6 +30,7 @@
     </thead>  
     <tbody> 
         <tr class="text-sm">
+            <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->id ?? '' }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $degree->shortened ?? $affiliate->degree->shortened ?? '' }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->first_name }}</td>
             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->second_name }}</td>

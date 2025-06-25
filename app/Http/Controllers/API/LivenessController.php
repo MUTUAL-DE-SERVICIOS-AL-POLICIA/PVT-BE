@@ -72,12 +72,11 @@ class LivenessController extends Controller
 
     public function index(Request $request)
     {
-        $update_device_id = isset($request->device_id) ? $request->device_id : null;
 
         $device = $request->affiliate->affiliate_token->affiliate_device;
         $available_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
 
-        if ($device->enrolled && Storage::exists('liveness/faces/' . $request->affiliate->id) && ($available_procedures->count() > 0) && is_null($update_device_id)) {
+        if ($device->enrolled && Storage::exists('liveness/faces/' . $request->affiliate->id) && ($available_procedures->count() > 0)) {
 
 
             if ($device->eco_com_procedure_id != null) {
@@ -112,29 +111,6 @@ class LivenessController extends Controller
                     'total_actions' => count($device->liveness_actions)
                 ]
             ], 200);
-        } elseif ($device->enrolled && Storage::exists('liveness/faces/' . $request->affiliate->id) && !is_null($update_device_id)) {
-            if (Storage::exists('liveness/faces/' . $request->affiliate->id) && $device->verified) {
-                $device->liveness_actions = $this->random_actions(false);
-                $device->save();
-                $affiliate = $request->affiliate->id;
-                return response()->json([
-                    'error' => false,
-                    'message' => 'Siga la instrucción',
-                    'data' => [
-                        'completed' => false,
-                        'type' => 'liveness',
-                        'dialog' => [
-                            'title' => 'RECONOCIMIENTO FACIAL PARA NUEVO DISPOSITIVO',
-                            'content' => 'Para el acceso a la Aplicación Móvil con un nuevo dispositivo, usted debe realizar el proceso de reconocimiento facial mediante una fotografía de su rostro y el nuevo dispositivo será registrado.',
-                        ],
-                        'action' => $device->liveness_actions[0],
-                        'current_action' => 1,
-                        'total_actions' => 1
-                    ]
-                ], 200);
-            } else {
-                logger("else");
-            }
         } elseif (!$device->enrolled) {
             if (Storage::exists('liveness/faces/' . $request->affiliate->id)) {
                 Storage::deleteDirectory('liveness/faces/' . $request->affiliate->id);
@@ -185,7 +161,6 @@ class LivenessController extends Controller
         $remaining_actions = $liveness_actions->where('successful', false)->count();
         $current_action = $liveness_actions->where('successful', false)->first();
         $current_action_index = $total_actions - $remaining_actions;
-
         if ($request->device_id) {
             $remaining_actions = 1;
         }
@@ -212,7 +187,7 @@ class LivenessController extends Controller
                 'http_errors' => false,
             ]);
             if (env('APP_DEBUG')) logger(json_decode($res->getBody(), true));
-            if ($res->getStatusCode() == 200) $continue = false;
+            if ($res->getStatusCode() != 200) $continue = false;
             if ($continue) {
                 $files = Storage::files($path);
                 if (count(array_filter($files, function ($item) {
@@ -301,11 +276,11 @@ class LivenessController extends Controller
                                                 $affiliate_token = $request->affiliate->affiliate_token;
                                                 $affiliate_token->firebase_token = $request->firebase_token;
                                                 $affiliate_token->update();
-                                                $device->device_id = $new_device_id;
+                                                //$device->device_id = $new_device_id;
                                                 $device->update();
                                                 return response()->json([
                                                     'error' => false,
-                                                    'message' => 'Reconocimiento facila realizado exitosamente',
+                                                    'message' => 'Reconocimiento facial realizado exitosamente',
                                                     'data' => [
                                                         'completed' => true,
                                                         'type' => 'Face recognition',
@@ -324,7 +299,7 @@ class LivenessController extends Controller
                                             $affiliate_token = $request->affiliate->affiliate_token;
                                             $affiliate_token->firebase_token = $request->firebase_token;
                                             $affiliate_token->update();
-                                            $device->device_id = $new_device_id;
+                                            //$device->device_id = $new_device_id;
                                             $device->update();
                                         }
                                         return response()->json([

@@ -1,5 +1,5 @@
 
-<ret-fun-beneficiaries-show :beneficiaries2="{{ $beneficiaries }}" :beneficiaries-backend="{{ $beneficiaries }}" :ret-fun-id="{{ $retirement_fund->id }}" :procedure-modality-id="{{ $retirement_fund->procedure_modality_id }}" :original-beneficiaries-backend="{{ $beneficiaries }}" :cities="{{$cities}}" :kinships="{{$kinships}}" inline-template>
+<ret-fun-beneficiaries-show :beneficiaries2="{{ $beneficiaries }}" :beneficiaries-backend="{{ $beneficiaries }}" :ret-fun-id="{{ $retirement_fund->id }}" :procedure-modality-id="{{ $retirement_fund->procedure_modality_id }}" :original-beneficiaries-backend="{{ $beneficiaries }}" :cities="{{$cities}}" :kinships="{{$kinships}}" :kinship_beneficiaries="{{$kinship_beneficiaries}}" inline-template>
     <div class="col-lg-12">
         <div class="ibox">
     
@@ -7,7 +7,7 @@
                 <div class="text-right">
                     @can('update',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
                     <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar</button>
-                  
+
                     @else
                     <br>
                     @endcan
@@ -20,6 +20,7 @@
                     :beneficiary="beneficiary"
                     :cities="cities"
                     :kinships="kinships"
+                    :kinship_beneficiaries="kinship_beneficiaries"
                     :editable="editing"
                     :index="index"
                     v-on:remove="removeBeneficiary(index)"
@@ -43,8 +44,14 @@
             </div>
         </div>
         
-       
+
     </div>
 </ret-fun-beneficiaries-show>
 <ret-fun-beneficiary-testimony-list :beneficiaries="{{ $beneficiaries }}" :doc-id="{{ $retirement_fund->id }}" type="retFun">
 </ret-fun-beneficiary-testimony-list>
+
+@if(Util::getRol()->id == 11)
+    <ret-fun-judicial-retention 
+        :ret_fun_id="{{ $retirement_fund->id }}"
+    ></ret-fun-judicial-retention>
+@endif

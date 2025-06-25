@@ -189,7 +189,7 @@ class InboxController extends Controller
         break;
       case 4:
         $quota_aids = QuotaAidMortuary::whereIn('id', $doc_ids)->get();
-        $wf_state_from = $quota_aids->first()->wf_state;
+        $wf_state_from = WorkflowState::find($quota_aids->first()->wf_state_current_id);
         foreach ($quota_aids as $quota_aid) {
           $quota_aid->wf_state_current_id = $wf_state_back_id;
           $quota_aid->inbox_state = false;
