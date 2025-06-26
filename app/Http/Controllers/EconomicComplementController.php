@@ -1164,7 +1164,7 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
-        
+        DB::transaction(function () use ($request, $id) {
         $eco_com = EconomicComplement::findOrFail($id);
         // Obtener documentos actuales indexados por procedure_requirement_id
         $existingDocs = $eco_com->submitted_documents->keyBy('procedure_requirement_id');
@@ -1243,6 +1243,7 @@ class EconomicComplementController extends Controller
             }
         }
         return ['deleted' => $toDelete];
+        });
     }
     public function editReviewProcedures(Request $request)
     {
