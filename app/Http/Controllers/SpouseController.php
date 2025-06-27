@@ -47,13 +47,21 @@ class SpouseController extends Controller
         $spouse->identity_card = $request->identity_card;
         $spouse->registration = $request->registration;
         $spouse->last_name = $request->last_name;
-        $spouse->mothers_last_name = $request->mother_last_namel;
+        $spouse->mothers_last_name = $request->mothers_last_name;
         $spouse->first_name = $request->first_name;
         $spouse->second_name = $request->second_name;
         $spouse->surname_husband = $request->surname_husband;
+        $spouse->city_birth_id = $request->city_birth_id;
         $spouse->civil_status = $request->civil_status;
         $spouse->birth_date = Util::verifyBarDate($request->birth_date) ? Util::parseBarDate($request->birth_date) : $request->birth_date;
         $spouse->date_death = $request->date_death;
+        $spouse->reason_death = $request->reason_death;
+        $spouse->death_certificate_number = $request->death_certificate_number;
+        $spouse->official = $request->official;
+        $spouse->book = $request->book;
+        $spouse->departure = $request->departure;
+        $spouse->marriage_date = Util::verifyBarDate($request->marriage_date) ? Util::parseBarDate($request->marriage_date) : $request->marriage_date;
+
         $spouse->save();
     }
 

@@ -285,6 +285,7 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                     const response = await requestMethod(uri, this.form);
                     if (response.status === 200) {
                         flash("Cónyuge actualizado exitosamente", "success");
+                        this.backup.editingButton = true;
                     } else {
                         flash("Error al actualizar el cónyuge", "error");
                     }
@@ -293,7 +294,7 @@ import { dateInputMaskAll, flashErrors } from "../../helper.js";
                 } catch (error) {
                     this.show_spinner = false;
                     this.editing = true;
-                    flashErrors('Error al actualizar el afiliado', error.response);
+                    flashErrors('Error al actualizar la cónyuge', error.response);
                 }
                 this.restoreButtons();
             }
