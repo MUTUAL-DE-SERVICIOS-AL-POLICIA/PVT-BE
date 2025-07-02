@@ -81,21 +81,8 @@ th.ellipsis-text {
                 </a>
             @endif
         @endcan
-        @can('create', new Muserpol\Models\Voucher)
-            @foreach ($voucher_types as $voucher_type)
-            <button class="btn btn-info btn-sm  dim" type="button" href="#tab-charge{{$voucher_type->id}}" data-toggle="tab" data-placement="top" title="{{ $voucher_type->name }}"><i class="fa fa-money"></i> {{ $voucher_type->name }}</button>
-            @endforeach            
-        @endcan
+        
 
-        {{-- @if('create', new Muserpol\Models\ChargeType) --}}
-        {{-- @can('view',new Muserpol\Models\Contribution\Contribution)
-        <a href="{{route('show_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Ver Aportes"><i class="fa fa-dollar"> </i> APORTES ACTIVO </button>
-        </a>
-        <a href="{{route('show_aid_contribution', $affiliate->id)}}" >
-            <button class="btn btn-info btn-sm  dim" type="button" data-toggle="tooltip" data-placement="top" title="Aportes Auxilio Mortuorio"><i class="fa fa-dollar"> </i> APORTES PASIVO </button>
-        </a>
-        @endcan --}}
         <span data-toggle="modal" data-target="#ModalRecord">
             <button type="button" class="btn btn-info btn-sm dim" data-toggle="tooltip" data-placement="top" title="Historial del Afiliado">
                 <i class="fa fa-history" style="font-size:15px;"></i> HISTORIAL
@@ -393,38 +380,6 @@ th.ellipsis-text {
                         {{-- @endcan --}}
                     </div>
                     @endif
-                    {{-- <div id="tab-aid-mortuory" class="tab-pane"> //auxilio mortuorio
-
-
-
-                    </div> --}}
-                    @can('create', new Muserpol\Models\Voucher)
-                        @foreach ($voucher_types as $voucher_type)
-                            <div id="tab-charge{{$voucher_type->id}}" class="tab-pane">
-                                <generate-charge
-                                    :payment_types = "{{ $payment_types }}"
-                                    :affiliate_id = "{{ $affiliate->id }}"
-                                    :vouchers = "{{ $vouchers }}"
-                                    :voucher_type = "{{ $voucher_type  }}"
-                                ></generate-charge>
-                            </div>
-                        @endforeach                        
-                    @endcan
-                    {{-- <div class="row">
-                        <div class="col-lg-12">
-                            <div class="ibox">
-                                <div class="ibox-title">                    
-                                        <direct-contribution-payment
-                                            :contribution_process="{{ $contribution_process }}"
-                                            :voucher = "{{ $voucher }}"
-                                            :payment_types = "{{ $payment_types }}"             
-                                        ></direct-contribution-payment>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-                    
-
                     <div id="tab-observations" class="tab-pane">
                         <affiliate-observations :affiliate="{{ $affiliate }}" :permissions="{{ $permissions }}" :observation-types="{{ $observation_types }}"></affiliate-observations>
                     </div>
