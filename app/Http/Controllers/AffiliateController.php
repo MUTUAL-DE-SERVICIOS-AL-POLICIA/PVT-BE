@@ -352,7 +352,7 @@ class AffiliateController extends Controller
         {
             $is_editable = "0";
         } */
-        $quota_aid = $affiliate->quota_aid_mortuaries->last();
+        $quota_aid = $affiliate->quota_aid_mortuaries()->with('workflow:id,name')->latest()->first();
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
                 
         /**
