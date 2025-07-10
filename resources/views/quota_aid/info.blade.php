@@ -3,7 +3,7 @@
         <div class="ibox-content">
             <div class="row">
                 <div  class="pull-left col-md-6">
-                    <legend>Cuota Mortuoria y Auxilio Mortuorio</legend>
+                    <legend>@{{form.workflow.name}}</legend>
                 </div>
                 @if(Session::get('rol_id') == 43 || Session::get('rol_id') == 37)
                 <div class="text-right col-md-6">
