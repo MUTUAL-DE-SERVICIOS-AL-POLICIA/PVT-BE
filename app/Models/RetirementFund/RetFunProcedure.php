@@ -3,6 +3,7 @@
 namespace Muserpol\Models\RetirementFund;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 class RetFunProcedure extends Model
 {
     public function retirement_funds()
@@ -17,5 +18,12 @@ class RetFunProcedure extends Model
             return $c;
         }
         return false;
+    }
+
+    public static function active_procedure()
+    {
+        return self::where('start_date', '<=', Carbon::now())
+                   ->orderBy('start_date', 'desc')
+                   ->first();
     }
 }

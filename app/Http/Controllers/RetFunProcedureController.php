@@ -4,6 +4,7 @@ namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
+use Illuminate\Support\Facades\DB;
 
 class RetFunProcedureController extends Controller
 {
@@ -35,7 +36,22 @@ class RetFunProcedureController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'start_date' => 'required|date|after_or_equal:today',
+            'limit_average' => 'required|integer|min:0',
+        ]);
+
+        DB::transaction(function () use ($request) {
+            $actualProcedure = RetFunProcedure::active_procedure();
+            
+            // Todos los datos se duplican menos start_date
+            $procedure = $actualProcedure->replicate();
+            $procedure->start_date = $request->start_date;
+            $procedure->limit_average = $request->limit_average;
+            $procedure->save();
+        });
+
+        return redirect()->back()->with('success', 'Guardado correctamente.');
     }
 
     /**
@@ -69,18 +85,18 @@ class RetFunProcedureController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $ret_fun_procedure = RetFunProcedure::where('is_enabled','true')->first();
-        $ret_fun_procedure->is_enabled = false;
-        $ret_fun_procedure->save();
-        
-        $procedure = new RetFunProcedure();
-        $procedure->annual_yield = $request->annual_yield;
-        $procedure->administrative_expenses = $request->administrative_expenses;
-        $procedure->contributions_number = $request->contributions_number;
-        $procedure->contribution_regulate_days = $request->contribution_regulate_days;
-        $procedure->is_enabled = true;
-        $procedure->save();
-        return json_encode($procedure);
+        $request->validate([
+            'start_date' => 'required|date|after_or_equal:today',
+            'limit_average' => 'required|integer|min:0',
+        ]);
+
+        DB::transaction(function () use ($id, $request) {
+            $procedure = RetFunProcedure::findOrFail($id);
+            $procedure->start_date = $request->start_date;
+            $procedure->save();
+        });
+
+        return redirect()->back()->with('success', 'Editado correctamente.');
     }
 
     /**
