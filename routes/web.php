@@ -30,7 +30,6 @@ use Muserpol\Exports\EcoComBankExport;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 
 Route::get('/logout', 'Auth\LoginController@logout');
-Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 
 //afiliates
@@ -89,8 +88,6 @@ Route::group(['middleware' => ['auth']], function () {
 
     //retirement fund
     //RetirementFundRequirements
-    //Route::resource('ret_fun', 'RetirementFundRequirementController@retFun');
-    Route::get('affiliate/{affiliate}/ret_fun', 'RetirementFundRequirementController@retFun');
     // Route::get('/home', 'HomeController@index')->name('home');
     Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
     Route::get('ret_fun/reports', 'RetFunReportController@index');
@@ -105,7 +102,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('ret_fun/{ret_fun_id}/save_total_ret_fun_availability', 'RetirementFundController@saveTotalRetFunAvailability')->name('save_total_ret_fun_availability');
     Route::get('get_data_certification/{ret_fun_id}', 'RetirementFundController@getDataQualificationCertification')->name('get_data_certification');
     Route::get('get_data_availability/{ret_fun_id}', 'RetirementFundController@getDataQualificationAvailability')->name('get_data_availability');
-    Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
     Route::resource('ret_fun_observation', 'RetirementFundObservationController');
     Route::post('retFuneditObservation', 'RetirementFundObservationController@editObservation')->name('retFuneditObservation');
     Route::post('retFundeleteObservation', 'RetirementFundObservationController@destroy')->name('retFundeleteObservation');
@@ -346,72 +342,6 @@ Route::group(['middleware' => ['auth']], function () {
         }
       }
       return $code[0];
-    });
-    Route::get('legal_opinion', function (Request $request) {
-      $ret_fun = RetirementFund::find(4);
-      $affiliate = $ret_fun->affiliate;
-      $args = array(
-        'ret_fun' => $ret_fun,
-        'affiliate' => $affiliate,
-        'has_poder' => true,
-        'poder_number' => '151/2017',
-        'poder_date' => Util::getStringDate('2014-11-06'),
-        'poder_full_name' => "uihsakdas",
-        'poder_ci_ext' => "65284 UI",
-        'file_code' => "15/2018",
-        'file_date' => Util::getStringDate('2018-10-10'),
-        'has_file' => false,
-        'admin_fin_cite' => '5151/21212',
-        'admin_fin_date' => Util::getStringDate('2018-1-10'),
-        'has_admin_file' => true,
-        'admin_fin_amount' => '5,152.58',
-        'legal_code' => '125/505',
-        'legal_date' => Util::getStringDate('2018-1-10'),
-        'aportes_code' => '5121/1055',
-        'aportes_date' => Util::getStringDate('2018-1-10'),
-        'number_contributions' => RetFunProcedure::current()->number_contributions,
-        'availability_code' => '215/5018',
-        'availability_date' => Util::getStringDate('2018-1-10'),
-        'availability_number_contributions' => 15,
-        'qualification_code' => '5121/5018',
-        'qualification_date' => Util::getStringDate('2018-1-10'),
-        'qualification_years' => 34,
-        'qualification_months' => 2,
-        'qualification_amount' => '515.45',
-        'reserva_date' => Util::getStringDate('2018-1-10'),
-        'annual_yield' => RetFunProcedure::current()->annual_yield,
-        'reserva_amount' => 84136.45,
-      );
-      return \PDF::loadView('ret_fun.legal_opinion.ret_fun_jubilacion', $args)
-        ->setPaper('letter')
-        ->setOption('encoding', 'utf-8')
-        ->stream("dictamenLegal.pdf");
-
-
-      foreach (RetFunTemplate::all() as $value) {
-        $generated = \Blade::compileString($value->template);
-
-        ob_start() and extract($args, EXTR_SKIP);
-        try {
-          eval('?>' . $generated);
-        } catch (\Exception $e) {
-          ob_get_clean();
-          throw $e;
-        }
-        $content = ob_get_clean();
-
-        $view = View::make('ret_fun.legal_opinion.header', ['title' => 'Arjun']);
-        $header = $view->render();
-        $view = View::make('ret_fun.legal_opinion.footer', ['title' => 'Arjun']);
-        $footer = $view->render();
-        $content = $header . ' ' . $content . ' ' . $footer;
-
-        $pdf = \App::make('snappy.pdf.wrapper');
-        $pdf->loadHTML($content);
-        return $pdf->setPaper('letter')
-          ->setOption('encoding', 'utf-8')
-          ->stream($value->id . ".pdf");
-      }
     });
     Route::get('print/pre-qualification', function () {
       $re = RetirementFund::where('wf_state_current_id', 23)->get();
