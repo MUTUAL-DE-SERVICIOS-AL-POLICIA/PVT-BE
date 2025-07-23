@@ -822,5 +822,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('review_show/{eco_com_id}', 'EcoComReviewProcedureController@show')->name('show');
     Route::post('eco_com/review_edit', 'EconomicComplementController@editReviewProcedures')->name('eco_com_review_edit');
     Route::get('eco_com/{eco_com_id}/print/revision_certificate', 'EcoComCertificationController@printRevisionCertificate')->name('eco_com_print_revision_certificate');
+    Route::post('eco_com_replicate', 'EconomicComplementReplicationController@prepareReplication')->name('eco_com_replicate');
+    Route::get('eco_com_replicate/status', 'EconomicComplementReplicationController@canCreateReplication')->name('eco_com_replicate.status');
   });
 });
