@@ -558,7 +558,7 @@ class Util
   }
   public static function getRetFunCurrentProcedure()
   {
-    $procedure_active = RetFunProcedure::where('is_enabled', 'true')->first();
+    $procedure_active = RetFunProcedure::active_procedure();
     if (!$procedure_active) {
       abort(500);
     }

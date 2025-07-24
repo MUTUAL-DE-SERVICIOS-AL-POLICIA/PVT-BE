@@ -214,7 +214,7 @@ class RetirementFundController extends Controller
 
         $requirements = ProcedureRequirement::select('id')->get();
 
-        $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled', true)->select('id')->first();
+        $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::active_procedure();
 
 
         $validator = Validator::make($request->all(), [
@@ -1510,7 +1510,7 @@ class RetirementFundController extends Controller
         // $this->authorize('qualify', $retirement_fund);
         $affiliate = $retirement_fund->affiliate;
 
-        $current_procedure = RetFunProcedure::where('is_enabled', '=', true)->first();
+        $current_procedure = RetFunProcedure::active_procedure();
         if (!$current_procedure) {
             return "error: Verifique si existen procedures activos";
         }

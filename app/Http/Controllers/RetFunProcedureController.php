@@ -56,7 +56,7 @@ class RetFunProcedureController extends Controller
         DB::transaction(function () use ($request) {
             $actualProcedure = RetFunProcedure::active_procedure();
 
-            // Todos los datos se duplican menos start_date
+            // Todos los datos se duplican menos start_date y limit_average
             $procedure = $actualProcedure->replicate();
             $procedure->start_date = $request->start_date;
             $procedure->limit_average = $request->limit_average;

@@ -34,18 +34,5 @@ export default {
             required: true
         }
     },
-    data() {
-        return {
-            // Define any data properties needed for this component
-        }
-    },
-    mounted() {
-        console.log('QualificationParameters component mounted');
-        //console.log('Retirement Fund Procedures:', this.procedures);
-
-    },
-    methods: {
-        // Define any methods needed for this component
-    }
 }
 </script>
