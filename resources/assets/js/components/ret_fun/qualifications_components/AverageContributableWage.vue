@@ -97,6 +97,7 @@ export default {
     },
     mounted() {
         console.log('AverageContributableWage component mounted');
+        // Se registra una validación personalizada para que acepte números con coma o punto como separador decimal
         this.$validator.extend('numeric_locale', {
             getMessage: field => `El campo ${field} debe ser un número válido.`,
             validate: value => /^-?\d+([.,]\d+)?$/.test(value)

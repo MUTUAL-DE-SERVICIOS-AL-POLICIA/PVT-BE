@@ -50,7 +50,7 @@ class RetFunProcedureController extends Controller
                     }
                 },
             ],
-            'limit_average' => 'required|integer|min:1',
+            'limit_average' => 'required|numeric|min:1',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -105,15 +105,14 @@ class RetFunProcedureController extends Controller
                 'date',
                 'after_or_equal:today',
                 function ($attribute, $value, $fail) use ($procedure) {
-                    $newYear = \Carbon\Carbon::parse($value)->year;
-                    $originalYear = \Carbon\Carbon::parse($procedure->start_date)->year;
-
+                    $newYear = Carbon::parse($value)->year;
+                    $originalYear = Carbon::parse($procedure->start_date)->year;
                     if ($newYear !== $originalYear) {
                         $fail('No se puede cambiar el año del registro. Debe permanecer en el año ' . $originalYear . '.');
                     }
                 },
             ],
-            'limit_average' => 'required|integer|min:1',
+            'limit_average' => 'required|numeric|min:1',
         ]);
 
         DB::transaction(function () use ($procedure, $request) {
