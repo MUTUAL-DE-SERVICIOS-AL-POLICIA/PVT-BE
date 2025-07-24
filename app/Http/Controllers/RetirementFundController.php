@@ -774,6 +774,24 @@ class RetirementFundController extends Controller
         //
         //summary individuals account
         $ret_fun_index = $retirement_fund->procedureIndex();
+        if ($ret_fun_index == 0) {
+            $fields = [
+                'date_entry' => 'El campo "Fecha de Ingreso a la Institucional Policial" en Información Policial no puede estar vacío',
+                'date_last_contribution' => 'El campo "Último periodo según listas de revista" en Información Policial no puede estar vacío',
+            ];
+        } else if ($ret_fun_index == 1) {
+            $fields = [
+                'date_entry_reinstatement' => 'El campo "Fecha de Ingreso a la Institucional Policial (reincorporación)" en Información Policial no puede estar vacío',
+                'date_last_contribution_reinstatement' => 'El campo "Último periodo según listas de revista (reincorporación)" en Información Policial no puede estar vacío',
+            ];
+        }
+
+        foreach ($fields as $field => $message) {
+            if (!$affiliate->$field) {
+                Session::flash('message', $message);
+                return redirect('affiliate/' . $affiliate->id);
+            }
+        }
         $dates_global = $affiliate->getDatesGlobal($ret_fun_index == 1);
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($dates_global);
