@@ -967,6 +967,15 @@ class RetirementFundController extends Controller
         }
         return $ret_fun;
     }
+
+    public function qualificationParameters() {
+        $procedures = RetFunProcedure::orderby('id', 'desc')->get();
+        $data = [
+            'procedures' => $procedures,
+        ];
+        return view('ret_fun.qualification_parameters', $data);
+    }
+
     public function getAllRetFun(DataTables $datatables)
     {
         $retirement_funds = RetirementFund::with([

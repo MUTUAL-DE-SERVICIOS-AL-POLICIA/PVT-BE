@@ -135,6 +135,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('ret_fun/{ret_fun}/modify_judicial_retention', 'RetirementFundController@modifyJudicialRetention');
     Route::delete('ret_fun/{ret_fun}/cancel_judicial_retention', 'RetirementFundController@cancelJudicialRetention');
 
+    // Retirement Fund Procedures
+    Route::get('ret_fun_qualification_parameters', 'RetirementFundController@qualificationParameters')->name('ret_fun_qualification_parameters');
+    Route::resource('ret_fun/qualification_parameters', 'RetirementFundObservationController');
     //Quota Aid Certification
     Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
     Route::get('quota_aid/{affiliate}/print/quota_aid_voucher/{voucher}', 'QuotaAidCertificationController@printVoucherQuoteAid')->name('quota_aid_print_voucher');

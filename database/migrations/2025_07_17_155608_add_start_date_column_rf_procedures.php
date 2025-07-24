@@ -15,6 +15,7 @@ class AddStartDateColumnRfProcedures extends Migration
     {
         Schema::table('ret_fun_procedures', function (Blueprint $table) {
             $table->date('start_date')->default(now());
+            $table->integer('max_contributions_limit')->default(360);
             $table->dropColumn('is_enabled');
         });
     }
@@ -29,6 +30,7 @@ class AddStartDateColumnRfProcedures extends Migration
         Schema::table('ret_fun_procedures', function (Blueprint $table) {
             $table->boolean('is_enabled')->default(true);
             $table->dropColumn('start_date');
+            $table->dropColumn('max_contributions_limit');
         });
     }
 }

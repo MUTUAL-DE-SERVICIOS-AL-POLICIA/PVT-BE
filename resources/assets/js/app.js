@@ -314,6 +314,8 @@ Vue.component('spouse-show', require('./components/spouse/ShowSpouse.vue'));
 //retirement Fund
 
 Vue.component('ret-fun-index', require('./components/ret_fun/Index.vue'));
+Vue.component('ret-fun-qualification-parameters', require('./components/ret_fun/QualificationParameters.vue'));
+Vue.component('ret-fun-average-contributable-wage', require('./components/ret_fun/qualifications_components/AverageContributableWage.vue'));
 Vue.component('ret-fun-form', require('./components/ret_fun/Form.vue'));
 Vue.component('ret-fun-create-info', require('./components/ret_fun/CreateInfo.vue'));
 Vue.component('ret-fun-step1-requirements', require('./components/ret_fun/Step1Requirements.vue'));
