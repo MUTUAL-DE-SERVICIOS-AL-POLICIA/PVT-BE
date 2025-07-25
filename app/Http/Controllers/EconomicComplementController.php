@@ -1600,13 +1600,18 @@ class EconomicComplementController extends Controller
 
         if($discount_type_id == 6) {//Amortización por Reposición de Fondos
             $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
-            if( $last_movement ) {
-                if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+            if( $last_movement == null ) {
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Error',
+                    'errors' => ['No se puede realizar la amortización por Reposición de Fondos, porque no existe una deuda registrada.'],
+                ], 422);
+            }
+            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
                     return response()->json([
                         'msg' => 'Error',
                         'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
                     ], 422);
-                }
             }
         }
         if ($eco_com->discount_types->contains($discount_type->id)) {
