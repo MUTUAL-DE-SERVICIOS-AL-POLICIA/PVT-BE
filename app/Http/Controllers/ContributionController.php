@@ -1057,7 +1057,7 @@ class ContributionController extends Controller
             $c->contribution_type_id = Util::classificationContribution($c->contribution_type_id, $c->breakdown_id, $c->total);
         }
         
-        $contribution_types = ContributionType::select('id', 'name')->orderBy('id')->get();
+        $contribution_types = ContributionType::select('id', 'name', 'operator')->orderBy('id')->get();
        
         if($start_date && $end_date){
             $data =   array('contributions' => $contributions,

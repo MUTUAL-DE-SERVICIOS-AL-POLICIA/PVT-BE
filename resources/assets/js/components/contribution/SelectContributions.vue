@@ -16,6 +16,17 @@
 								Aportes
 							</h3>
 						</div>
+						<div class="col-md-3">
+							<div>
+								<div>
+									<span>Limite de Aportes Máximo</span>
+									<small style="float: right;">{{positiveContributions}}/360</small>
+								</div>
+								<div class="progress progress-small">
+									<div :style="{ width: percentagePositiveContributions + '%' }" class="progress-bar"></div>
+								</div>
+							</div>
+						</div>
 						<div class="pull-right" style="padding-right:10px">
 							<div class="form-inline">
 								<div class="form-group" :class="{ 'has-error': errors.has('modal_contribution_type_id') }">
@@ -381,6 +392,24 @@ export default {
 		}
 		return Object.keys(this.$validator.errors.collect()).length > 0;
 	},
+	hashTypes() {
+		return this.types.reduce((acc, type) => {
+			acc[type.id] = type;
+			return acc;
+		}, {});
+	},
+	positiveContributions() {
+		let total = 0;
+		this.contributions.forEach(item => {
+			if (this.hashTypes[item.contribution_type_id].operator === "+") {
+				total++;
+			}
+		});
+	  return total;
+	},
+	percentagePositiveContributions() {
+		return (this.positiveContributions / 360) * 100;
+	}
   }
 };
 </script>
