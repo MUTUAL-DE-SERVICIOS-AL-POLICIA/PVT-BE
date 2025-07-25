@@ -51,6 +51,7 @@ class RetFunProcedureController extends Controller
                 },
             ],
             'limit_average' => 'required|numeric|min:1',
+            'max_contributions_limit' => 'required|numeric|min:1',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -60,6 +61,7 @@ class RetFunProcedureController extends Controller
             $procedure = $actualProcedure->replicate();
             $procedure->start_date = $request->start_date;
             $procedure->limit_average = $request->limit_average;
+            $procedure->max_contributions_limit = $request->max_contributions_limit;
             $procedure->save();
         });
 
@@ -113,11 +115,13 @@ class RetFunProcedureController extends Controller
                 },
             ],
             'limit_average' => 'required|numeric|min:1',
+            'max_contributions_limit' => 'required|numeric|min:1',
         ]);
 
         DB::transaction(function () use ($procedure, $request) {
             $procedure->start_date = $request->start_date;
             $procedure->limit_average = $request->limit_average;
+            $procedure->max_contributions_limit = $request->max_contributions_limit;
             $procedure->save();
         });
 
