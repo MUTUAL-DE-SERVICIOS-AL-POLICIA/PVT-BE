@@ -3,11 +3,13 @@
         <div class="ibox-content">
             <div class="row">
                 <div class="pull-left">
-                    <legend> Información Esposa</legend>
+                    <legend> Información Cónyuge</legend>
                 </div>
                 @can('update',$spouse)
                 <div class="text-right">
-                    <button data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="toggle_editing"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'"></i> Editar </button>
+                  {{-- <p>@{{ textAction }}</p> --}}
+                  <button v-if = 'createButton' data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="create()"  ><i class="fa" :class="editing ?'fa-edit':'fa-plus'" v-cloak v-bind:disabled= "false"></i> Crear Cónyuge</button>
+                  <button v-if="editingButton" data-animation="flip" class="btn btn-primary" :class="editing ? 'active': ''" @click="editingForm()"><i class="fa" :class="editing ?'fa-edit':'fa-pencil'" ></i> Editar</button>
                 </div>
                 @endcan
             </div>
@@ -15,11 +17,19 @@
                 <div class="col-md-6">
                     <div class="row m-b-md" :class="{ 'has-error': errors.has('identity_card') && editing }">
                         <div class="col-md-4"><label class="control-label">Cédula de identidad:</label></div>
-                        <div class="col-md-8"><input name="identity_card" type="text" v-model="form.identity_card" class="form-control" :disabled="!editing" v-validate.initial="'required'">
+                        <div class="col-md-8">
+                          <div class="input-group">
+                            <input name="identity_card" type="text" v-model="form.identity_card" class="form-control" :disabled="!editingIdentityCard" v-validate.initial="'required'">
+                            <span class="input-group-btn">
+                              <button class="btn btn-default" type="button" @click="getDataSpouse" :disabled="!editingIdentityCard">
+                                <i class="fa" :class="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+                              </button>
+                            </span>
                             <div v-show="errors.has('identity_card') && editing">
-                                <i class="fa fa-warning text-danger"></i>
-                                <span class="text-danger">@{{ errors.first('identity_card') }}</span>
+                                  <i class="fa fa-warning text-danger"></i>
+                                  <span class="text-danger">@{{ errors.first('identity_card') }}</span>
                             </div>
+                          </div>
                         </div>
                     </div>
                     <div class="row m-b-md" :class="{ 'has-error': errors.has('first_name') && editing }">
@@ -202,10 +212,10 @@
                 </div>
                 <br>
               </div>
-            <div class="row" v-if="editing">
+            <div class="row">
                 <div class="text-center">
-                    <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
-                    <button class="btn btn-primary" type="button" @click="update" :disabled="validAll"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
+                    <button class="btn btn-danger" type="button" @click="cancel_editing_ci()" v-if="cancelButton"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>
+                    <button class="btn btn-primary" type="button" @click="update" :disabled="validAll" v-if="editing"><i class="fa fa-check-circle"></i>&nbsp;Guardar</button>
                 </div>
             </div>
         </div>

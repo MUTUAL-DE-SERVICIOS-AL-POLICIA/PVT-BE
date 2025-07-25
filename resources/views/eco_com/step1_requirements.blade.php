@@ -76,8 +76,8 @@
                     <div class="col-md-2 ">
                         <div class="vote-icon">
                             <span style="color:#3c3c3c"><i class="fa " :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i></span>
-                            <div style="opacity:0">
-                                <input type="checkbox" v-model="rq.status" value="checked" :name="'document'+rq.id" class="largerCheckbox">
+                            <div style="display: none;">
+                                <input type="checkbox" v-model="rq.status" value="checked" :name="'document'+rq.id">
                             </div>
                         </div>
                     </div>
