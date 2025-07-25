@@ -233,6 +233,9 @@ export default {
     this.setPensionEntity();
     this.setModality();
     this.setCity();
+    if (this.modality_id) {
+        await this.getRequirements();
+    }
   },
   methods: {
     async onChooseModality() {
