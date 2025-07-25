@@ -67,7 +67,9 @@
                 @else 
                     <td class="w-60 text-left px-10 py-3 uppercase">TOTAL SEMESTRE (DIFERENCIA SE MULTIPLICA POR {{ $eco_com->months_of_payment }} MESES)</td>
                 @endif
-                <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->getTotalSemester())}} </td>
+                <td class="w-15 text-right uppercase px-5 py-3"> 
+                    {{ Util::formatMoney($eco_com->getTotalSemester((int) $eco_com->months_of_payment))}} 
+                </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
             <tr class="text-sm">
