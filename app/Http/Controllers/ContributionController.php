@@ -36,6 +36,8 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionTypeQuotaAid;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
+use Muserpol\Models\RetirementFund\RetFunProcedure;
+
 class ContributionController extends Controller
 {
     /**
@@ -889,6 +891,8 @@ class ContributionController extends Controller
     public function selectContributions($ret_fun_id)
     {
         $ret_fun = RetirementFund::find($ret_fun_id);
+        $contribution_types = ContributionType::select('id', 'name', 'operator')->orderBy('id')->get();
+        $contributionsLimit = RetFunProcedure::where('id', $ret_fun->ret_fun_procedure_id)->value('contributions_limit');
         $affiliate = $ret_fun->affiliate;
 
         $date_entry = Util::parseMonthYearDate($affiliate->date_entry);
@@ -1056,15 +1060,15 @@ class ContributionController extends Controller
         foreach ($contributions as $c) {
             $c->contribution_type_id = Util::classificationContribution($c->contribution_type_id, $c->breakdown_id, $c->total);
         }
-        
-        $contribution_types = ContributionType::select('id', 'name', 'operator')->orderBy('id')->get();
-       
+               
         if($start_date && $end_date){
             $data =   array('contributions' => $contributions,
                             'contribution_types'=> $contribution_types,
                             'date_entry' => $start_date,
                             'date_last_contribution' => $end_date,
-                            'ret_fun'=>$ret_fun);
+                            'ret_fun'=>$ret_fun,
+                            'contributionsLimit' => $contributionsLimit
+                    );
             return view('contribution.select',$data);
         }
         else{

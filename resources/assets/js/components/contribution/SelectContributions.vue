@@ -16,11 +16,11 @@
 								Aportes
 							</h3>
 						</div>
-						<div class="col-md-3">
+						<div class="col-md-3" v-if="contributionsLimit > 0">
 							<div>
 								<div>
 									<span>Limite de Aportes Máximo</span>
-									<small style="float: right;">{{positiveContributions}}/360</small>
+									<small style="float: right;">{{positiveContributions}}/{{contributionsLimit}}</small>
 								</div>
 								<div class="progress progress-small">
 									<div :style="{ width: percentagePositiveContributions + '%' }" class="progress-bar"></div>
@@ -128,7 +128,8 @@ export default {
 	"types",
 	"retfunid",
 	"startDate",
-	"endDate"
+	"endDate",
+	"contributionsLimit"
   ],
   data() {
 	return {
@@ -139,7 +140,6 @@ export default {
 	  row_higth: 0,
 	  loadingButton: false,
 	  showLoading: true,
-	  contributions_limit: 360,
 	};
   },
   created: function() {
@@ -189,7 +189,14 @@ export default {
 	  $("#contenedor").scrollTop(index * 51);
 	},
 	save() {
-	  if (!this.count1(null)) {
+		if (this.count1(null)) {
+			flash("verifique que no existan aportes sin clasificar", "warning");
+			return;
+		}
+		if(this.positiveContributions > this.contributionsLimit) {
+			flash("Los aportes positivos no pueden superar el límite máximo", "warning");
+			return;
+		}
 		this.loadingButton = true;
 		this.showLoading = true;
 		var data = {
@@ -214,9 +221,6 @@ export default {
 			this.loadingButton = false;
 			flash("Error: " + resp.message, "error");
 		  });
-	  } else {
-		flash("verifique que no existan aportes sin clasificar", "warning");
-	  }
 	},
 	getColor1(contribution_type_id) {
 	  let color;
@@ -296,12 +300,12 @@ export default {
 				return aporte_date >= fi && aporte_date <= ff;
 			});
 		
-			if (this.hashTypes[c_type_id].operator === "+") {
+			if (this.hashTypes[c_type_id].operator === "+" && this.contributionsLimit > 0) {
 				let newPlusType = lote.filter(item => this.hashTypes[item.contribution_type_id].operator !== "+");
 				console.log(this.positiveContributions, newPlusType.length);
 				
-				if (this.positiveContributions + newPlusType.length > this.contributions_limit) {
-					flash(`Error: el total de aportes con clasificación positiva será ${this.positiveContributions + newPlusType.length} superando el limite de ${this.contributions_limit} meses`, "error");
+				if (this.positiveContributions + newPlusType.length > this.contributionsLimit) {
+					flash(`Error: el total de aportes con clasificación positiva será ${this.positiveContributions + newPlusType.length} superando el limite de ${this.contributionsLimit} meses`, "error");
 					return;
 				}
 			}
@@ -394,7 +398,7 @@ export default {
 	  this.$store.commit("retFunForm/resetContributionTypes", []);
 	},
 	disablePositiveTypeAtLimit(ct) {
-		if(this.positiveContributions < this.contributions_limit) {
+		if(this.positiveContributions < this.contributionsLimit || this.contributionsLimit <= 0) {
 			return false;
 		}
 
@@ -417,14 +421,14 @@ export default {
 	positiveContributions() {
 		let total = 0;
 		this.contributions.forEach(item => {
-			if (this.hashTypes[item.contribution_type_id].operator === "+") {
+			if (item.contribution_type_id && this.hashTypes[item.contribution_type_id].operator === "+") {
 				total++;
 			}
 		});
 	  return total;
 	},
 	percentagePositiveContributions() {
-		return (this.positiveContributions / this.contributions_limit) * 100;
+		return (this.positiveContributions / this.contributionsLimit) * 100;
 	},
   }
 };
