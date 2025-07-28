@@ -2,6 +2,7 @@
 
 namespace Muserpol\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Log;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
@@ -104,7 +105,17 @@ class EcoComProcedureController extends Controller
                 'errors' => ['Ya existe.'],
             ], 422);
         }
+        $last_procedure = EcoComProcedure::orderByDesc('created_at')->first();
 
+        $new_start_date = Carbon::parse(Util::parseBarDate($request->normal_start_date));
+        $last_end_date = Carbon::parse(Util::parseBarDate($last_procedure->additional_end_date));
+
+        if ( $new_start_date->lte($last_end_date)) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['La fecha de inicio del procedimiento no puede ser anterior a la fecha de fin del último procedimiento.'],
+            ], 422);
+        }
         $eco_com_regulation = EcoComRegulation::where('is_enable', '=', true)->orderBy('created_at','desc')->first();
         if(!$eco_com_regulation){
             return response()->json([
