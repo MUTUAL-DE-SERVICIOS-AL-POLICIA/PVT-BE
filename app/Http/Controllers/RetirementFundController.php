@@ -777,12 +777,12 @@ class RetirementFundController extends Controller
         if ($ret_fun_index == 0) {
             $fields = [
                 'date_entry' => 'El campo "Fecha de Ingreso a la Institucional Policial" en Información Policial no puede estar vacío',
-                'date_last_contribution' => 'El campo "Último periodo según listas de revista" en Información Policial no puede estar vacío',
+                'date_derelict' => 'El campo "Fecha de Desvinculación" en Información Policial no puede estar vacío',
             ];
         } else if ($ret_fun_index == 1) {
             $fields = [
                 'date_entry_reinstatement' => 'El campo "Fecha de Ingreso a la Institucional Policial (reincorporación)" en Información Policial no puede estar vacío',
-                'date_last_contribution_reinstatement' => 'El campo "Último periodo según listas de revista (reincorporación)" en Información Policial no puede estar vacío',
+                'date_derelict_reinstatement' => 'El campo "Fecha de Desvinculación (reincorporación)" en Información Policial no puede estar vacío',
             ];
         }
 
