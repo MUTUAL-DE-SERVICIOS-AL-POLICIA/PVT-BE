@@ -31,9 +31,9 @@
 							<div class="form-inline">
 								<div class="form-group" :class="{ 'has-error': errors.has('modal_contribution_type_id') }">
 									<label class="label-control">Tipo de contribución</label>
-									<select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'" @change="resetPrintButton()">
+									<select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'" @change="resetPrintButton()" >
 										<option :value="null"></option>
-										<option v-for="item in types" :value="item.id" :key="item.id"> {{item.name}}</option>
+										<option v-for="item in types" :value="item.id" :key="item.id" :disabled="disablePositiveTypeAtLimit(item)"> {{item.name}}</option>
 									</select>
 								</div>
 								<div class="form-group">
@@ -79,7 +79,7 @@
 										<td class="col-md-4">
 											<select class="form-control" v-model="contribution.contribution_type_id" @change="resetPrintButton()">
 												<option :value="null"></option>
-												<option v-for="(ct, indexCt) in  types" :key="`ct-${indexCt}`" :value="ct.id">{{ct.name}}</option>
+												<option v-for="(ct, indexCt) in  types" :key="`ct-${indexCt}`" :value="ct.id" :disabled="disablePositiveTypeAtLimit(ct)">{{ct.name}}</option>
 											</select>
 										</td>
 									</tr>
@@ -139,7 +139,7 @@ export default {
 	  row_higth: 0,
 	  loadingButton: false,
 	  showLoading: true,
-	  contribution_types: [],
+	  contributions_limit: 360,
 	};
   },
   created: function() {
@@ -300,8 +300,8 @@ export default {
 				let newPlusType = lote.filter(item => this.hashTypes[item.contribution_type_id].operator !== "+");
 				console.log(this.positiveContributions, newPlusType.length);
 				
-				if (this.positiveContributions + newPlusType.length > 360) {
-					flash(`Error: el total de aportes con clasificación positiva será ${this.positiveContributions + newPlusType.length} superando el limite de 360 meses`, "error");
+				if (this.positiveContributions + newPlusType.length > this.contributions_limit) {
+					flash(`Error: el total de aportes con clasificación positiva será ${this.positiveContributions + newPlusType.length} superando el limite de ${this.contributions_limit} meses`, "error");
 					return;
 				}
 			}
@@ -392,6 +392,13 @@ export default {
 	},
 	resetPrintButton() {
 	  this.$store.commit("retFunForm/resetContributionTypes", []);
+	},
+	disablePositiveTypeAtLimit(ct) {
+		if(this.positiveContributions < this.contributions_limit) {
+			return false;
+		}
+
+		return ct.operator === "+";
 	}
   },
   computed: {
@@ -417,8 +424,8 @@ export default {
 	  return total;
 	},
 	percentagePositiveContributions() {
-		return (this.positiveContributions / 360) * 100;
-	}
+		return (this.positiveContributions / this.contributions_limit) * 100;
+	},
   }
 };
 </script>
