@@ -287,18 +287,27 @@ export default {
 			return;
 		}
 		if (this.isValid()) {
-			let fi = moment("01/" + this.modal.first_date, "DD/MM/YYYY").toDate();
-			let ff = moment("01/" + this.modal.last_date, "DD/MM/YYYY").toDate();
+			let fi = moment("01/" + this.modal.first_date, "DD/MM/YYYY");
+			let ff = moment("01/" + this.modal.last_date, "DD/MM/YYYY");
 			let c_type_id = this.modal.contribution_type_id;
-			this.contributions.forEach(item => {
-			let aporte_date = moment(item.month_year, "YYYY-MM-DD").toDate();
-			if (
-				aporte_date.getTime() >= fi.getTime() &&
-				aporte_date.getTime() <= ff.getTime()
-			) {
-				item.contribution_type_id = c_type_id;
-			}
+			
+			let lote = this.contributions.filter(item => {
+				let aporte_date = moment(item.month_year, "YYYY-MM-DD");
+				return aporte_date >= fi && aporte_date <= ff;
 			});
+		
+			if (this.hashTypes[c_type_id].operator === "+") {
+				let newPlusType = lote.filter(item => this.hashTypes[item.contribution_type_id].operator !== "+");
+				console.log(this.positiveContributions, newPlusType.length);
+				
+				if (this.positiveContributions + newPlusType.length > 360) {
+					flash(`Error: el total de aportes con clasificación positiva será ${this.positiveContributions + newPlusType.length} superando el limite de 360 meses`, "error");
+					return;
+				}
+			}
+
+			lote.forEach(item => item.contribution_type_id = c_type_id);
+
 			this.clear();
 		}
 	},
