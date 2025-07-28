@@ -661,7 +661,7 @@ class Affiliate extends Model
     }
     if(!$reinstatement) {
       $start_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_entry);
-      $end_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_last_contribution);
+      $end_date = !!$retirement_fund->affiliate->date_last_contribution ? Util::parseMonthYearDate($retirement_fund->affiliate->date_last_contribution) : Util::parseMonthYearDate($retirement_fund->affiliate->date_derelict);
     } else {
       $start_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_entry_reinstatement);
       $end_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_last_contribution_reinstatement);
