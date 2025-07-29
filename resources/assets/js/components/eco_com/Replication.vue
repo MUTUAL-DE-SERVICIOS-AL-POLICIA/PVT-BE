@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Estado de Carga -->
+    <!-- Estado de Carga Inicial -->
     <div v-if="isLoadingStatus" class="text-center">
       <i class="fa fa-spinner fa-spin fa-3x"></i>
       <p>Verificando estado de la replicación...</p>
@@ -12,7 +12,7 @@
       <p>{{ message }}</p>
     </div>
 
-    <!-- Tarjeta de Replicación (si es posible) -->
+    <!-- Tarjeta de Replicación -->
     <div v-else class="ibox">
       <div class="ibox-title">
         <h5>Replicación de Trámites</h5>
@@ -21,41 +21,58 @@
         <div class="row">
           <div class="col-md-6">
             <p><strong>Semestre Origen:</strong></p>
-            <p>{{ sourceProcedure.semester }} Semestre {{ new Date(sourceProcedure.year).getFullYear() }}</p>
+            <p>{{ sourceProcedure.semester }} Semestre {{ sourceProcedure.year.substring(0, 4)}}</p>
           </div>
           <div class="col-md-6">
             <p><strong>Semestre a Replicar:</strong></p>
-            <p>{{ destinationProcedure.semester }} Semestre {{ new Date(destinationProcedure.year).getFullYear() }}</p>
+            <p>{{ destinationProcedure.semester }} Semestre {{ sourceProcedure.year.substring(0, 4)}}</p>
           </div>
         </div>
         <hr>
-        <button class="btn btn-primary" @click="showConfirmationModal">
-          <i class="fa fa-arrow-right"></i> Preparar Replicación
+        
+        <!-- Botón para Iniciar el Cálculo -->
+        <button class="btn btn-primary" @click="calculateEligible" :disabled="isCalculating">
+          <i v-if="isCalculating" class="fa fa-spinner fa-spin"></i>
+          <i v-else class="fa fa-calculator"></i>
+          Calcular Trámites a Replicar
         </button>
-      </div>
-    </div>
 
-    <!-- Modal de Confirmación -->
-    <modal name="replication-confirm-modal" height="auto" :adaptive="true">
-      <div class="modal-content-replication">
-        <div class="ibox-title">
-          <h1>Confirmar Replicación</h1>
-        </div>
-        <div class="modal-body">
-            <h4>Desglose de Trámites a Replicar (Simulación):</h4>
-            <div class="alert alert-danger">
-                <i class="fa fa-warning"></i> <strong>Atención:</strong> Esta acción es irreversible y creará 1420 nuevos trámites.
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" @click="closeConfirmationModal">Cancelar</button>
-          <button type="button" class="btn btn-primary" @click="executeReplication">
+        <!-- Sección de Resultados (se muestra después del cálculo) -->
+        <div v-if="calculationResult" class="m-t-lg">
+          <h4>Desglose de Trámites a Replicar:</h4>
+          <table class="table table-bordered">
+              <thead>
+                  <tr>
+                      <th>Modalidad</th>
+                      <th>Total Semestre Origen</th>
+                      <th>Total a Replicar</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr v-for="item in calculationResult.breakdown" :key="item.modality_name">
+                      <td>{{ item.modality_name }}</td>
+                      <td>{{ item.origin_count }}</td>
+                      <td>{{ item.replicate_count }}</td>
+                  </tr>
+                  <tr class="font-bold">
+                      <td>Total</td>
+                      <td>{{ calculationResult.total_origin }}</td>
+                      <td>{{ calculationResult.total_to_replicate }}</td>
+                  </tr>
+              </tbody>
+          </table>
+
+          <div class="alert alert-danger">
+              <i class="fa fa-warning"></i> <strong>Atención:</strong> Esta acción es irreversible y creará <strong>{{ calculationResult.total_to_replicate }}</strong> nuevos trámites.
+          </div>
+
+          <button class="btn btn-primary" @click="executeReplication">
             <i class="fa fa-check"></i> Ejecutar Replicación
           </button>
         </div>
-      </div>
-    </modal>
 
+      </div>
+    </div>
   </div>
 </template>
 
@@ -65,10 +82,12 @@ export default {
   data() {
     return {
       isLoadingStatus: true,
+      isCalculating: false,
       canReplicate: false,
       message: '',
       sourceProcedure: null,
       destinationProcedure: null,
+      calculationResult: null, // Almacena el resultado del cálculo
     };
   },
   mounted() {
@@ -76,21 +95,43 @@ export default {
   },
   methods: {
     checkReplicationStatus() {
-      // Simulación para desarrollo sin backend
-      this.isLoadingStatus = false;
-      this.canReplicate = true;
-      this.sourceProcedure = { semester: 'Primer', year: '2025-01-01' };
-      this.destinationProcedure = { semester: 'Segundo', year: '2025-01-01' };
+      this.isLoadingStatus = true;
+      axios.get("/eco_com_replicate/status")
+        .then(response => {
+          this.canReplicate = response.data.can_replicate;
+          if (this.canReplicate) {
+            this.sourceProcedure = response.data.source_procedure;
+            this.destinationProcedure = response.data.destination_procedure;
+          } else {
+            this.message = response.data.message;
+          }
+        })
+        .catch(error => {
+          this.canReplicate = false;
+          this.message = error.response ? error.response.data.message : 'Ocurrió un error de red.';
+        })
+        .finally(() => {
+          this.isLoadingStatus = false;
+        });
     },
-    showConfirmationModal() {
-      this.$modal.show('replication-confirm-modal');
-    },
-    closeConfirmationModal() {
-      this.$modal.hide('replication-confirm-modal');
+    calculateEligible() {
+      this.isCalculating = true;
+      this.calculationResult = null; // Limpiar resultados previos
+
+      axios.post("/eco_com_replicate", {
+        source_procedure_id: this.sourceProcedure.id,
+      }).then(response => {
+        this.calculationResult = response.data;
+      }).catch(error => {
+        window.flash(error.response.data.message || 'Hubo un error al procesar el cálculo.', 'error');
+      }).finally(() => {
+        this.isCalculating = false;
+      });
     },
     executeReplication() {
-      if (confirm("¿Estás realmente seguro de que deseas ejecutar la replicación? Esta acción no se puede deshacer.")) {
-        this.closeConfirmationModal();
+      // Por ahora, esto sigue siendo una simulación.
+      // En el futuro, llamará al endpoint de ejecución final.
+      if (confirm(`¿Estás realmente seguro de que deseas replicar ${this.calculationResult.total_to_replicate} trámites? Esta acción no se puede deshacer.`)) {
         alert("¡Replicación ejecutada exitosamente! (Simulación)");
       }
     },
@@ -99,18 +140,14 @@ export default {
 </script>
 
 <style scoped>
-  .modal-content-replication {
-    padding: 20px;
-  }
-  .modal-footer {
-    margin-top: 20px;
-    text-align: right;
-  }
   .ibox-title h5 {
     font-size: 15px;
     font-weight: 600;
   }
   .ibox-content p {
     font-size: 14px;
+  }
+  .m-t-lg {
+    margin-top: 30px;
   }
 </style>
