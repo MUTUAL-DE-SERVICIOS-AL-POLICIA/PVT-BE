@@ -892,7 +892,7 @@ class ContributionController extends Controller
     {
         $ret_fun = RetirementFund::find($ret_fun_id);
         $contribution_types = ContributionType::select('id', 'name', 'operator')->orderBy('id')->get();
-        $contributionsLimit = RetFunProcedure::where('id', $ret_fun->ret_fun_procedure_id)->value('contributions_limit');
+        $contributionsLimit = $ret_fun->used_contributions_limit ? $ret_fun->used_contributions_limit : RetFunProcedure::where('id', $ret_fun->ret_fun_procedure_id)->value('contributions_limit');
         $affiliate = $ret_fun->affiliate;
 
         $date_entry = Util::parseMonthYearDate($affiliate->date_entry);
@@ -1081,10 +1081,11 @@ class ContributionController extends Controller
         // return $request->all();
         $request_contributions = collect($request->contributions);
         $ret_fun = RetirementFund::find($request->ret_fun_id);
+        $usedContributionsLimit = $request->usedContributionsLimit;
         $ret_fun_index = $ret_fun->procedureIndex();
         $affiliate = $ret_fun->affiliate;
         $aff_contributions = $affiliate->contributionsInRange($ret_fun_index == 1);
-        DB::transaction(function () use ($request_contributions, $ret_fun, $affiliate, $aff_contributions) {
+        DB::transaction(function () use ($request_contributions, $ret_fun, $affiliate, $aff_contributions, $usedContributionsLimit) {
 
             // Actualizamos el tipo de contribución
             $affiliateContributions = $aff_contributions->orderBy('month_year')->get();
@@ -1099,6 +1100,7 @@ class ContributionController extends Controller
             $availability = $affiliate->getContributionsAvailability();
             $subtotal_availability = array_sum(array_column($availability, 'retirement_fund'));
             $ret_fun->subtotal_availability = $subtotal_availability;
+            $ret_fun->used_contributions_limit = $usedContributionsLimit;
             $ret_fun->save();
         });
         $contribution_types_ids = $affiliate->contributionsInRange($ret_fun_index == 1)->select('contribution_type_id')->distinct()->pluck('contribution_type_id');

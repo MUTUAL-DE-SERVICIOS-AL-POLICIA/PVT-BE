@@ -15,8 +15,12 @@ class AddStartDateColumnRfProcedures extends Migration
     {
         Schema::table('ret_fun_procedures', function (Blueprint $table) {
             $table->date('start_date')->default(now());
-            $table->integer('max_contributions_limit')->default(360);
+            $table->integer('contributions_limit')->default(360);
             $table->dropColumn('is_enabled');
+        });
+
+        Schema::table('retirement_funds', function (Blueprint $table) {
+            $table->integer('used_contributions_limit')->nullable();
         });
     }
 
@@ -30,7 +34,11 @@ class AddStartDateColumnRfProcedures extends Migration
         Schema::table('ret_fun_procedures', function (Blueprint $table) {
             $table->boolean('is_enabled')->default(true);
             $table->dropColumn('start_date');
-            $table->dropColumn('max_contributions_limit');
+            $table->dropColumn('contributions_limit');
+        });
+
+        Schema::table('retirement_funds', function (Blueprint $table) {
+            $table->dropColumn('used_contributions_limit');
         });
     }
 }

@@ -16,11 +16,11 @@
 								Aportes
 							</h3>
 						</div>
-						<div class="col-md-3" v-if="contributionsLimit > 0">
+						<div class="col-md-3" v-if="usedContributionsLimit > 0">
 							<div>
 								<div>
 									<span>Limite de Aportes Máximo</span>
-									<small style="float: right;">{{positiveContributions}}/{{contributionsLimit}}</small>
+									<small style="float: right;">{{positiveContributions}}/{{usedContributionsLimit}}</small>
 								</div>
 								<div class="progress progress-small">
 									<div :style="{ width: percentagePositiveContributions + '%' }" class="progress-bar"></div>
@@ -100,11 +100,19 @@
 						</div>
 					</div>
 					<div class="ibox-footer">
-						<button class="btn btn-primary btn-sm" @click="save" :disabled="loadingButton">
-							<i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw"></i>
-							<i v-else class="fa fa-arrow-right"></i>
-							{{ loadingButton ? 'Guardando Clasificaci&oacute;n...' :  'Guardar Clasificaci&oacute;n' }}
-						</button>
+						<div class="col-sm-2">
+							<button class="btn btn-primary btn-sm" @click="save" :disabled="loadingButton">
+								<i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw"></i>
+								<i v-else class="fa fa-arrow-right"></i>
+								{{ loadingButton ? 'Guardando Clasificaci&oacute;n...' :  'Guardar Clasificaci&oacute;n' }}
+							</button>
+						</div>
+						<div class="form-inline col-sm-4">
+							<div class="form-group">
+								<label class="label-control" for="limit-contribution">Número Máximo de Aportes</label>
+								<input type="text" class="form-control" id="limit-contribution" v-model="usedContributionsLimit">
+							</div>
+						</div>
 						<div class="pull-right">
 							<strong class=" text-info m-r-md"> Clasificados: {{ countTotal()}} </strong>
 							<strong class=" text-danger m-r-md"> Faltantes: {{ count1(null)}} </strong>
@@ -129,7 +137,7 @@ export default {
 	"retfunid",
 	"startDate",
 	"endDate",
-	"contributionsLimit"
+	"contributionsLimit",
   ],
   data() {
 	return {
@@ -140,6 +148,7 @@ export default {
 	  row_higth: 0,
 	  loadingButton: false,
 	  showLoading: true,
+	  usedContributionsLimit: null,
 	};
   },
   created: function() {
@@ -154,6 +163,8 @@ export default {
 	this.$validator.extend('minDate', (value) => {
 		return moment('01/'+value, "DD/MM/YYYY").diff(moment(this.startDate), "months") >= 0;
 	});
+
+	this.usedContributionsLimit = this.contributionsLimit;
   },
   methods: {
 	count1(id) {
@@ -193,7 +204,7 @@ export default {
 			flash("verifique que no existan aportes sin clasificar", "warning");
 			return;
 		}
-		if(this.positiveContributions > this.contributionsLimit) {
+		if(this.positiveContributions > this.usedContributionsLimit) {
 			flash("Los aportes positivos no pueden superar el límite máximo", "warning");
 			return;
 		}
@@ -201,7 +212,8 @@ export default {
 		this.showLoading = true;
 		var data = {
 		  ret_fun_id: this.retfunid,
-		  contributions: this.contributions
+		  contributions: this.contributions,
+		  usedContributionsLimit: this.usedContributionsLimit
 		};
 		axios
 		  .post("/ret_fun/savecontributions", data)
@@ -300,12 +312,12 @@ export default {
 				return aporte_date >= fi && aporte_date <= ff;
 			});
 		
-			if (this.hashTypes[c_type_id].operator === "+" && this.contributionsLimit > 0) {
+			if (this.hashTypes[c_type_id].operator === "+" && this.usedContributionsLimit > 0) {
 				let newPlusType = lote.filter(item => this.hashTypes[item.contribution_type_id].operator !== "+");
 				console.log(this.positiveContributions, newPlusType.length);
 				
-				if (this.positiveContributions + newPlusType.length > this.contributionsLimit) {
-					flash(`Error: el total de aportes con clasificación positiva será ${this.positiveContributions + newPlusType.length} superando el limite de ${this.contributionsLimit} meses`, "error");
+				if (this.positiveContributions + newPlusType.length > this.usedContributionsLimit) {
+					flash(`Error: el total de aportes con clasificación positiva será ${this.positiveContributions + newPlusType.length} superando el limite de ${this.usedContributionsLimit} meses`, "error");
 					return;
 				}
 			}
@@ -399,7 +411,7 @@ export default {
 	},
 	showPositiveType(contributionType) {
 		if(contributionType.operator === "-") return true;
-		if(this.positiveContributions < this.contributionsLimit || this.contributionsLimit <= 0) {
+		if(this.positiveContributions < this.usedContributionsLimit || this.usedContributionsLimit <= 0) {
 			return true;
 		}
 		return false;
@@ -428,7 +440,7 @@ export default {
 	  return total;
 	},
 	percentagePositiveContributions() {
-		return (this.positiveContributions / this.contributionsLimit) * 100;
+		return (this.positiveContributions / this.usedContributionsLimit) * 100;
 	},
   }
 };
