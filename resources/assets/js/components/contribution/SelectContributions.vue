@@ -33,7 +33,7 @@
 									<label class="label-control">Tipo de contribución</label>
 									<select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'" @change="resetPrintButton()" >
 										<option :value="null"></option>
-										<option v-for="item in types" :value="item.id" :key="item.id" :disabled="disablePositiveTypeAtLimit(item)"> {{item.name}}</option>
+										<option v-for="item in types" :value="item.id" :key="item.id" v-show="showPositiveType(item)"> {{item.name}}</option>
 									</select>
 								</div>
 								<div class="form-group">
@@ -79,7 +79,7 @@
 										<td class="col-md-4">
 											<select class="form-control" v-model="contribution.contribution_type_id" @change="resetPrintButton()">
 												<option :value="null"></option>
-												<option v-for="(ct, indexCt) in  types" :key="`ct-${indexCt}`" :value="ct.id" :disabled="disablePositiveTypeAtLimit(ct)">{{ct.name}}</option>
+												<option v-for="(ct, indexCt) in  types" :key="`ct-${indexCt}`" :value="ct.id" v-show="showPositiveType(ct)">{{ct.name}}</option>
 											</select>
 										</td>
 									</tr>
@@ -397,12 +397,12 @@ export default {
 	resetPrintButton() {
 	  this.$store.commit("retFunForm/resetContributionTypes", []);
 	},
-	disablePositiveTypeAtLimit(ct) {
+	showPositiveType(contributionType) {
+		if(contributionType.operator === "-") return true;
 		if(this.positiveContributions < this.contributionsLimit || this.contributionsLimit <= 0) {
-			return false;
+			return true;
 		}
-
-		return ct.operator === "+";
+		return false;
 	}
   },
   computed: {
