@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Muserpol\Models\EconomicComplement\EcoComModality;
 
 class EconomicComplementReplicationController extends Controller
@@ -68,7 +69,68 @@ class EconomicComplementReplicationController extends Controller
      */
     public function prepareReplication(Request $request)
     {
+        // 1. Validar la entrada
+        $request->validate([
+            'source_procedure_id' => 'required|exists:eco_com_procedures,id',
+        ]);
 
+        // 2. Obtener dinámicamente los IDs de las modalidades
+        $vejez_modalities_ids = EcoComModality::where('procedure_modality_id', 29)->pluck('id');
+        $viudedad_modalities_ids = EcoComModality::where('procedure_modality_id', 30)->pluck('id');
+        $all_modalities = $vejez_modalities_ids->concat($viudedad_modalities_ids);
+
+        // 3. Calcular el TOTAL de trámites por modalidad en el semestre origen (sin filtros)
+        $total_origin_counts = EconomicComplement::where('eco_com_procedure_id', $request->source_procedure_id)
+            ->whereIn('eco_com_modality_id', $all_modalities)
+            ->select('eco_com_modality_id', DB::raw('count(*) as total_count'))
+            ->groupBy('eco_com_modality_id')
+            ->get()
+            ->keyBy('eco_com_modality_id');
+
+        // 4. Calcular el TOTAL de trámites A REPLICAR (con filtros de fallecidos)
+        $to_replicate_counts = EconomicComplement::where('eco_com_procedure_id', $request->source_procedure_id)
+            ->whereIn('eco_com_modality_id', $all_modalities)
+            ->where(function ($query) use ($vejez_modalities_ids, $viudedad_modalities_ids) {
+                $query->orWhere(function ($subQuery) use ($vejez_modalities_ids) {
+                    $subQuery->whereIn('eco_com_modality_id', $vejez_modalities_ids)
+                             ->whereHas('affiliate', function($q) { $q->whereNull('date_death'); });
+                });
+                $query->orWhere(function ($subQuery) use ($viudedad_modalities_ids) {
+                    $subQuery->whereIn('eco_com_modality_id', $viudedad_modalities_ids)
+                             ->whereHas('affiliate.spouse', function($q) { $q->whereNull('date_death'); });
+                });
+            })
+            ->select('eco_com_modality_id', DB::raw('count(*) as total_count'))
+            ->groupBy('eco_com_modality_id')
+            ->get()
+            ->keyBy('eco_com_modality_id');
+
+        // 5. Combinar los resultados
+        $modalities_map = EcoComModality::whereIn('id', $all_modalities)->orderBy('id')->pluck('name', 'id');
+        $breakdown = [];
+        $total_origin_all = 0;
+        $total_to_replicate_all = 0;
+
+        foreach ($modalities_map as $id => $name) {
+            $origin_count = $total_origin_counts->get($id)->total_count ?? 0;
+            $replicate_count = $to_replicate_counts->get($id)->total_count ?? 0;
+            
+            $breakdown[] = [
+                'modality_name' => $name,
+                'origin_count' => $origin_count,
+                'replicate_count' => $replicate_count,
+            ];
+            $total_origin_all += $origin_count;
+            $total_to_replicate_all += $replicate_count;
+        }
+
+        // 6. Devolver la respuesta final
+        return response()->json([
+            'message' => "Cálculo de trámites elegibles completado.",
+            'total_origin' => $total_origin_all,
+            'total_to_replicate' => $total_to_replicate_all,
+            'breakdown' => $breakdown
+        ]);
     }
 
     /**
