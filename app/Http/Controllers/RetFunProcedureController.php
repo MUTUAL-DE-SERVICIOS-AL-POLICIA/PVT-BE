@@ -56,7 +56,7 @@ class RetFunProcedureController extends Controller
         ]);
 
         $actualProcedure = RetFunProcedure::active_procedure();
-        $hierarchies = Hierarchy::all();
+        $hierarchies = Hierarchy::orderBy('id')->get();
         $hierarchiesSyncData = [];
 
         foreach ($hierarchies as $hierarchy) {
@@ -128,7 +128,7 @@ class RetFunProcedureController extends Controller
             'contributions_limit' => 'required|numeric|min:1',
         ]);
 
-        $hierarchies = Hierarchy::all();
+        $hierarchies = Hierarchy::orderBy('id')->get();
         $hierarchiesSyncData = [];
 
         foreach ($hierarchies as $hierarchy) {

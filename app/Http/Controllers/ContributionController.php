@@ -890,10 +890,18 @@ class ContributionController extends Controller
 
     public function selectContributions($ret_fun_id)
     {
-        $ret_fun = RetirementFund::find($ret_fun_id);
+        $ret_fun = RetirementFund::with([
+            'affiliate.degree.hierarchy',
+            'ret_fun_procedure.hierarchies'
+        ])->find($ret_fun_id);
         $contribution_types = ContributionType::select('id', 'name', 'operator')->orderBy('id')->get();
-        $contributionsLimit = $ret_fun->used_contributions_limit ? $ret_fun->used_contributions_limit : RetFunProcedure::where('id', $ret_fun->ret_fun_procedure_id)->value('contributions_limit');
+        $ret_fun_procedure = RetFunProcedure::with('hierarchies')->where('id', $ret_fun->ret_fun_procedure_id);
+        $contributionsLimit = $ret_fun->used_contributions_limit ? $ret_fun->used_contributions_limit : $ret_fun_procedure->value('contributions_limit');
         $affiliate = $ret_fun->affiliate;
+        $hierarchyId = $ret_fun->affiliate->degree->hierarchy->id;
+        $applyLimit = optional(
+            $ret_fun->ret_fun_procedure->hierarchies->firstWhere('id', $hierarchyId)
+            )->pivot->apply_limit;
 
         $date_entry = Util::parseMonthYearDate($affiliate->date_entry);
         $date_last_contribution = Util::parseMonthYearDate($affiliate->date_last_contribution);
@@ -1067,7 +1075,8 @@ class ContributionController extends Controller
                             'date_entry' => $start_date,
                             'date_last_contribution' => $end_date,
                             'ret_fun'=>$ret_fun,
-                            'contributionsLimit' => $contributionsLimit
+                            'contributionsLimit' => $contributionsLimit,
+                            'applyLimit' => $applyLimit,
                     );
             return view('contribution.select',$data);
         }

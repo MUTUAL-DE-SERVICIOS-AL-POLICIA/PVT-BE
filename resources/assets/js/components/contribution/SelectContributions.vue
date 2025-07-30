@@ -110,7 +110,7 @@
 						<div class="form-inline col-sm-4">
 							<div class="form-group">
 								<label class="label-control" for="limit-contribution">Número Máximo de Aportes</label>
-								<input type="text" class="form-control" id="limit-contribution" v-model="usedContributionsLimit">
+								<input type="text" class="form-control" id="limit-contribution" :disabled="applyLimit" v-model="usedContributionsLimit">
 							</div>
 						</div>
 						<div class="pull-right">
@@ -138,6 +138,7 @@ export default {
 	"startDate",
 	"endDate",
 	"contributionsLimit",
+	"applyLimit"
   ],
   data() {
 	return {
