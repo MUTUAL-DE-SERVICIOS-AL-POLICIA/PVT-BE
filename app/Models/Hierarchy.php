@@ -15,4 +15,11 @@ class Hierarchy extends Model
     {
         return $this->hasMany(Degree::class);
     }
+
+    public function retFunProcedures()
+    {
+        return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunProcedure', 'ret_fun_procedures_hierarchies')
+            ->withPivot('apply_limit')
+            ->withTimestamps();
+    }
 }

@@ -48,6 +48,7 @@ use Muserpol\Models\Testimony;
 use Illuminate\Support\Collection;
 use Muserpol\Models\FinancialEntity;
 use Muserpol\Models\KinshipBeneficiary;
+use Muserpol\Models\Hierarchy;
 use Ramsey\Uuid\Uuid;
 
 class RetirementFundController extends Controller
@@ -969,9 +970,11 @@ class RetirementFundController extends Controller
     }
 
     public function qualificationParameters() {
-        $procedures = RetFunProcedure::orderby('id', 'desc')->get();
+        $procedures = RetFunProcedure::with('hierarchies')->orderby('id', 'desc')->get();
+        $hierarchies = Hierarchy::with('degrees')->orderBy('id')->get();
         $data = [
             'procedures' => $procedures,
+            'hierarchies' => $hierarchies,
         ];
         return view('ret_fun.qualification_parameters', $data);
     }

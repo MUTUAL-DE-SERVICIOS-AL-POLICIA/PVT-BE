@@ -32,7 +32,7 @@
                 </tbody>
             </table>
         </div>
-        <modal name="my-first-modal" height="auto" :clickToClose="false" :focusTrap="true">
+        <modal name="procedure-modal" height="auto" :clickToClose="false" :focusTrap="true">
             <div class="row w-full m-xxs">
                 <div class="ibox-title">
                     <h1>{{ modal.title }}</h1>
@@ -50,8 +50,31 @@
                     </div>
                 </div>
                 <div class="col-md-12">
+                    <h3>Seleccione a que grados se aplicará el límite de aportes</h3>
+                    <div class="dd">
+                        <ol class="dd-list">
+                            <li v-for="hierarchy in modal.hierarchies" class="dd-item"
+                                :class="hierarchy.show ? '' : 'dd-collapsed'">
+                                <button type="button" :data-action="hierarchy.show ? 'collapse' : 'expand'"
+                                    @click="hierarchy.show = !hierarchy.show" style="">{{ hierarchy.show ? 'Collapse' :
+                                        'Expand' }}</button>
+                                <div class="dd-handle">
+                                    <input type="checkbox" v-model="form.hierarchiesIds" :value="hierarchy.id"> {{
+                                    hierarchy.name }}
+                                </div>
+                                <ol class="dd-list">
+                                    <li v-for="degree in hierarchy.degrees" class="dd-handle"
+                                        style="padding: 2px !important;">
+                                        {{ degree.name }}
+                                    </li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="col-md-12">
                     <div class="text-center m-sm">
-                        <button class="btn btn-danger" type="button" @click="$modal.hide('my-first-modal')">
+                        <button class="btn btn-danger" type="button" @click="$modal.hide('procedure-modal')">
                             <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
                             <span class="bold">Cancelar</span>
                         </button>
@@ -71,6 +94,10 @@ export default {
         procedures: {
             type: Array,
             required: true
+        },
+        hierarchies: {
+            type: Array,
+            required: true
         }
     },
     data() {
@@ -80,6 +107,7 @@ export default {
                 start_date: null,
                 limit_average: 0,
                 contributions_limit: null,
+                hierarchiesIds: [],
                 method: 'post'
             },
             modal: {
@@ -94,12 +122,13 @@ export default {
                     name: 'limit_average',
                     type: 'number',
                     validation: 'required|numeric_locale|min_value:1'
-                },{
+                }, {
                     label: 'Número de Aportes Máximo',
                     name: 'contributions_limit',
                     type: 'number',
                     validation: 'required|numeric|min_value:1'
                 }],
+                hierarchies: []
             }
         }
     },
@@ -109,26 +138,37 @@ export default {
             getMessage: field => `El campo ${field} debe ser un número válido.`,
             validate: value => /^-?\d+([.,]\d+)?$/.test(value)
         });
+
+        this.modal.hierarchies = this.hierarchies.map(hierarchy => ({
+            id: hierarchy.id,
+            name: hierarchy.name,
+            degrees: hierarchy.degrees,
+            show: false,
+            value: false,
+        }));
     },
     methods: {
-        show(item) {
+        show(procedure) {
             this.clearForm();
-            if (item) {
+            if (procedure) {
                 this.modal.title = 'Editar Gestión';
-                this.form.id = item.id;
-                this.form.start_date = item.start_date;
-                this.form.limit_average = item.limit_average;
-                this.form.contributions_limit = item.contributions_limit;
+                this.form.id = procedure.id;
+                this.form.start_date = procedure.start_date;
+                this.form.limit_average = procedure.limit_average;
+                this.form.contributions_limit = procedure.contributions_limit;
+                this.form.hierarchiesIds = procedure.hierarchies
+                    .filter(h => h.pivot.apply_limit)
+                    .map(h => h.pivot.hierarchy_id);
                 this.form.method = 'patch';
             } else {
                 this.modal.title = 'Adicionar Nueva Gestión';
                 this.form.method = 'post';
             }
-            this.$modal.show('my-first-modal');
+            this.$modal.show('procedure-modal');
         },
         hide() {
             this.clearForm();
-            this.$modal.hide('my-first-modal');
+            this.$modal.hide('procedure-modal');
         },
         async save(method) {
             switch (method) {
@@ -138,8 +178,7 @@ export default {
                             await axios.post('/ret_fun_procedure', this.form)
                                 .then(response => {
                                     console.log('Data saved successfully:');
-                                    // this.hide();
-                                    // this.$emit('refresh');
+                                    window.location.reload();
                                 })
                                 .catch(error => {
                                     console.log("Error al procesar: ", error.response.data.errors);

@@ -10,6 +10,14 @@ class RetFunProcedure extends Model
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');
     }
+
+    public function hierarchies()
+    {
+        return $this->belongsToMany('Muserpol\Models\Hierarchy', 'ret_fun_procedures_hierarchies')
+            ->withPivot('apply_limit')
+            ->withTimestamps();
+    }
+
     public function scopeCurrent()
     {
 

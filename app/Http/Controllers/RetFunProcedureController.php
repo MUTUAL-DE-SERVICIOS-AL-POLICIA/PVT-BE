@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Muserpol\Models\Hierarchy;
 
 class RetFunProcedureController extends Controller
 {
@@ -54,15 +55,24 @@ class RetFunProcedureController extends Controller
             'contributions_limit' => 'required|numeric|min:1',
         ]);
 
-        DB::transaction(function () use ($request) {
-            $actualProcedure = RetFunProcedure::active_procedure();
+        $actualProcedure = RetFunProcedure::active_procedure();
+        $hierarchies = Hierarchy::all();
+        $hierarchiesSyncData = [];
 
+        foreach ($hierarchies as $hierarchy) {
+            $hierarchiesSyncData[$hierarchy->id] = [
+                'apply_limit' => in_array($hierarchy->id, $request->hierarchiesIds)
+            ];
+        }
+
+        DB::transaction(function () use ($request, $actualProcedure, $hierarchiesSyncData) {
             // Todos los datos se duplican menos start_date y limit_average
             $procedure = $actualProcedure->replicate();
             $procedure->start_date = $request->start_date;
             $procedure->limit_average = $request->limit_average;
             $procedure->contributions_limit = $request->contributions_limit;
             $procedure->save();
+            $procedure->hierarchies()->sync($hierarchiesSyncData);
         });
 
         return response()->json(['message' => 'Creado correctamente.'], 200);
@@ -118,10 +128,20 @@ class RetFunProcedureController extends Controller
             'contributions_limit' => 'required|numeric|min:1',
         ]);
 
-        DB::transaction(function () use ($procedure, $request) {
+        $hierarchies = Hierarchy::all();
+        $hierarchiesSyncData = [];
+
+        foreach ($hierarchies as $hierarchy) {
+            $hierarchiesSyncData[$hierarchy->id] = [
+                'apply_limit' => in_array($hierarchy->id, $request->hierarchiesIds)
+            ];
+        }
+
+        DB::transaction(function () use ($procedure, $request, $hierarchiesSyncData) {
             $procedure->start_date = $request->start_date;
             $procedure->limit_average = $request->limit_average;
             $procedure->contributions_limit = $request->contributions_limit;
+            $procedure->hierarchies()->sync($hierarchiesSyncData);
             $procedure->save();
         });
 

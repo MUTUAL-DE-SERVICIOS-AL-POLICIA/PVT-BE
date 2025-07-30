@@ -7,6 +7,6 @@
         </div>
 
     </div>
-    <ret-fun-qualification-parameters :procedures='@json($procedures)'></ret-fun-qualification-parameters>
+    <ret-fun-qualification-parameters :procedures='@json($procedures)' :hierarchies='@json($hierarchies)'></ret-fun-qualification-parameters>
     <br>
 @endsection
