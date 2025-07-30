@@ -22,7 +22,7 @@
                     <tr v-for="(item, index) in procedures" :key="index">
                         <td>{{ item.start_date }}</td>
                         <td>{{ item.limit_average }} Bs.</td>
-                        <td>{{ item.max_contributions_limit }}</td>
+                        <td>{{ item.contributions_limit }}</td>
                         <td style="width: 1%; white-space: nowrap;">
                             <button class="btn btn-warning" @click="show(item)" data-toggle="tooltip" title="Editar">
                                 <i class="fa fa-pencil"></i>
@@ -79,7 +79,7 @@ export default {
                 id: null,
                 start_date: null,
                 limit_average: 0,
-                max_contributions_limit: null,
+                contributions_limit: null,
                 method: 'post'
             },
             modal: {
@@ -96,7 +96,7 @@ export default {
                     validation: 'required|numeric_locale|min_value:1'
                 },{
                     label: 'Número de Aportes Máximo',
-                    name: 'max_contributions_limit',
+                    name: 'contributions_limit',
                     type: 'number',
                     validation: 'required|numeric|min_value:1'
                 }],
@@ -118,7 +118,7 @@ export default {
                 this.form.id = item.id;
                 this.form.start_date = item.start_date;
                 this.form.limit_average = item.limit_average;
-                this.form.max_contributions_limit = item.max_contributions_limit;
+                this.form.contributions_limit = item.contributions_limit;
                 this.form.method = 'patch';
             } else {
                 this.modal.title = 'Adicionar Nueva Gestión';
