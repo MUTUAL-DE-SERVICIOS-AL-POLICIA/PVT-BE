@@ -234,63 +234,29 @@ export default {
 			this.loadingButton = false;
 			flash("Error: " + resp.message, "error");
 		  });
-	},
+		},
 	getColor1(contribution_type_id) {
-	  let color;
-	  switch (contribution_type_id) {
-		case 10:
-		  color = "#aeda8a";
-		  break;
-		case 2:
-		  color = "#f7f097fd";
-		  break;
-		case 3:
-		  color = "#f7a197fd";
-		  break;
-		case 1:
-		  color = "#ffffff";
-		  break;
-		case 4:
-		  color = "#a1a7fffd";
-		  break;
-		case 5:
-		  color = "#b1e7faca";
-		  break;
-		case 6:
-		  color = "#e0ad7dfd";
-		  break;
-		case 7:
-		  color = "#80e9bdfd";
-		  break;
-		case 8:
-		  color = "#50c1bdfa";
-		  break;
-		case 9:
-		  color = "#30c1edfb";
-		  break;
-		case 12:
-		  color = "#CDDC39";
-		  break;
-		case 13:
-		  color = "#B2FF59";
-		  break;
-		case 14:
-		  color = "#FF80AB";
-		  break;
-		case 15:
-		  color = "#c6a7fa"
-		  break;
-		case 18:
-		  color = "#545050";
-		  break;
-		case null:
-		  color = "#bbbaadfd";
-		  break;
-		default:
-		  console.log("no se encontro");
-		  break;
-	  }
-	  return color;
+	  const colors = {
+		1: "#ffffff",
+		2: "#f7f097",
+		3: "#f7a197",
+		4: "#a1a7ff",
+		5: "#b1e7fa",
+		6: "#e0ad7d",
+		7: "#80e9bd",
+		8: "#50c1bd",
+		9: "#30c1ed",
+		10: "#aeda8a",
+		12: "#CDDC39",
+		13: "#B2FF59",
+		14: "#FF80AB",
+		15: "#c6a7fa",
+		16: "#c2ac97",
+		17: "#fc9003",
+		18: "#fca503",
+		null: "#bbbaad",
+	  };
+	  return colors[contribution_type_id] || "#bbbaad"; // color por defecto
 	},
 	clear() {
 		this.modal.first_date = null;
