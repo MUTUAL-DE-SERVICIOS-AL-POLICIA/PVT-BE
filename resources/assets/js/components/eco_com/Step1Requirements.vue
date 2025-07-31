@@ -229,10 +229,10 @@ export default {
     };
   },
   async mounted() {
-    this.setReceptionType();
-    this.setPensionEntity();
-    this.setModality();
-    this.setCity();
+    await this.setReceptionType();
+    await this.setPensionEntity();
+    await this.setModality();
+    await this.setCity();
     if (this.modality_id) {
         await this.getRequirements();
     }
@@ -285,13 +285,14 @@ export default {
         })
         .then(response => {
           this.reception_type_id = response.data;
+          if (response.data == 1) { // habitual
+            this.documentsLoaded = true;
+          } 
         })
         .catch(error => {
           console.log(error);
         });
-        if (this.reception_type_id == 1) { // habitual
-          this.documentsLoaded = true;
-        }       
+              
       await this.$store.commit(
         "ecoComForm/setReceptionType",
         this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id)
@@ -334,10 +335,11 @@ export default {
         });
     },
     async getRequirements() {
-      if (!this.modality_id) {
+      if (!this.modality_id || this.reception_type_id == 1) {
         this.requirementList = [];
         this.additionalRequirements = [];
         this.aditionalRequirementsUploaded = [];
+        return;
       }
       let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality_id}/collate`;
       await axios
@@ -350,15 +352,9 @@ export default {
               r['background'] = r['isUploaded'] ? 'bg-success-blue' : '';
             });
           });
-          if (this.reception_type_id != 1) {
-            this.requirementList = requiredDocuments;
-            this.additionalRequirements = response.data.additionallyDocuments;
-            this.aditionalRequirementsUploaded = response.data.additionallyDocumentsUpload;          
-          } else {
-            this.requirementList = [];
-            this.additionalRequirements = [];
-            this.aditionalRequirementsUploaded = [];
-          }   
+          this.requirementList = requiredDocuments;
+          this.additionalRequirements = response.data.additionallyDocuments;
+          this.aditionalRequirementsUploaded = response.data.additionallyDocumentsUpload;   
           setTimeout(() => {
             $(".chosen-select")
               .chosen({ width: "100%" })
