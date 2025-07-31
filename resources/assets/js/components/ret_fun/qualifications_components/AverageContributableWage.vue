@@ -60,7 +60,7 @@
                                         'Expand' }}</button>
                                 <div class="dd-handle">
                                     <input type="checkbox" v-model="form.hierarchiesIds" :value="hierarchy.id"> {{
-                                    hierarchy.name }}
+                                        hierarchy.name }}
                                 </div>
                                 <ol class="dd-list">
                                     <li v-for="degree in hierarchy.degrees" class="dd-handle"
@@ -128,7 +128,13 @@ export default {
                     type: 'number',
                     validation: 'required|numeric|min_value:1'
                 }],
-                hierarchies: []
+                hierarchies: this.hierarchies.map(hierarchy => ({
+                    id: hierarchy.id,
+                    name: hierarchy.name,
+                    degrees: hierarchy.degrees,
+                    show: false,
+                    value: false,
+                }))
             }
         }
     },
@@ -138,14 +144,6 @@ export default {
             getMessage: field => `El campo ${field} debe ser un número válido.`,
             validate: value => /^-?\d+([.,]\d+)?$/.test(value)
         });
-
-        this.modal.hierarchies = this.hierarchies.map(hierarchy => ({
-            id: hierarchy.id,
-            name: hierarchy.name,
-            degrees: hierarchy.degrees,
-            show: false,
-            value: false,
-        }));
     },
     methods: {
         show(procedure) {

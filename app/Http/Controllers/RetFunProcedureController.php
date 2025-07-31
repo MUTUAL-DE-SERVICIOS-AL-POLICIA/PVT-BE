@@ -130,7 +130,8 @@ class RetFunProcedureController extends Controller
 
         $hierarchies = Hierarchy::orderBy('id')->get();
         $hierarchiesSyncData = [];
-
+        // Esto forma un array con los IDs de las jerarquías y si se aplica el límite
+        //  1 => ['apply_limit' => true],
         foreach ($hierarchies as $hierarchy) {
             $hierarchiesSyncData[$hierarchy->id] = [
                 'apply_limit' => in_array($hierarchy->id, $request->hierarchiesIds)
