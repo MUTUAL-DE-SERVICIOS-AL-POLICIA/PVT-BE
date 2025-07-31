@@ -107,7 +107,7 @@
 								{{ loadingButton ? 'Guardando Clasificaci&oacute;n...' :  'Guardar Clasificaci&oacute;n' }}
 							</button>
 						</div>
-						<div class="form-inline col-sm-4">
+						<div class="form-inline col-sm-4" v-if="usedContributionsLimit > 0">
 							<div class="form-group">
 								<label class="label-control" for="limit-contribution">Número Máximo de Aportes</label>
 								<input type="text" class="form-control" id="limit-contribution" :disabled="applyLimit" v-model="usedContributionsLimit">
@@ -205,7 +205,7 @@ export default {
 			flash("verifique que no existan aportes sin clasificar", "warning");
 			return;
 		}
-		if(this.positiveContributions > this.usedContributionsLimit) {
+		if(this.usedContributionsLimit > 0 && this.positiveContributions > this.usedContributionsLimit) {
 			flash("Los aportes positivos no pueden superar el límite máximo", "warning");
 			return;
 		}
