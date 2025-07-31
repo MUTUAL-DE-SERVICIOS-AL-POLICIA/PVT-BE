@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Muserpol\Models\Contribution\ContributionType;
 
 class RetFunContributionsLimit extends Migration
 {
@@ -39,6 +40,18 @@ class RetFunContributionsLimit extends Migration
 
             $table->unique(['ret_fun_procedure_id', 'hierarchy_id']); // evitar duplicados
         });
+
+        $newValues = [
+            ['name' => 'Periodo posterior a 30 años de servicios activo', 'operator' => '-', 'shortened' => '+30 años'],
+            ['name' => 'Disponibilidad por Enfermedad con aporte', 'operator' => '+', 'shortened' => 'Disponibilidad Enfermedad Con Aporte'],
+            ['name' => 'Disponibilidad por Enfermedad sin aporte', 'operator' => '-', 'shortened' => 'Disponibilidad Enfermedad Sin Aporte'],
+        ];
+
+        foreach ($newValues as $value) {
+            ContributionType::create($value);
+        }
+
+        ContributionType::where('name', 'Disponibilidad')->delete();
     }
 
     /**
@@ -59,5 +72,11 @@ class RetFunContributionsLimit extends Migration
         });
 
         Schema::dropIfExists('ret_fun_procedures_hierarchies');
+
+        ContributionType::where('name', 'Periodo posterior a 30 años de servicios activo')->delete();
+        ContributionType::where('name', 'Disponibilidad por Enfermedad con aporte')->delete();
+        ContributionType::where('name', 'Disponibilidad por Enfermedad sin aporte')->delete();
+
+        ContributionType::withTrashed()->where('name', 'Disponibilidad')->restore();
     }
 }
