@@ -67,12 +67,39 @@
           </div>
 
           <button class="btn btn-primary" @click="executeReplication">
-            <i class="fa fa-check"></i> Ejecutar Replicación
+          <i class="fa fa-check"></i> Ejecutar Replicación
+        </button>
+      </div>
+
+    </div>
+    </div>
+
+    <!-- Modal de Confirmación Final -->
+     <modal name="final-confirm-modal" height="auto" :adaptive="true">
+      <div class="modal-content-replication">
+        <div class="ibox-title">
+          <h1>Confirmación Final</h1>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger">
+                <i class="fa fa-warning"></i> <strong>¡ACCIÓN IRREVERSIBLE!</strong>
+            </div>
+            <p v-if="calculationResult">
+              Estás a punto de replicar <strong>{{ calculationResult.total_to_replicate }}</strong> trámites.
+            </p>
+            <p>¿Estás absolutamente seguro de que quieres continuar?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" @click="closeFinalConfirmModal" :disabled="isExecuting">Cancelar</button>
+          <button type="button" class="btn btn-danger" @click="confirmAndExecute" :disabled="isExecuting">
+            <i v-if="isExecuting" class="fa fa-spinner fa-spin"></i>
+            <i v-else class="fa fa-check"></i>
+            Sí, Ejecutar Replicación
           </button>
         </div>
-
       </div>
-    </div>
+    </modal>
+
   </div>
 </template>
 
@@ -95,7 +122,7 @@ export default {
   },
   methods: {
     checkReplicationStatus() {
-      this.isLoadingStatus = true;
+this.isLoadingStatus = true;
       axios.get("/eco_com_replicate/status")
         .then(response => {
           this.canReplicate = response.data.can_replicate;
@@ -113,7 +140,7 @@ export default {
         .finally(() => {
           this.isLoadingStatus = false;
         });
-    },
+        },
     calculateEligible() {
       this.isCalculating = true;
       this.calculationResult = null; // Limpiar resultados previos
@@ -129,12 +156,30 @@ export default {
       });
     },
     executeReplication() {
-      // Por ahora, esto sigue siendo una simulación.
-      // En el futuro, llamará al endpoint de ejecución final.
-      if (confirm(`¿Estás realmente seguro de que deseas replicar ${this.calculationResult.total_to_replicate} trámites? Esta acción no se puede deshacer.`)) {
-        alert("¡Replicación ejecutada exitosamente! (Simulación)");
-      }
+      // Este método ahora solo abre el modal de confirmación final
+      this.$modal.show('final-confirm-modal');
     },
+    closeFinalConfirmModal() {
+      this.$modal.hide('final-confirm-modal');
+    },
+    confirmAndExecute() {
+      this.isExecuting = true;
+      
+      axios.post(`/eco_com_replicate/execute`, {
+          source_procedure_id: this.sourceProcedure.id,
+          destination_procedure_id: this.destinationProcedure.id,
+      }).then(response => {
+          this.closeFinalConfirmModal();
+          window.flash(response.data.message);
+          this.calculationResult = null; // Ocultar la tabla de resultados
+          // Volvemos a comprobar el estado para que la tarjeta se actualice/desaparezca
+          this.checkReplicationStatus(); 
+      }).catch(error => {
+          window.flash(error.response.data.message || 'Hubo un error al ejecutar la replicación.', 'error');
+      }).finally(() => {
+          this.isExecuting = false;
+      });
+    }
   },
 };
 </script>
