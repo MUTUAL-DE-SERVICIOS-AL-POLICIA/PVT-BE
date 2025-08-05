@@ -524,10 +524,6 @@
                                                 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                                             </td>
                                         </tr>
-                                        <!-- <tr>
-                                            <td>Con rendimiento del {{ $current_procedure->annual_yield }}% Anual</td>
-                                            <td>@{{ totalAnnualYield | currency }}</td>
-                                        </tr> -->
                                         <tr>
                                             <td>Devolución de Aportes en Disponibilidad</td>
                                             <td>@{{ totalAvailability | currency}}</td>

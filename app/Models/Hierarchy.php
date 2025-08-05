@@ -19,7 +19,8 @@ class Hierarchy extends Model
     public function retFunProcedures()
     {
         return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunProcedure', 'ret_fun_procedures_hierarchies')
-            ->withPivot('apply_limit')
+            ->withPivot('apply_contributions_limit')
+            ->withPivot('average_limit')
             ->withTimestamps();
     }
 }

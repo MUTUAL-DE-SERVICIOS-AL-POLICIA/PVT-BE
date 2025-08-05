@@ -155,7 +155,7 @@ export default {
                 this.form.limit_average = procedure.limit_average;
                 this.form.contributions_limit = procedure.contributions_limit;
                 this.form.hierarchiesIds = procedure.hierarchies
-                    .filter(h => h.pivot.apply_limit)
+                    .filter(h => h.pivot.apply_contributions_limit)
                     .map(h => h.pivot.hierarchy_id);
                 this.form.method = 'patch';
             } else {

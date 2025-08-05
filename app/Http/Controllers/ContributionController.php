@@ -901,7 +901,7 @@ class ContributionController extends Controller
         $hierarchyId = $ret_fun->affiliate->degree->hierarchy->id;
         $applyLimit = optional(
             $ret_fun->ret_fun_procedure->hierarchies->firstWhere('id', $hierarchyId)
-            )->pivot->apply_limit;
+            )->pivot->apply_contributions_limit;
 
         $date_entry = Util::parseMonthYearDate($affiliate->date_entry);
         $date_last_contribution = Util::parseMonthYearDate($affiliate->date_last_contribution);

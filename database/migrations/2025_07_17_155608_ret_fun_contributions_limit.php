@@ -18,6 +18,7 @@ class RetFunContributionsLimit extends Migration
             $table->date('start_date')->default(now());
             $table->integer('contributions_limit')->default(0);
             $table->dropColumn('is_enabled');
+            $table->dropColumn('limit_average');
         });
 
         Schema::table('retirement_funds', function (Blueprint $table) {
@@ -28,15 +29,16 @@ class RetFunContributionsLimit extends Migration
             $table->increments('id');
             $table->unsignedBigInteger('ret_fun_procedure_id');
             $table->unsignedBigInteger('hierarchy_id');
-            $table->boolean('apply_limit')->default(true);
+            $table->boolean('apply_contributions_limit')->default(true);
+            $table->float('average_limit')->default(10800);
             $table->timestamps();
 
             $table->foreign('ret_fun_procedure_id')
                 ->references('id')->on('ret_fun_procedures')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
             $table->foreign('hierarchy_id')
                 ->references('id')->on('hierarchies')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
             $table->unique(['ret_fun_procedure_id', 'hierarchy_id']); // evitar duplicados
         });
@@ -63,6 +65,7 @@ class RetFunContributionsLimit extends Migration
     {
         Schema::table('ret_fun_procedures', function (Blueprint $table) {
             $table->boolean('is_enabled')->default(true);
+            $table->float('average_limit')->default(10800);
             $table->dropColumn('start_date');
             $table->dropColumn('contributions_limit');
         });
