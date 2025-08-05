@@ -23,7 +23,7 @@
 									<small style="float: right;">{{positiveContributions}}/{{usedContributionsLimit}}</small>
 								</div>
 								<div class="progress progress-small">
-									<div :style="{ width: percentagePositiveContributions + '%' }" class="progress-bar"></div>
+									<div :style="{ width: percentagePositiveContributions + '%' }" class="progress-bar" :class="colorBar"></div>
 								</div>
 							</div>
 						</div>
@@ -279,16 +279,6 @@ export default {
 				return aporte_date >= fi && aporte_date <= ff;
 			});
 		
-			if (this.hashTypes[c_type_id].operator === "+" && this.usedContributionsLimit > 0) {
-				let newPlusType = lote.filter(item => this.hashTypes[item.contribution_type_id].operator !== "+");
-				console.log(this.positiveContributions, newPlusType.length);
-				
-				if (this.positiveContributions + newPlusType.length > this.usedContributionsLimit) {
-					flash(`Error: el total de aportes con clasificación positiva será ${this.positiveContributions + newPlusType.length} superando el limite de ${this.usedContributionsLimit} meses`, "error");
-					return;
-				}
-			}
-
 			lote.forEach(item => item.contribution_type_id = c_type_id);
 
 			this.clear();
@@ -337,38 +327,20 @@ export default {
 		  new Date("01/" + this.endDate.month_year).getTime()
 		) {
 		  flash(
-			"Error: la fecha " +
-			  this.modal.last_date +
-			  " no debe ser mayor a " +
-			  this.endDate.month_year,
+			"Error: la fecha " + this.modal.last_date + " no debe ser mayor a " + this.endDate.month_year,
 			"warning"
 		  );
 		  response = false;
-		  console.log(
-			"Error: la fecha " +
-			  this.modal.last_date +
-			  " no debe ser mayor a " +
-			  this.endDate.month_year
-		  );
 		}
 		if (
 		  new Date("01/" + this.modal.first_date).getTime() >
 		  new Date("01/" + this.modal.last_date).getTime()
 		) {
 		  flash(
-			"Error: la fecha " +
-			  this.modal.first_date +
-			  " no debe ser mayor a " +
-			  this.modal.last_date,
+			"Error: la fecha " + this.modal.first_date + " no debe ser mayor a " + this.modal.last_date,
 			"warning"
 		  );
 		  response = false;
-		  console.log(
-			"Error: la fecha " +
-			  this.modal.first_date +
-			  " no debe ser mayor a " +
-			  this.modal.last_date
-		  );
 		}
 	  }
 	  return response;
@@ -409,7 +381,16 @@ export default {
 	percentagePositiveContributions() {
 		return (this.positiveContributions / this.usedContributionsLimit) * 100;
 	},
-  }
+	colorBar() {
+		if(this.percentagePositiveContributions < 100) {
+			return "progress-bar-info";
+		} else if(this.percentagePositiveContributions == 100) {
+			return "progress-bar-warning";
+		} else {
+			return "progress-bar-danger";
+		}
+	}
+}
 };
 </script>
 <style>
