@@ -32,11 +32,11 @@ class EconomicComplementReplicationController extends Controller
         if ($isAlreadyReplicated) {
             return response()->json([
                 'can_replicate' => false,
-                'message' => 'El procedimiento del Segundo Semestre ' . $currentYear . ' ya ha sido replicado.'
-            ], 409);
+                'message' => 'El Segundo Semestre ' . $currentYear . ' ya ha sido replicado.'
+            ]);
         }
         $sourceProcedure = EcoComProcedure::whereYear('year', $currentYear)
-                                          ->where('semester', 'Primer')
+                                            ->where('semester', 'Primer')
                                           ->first();
         if (!$sourceProcedure) {
             return response()->json([
@@ -193,5 +193,22 @@ class EconomicComplementReplicationController extends Controller
         }
 
         return response()->json(['message' => '¡Replicación de prueba completada! Se replicó exitosamente', 'count' => $count . ' trámites']);
+    }
+
+    public function getReplicationHistory()
+    {
+        $history = EconomicComplement::whereNotNull('replicated_from_eco_com_id')
+            ->join('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
+            ->select(
+                'economic_complements.eco_com_procedure_id',
+                DB::raw("eco_com_procedures.semester || ' Semestre ' || EXTRACT(YEAR FROM eco_com_procedures.year) as procedure_name"),
+                DB::raw('COUNT(economic_complements.id) as replicated_count'),
+                DB::raw('MIN(economic_complements.created_at) as replication_date')
+            )
+            ->groupBy('economic_complements.eco_com_procedure_id', 'procedure_name')
+            ->orderBy('replication_date', 'desc')
+            ->get();
+
+        return response()->json($history);
     }
 }
