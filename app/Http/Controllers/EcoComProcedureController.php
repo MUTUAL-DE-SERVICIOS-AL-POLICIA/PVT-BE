@@ -113,7 +113,7 @@ class EcoComProcedureController extends Controller
         if ( $new_start_date->lte($last_end_date)) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['La fecha de inicio del procedimiento no puede ser anterior a la fecha de fin del último procedimiento.'],
+                'errors' => ['La fecha de inicio del semestre no puede ser anterior a la fecha de fin del último semestre.'],
             ], 422);
         }
         $eco_com_regulation = EcoComRegulation::where('is_enable', '=', true)->orderBy('created_at','desc')->first();

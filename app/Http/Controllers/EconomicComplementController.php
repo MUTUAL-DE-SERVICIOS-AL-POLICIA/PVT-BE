@@ -336,6 +336,7 @@ class EconomicComplementController extends Controller
         // $economic_complement->semester = $eco_com_procedure->semester; // !! TODO Borrar columna
         $economic_complement->code = Util::getLastCodeEconomicComplement($request->eco_com_procedure_id);
         $economic_complement->reception_date = now();
+        $economic_complement->eco_com_origin_channel_id = 1; // 1 = Ventanilla
         $economic_complement->inbox_state = true;
         // $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
