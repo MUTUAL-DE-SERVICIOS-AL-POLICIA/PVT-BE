@@ -299,10 +299,25 @@ class AidContributionController extends Controller
         if(!empty($request->iterator))
         {
             foreach ($request->iterator as $key => $iterator) {
-                $aidContribution = AidContribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
-                $input_data['rent'][$key] = isset($input_data['rent'][$key]) ? strip_tags($request->rent[$key]) : $aidContribution->rent;
-                $input_data['dignity_rent'][$key] = isset($input_data['dignity_rent'][$key]) ? strip_tags($request->dignity_rent[$key]) : $aidContribution->dignity_rent;
-                $input_data['total'][$key] = isset($input_data['total'][$key]) ? strip_tags($request->total[$key]) : $aidContribution->total;
+                $aidContribution = AidContribution::where('affiliate_id', $request->affiliate_id)
+                    ->where('month_year', $key)
+                    ->first();
+                $defaultRent = $aidContribution->rent_pension ?? 0;
+                $defaultDignityRent = $aidContribution->dignity_rent ?? 0;
+                $defaultTotal = $aidContribution->total ?? 0;
+
+                $input_data['rent'][$key] = isset($input_data['rent'][$key])
+                    ? strip_tags($request->rent[$key])
+                    : $defaultRent;
+
+                $input_data['dignity_rent'][$key] = isset($input_data['dignity_rent'][$key])
+                    ? strip_tags($request->dignity_rent[$key])
+                    : $defaultDignityRent;
+
+                $input_data['total'][$key] = isset($input_data['total'][$key])
+                    ? strip_tags($request->total[$key])
+                    : $defaultTotal;
+
 
                 $array_rules = [
                     'rent_pension.' . $key =>  'numeric|min:0',
@@ -325,17 +340,10 @@ class AidContributionController extends Controller
         foreach ($request->iterator as $key => $iterator) {
             $contribution = AidContribution::where('affiliate_id', $request->affiliate_id)->where('month_year', $key)->first();
             if (isset($contribution->id)) {
-                $contribution->total = strip_tags($request->total[$key]) ?? $contribution->total;
-                if(!isset($request->rent[$key]) || $request->rent[$key] == ""){
-                    $contribution->rent_pension = 0;
-                }else{
-                    $contribution->rent_pension = strip_tags($request->rent[$key]) ?? $contribution->rent_pension;
-                }
-                if(!isset($request->dignity_rent[$key]) || $contribution->dignity_rent == ""){
-                    $contribution->dignity_rent = 0;
-                }else{
-                    $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? $contribution->dignity_rent;
-                }
+                $contribution->total = $input_data['total'][$key];
+                $contribution->rent_pension = $input_data['rent'][$key];
+                $contribution->dignity_rent = $input_data['dignity_rent'][$key];
+                
                 $contribution->quotable = $contribution->rent_pension-$contribution->dignity_rent;
                 $contribution->interest = 0;
                 $contribution->save();
@@ -343,18 +351,10 @@ class AidContributionController extends Controller
                 $contribution = new AidContribution();
                 $contribution->user_id = Auth::user()->id;
                 $contribution->affiliate_id = $request->affiliate_id;
-                if(!isset($request->rent[$key]) || $request->rent[$key] == "") {
-                    $contribution->rent_pension = 0;
-                } else {
-                    $contribution->rent_pension = strip_tags($request->rent[$key]) ?? 0;
-                }
+                $contribution->rent_pension = $input_data['rent'][$key];
                 $contribution->month_year = $key;
-                if(!(isset($request->dignity_rent[$key])) || $contribution->dignity_rent == ""){
-                    $contribution->dignity_rent = 0;
-                }else{
-                    $contribution->dignity_rent = strip_tags($request->dignity_rent[$key]) ?? 0;
-                }
-                $contribution->total = strip_tags($request->total[$key]) ?? 0;
+                $contribution->dignity_rent = $input_data['dignity_rent'][$key];
+                $contribution->total = $input_data['total'][$key];
                 $contribution->quotable = $contribution->rent_pension-$contribution->dignity_rent;
                 //$contribution->type = 'PLANILLA';
                 $contribution->contribution_state_id = 2;

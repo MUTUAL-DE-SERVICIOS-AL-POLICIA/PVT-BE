@@ -76,8 +76,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/deleteEnrolled_affiliate/{affiliate}', 'AffiliateController@deleteEnrolled')->name('deleteEnrolled_affiliate');
     Route::get('/CIDevice/{affiliate}/{valor}', 'AffiliateController@CIDevice')->name('CIDevice');
     //SpouseControler
+    Route::post('spouse/{affiliate_id}', 'SpouseController@store')->name('spouse_store');
     Route::patch('/update_spouse/{affiliate_id}', 'SpouseController@update')->name('update_spouse');
-
+    Route::get('/person-data/{identityCard}', 'SpouseController@findSpouseOrAffiliateData');
     Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 
     //Scanned Documents
@@ -659,18 +660,6 @@ Route::group(['middleware' => ['auth']], function () {
     })->name('print_send_daa_quota_aid');
     Route::get('test', function () {
       return Util::getNextAreaCode(102);
-    });
-    Route::get('get_next_area_code_ret_fun/{ret_fun_id}', function ($retirement_fund_id) {
-      return Util::getNextAreaCode($retirement_fund_id, false);
-    });
-    Route::get('get_next_area_code_quota_aid/{quota_aid_id}', function ($quota_aid_id) {
-      return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
-    });
-    Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
-      return ContributionProcess::find($contribution_process_id);
-    });
-    Route::get('get_next_area_code_eco_com/{eco_com_id}', function ($economic_complement_id) {
-      return EconomicComplement::find($economic_complement_id);
     });
     Route::get('/treasury/select_report', 'TreasuryController@selectReport');
     Route::get('/treasury/report', 'TreasuryController@report');

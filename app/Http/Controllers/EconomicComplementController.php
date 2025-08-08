@@ -555,7 +555,7 @@ class EconomicComplementController extends Controller
                 $spouse->official = $request->eco_com_beneficiary_official?? $request->eco_com_beneficiary_official;
                 $spouse->book = $request->eco_com_beneficiary_book ?? $request->eco_com_beneficiary_book;
                 $spouse->departure = $request->eco_com_beneficiary_departure ?? $request->eco_com_beneficiary_departure;
-                $spouse->marriage_date = $request->eco_com_beneficiary_marriage_date ?? $request->eco_com_beneficiary_marriage_date;
+                $spouse->marriage_date = Util::verifyBarDate($request->eco_com_beneficiary_marriage_date) ? Util::parseBarDate($request->eco_com_beneficiary_marriage_date) : $request->eco_com_beneficiary_marriage_date;
                 $spouse->save();
 
                 /**
@@ -736,7 +736,7 @@ class EconomicComplementController extends Controller
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
         $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', ID::procedureType()->eco_com)->select('id', 'name', 'procedure_type_id')->get();
-        $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid')
+        $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid', 'eco_com_submitted_documents.is_uploaded')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('eco_com_submitted_documents.economic_complement_id', $id);
@@ -1164,53 +1164,51 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
-        $num = $count = 0;
-        $eco_com = EconomicComplement::find($id);
-        // ? Algun dia
-        $submitted_documents = $eco_com->submitted_documents()->delete();
-        foreach ($request->requirements  as  $requirement) {
-            foreach ($requirement as $r) {
-                if ($r['status']) {
-                    $count++;
-                    $submit = new EcoComSubmittedDocument();
-                    $submit->economic_complement_id = $eco_com->id;
-                    $submit->procedure_requirement_id = $r['id'];
-                    $submit->reception_date = date('Y-m-d');
-                    $submit->comment = $r['comment'];
-                    $submit->save();
-                }
-            }
-        }
-        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
-            ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->where('procedure_requirements.number', '0')
-            ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-            ->orderBy('procedure_requirements.number', 'ASC')
-            ->get();
+        DB::transaction(function () use ($request, $id) {
+        $eco_com = EconomicComplement::findOrFail($id);
+        // Obtener documentos actuales indexados por procedure_requirement_id
+        $existingDocs = $eco_com->submitted_documents->keyBy('procedure_requirement_id');
 
-        $aditional =  $request->aditional_requirements;
-        $num = "";
-        foreach ($procedure_requirements as $requirement) {
-            $needle = EcoComSubmittedDocument::where('economic_complement_id', $id)
-                ->where('procedure_requirement_id', $requirement->id)
-                ->first();
-            if (isset($needle)) {
-                if (!in_array($requirement->id, $aditional)) {
-                    $num .= $requirement->id . ' ';
-                    $needle->delete();
-                    $needle->forceDelete();
-                }
-            } else {
-                if (in_array($requirement->id, $aditional)) {
-                    $submit = new EcoComSubmittedDocument();
-                    $submit->economic_complement_id = $eco_com->id;
-                    $submit->procedure_requirement_id = $requirement->id;
-                    $submit->reception_date = date('Y-m-d');
-                    $submit->comment = "";
-                    $submit->save();
-                }
-            }
+        // Nueva colección con todos los nuevos requisitos del request
+        $newRequirements = collect($request->requirements)
+            ->flatten(1)
+            ->filter(function ($r) { return $r['status']; });
+
+        $additionalRequirements = collect($request->aditional_requirements);
+        
+        // Unimos ambos arreglos por procedure_requirement_id
+        $incoming = $newRequirements->concat($additionalRequirements)
+                    ->mapWithKeys(function ($r) {
+                        return [
+                            $r['procedureRequirementId'] => [
+                                'is_uploaded' => $r['isUploaded'],
+                                'comment' => $r['comment'] ?? null,
+                            ]
+                        ];
+                    });
+
+        // Determinar los IDs actuales y los nuevos
+        $currentIds = $existingDocs->keys();
+        $incomingIds = $incoming->keys();
+
+        // 1. Eliminar los que ya no existen en el request
+        $toDelete = $currentIds->diff($incomingIds);
+        EcoComSubmittedDocument::where('economic_complement_id', $eco_com->id)
+            ->whereIn('procedure_requirement_id', $toDelete)
+            ->delete();
+
+        // 2. Crear o actualizar
+        foreach ($incoming as $procedureRequirementId => $data) {
+            $doc = $existingDocs->get($procedureRequirementId) ?? new EcoComSubmittedDocument();
+
+            $doc->economic_complement_id = $eco_com->id;
+            $doc->procedure_requirement_id = $procedureRequirementId;
+            $doc->is_uploaded = $data['is_uploaded'];
+            $doc->reception_date = now();
+            $doc->comment = $data['comment'];
+            $doc->save();
         }
+
         /**
          ** verify observation id = 6
          */
@@ -1218,7 +1216,7 @@ class EconomicComplementController extends Controller
         if ($number_docs->contains(0)) {
             $number_docs = $number_docs->slice(1);
         }
-        if ($count != $number_docs->count()) {
+        if (count($request->requirements) != $number_docs->count()) {
             if(!$eco_com->observations->contains(6)){
                 $eco_com->observations()->save(ObservationType::find(6), [
                     'user_id' => auth()->id(),
@@ -1244,7 +1242,8 @@ class EconomicComplementController extends Controller
                 ]);
             }
         }
-        return $num;
+        return ['deleted' => $toDelete];
+        });
     }
     public function editReviewProcedures(Request $request)
     {
@@ -1601,13 +1600,18 @@ class EconomicComplementController extends Controller
 
         if($discount_type_id == 6) {//Amortización por Reposición de Fondos
             $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
-            if( $last_movement ) {
-                if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+            if( $last_movement == null ) {
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Error',
+                    'errors' => ['No se puede realizar la amortización por Reposición de Fondos, porque no existe una deuda registrada.'],
+                ], 422);
+            }
+            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
                     return response()->json([
                         'msg' => 'Error',
                         'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
                     ], 422);
-                }
             }
         }
         if ($eco_com->discount_types->contains($discount_type->id)) {

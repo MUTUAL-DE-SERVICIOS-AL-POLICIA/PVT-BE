@@ -112,31 +112,12 @@ class QuotaAidMortuaryController extends Controller
             }
             return null;
         })
-      ->addColumn('file_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 34;
-        });
-        if (sizeof($filter) > 0) {
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('file_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 34;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('review_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 35;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -149,32 +130,12 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('individuals_account_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 36;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('individuals_account_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 36;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('qualification_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 37;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -187,32 +148,12 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('dictum_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 39;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('dictum_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 39;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('headship_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 38;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -225,32 +166,12 @@ class QuotaAidMortuaryController extends Controller
         }
         return null;
       })
-      ->addColumn('resolution_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 40;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
-        }
-        return null;
-      })
       ->addColumn('resolution_date', function ($quota_aid) {
         $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
           return $value['wf_state_id'] == 40;
         });
         if (sizeof($filter) > 0) {
           return (reset($filter)['date']);
-        }
-        return null;
-      })
-      ->addColumn('liquidation_code', function ($quota_aid) {
-        $filter = array_filter($quota_aid->quota_aid_correlative->toArray(), function ($value) {
-          return $value['wf_state_id'] == 61;
-        });
-        if (sizeof($filter) > 0) {
-
-          return (reset($filter)['code']);
         }
         return null;
       })
@@ -595,19 +516,20 @@ class QuotaAidMortuaryController extends Controller
    * @param  \Muserpol\QuotaAidMortuary  $quotaAidMortuary
    * @return \Illuminate\Http\Response
    */
-  public function storeLegalReview(Request $request, $id)
+  public function storeLegalReview(Request $request)
   {
-    $quota_id = QuotaAidMortuary::find($id);
     // $this->authorize('update',new RetFunSubmittedDocument);
-
-    foreach ($request->submit_documents as $document_array) {
-      $document = $document_array[0];
-      $submit_document = QuotaAidSubmittedDocument::find($document['submit_document_id']);
-      $submit_document->is_valid = $document['status'];
-      $submit_document->comment = $document['comment'];
-      $submit_document->save();
-    }
-    return $request;
+    DB::transaction(function () use ($request) {
+      foreach ($request->submit_documents as $document_array) {
+        foreach ($document_array as $document) {
+          $submit_document = QuotaAidSubmittedDocument::find($document['id']);
+          $submit_document->is_valid = $document['status'];
+          $submit_document->comment = $document['comment'];
+          $submit_document->save();
+        }
+      }
+      return $request;
+    });
   }
   /**
    * Display the specified resource.
@@ -618,7 +540,7 @@ class QuotaAidMortuaryController extends Controller
   //public function show(RetirementFund $retirementFund)
   public function show($id)
   {
-    $quota_aid = QuotaAidMortuary::find($id);
+    $quota_aid = QuotaAidMortuary::with('workflow:id,name')->find($id);
     //$this->authorize('view', $retirement_fund);
     $affiliate = Affiliate::find($quota_aid->affiliate_id);
     if (!sizeOf($affiliate->address) > 0) {
@@ -731,11 +653,11 @@ class QuotaAidMortuaryController extends Controller
     $observation_types = ObservationType::where('module_id', 4)->get();
 
     //selected documents
-    $submitted = QuotaAidSubmittedDocument::select('quota_aid_submitted_documents.id', 'procedure_requirements.number', 'quota_aid_submitted_documents.procedure_requirement_id', 'quota_aid_submitted_documents.comment', 'quota_aid_submitted_documents.is_valid')
+    $submitted = QuotaAidSubmittedDocument::select('quota_aid_submitted_documents.id', 'procedure_requirements.number', 'quota_aid_submitted_documents.procedure_requirement_id', 'quota_aid_submitted_documents.comment', 'quota_aid_submitted_documents.is_valid', 'quota_aid_submitted_documents.is_uploaded', 'procedure_documents.name')
       ->leftJoin('procedure_requirements', 'quota_aid_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
+      ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
       ->orderby('procedure_requirements.number', 'ASC')
       ->where('quota_aid_submitted_documents.quota_aid_mortuary_id', $id);
-
     // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
     /**for validate doc*/
     $rol = Util::getRol();
@@ -1300,65 +1222,67 @@ class QuotaAidMortuaryController extends Controller
    */
   public function editRequirements(Request $request, $id)
   {
-    $documents = QuotaAidSubmittedDocument::select('procedure_requirements.number', 'quota_aid_submitted_documents.procedure_requirement_id')
-      ->leftJoin('procedure_requirements', 'quota_aid_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
-      ->orderby('procedure_requirements.number', 'ASC')
-      ->where('quota_aid_submitted_documents.quota_aid_mortuary_id', $id)
-      ->pluck('quota_aid_submitted_documents.procedure_requirement_id', 'procedure_requirements.number');
-
-    $num = $num2 = 0;
-
-    foreach ($request->requirements as $requirement) {
-      $from = $to = 0;
-      $comment = null;
-      for ($i = 0; $i < count($requirement); $i++) {
-        $from = $requirement[$i]['number'];
-        if ($requirement[$i]['status'] == true) {
-          $to = $requirement[$i]['id'];
-          $comment = $requirement[$i]['comment'];
-          $doc = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $id)->where('procedure_requirement_id', $documents[$from])->first();
-          $doc->procedure_requirement_id = $to;
-          $doc->comment = $comment;
-          $doc->save();
-        }
+    DB::transaction(function () use ($request, $id) {
+      $requirements = [];
+      foreach ($request->requirements as $requirement) {
+        $requirements = array_merge($requirements, $requirement);
       }
-    }
+      $quota_aid = QuotaAidMortuary::select('id', 'procedure_modality_id')->find($id);
+      // Obtener documentos actuales indexados por procedure_requirement_id
+      $existingDocs = $quota_aid->submitted_documents->keyBy('procedure_requirement_id');
+      //logger()->info('Existing documents: ', $existingDocs->toArray());
+      $onlyDeleted = $quota_aid->submitted_documents()->onlyTrashed()->get()->keyBy('procedure_requirement_id');
+      
+      // Nueva colección con todos los nuevos requisitos del request
+      $newRequirements = collect($request->requirements)
+        ->flatten(1)
+        ->filter(function ($r) {
+          return $r['status'];
+        });
 
-    $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
-      ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-      ->where('procedure_requirements.number', '0')
-      ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-      ->orderBy('procedure_requirements.number', 'ASC')
-      ->get();
+      $additionalRequirements = collect($request->aditional_requirements);
 
-    $quota_aid = QuotaAidMortuary::select('id', 'procedure_modality_id')->find($id);
+      // Unimos ambos arreglos por procedure_requirement_id
+      $incoming = $newRequirements->concat($additionalRequirements)
+        ->mapWithKeys(function ($r) {
+          return [
+            $r['procedureRequirementId'] => [
+              'is_uploaded' => $r['isUploaded'],
+              'comment' => $r['comment'] ?? null,
+            ]
+          ];
+        });
 
-    $aditional =  $request->aditional_requirements;
-    $num = "";
+      // Determinar los IDs actuales y los nuevos
+      $currentIds = $existingDocs->keys();
+      $incomingIds = $incoming->keys();
 
-    foreach ($procedure_requirements as $requirement) {
-      $needle = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $id)
-        ->where('procedure_requirement_id', $requirement->id)
-        ->first();
-      if (isset($needle)) {
-        if (!in_array($requirement->id, $aditional)) {
-          $num .= $requirement->id . ' ';
-          $needle->delete();
-          $needle->forceDelete();
+      // 1. Eliminar los que ya no existen en el request
+      $toDelete = $currentIds->diff($incomingIds);
+      QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $quota_aid->id)
+        ->whereIn('procedure_requirement_id', $toDelete)
+        ->delete();
+
+      // 2. Crear o actualizar
+      foreach ($incoming as $procedureRequirementId => $data) {
+        if ($onlyDeleted->has($procedureRequirementId)) {
+          // Si el documento está eliminado, restaurarlo
+          $doc = $onlyDeleted->get($procedureRequirementId);
+          $doc->restore();
+        } else {
+          $doc = $existingDocs->get($procedureRequirementId) ?? new QuotaAidSubmittedDocument();
+
+          $doc->quota_aid_mortuary_id = $quota_aid->id;
+          $doc->procedure_requirement_id = $procedureRequirementId;
+          $doc->is_uploaded = $data['is_uploaded'];
+          $doc->reception_date = date('Y-m-d');
         }
-      } else {
-        if (in_array($requirement->id, $aditional)) {
-          $submit = new QuotaAidSubmittedDocument();
-          $submit->quota_aid_mortuary_id = $quota_aid->id;
-          $submit->procedure_requirement_id = $requirement->id;
-          $submit->reception_date = date('Y-m-d');
-          $submit->comment = "";
-          $submit->save();
-        }
+        $doc->comment = $data['comment'] ?? null;
+        $doc->save();
       }
-    }
 
-    return $num;
+      return ['deleted' => $toDelete];
+    });
   }
   public function getTestimonies($quota_aid_id)
   {

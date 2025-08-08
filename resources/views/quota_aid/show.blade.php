@@ -94,7 +94,6 @@
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
             <div class="pull-left">
-                <correlative doc-id="{{ $quota_aid->id }}" wf-state-id="{{ $quota_aid->wf_state_current_id }}" :type="`quotaAid`"></correlative>
             @if(Util::getRol()->id == 40 || Util::isRegionalRole())
                 <quota-aid-certification-button
                     title="Imprimir recepción"
@@ -314,18 +313,8 @@
                                     {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
                                         {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'quota_aid'=>$quota_aid,'documents'=>$documents])                                 --}}
                                 <quota-aid-step1-requirements-edit 
-                                    :quota_aid="{{ $quota_aid }}" 
-                                    :modalities="{{ $modalities }}" 
-                                    :requirements="{{ $requirements }}" 
-                                    :user="{{ $user }}" 
-                                    :cities="{{ $cities }}" 
-                                    :procedure-types="{{$procedure_types}}" 
-                                    :submitted="{{$submit_documents}}" 
-                                    :rol="{{Muserpol\Helpers\Util::getRol()->id}}"
-                                inline-template>
-
-                                    @include('quota_aid.step1_requirements_edit')
-
+                                    :affiliate="{{ $affiliate }}" :quota_aid="{{ $quota_aid }}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}"
+                                >
                                 </quota-aid-step1-requirements-edit>
                                     {{-- @endcan --}}
 
