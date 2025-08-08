@@ -160,6 +160,7 @@ class EconomicComplementReplicationController extends Controller
                 $replicated->user_id = auth()->id();
                 $replicated->eco_com_procedure_id = $request->destination_procedure_id;
                 $replicated->replicated_from_eco_com_id = $candidate->id;
+                $replicated->eco_com_origin_channel_id = 4; // Canal "Replicación"
                 $replicated->eco_com_state_id = 16; // "En proceso de revisión"
                 $replicated->workflow_id = $candidate->workflow_id;
                 $replicated->wf_current_state_id = 1; // "recepción"
