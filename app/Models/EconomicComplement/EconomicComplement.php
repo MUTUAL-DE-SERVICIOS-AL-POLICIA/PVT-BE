@@ -149,9 +149,13 @@ class EconomicComplement extends Model
     {
         return $this->complementary_factor;
     }
-    public function getTotalSemester()
+    public function getTotalSemester($months_of_payment)
     {
-        return $this->difference * 6;
+        $months_of_payment = (int) $months_of_payment;
+        if($months_of_payment == 0) //null
+            $months_of_payment =  6;
+            
+        return $this->difference * $months_of_payment;
     }
     public function getOnlyTotalEcoCom()
     {

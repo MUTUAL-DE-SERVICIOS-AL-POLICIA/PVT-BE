@@ -358,11 +358,13 @@ th.ellipsis-text {
                     </div>
                     <div id="tab-quota-aid-mortuory" class="tab-pane">
 
-                        @if($quota_aid)
-                        <quota-aid-info :quota_aid="{{ $quota_aid }}" :rf_city_start="{{$quota_aid->city_start}}" :rf_city_end="{{$quota_aid->city_end}}"
-                            :rf_procedure_modality=" {{$quota_aid->procedure_modality}}" :states="{{ $states }}" :read="true" inline-template>
-                            @include('quota_aid.info', ['quota_aid'=>$quota_aid,'cities'=>$birth_cities])
-                        </quota-aid-info>
+                        @if($quota_aids->count() > 0)
+                            @foreach ($quota_aids as $quota_aid)
+                                <quota-aid-info :quota_aid="{{ $quota_aid }}" :rf_city_start="{{$quota_aid->city_start}}" :rf_city_end="{{$quota_aid->city_end}}"
+                                    :rf_procedure_modality=" {{$quota_aid->procedure_modality}}" :states="{{ $states }}" :read="true" inline-template>
+                                    @include('quota_aid.info', ['quota_aid'=>$quota_aid,'cities'=>$birth_cities])
+                                </quota-aid-info>
+                            @endforeach
                         @else
                         <div class="alert alert-warning">NO SE TIENE REGISTROS DE CUOTA Y AUXILIO MORTUORIO</div>
                         @endif

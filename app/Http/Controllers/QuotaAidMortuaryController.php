@@ -540,7 +540,7 @@ class QuotaAidMortuaryController extends Controller
   //public function show(RetirementFund $retirementFund)
   public function show($id)
   {
-    $quota_aid = QuotaAidMortuary::find($id);
+    $quota_aid = QuotaAidMortuary::with('workflow:id,name')->find($id);
     //$this->authorize('view', $retirement_fund);
     $affiliate = Affiliate::find($quota_aid->affiliate_id);
     if (!sizeOf($affiliate->address) > 0) {
