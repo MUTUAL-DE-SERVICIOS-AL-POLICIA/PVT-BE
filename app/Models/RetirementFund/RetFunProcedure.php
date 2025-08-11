@@ -19,6 +19,13 @@ class RetFunProcedure extends Model
             ->withTimestamps();
     }
 
+    public function procedure_modalities()
+    {
+        return $this->belongsToMany('Muserpol\Models\ProcedureModality', 'ret_fun_procedures_modalities')
+            ->withPivot('annual_percentage_yield')
+            ->withTimestamps();
+    }
+
     public function scopeCurrent()
     {
 
