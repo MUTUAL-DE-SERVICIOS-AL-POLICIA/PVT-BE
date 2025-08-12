@@ -6,6 +6,7 @@
                 <button class="btn btn-primary" @click="show()" data-toggle="tooltip" title="Adicionar">
                     <i class="fa fa-plus"></i>
                 </button>
+                <button class="btn btn-primary" data-toggle="tooltip" :title="'-a\t\n-b'">asd</button>
             </div>
         </div>
         <div class="ibox-content">
@@ -37,6 +38,7 @@
                 <div class="ibox-title">
                     <h1>{{ modal.title }}</h1>
                 </div>
+
                 <div v-for="input in modal.inputs" class="col-md-12" :class="{ 'has-error': errors.has(input.name) }">
                     <div class="col-md-3">
                         <label class="control-label">{{ input.label }}</label>
@@ -50,27 +52,41 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    <h3>Seleccione a que grados se aplicará el límite de aportes</h3>
-                    <div class="dd">
-                        <ol class="dd-list">
-                            <li v-for="hierarchy in modal.hierarchies" class="dd-item"
-                                :class="hierarchy.show ? '' : 'dd-collapsed'">
-                                <button type="button" :data-action="hierarchy.show ? 'collapse' : 'expand'"
-                                    @click="hierarchy.show = !hierarchy.show" style="">{{ hierarchy.show ? 'Collapse' :
-                                        'Expand' }}</button>
-                                <div class="dd-handle">
-                                    <input type="checkbox" v-model="form.hierarchiesIds" :value="hierarchy.id"> {{
-                                        hierarchy.name }}
-                                </div>
-                                <ol class="dd-list">
-                                    <li v-for="degree in hierarchy.degrees" class="dd-handle"
-                                        style="padding: 2px !important;">
-                                        {{ degree.name }}
-                                    </li>
-                                </ol>
-                            </li>
-                        </ol>
-                    </div>
+                    <table class="footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint">
+                        <thead>
+                            <tr>
+                                <th class="footable-visible">Grados</th>
+                                <th class="footable-visible">Aplicar Limite de Aportes</th>
+                                <th class="footable-visible">Salario Promedio Máximo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="hierarchy in modal.hierarchies">
+                                <tr class="footable-even" :class="hierarchy.show ? 'footable-detail-show' : ''">
+                                    <td class="footable-visible footable-first-column"
+                                        @click="hierarchy.show = !hierarchy.show"><span
+                                            class="footable-toggle"></span>{{
+                                                hierarchy.name }}</td>
+                                    <td>
+                                        <input type="checkbox" v-model="form.hierarchies.find(e => e.id == hierarchy.id)" :value="hierarchy.id">
+                                    </td>
+                                    <td>
+                                        <input type="number" v-validate.defer="'required|numeric_locale|min_value:1'"
+                                            class="form-control">
+                                    </td>
+                                </tr>
+                                <tr class="footable-row-detail" v-if="hierarchy.show">
+                                    <td class="footable-row-detail-cell" colspan="4">
+                                        <div class="footable-row-detail-inner">
+                                            <div class="footable-row-detail-row" v-for="d in hierarchy.degrees">
+                                                <div class="footable-row-detail-name">{{ d.name }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="col-md-12">
                     <div class="text-center m-sm">
@@ -105,9 +121,8 @@ export default {
             form: {
                 id: null,
                 start_date: null,
-                limit_average: 0,
                 contributions_limit: null,
-                hierarchiesIds: [],
+                hierarchies: [],
                 method: 'post'
             },
             modal: {
@@ -117,11 +132,6 @@ export default {
                     name: 'start_date',
                     type: 'date',
                     validation: 'required'
-                }, {
-                    label: 'Salario Promedio Máximo',
-                    name: 'limit_average',
-                    type: 'number',
-                    validation: 'required|numeric_locale|min_value:1'
                 }, {
                     label: 'Número de Aportes Máximo',
                     name: 'contributions_limit',
@@ -134,7 +144,7 @@ export default {
                     degrees: hierarchy.degrees,
                     show: false,
                     value: false,
-                }))
+                })),
             }
         }
     },
@@ -154,9 +164,11 @@ export default {
                 this.form.start_date = procedure.start_date;
                 this.form.limit_average = procedure.limit_average;
                 this.form.contributions_limit = procedure.contributions_limit;
-                this.form.hierarchiesIds = procedure.hierarchies
-                    .filter(h => h.pivot.apply_contributions_limit)
-                    .map(h => h.pivot.hierarchy_id);
+                this.form.hierarchies = procedure.hierarchies.map(h => ({
+                    id: h.pivot.hierarchy_id,
+                    apply_contributions_limit: h.pivot.apply_contributions_limit,
+                    average_salary_limit: h.pivot.average_salary_limit,
+                }));
                 this.form.method = 'patch';
             } else {
                 this.modal.title = 'Adicionar Nueva Gestión';

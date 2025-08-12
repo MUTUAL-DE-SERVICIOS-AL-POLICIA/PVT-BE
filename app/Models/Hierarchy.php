@@ -20,7 +20,7 @@ class Hierarchy extends Model
     {
         return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunProcedure', 'ret_fun_procedures_hierarchies')
             ->withPivot('apply_contributions_limit')
-            ->withPivot('average_limit')
+            ->withPivot('average_salary_limit')
             ->withTimestamps();
     }
 }
