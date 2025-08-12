@@ -30,7 +30,7 @@
           </button>
           </template>
         </div>
-        <div class="ibox-tools" v-if="roleId == 4" >
+        <div class="ibox-tools" v-if="roleId == 4 || roleId == 5" >
           <button
             class="btn btn-primary"
             @click="refreshQualification()"
