@@ -1451,7 +1451,7 @@ class EconomicComplementController extends Controller
             }
         }
         if ($request->refresh == false) {
-            if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
+            if (Util::getRol()->id != 5 && ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado)) {
                 $eco_com_state = $economic_complement->eco_com_state;
                 return response()->json([
                     'status' => 'error',
