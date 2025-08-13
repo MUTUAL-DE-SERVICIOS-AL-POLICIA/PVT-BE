@@ -970,12 +970,14 @@ class RetirementFundController extends Controller
     }
 
     public function qualificationParameters() {
-        $procedures = RetFunProcedure::with('hierarchies')->orderby('id', 'desc')->get();
+        $procedures = RetFunProcedure::with(['hierarchies','procedure_modalities'])->orderby('id', 'desc')->get();
         $hierarchies = Hierarchy::with('degrees')->orderBy('id')->get();
+        $procedure_modalities = ProcedureModality::with('procedure_type')->whereIn('procedure_type_id',[ProcedureType::RET_FUN_PG, ProcedureType::RET_FUN_DP])->get();
         $data = [
             'procedures' => $procedures,
             'hierarchies' => $hierarchies,
         ];
+        return $procedure_modalities;
         return view('ret_fun.qualification_parameters', $data);
     }
 

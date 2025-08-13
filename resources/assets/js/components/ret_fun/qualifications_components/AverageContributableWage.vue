@@ -1,12 +1,11 @@
 <template>
-    <div class="ibox">
+    <div class="ibox" v-if="isLoaded">
         <div class="ibox-title">
             <h2 class="pull-left">Parámetros de la gestión</h2>
             <div class="ibox-tools">
                 <button class="btn btn-primary" @click="show()" data-toggle="tooltip" title="Adicionar">
                     <i class="fa fa-plus"></i>
                 </button>
-                <button class="btn btn-primary" data-toggle="tooltip" :title="'-a\t\n-b'">asd</button>
             </div>
         </div>
         <div class="ibox-content">
@@ -14,7 +13,6 @@
                 <thead>
                     <tr>
                         <th>Fecha de inicio</th>
-                        <th>Salario Promedio Máximo</th>
                         <th>Número de Aportes Máximo</th>
                         <th>Opciones</th>
                     </tr>
@@ -22,7 +20,6 @@
                 <tbody>
                     <tr v-for="(item, index) in procedures" :key="index">
                         <td>{{ item.start_date }}</td>
-                        <td>{{ item.limit_average }} Bs.</td>
                         <td>{{ item.contributions_limit }}</td>
                         <td style="width: 1%; white-space: nowrap;">
                             <button class="btn btn-warning" @click="show(item)" data-toggle="tooltip" title="Editar">
@@ -33,7 +30,7 @@
                 </tbody>
             </table>
         </div>
-        <modal name="procedure-modal" height="auto" :clickToClose="false" :focusTrap="true">
+        <modal name="procedure-modal" height="auto" :clickToClose="false" :focusTrap="true" :scrollable="true" style="z-index: 1000;">
             <div class="row w-full m-xxs">
                 <div class="ibox-title">
                     <h1>{{ modal.title }}</h1>
@@ -68,11 +65,14 @@
                                             class="footable-toggle"></span>{{
                                                 hierarchy.name }}</td>
                                     <td>
-                                        <input type="checkbox" v-model="form.hierarchies.find(e => e.id == hierarchy.id)" :value="hierarchy.id">
+                                        <input type="checkbox" :name="'hierarchy_cb_' + hierarchy.id"
+                                            v-model="form.hierarchies[hierarchy.id].apply_contributions_limit">
                                     </td>
                                     <td>
-                                        <input type="number" v-validate.defer="'required|numeric_locale|min_value:1'"
-                                            class="form-control">
+                                        <input type="number" :name="'hierarchy_input_' + hierarchy.id"
+                                            v-validate.defer="'required|numeric_locale|min_value:1'"
+                                            class="form-control"
+                                            v-model.number="form.hierarchies[hierarchy.id].average_salary_limit">
                                     </td>
                                 </tr>
                                 <tr class="footable-row-detail" v-if="hierarchy.show">
@@ -90,7 +90,7 @@
                 </div>
                 <div class="col-md-12">
                     <div class="text-center m-sm">
-                        <button class="btn btn-danger" type="button" @click="$modal.hide('procedure-modal')">
+                        <button class="btn btn-danger" type="button" @click="hide()">
                             <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
                             <span class="bold">Cancelar</span>
                         </button>
@@ -104,6 +104,8 @@
     </div>
 </template>
 <script>
+import { pad } from 'lodash';
+
 export default {
     name: 'AverageContributableWage',
     props: {
@@ -118,14 +120,9 @@ export default {
     },
     data() {
         return {
-            form: {
-                id: null,
-                start_date: null,
-                contributions_limit: null,
-                hierarchies: [],
-                method: 'post'
-            },
-            modal: {
+            isLoaded: false,
+            form: {}, // Objeto que se enviara al backend
+            modal: { // Sirve para renderizar los inputs del modal
                 title: '',
                 inputs: [{
                     label: 'Fecha de Inicio',
@@ -136,7 +133,7 @@ export default {
                     label: 'Número de Aportes Máximo',
                     name: 'contributions_limit',
                     type: 'number',
-                    validation: 'required|numeric|min_value:1'
+                    validation: 'required|numeric_locale|min_value:1'
                 }],
                 hierarchies: this.hierarchies.map(hierarchy => ({
                     id: hierarchy.id,
@@ -154,6 +151,10 @@ export default {
             getMessage: field => `El campo ${field} debe ser un número válido.`,
             validate: value => /^-?\d+([.,]\d+)?$/.test(value)
         });
+
+        // Inicializa el formulario
+        this.clearForm();
+        this.isLoaded = true;
     },
     methods: {
         show(procedure) {
@@ -164,11 +165,14 @@ export default {
                 this.form.start_date = procedure.start_date;
                 this.form.limit_average = procedure.limit_average;
                 this.form.contributions_limit = procedure.contributions_limit;
-                this.form.hierarchies = procedure.hierarchies.map(h => ({
-                    id: h.pivot.hierarchy_id,
-                    apply_contributions_limit: h.pivot.apply_contributions_limit,
-                    average_salary_limit: h.pivot.average_salary_limit,
-                }));
+                for (const hierarchy of procedure.hierarchies) {
+                    this.form.hierarchies[hierarchy.id] = {
+                        id: hierarchy.id,
+                        name: hierarchy.name,
+                        average_salary_limit: hierarchy.pivot.average_salary_limit || null,
+                        apply_contributions_limit: hierarchy.pivot.apply_contributions_limit || false
+                    };
+                }
                 this.form.method = 'patch';
             } else {
                 this.modal.title = 'Adicionar Nueva Gestión';
@@ -235,10 +239,20 @@ export default {
 
         },
         clearForm() {
-            this.form.id = null;
-            this.form.start_date = null;
-            this.form.limit_average = null;
-            this.max_contributions_limit = null;
+            this.form = {
+                id: null,
+                start_date: null,
+                contributions_limit: null,
+                hierarchies: this.hierarchies.reduce((acc, item) => {
+                    acc[item.id] = {
+                        id: item.id,
+                        name: item.name,
+                        average_salary_limit: null,
+                        apply_contributions_limit: false
+                    };
+                    return acc;
+                }, {})
+            };
             this.$validator.reset();
         }
     }
