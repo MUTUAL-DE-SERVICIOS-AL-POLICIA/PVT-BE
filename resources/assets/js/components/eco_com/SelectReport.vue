@@ -265,6 +265,10 @@ export default {
         {
           id: 30,
           name: "Afiliados con doble percepción del ultimo periodo"
+        },
+        {
+          id: 31,
+          name: "Gestión Documental 2017-2024"
         }
       ],
       form: {
