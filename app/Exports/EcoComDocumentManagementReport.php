@@ -46,7 +46,7 @@ class EcoComDocumentManagementReport implements FromQuery, WithHeadings, ShouldA
                             WHEN ecm.procedure_modality_id = 30 THEN
                                 CASE
                                     WHEN s.id IS NULL THEN 'VIUDEDAD - CONYUGE NO ENCONTRADO'
-                                    ELSE CONCAT(s.first_name, ' ', s.last_name, ' ', s.mothers_last_name, ')
+                                    ELSE CONCAT(s.first_name, ' ', s.last_name, ' ', s.mothers_last_name)
                                 END
                             ELSE CONCAT(a.first_name, ' ', a.second_name, ' ', a.last_name, ' ', a.mothers_last_name)
                         END AS nombre_completo"),
