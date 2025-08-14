@@ -29,17 +29,28 @@ class EcoComDocumentManagementReport implements FromQuery, WithHeadings, ShouldA
             ->select(
                 'ec.affiliate_id',
                 'ec.code',
-                DB::raw("CONCAT(a.first_name, ' ', a.second_name, ' ', a.last_name, ' ', a.mothers_last_name) as nombre_completo"),
+                DB::raw("CASE
+                    WHEN ecm.procedure_modality_id = 29 THEN CONCAT(a.first_name, ' ', a.second_name, ' ', a.last_name, ' ', a.mothers_last_name)
+                    WHEN ecm.procedure_modality_id = 30 THEN CONCAT(s.first_name, ' ', s.last_name, ' ', s.mothers_last_name, ' (', s.identity_card, ')')
+                    ELSE CONCAT(a.first_name, ' ', a.second_name, ' ', a.last_name, ' ', a.mothers_last_name)
+                END as nombre_completo"),
                 'ec.reception_date',
-                'docs.documents as documentos_presentados'
+                'docs.documents as documents_presentados',
+                DB::raw("CONCAT(u.first_name, ' ', u.last_name) as usuario_recepcion")
             )
             ->leftJoin('affiliates as a', 'a.id', '=', 'ec.affiliate_id')
+            ->leftJoin('spouses as s', 'a.id', '=', 's.affiliate_id')
+            ->leftJoin('eco_com_modalities as ecm', 'ecm.id', '=', 'ec.eco_com_modality_id')
             ->leftJoin('eco_com_procedures as ecp', 'ecp.id', '=', 'ec.eco_com_procedure_id')
+            ->leftJoin('wf_records as wr', 'wr.recordable_id', '=', 'ec.id')
+            ->leftJoin('users as u', 'u.id', '=', 'wr.user_id')
             ->leftJoin(DB::raw('(' . $all_documents->toSql() . ') as docs'), function ($join) {
                 $join->on('docs.economic_complement_id', '=', 'ec.id');
             })
             ->where('ecp.year', '>=', '2017-01-01')
             ->where('ec.eco_com_reception_type_id', 2)
+            ->where('wr.recordable_type', 'economic_complements')
+            ->whereRaw("wr.message ILIKE ?", ['%recepcionó%'])
             ->orderBy('ec.reception_date', 'desc');
     }
 
