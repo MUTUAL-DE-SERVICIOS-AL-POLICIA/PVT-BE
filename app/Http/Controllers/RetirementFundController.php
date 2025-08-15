@@ -643,6 +643,18 @@ class RetirementFundController extends Controller
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id', $id);
         
+        // Sirve para listar documentos que fueron eliminados anteriormente
+        $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
+            return [$item->id => $item];
+        });
+        $restore_procedure_documents = collect();
+        foreach ($submitted->get() as $item) {
+            if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
+                $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
+            }
+        }
+        $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+
         // return $submitted->get();
         // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
