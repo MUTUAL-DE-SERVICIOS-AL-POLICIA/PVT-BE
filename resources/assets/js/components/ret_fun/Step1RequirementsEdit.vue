@@ -11,11 +11,6 @@
                         Editar</button>
                 </div>
             </div>
-            <div class="row" v-if="errorsValidate.length > 0">
-                <div v-for="err in errorsValidate" :key="err" class="alert alert-danger">
-                    <i class="fa fa-exclamation-triangle"></i> {{ err }}
-                </div>
-            </div>
             <form>
                 <div class="row">
                     <div v-for="(requirement, index) in requirementList" :key="index">
@@ -98,17 +93,17 @@ export default {
         'affiliate',
         'ret_fun',
         'submitted',
+        'requirements',
         'rol',
     ],
     data() {
         return {
-            requirementList: [],
+            requirementList: {},
             aditionalRequirements: [],
             aditionalRequirementsUploaded: [],
             aditionalRequirementsSelected: [],
             modality: null,
             editing: false,
-            errorsValidate: [],
             additionalCounter: 100, // Este numero se usa como indice en los requisitos con numero 0 para que se grafiquen al final de la lista
         }
     },
@@ -131,78 +126,86 @@ export default {
             }, 500);
         },
         async getRequirements() {
-            // Si el rol es 11, mapear directamente la lista sin llamar al backend
-            if (this.rol === 11) {
-                const temp = {};
-                this.submitted.map(submit => {
-                    const index = submit.number > 0 ? submit.number : this.additionalCounter;
-                    if (!temp[index]) {
-                        temp[index] = [];
+            const isLegalReview = this.rol == 11;
+            if (isLegalReview) {
+                this.requirementList = this.submitted.reduce((acc, sub) => {
+                    const index = sub.number > 0 ? sub.number : this.additionalCounter;
+
+                    if (!acc[index]) {
+                        acc[index] = [];
                     }
-                    temp[index].push({
-                        id: submit.id,
-                        name: submit.name,
-                        status: submit.is_valid,
-                        background: submit.is_valid ? 'bg-success-green' : '',
-                        comment: submit.comment,
-                        isUploaded: submit.is_uploaded,
-                        procedureRequirementId: submit.procedure_requirement_id,
-                        number: submit.number
+                    acc[index].push({
+                        id: sub.id,
+                        name: sub.name,
+                        status: sub.is_valid,
+                        background: sub.is_valid ? 'bg-success-green' : '',
+                        comment: sub.comment,
+                        isUploaded: sub.is_uploaded,
+                        procedureRequirementId: sub.procedure_requirement_id,
+                        number: sub.number
                     });
-                });
-                this.requirementList = temp;
+                    return acc;
+                }, {})
+
+                this.aditionalRequirementsUploaded = [];
                 this.aditionalRequirements = [];
-                this.aditionalRequirementsSelected = [];
-                return;
-            }
+            } else {
+                const acc = {}
+                this.requirements.forEach(req => {
+                    if (req.number == 0) {
+                        const opReq = {
+                            name: req.document,
+                            number: req.number,
+                            procedureRequirementId: req.id,
+                            isUploaded: false,
+                        }
+                        const opSub = this.submitted.find(e => e.procedure_requirement_id == req.id)
+                        if (opSub) {
+                            opReq.isUploaded = opSub.is_uploaded
+                        }
+                        if (opReq.isUploaded) {
+                            this.aditionalRequirementsUploaded.push(opReq);
+                        } else {
+                            this.aditionalRequirements.push(opReq);
+                        }
+                    } else {
+                        if (!acc[req.number]) {
+                            acc[req.number] = [];
+                        }
 
-            // Si no es rol 11, obtener los documentos desde la API
-            const uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
+                        acc[req.number].push({
+                            id: req.id,
+                            name: req.document,
+                            status: false,
+                            background: '',
+                            comment: null,
+                            isUploaded: false,
+                            procedureRequirementId: req.id,
+                            number: req.number
+                        });
+                    }
+                });
+                this.requirementList = acc;
 
-            try {
-                const { data } = await axios.get(uri);
-
-                const submittedMap = new Map(
-                    this.submitted.map(doc => [doc.procedure_requirement_id, doc])
-                );
-
-                this.requirementList = Object.values(data.requiredDocuments).map(group =>
-                    group.map(doc => this.processRequirement(doc, submittedMap.get(doc.procedureRequirementId)))
-                );
-
-                this.aditionalRequirementsUploaded = data.additionallyDocumentsUpload || [];
-                this.aditionalRequirements = data.additionallyDocuments || [];
-            } catch (error) {
-                console.error('Error al obtener los requisitos:', error);
+                // Marcar los documentos que ya fueron presentados
+                this.submitted.forEach(sub => {
+                    if (sub.number == 0) return;
+                    const req = this.requirementList[sub.number].find(e => e.id == sub.procedure_requirement_id);
+                    if (req) {
+                        req.status = true;
+                        req.background = sub.is_uploaded ? 'bg-success-blue' : 'bg-success-green';
+                        req.comment = sub.comment;
+                        req.isUploaded = sub.is_uploaded;
+                    }
+                    // Si el documento esta escaneado se eliminan las demas opciones del mismo número
+                    if (req.isUploaded) {
+                        this.requirementList[sub.number] = [];
+                        this.requirementList[sub.number].push(req);
+                    }
+                });
             }
 
             this.getAditionalRequirements(); // si esta función es necesaria
-        },
-        processRequirement(requirement, submittedDoc) {
-            const r = { ...requirement }; // copia para no mutar directamente
-
-            if (!submittedDoc) {
-                r.status = false;
-                r.background = '';
-                r.comment = null;
-                return r;
-            }
-
-            r.comment = submittedDoc.comment;
-            r.submit_document_id = submittedDoc.id;
-
-            if (this.rol !== 11) {
-                if (submittedDoc.is_uploaded !== r.isUploaded) {
-                    this.errorsValidate.push(`El documento "${r.name}" no coincide con el archivo escaneado.`);
-                }
-                r.status = true;
-                r.background = r.isUploaded ? 'bg-success-blue' : 'bg-success-green';
-            } else {
-                r.status = submittedDoc.is_valid;
-                r.background = submittedDoc.is_valid ? 'bg-success-green' : '';
-            }
-
-            return r;
         },
         getAditionalRequirements() {
             if (!this.modality) {
