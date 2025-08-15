@@ -622,7 +622,6 @@ class QuotaAidMortuaryController extends Controller
     $procedures_modalities = ProcedureModality::whereIn('procedure_type_id', $procedures_modalities_ids)->get();
     $file_modalities = ProcedureModality::get();
 
-    $requirements = ProcedureRequirement::where('procedure_modality_id', $quota_aid->procedure_modality_id)->whereNull('deleted_at')->get();
 
     $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
     $cities = City::get();
@@ -644,6 +643,7 @@ class QuotaAidMortuaryController extends Controller
     $procedure_types = ProcedureType::where('module_id', 4)->get();
     $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
       ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+      ->where('procedure_modality_id', $quota_aid->procedure_modality_id)
       ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
       ->orderBy('procedure_requirements.number', 'ASC')
       ->get();
@@ -658,6 +658,19 @@ class QuotaAidMortuaryController extends Controller
       ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
       ->orderby('procedure_requirements.number', 'ASC')
       ->where('quota_aid_submitted_documents.quota_aid_mortuary_id', $id);
+
+    // Sirve para listar documentos que fueron eliminados anteriormente
+    $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
+        return [$item->id => $item];
+    });
+    $restore_procedure_documents = collect();
+    foreach ($submitted->get() as $item) {
+      if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
+        $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
+      }
+    }
+    $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+
     // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
     /**for validate doc*/
     $rol = Util::getRol();

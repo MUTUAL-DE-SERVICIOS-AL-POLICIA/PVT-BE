@@ -171,7 +171,7 @@ El trámite es de tipo <strong>{{$economic_complement->eco_com_reception_type->n
                 </eco-com-legal-guardian>
             </div>
             <div id="tab-eco-com-summited-document" class="tab-pane">
-                <eco-com-step1-requirements-edit :affiliate="{{ $affiliate }}" :eco-com="{{ $economic_complement }}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
+                <eco-com-step1-requirements-edit :affiliate="{{ $affiliate }}" :eco-com="{{ $economic_complement }}" :requirements='@json($requirements)' :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
                 </eco-com-step1-requirements-edit>
             </div>
             <div id="tab-eco-com-qualification" class="tab-pane">

@@ -42,10 +42,6 @@
                                     <div class="vote-icon">
                                         <span style="color:#3c3c3c"><i class="fa "
                                                 :class="rq.status ? 'fa-check-square' : 'fa-square-o'"></i></span>
-                                        <div style="opacity:0" v-if="rol != 11">
-                                            <input type="checkbox" v-model="rq.status" value="checked"
-                                                :name="'document' + rq.id" class="largerCheckbox">
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -126,14 +122,19 @@ export default {
             }, 500);
         },
         async getRequirements() {
-            const isLegalReview = this.rol == 11;
+            const isLegalReview = this.rol === 11;
+
+            // Reiniciamos siempre para evitar basura
+            this.aditionalRequirementsUploaded = [];
+            this.aditionalRequirements = [];
+
             if (isLegalReview) {
+                // Caso: Revisión Legal → agrupar `submitted` por número
                 this.requirementList = this.submitted.reduce((acc, sub) => {
                     const index = sub.number > 0 ? sub.number : this.additionalCounter;
 
-                    if (!acc[index]) {
-                        acc[index] = [];
-                    }
+                    if (!acc[index]) acc[index] = [];
+
                     acc[index].push({
                         id: sub.id,
                         name: sub.name,
@@ -144,36 +145,39 @@ export default {
                         procedureRequirementId: sub.procedure_requirement_id,
                         number: sub.number
                     });
-                    return acc;
-                }, {})
 
-                this.aditionalRequirementsUploaded = [];
-                this.aditionalRequirements = [];
+                    return acc;
+                }, {});
             } else {
-                const acc = {}
+                // Preparamos mapa rápido de submitted por requirement_id
+                const submittedMap = new Map(
+                    this.submitted.map(s => [s.procedure_requirement_id, s])
+                );
+
+                const acc = {};
+
                 this.requirements.forEach(req => {
-                    if (req.number == 0) {
+                    const sub = submittedMap.get(req.id);
+
+                    if (req.number === 0) {
+                        // Requisitos adicionales
                         const opReq = {
                             name: req.document,
                             number: req.number,
                             procedureRequirementId: req.id,
-                            isUploaded: false,
-                        }
-                        const opSub = this.submitted.find(e => e.procedure_requirement_id == req.id)
-                        if (opSub) {
-                            opReq.isUploaded = opSub.is_uploaded
-                        }
+                            isUploaded: sub ? sub.is_uploaded : false
+                        };
+
                         if (opReq.isUploaded) {
                             this.aditionalRequirementsUploaded.push(opReq);
                         } else {
                             this.aditionalRequirements.push(opReq);
                         }
                     } else {
-                        if (!acc[req.number]) {
-                            acc[req.number] = [];
-                        }
+                        if (!acc[req.number]) acc[req.number] = [];
+                        if (acc[req.number].some(item => item.isUploaded)) return;
 
-                        acc[req.number].push({
+                        const baseReq = {
                             id: req.id,
                             name: req.document,
                             status: false,
@@ -182,30 +186,29 @@ export default {
                             isUploaded: false,
                             procedureRequirementId: req.id,
                             number: req.number
-                        });
-                    }
-                });
-                this.requirementList = acc;
+                        };
 
-                // Marcar los documentos que ya fueron presentados
-                this.submitted.forEach(sub => {
-                    if (sub.number == 0) return;
-                    const req = this.requirementList[sub.number].find(e => e.id == sub.procedure_requirement_id);
-                    if (req) {
-                        req.status = true;
-                        req.background = sub.is_uploaded ? 'bg-success-blue' : 'bg-success-green';
-                        req.comment = sub.comment;
-                        req.isUploaded = sub.is_uploaded;
-                    }
-                    // Si el documento esta escaneado se eliminan las demas opciones del mismo número
-                    if (req.isUploaded) {
-                        this.requirementList[sub.number] = [];
-                        this.requirementList[sub.number].push(req);
+                        if (sub) {
+                            baseReq.status = true;
+                            baseReq.background = sub.is_uploaded ? 'bg-success-blue' : 'bg-success-green';
+                            baseReq.comment = sub.comment;
+                            baseReq.isUploaded = sub.is_uploaded;
+
+                            // Si está escaneado, reemplazamos todas las opciones
+                            if (baseReq.isUploaded) {
+                                acc[req.number] = [baseReq];
+                                return;
+                            }
+                        }
+
+                        acc[req.number].push(baseReq);
                     }
                 });
+
+                this.requirementList = acc;
             }
 
-            this.getAditionalRequirements(); // si esta función es necesaria
+            this.getAditionalRequirements();
         },
         getAditionalRequirements() {
             if (!this.modality) {
