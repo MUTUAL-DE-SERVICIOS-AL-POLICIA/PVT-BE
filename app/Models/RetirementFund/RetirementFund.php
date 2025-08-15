@@ -108,8 +108,10 @@ class RetirementFund extends Model
     {
         return $this->morphMany('Muserpol\Models\ProcedureRecord', 'recordable');
     }
-
-
+    public function submitted_documents()
+    {
+        return $this->hasMany(RetFunSubmittedDocument::class);
+    }
     public function getReceptionSummary(){
         
         $beneficiary = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$this->id)->first();

@@ -20,9 +20,6 @@ export default {
           }
       }
   },
-  created(){
-    //   console.log(this.read);
-  },
   computed:{
      city_start_name: function(){
           return !!this.city_start? this.city_start.name:'';

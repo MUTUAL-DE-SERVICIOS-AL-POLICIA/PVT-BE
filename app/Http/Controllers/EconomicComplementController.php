@@ -555,7 +555,7 @@ class EconomicComplementController extends Controller
                 $spouse->official = $request->eco_com_beneficiary_official?? $request->eco_com_beneficiary_official;
                 $spouse->book = $request->eco_com_beneficiary_book ?? $request->eco_com_beneficiary_book;
                 $spouse->departure = $request->eco_com_beneficiary_departure ?? $request->eco_com_beneficiary_departure;
-                $spouse->marriage_date = $request->eco_com_beneficiary_marriage_date ?? $request->eco_com_beneficiary_marriage_date;
+                $spouse->marriage_date = Util::verifyBarDate($request->eco_com_beneficiary_marriage_date) ? Util::parseBarDate($request->eco_com_beneficiary_marriage_date) : $request->eco_com_beneficiary_marriage_date;
                 $spouse->save();
 
                 /**
@@ -1164,7 +1164,7 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
-        
+        DB::transaction(function () use ($request, $id) {
         $eco_com = EconomicComplement::findOrFail($id);
         // Obtener documentos actuales indexados por procedure_requirement_id
         $existingDocs = $eco_com->submitted_documents->keyBy('procedure_requirement_id');
@@ -1243,6 +1243,7 @@ class EconomicComplementController extends Controller
             }
         }
         return ['deleted' => $toDelete];
+        });
     }
     public function editReviewProcedures(Request $request)
     {
@@ -1450,7 +1451,7 @@ class EconomicComplementController extends Controller
             }
         }
         if ($request->refresh == false) {
-            if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
+            if (Util::getRol()->id != 5 && ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado)) {
                 $eco_com_state = $economic_complement->eco_com_state;
                 return response()->json([
                     'status' => 'error',
@@ -1599,13 +1600,18 @@ class EconomicComplementController extends Controller
 
         if($discount_type_id == 6) {//Amortización por Reposición de Fondos
             $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
-            if( $last_movement ) {
-                if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+            if( $last_movement == null ) {
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Error',
+                    'errors' => ['No se puede realizar la amortización por Reposición de Fondos, porque no existe una deuda registrada.'],
+                ], 422);
+            }
+            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
                     return response()->json([
                         'msg' => 'Error',
                         'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
                     ], 422);
-                }
             }
         }
         if ($eco_com->discount_types->contains($discount_type->id)) {
