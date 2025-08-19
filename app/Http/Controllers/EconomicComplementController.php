@@ -732,15 +732,29 @@ class EconomicComplementController extends Controller
         $procedure_types = ProcedureType::where('module_id', ID::module()->eco_com)->get();
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+            ->where('procedure_modality_id', $economic_complement->eco_com_modality->procedure_modality_id)
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
         $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', ID::procedureType()->eco_com)->select('id', 'name', 'procedure_type_id')->get();
-        $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid', 'eco_com_submitted_documents.is_uploaded')
+        $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid', 'eco_com_submitted_documents.is_uploaded', 'procedure_documents.name')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
+            ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('eco_com_submitted_documents.economic_complement_id', $id);
 
+        // Sirve para listar documentos que fueron eliminados anteriormente
+        $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
+            return [$item->id => $item];
+        });
+        $restore_procedure_documents = collect();
+        foreach ($submitted->get() as $item) {
+            if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
+                $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
+            }
+        }
+        $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+        
         /**
          ** for validation and submit
          */
@@ -1451,7 +1465,7 @@ class EconomicComplementController extends Controller
             }
         }
         if ($request->refresh == false) {
-            if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
+            if (Util::getRol()->id != 5 && ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado)) {
                 $eco_com_state = $economic_complement->eco_com_state;
                 return response()->json([
                     'status' => 'error',

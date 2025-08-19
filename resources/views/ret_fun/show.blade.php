@@ -310,20 +310,11 @@
                             </div>
                             <div id="tab-summited-document" class="tab-pane">
 
-                                @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                        {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}                                        
-                                    <ret-fun-step1-requirements-edit :affiliate="{{ $affiliate }}" :ret_fun="{{ $retirement_fund }}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
+                                @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)                                     
+                                    <ret-fun-step1-requirements-edit :affiliate="{{ $affiliate }}" :ret_fun="{{ $retirement_fund }}" :submitted="{{$submit_documents}}" :requirements='@json($requirements)' :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
                                     </ret-fun-step1-requirements-edit>
                                 @endcan
                             </div>
-                            <div id="tab-headship" class="tab-pane">
-                                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
-                                    {{-- <ret-fun-heaship :ret_fun="{{ $retirement_fund }}" user="{{ $user }}" inline-template>
-                                        @include('ret_fun.headship')
-                                    </ret-fun-heaship> --}}
-                                {{-- @endcan --}}
-                            </div>
-
                             <div id="tab-individual-accounts" class="tab-pane">
                                 @can('view',new Muserpol\Models\Contribution\Contribution)
                                     <ret-fun-qualification
