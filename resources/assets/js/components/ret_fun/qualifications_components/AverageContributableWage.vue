@@ -30,7 +30,8 @@
                 </tbody>
             </table>
         </div>
-        <modal name="procedure-modal" height="auto" :clickToClose="false" :focusTrap="true" :scrollable="true" style="z-index: 1000;">
+        <modal name="procedure-modal" height="auto" width="60%" :clickToClose="false" :focusTrap="true"
+            :scrollable="true" style="z-index: 1000;">
             <div class="row w-full m-xxs">
                 <div class="ibox-title">
                     <h1>{{ modal.title }}</h1>
@@ -65,14 +66,18 @@
                                             class="footable-toggle"></span>{{
                                                 hierarchy.name }}</td>
                                     <td>
-                                        <input type="checkbox" :name="'hierarchy_cb_' + hierarchy.id"
+                                        <input type="checkbox" class="icheckbox_square-green"
+                                            :name="'hierarchy_cb_' + hierarchy.id"
                                             v-model="form.hierarchies[hierarchy.id].apply_contributions_limit">
                                     </td>
                                     <td>
-                                        <input type="number" :name="'hierarchy_input_' + hierarchy.id"
-                                            v-validate.defer="'required|numeric_locale|min_value:1'"
-                                            class="form-control"
-                                            v-model.number="form.hierarchies[hierarchy.id].average_salary_limit">
+                                        <div class="input-group">
+                                            <input type="number" :name="'hierarchy_input_' + hierarchy.id"
+                                                v-validate.defer="'required|numeric_locale|min_value:1'"
+                                                class="form-control"
+                                                v-model.number="form.hierarchies[hierarchy.id].average_salary_limit">
+                                            <span class="input-group-addon">Bs.</span>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr class="footable-row-detail" v-if="hierarchy.show">
@@ -80,6 +85,43 @@
                                         <div class="footable-row-detail-inner">
                                             <div class="footable-row-detail-row" v-for="d in hierarchy.degrees">
                                                 <div class="footable-row-detail-name">{{ d.name }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <table class="footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint">
+                        <thead>
+                            <tr>
+                                <th class="footable-visible">Modalidad</th>
+                                <th class="footable-visible">Porcentaje de Rendimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="procedureType in modal.procedureType">
+                                <tr class="footable-even" :class="procedureType.show ? 'footable-detail-show' : ''">
+                                    <td class="footable-visible footable-first-column"
+                                        @click="procedureType.show = !procedureType.show"><span
+                                            class="footable-toggle"></span>{{
+                                                procedureType.name }}</td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="number" :name="'hierarchy_input_' + procedureType.id"
+                                                v-validate.defer="'required|integer|min_value:0'" class="form-control"
+                                                v-model.number="form.procedureType[procedureType.id].percentageYield">
+                                            <span class="input-group-addon">%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="footable-row-detail" v-if="procedureType.show">
+                                    <td class="footable-row-detail-cell" colspan="4">
+                                        <div class="footable-row-detail-inner">
+                                            <div class="footable-row-detail-row" v-for="m in procedureType.modalities">
+                                                <div class="footable-row-detail-name">{{ m.name }}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -104,19 +146,12 @@
     </div>
 </template>
 <script>
-import { pad } from 'lodash';
-
 export default {
     name: 'AverageContributableWage',
     props: {
-        procedures: {
-            type: Array,
-            required: true
-        },
-        hierarchies: {
-            type: Array,
-            required: true
-        }
+        procedures: { type: Array, required: true },
+        hierarchies: { type: Array, required: true },
+        procedureTypes: { type: Array, required: true }
     },
     data() {
         return {
@@ -134,14 +169,23 @@ export default {
                     name: 'contributions_limit',
                     type: 'number',
                     validation: 'required|numeric_locale|min_value:1'
-                }],
+                },],
                 hierarchies: this.hierarchies.map(hierarchy => ({
                     id: hierarchy.id,
                     name: hierarchy.name,
                     degrees: hierarchy.degrees,
                     show: false,
-                    value: false,
                 })),
+                procedureType: this.procedureTypes.map(procedureType => ({
+                    id: procedureType.id,
+                    moduleId: procedureType.module_id,
+                    name: procedureType.name,
+                    show: false,
+                    modalities: procedureType.procedure_modalities.map(modalities => ({
+                        id: modalities.id,
+                        name: modalities.name,
+                    }))
+                }))
             }
         }
     },
@@ -172,6 +216,26 @@ export default {
                         average_salary_limit: hierarchy.pivot.average_salary_limit || null,
                         apply_contributions_limit: hierarchy.pivot.apply_contributions_limit || false
                     };
+                }
+                this.form.procedureType = {};
+                for (const modalities of procedure.procedure_modalities) {
+                    if(!this.form.procedureType[modalities.procedure_type_id]) {
+                        this.form.procedureType[modalities.procedure_type_id] = {
+                            id: modalities.procedure_type_id,
+                            name: type.name,
+                            percentageYield: 0,
+                            modalitiesIds: type.procedure_modalities.map(e => e.id)
+                        }
+                    }
+                    this.form.procedureType = this.procedureTypes.reduce((acc, type) => {
+                        acc[type.id] = {
+                            id: type.id,
+                            name: type.name,
+                            percentageYield: 0,
+                            modalitiesIds: type.procedure_modalities.map(e => e.id)
+                        };
+                        return acc;
+                    }, {})
                 }
                 this.form.method = 'patch';
             } else {
@@ -251,7 +315,16 @@ export default {
                         apply_contributions_limit: false
                     };
                     return acc;
-                }, {})
+                }, {}),
+                procedureType: this.procedureTypes.reduce((acc, type) => {
+                    acc[type.id] = {
+                        id: type.id,
+                        name: type.name,
+                        percentageYield: 0,
+                        modalitiesIds: type.procedure_modalities.map(e => e.id)
+                    };
+                    return acc;
+                }, {}),
             };
             this.$validator.reset();
         }

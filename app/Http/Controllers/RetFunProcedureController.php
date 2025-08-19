@@ -51,31 +51,38 @@ class RetFunProcedureController extends Controller
                     }
                 },
             ],
-            'limit_average' => 'required|numeric|min:1',
-            'contributions_limit' => 'required|numeric|min:1',
         ]);
 
         $actualProcedure = RetFunProcedure::active_procedure();
-        $hierarchies = Hierarchy::orderBy('id')->get();
-        $hierarchiesSyncData = [];
 
-        foreach ($hierarchies as $hierarchy) {
-            $hierarchiesSyncData[$hierarchy->id] = [
-                'apply_contributions_limit' => in_array($hierarchy->id, $request->hierarchiesIds)
+        $hierarchies_sync_data = [];
+        foreach ($request->hierarchies as $hierarchiesKey => $hierarchiesValue) {
+            $hierarchies_sync_data[$hierarchiesKey] = [
+                'apply_contributions_limit' => $hierarchiesValue['apply_contributions_limit'],
+                'average_salary_limit' => $hierarchiesValue['average_salary_limit']
             ];
         }
+        
+        $modalities_sync_data = [];
+        foreach ($request->procedureType as $procedureTypeKey => $procedureTypeValues) {
+            foreach ($procedureTypeValues['modalitiesIds'] as $modalityId) {
+                $modalities_sync_data[$modalityId] = [
+                    'annual_percentage_yield' => $procedureTypeValues['percentageYield'],
+                ];
+            }
+        }
 
-        DB::transaction(function () use ($request, $actualProcedure, $hierarchiesSyncData) {
+        DB::transaction(function () use ($request, $actualProcedure, $hierarchies_sync_data, $modalities_sync_data) {
             // Todos los datos se duplican menos start_date y limit_average
             $procedure = $actualProcedure->replicate();
             $procedure->start_date = $request->start_date;
-            $procedure->limit_average = $request->limit_average;
             $procedure->contributions_limit = $request->contributions_limit;
             $procedure->save();
-            $procedure->hierarchies()->sync($hierarchiesSyncData);
+            $procedure->hierarchies()->sync($hierarchies_sync_data);
+            $procedure->procedure_modalities()->sync($modalities_sync_data);
         });
 
-        return response()->json(['message' => 'Creado correctamente.'], 200);
+        return response()->json(['message' => 'Creado correctamente.'], 201);
     }
 
     /**

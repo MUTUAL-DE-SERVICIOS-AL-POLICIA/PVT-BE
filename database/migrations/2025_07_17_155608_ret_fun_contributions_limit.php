@@ -37,7 +37,7 @@ class RetFunContributionsLimit extends Migration
             $table->unsignedBigInteger('ret_fun_procedure_id');
             $table->unsignedBigInteger('hierarchy_id');
             $table->boolean('apply_contributions_limit')->default(true);
-            $table->decimal('average_salary_limit', 8, 2)->default(10800);
+            $table->decimal('average_salary_limit', 13, 2)->default(10800);
             $table->timestamps();
 
             $table->foreign('ret_fun_procedure_id')
@@ -64,7 +64,7 @@ class RetFunContributionsLimit extends Migration
             $table->increments('id');
             $table->unsignedBigInteger('ret_fun_procedure_id');
             $table->unsignedBigInteger('procedure_modality_id');
-            $table->decimal('annual_percentage_yield', 3, 2);
+            $table->decimal('annual_percentage_yield', 13, 2);
             $table->timestamps();
 
             $table->foreign('ret_fun_procedure_id')

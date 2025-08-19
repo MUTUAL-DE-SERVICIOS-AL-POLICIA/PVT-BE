@@ -20,7 +20,8 @@
         <div class="col-md-9" style="padding-left: 6px">
             <div class="tab-content">
                 <div class="tab-pane active" id="procedures">
-                    <ret-fun-average-contributable-wage :procedures="procedures" :hierarchies="hierarchies"></ret-fun-average-contributable-wage>
+                    <ret-fun-average-contributable-wage :procedures="procedures"
+                        :hierarchies="hierarchies" :procedure-types="procedureTypes"></ret-fun-average-contributable-wage>
                 </div>
             </div>
         </div>
@@ -29,14 +30,9 @@
 <script>
 export default {
     props: {
-        procedures: {
-            type: Array,
-            required: true
-        },
-        hierarchies: {
-            type: Array,
-            required: true
-        }
+        procedures: { type: Array, required: true },
+        hierarchies: { type: Array, required: true },
+        procedureTypes: { type: Array, required: true }
     },
 }
 </script>
