@@ -219,23 +219,15 @@ export default {
                 }
                 this.form.procedureType = {};
                 for (const modalities of procedure.procedure_modalities) {
-                    if(!this.form.procedureType[modalities.procedure_type_id]) {
+                    if (!this.form.procedureType[modalities.procedure_type_id]) {
                         this.form.procedureType[modalities.procedure_type_id] = {
                             id: modalities.procedure_type_id,
-                            name: type.name,
-                            percentageYield: 0,
-                            modalitiesIds: type.procedure_modalities.map(e => e.id)
+                            //name: type.name,
+                            percentageYield: modalities.pivot.annual_percentage_yield,
+                            modalitiesIds: []
                         }
                     }
-                    this.form.procedureType = this.procedureTypes.reduce((acc, type) => {
-                        acc[type.id] = {
-                            id: type.id,
-                            name: type.name,
-                            percentageYield: 0,
-                            modalitiesIds: type.procedure_modalities.map(e => e.id)
-                        };
-                        return acc;
-                    }, {})
+                    this.form.procedureType[modalities.procedure_type_id].modalitiesIds.push(modalities.pivot.procedure_modality_id);
                 }
                 this.form.method = 'patch';
             } else {
@@ -275,6 +267,10 @@ export default {
                     console.log('Editing RetFunProcedure with ID:', this.form.id);
                     await this.$validator.validateAll();
                     if (this.$validator.errors.items.length) {
+                        console.log('Errores');
+                        console.log(this.$validator.errors);
+                        
+                        
                         return;
                     }
                     await axios.patch(`/ret_fun_procedure/${this.form.id}`, this.form)
