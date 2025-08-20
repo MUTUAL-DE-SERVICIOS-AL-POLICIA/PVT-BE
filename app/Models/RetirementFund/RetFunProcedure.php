@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 class RetFunProcedure extends Model
 {
+    protected $fillable = [
+        'start_date',
+        'contributions_limit',
+    ];
+    
     public function retirement_funds()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund');

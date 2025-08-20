@@ -110,8 +110,8 @@
                                                 procedureType.name }}</td>
                                     <td>
                                         <div class="input-group">
-                                            <input type="number" :name="'hierarchy_input_' + procedureType.id"
-                                                v-validate.defer="'required|integer|min_value:0'" class="form-control"
+                                            <input type="number" :name="'procedureType_input_' + procedureType.id"
+                                                v-validate.defer="'required|numeric_locale|min_value:0'" class="form-control"
                                                 v-model.number="form.procedureType[procedureType.id].percentageYield">
                                             <span class="input-group-addon">%</span>
                                         </div>

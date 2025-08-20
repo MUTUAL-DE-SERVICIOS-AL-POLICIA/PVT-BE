@@ -51,6 +51,7 @@ class RetFunProcedureController extends Controller
                     }
                 },
             ],
+            'contributions_limit' => 'required|numeric|min:1',
         ]);
 
         $actualProcedure = RetFunProcedure::active_procedure();
@@ -131,26 +132,34 @@ class RetFunProcedureController extends Controller
                     }
                 },
             ],
-            'limit_average' => 'required|numeric|min:1',
             'contributions_limit' => 'required|numeric|min:1',
         ]);
 
-        $hierarchies = Hierarchy::orderBy('id')->get();
-        $hierarchiesSyncData = [];
-        // Esto forma un array con los IDs de las jerarquías y si se aplica el límite
-        //  1 => ['apply_contributions_limit' => true],
-        foreach ($hierarchies as $hierarchy) {
-            $hierarchiesSyncData[$hierarchy->id] = [
-                'apply_contributions_limit' => in_array($hierarchy->id, $request->hierarchiesIds)
+        $hierarchies_sync_data = [];
+        foreach ($request->hierarchies as $hierarchiesKey => $hierarchiesValue) {
+            $hierarchies_sync_data[$hierarchiesKey] = [
+                'apply_contributions_limit' => $hierarchiesValue['apply_contributions_limit'],
+                'average_salary_limit' => $hierarchiesValue['average_salary_limit']
             ];
         }
 
-        DB::transaction(function () use ($procedure, $request, $hierarchiesSyncData) {
-            $procedure->start_date = $request->start_date;
-            $procedure->limit_average = $request->limit_average;
-            $procedure->contributions_limit = $request->contributions_limit;
-            $procedure->hierarchies()->sync($hierarchiesSyncData);
-            $procedure->save();
+        $modalities_sync_data = [];
+        foreach ($request->procedureType as $procedureTypeKey => $procedureTypeValues) {
+            foreach ($procedureTypeValues['modalitiesIds'] as $modalityId) {
+                $modalities_sync_data[$modalityId] = [
+                    'annual_percentage_yield' => $procedureTypeValues['percentageYield'],
+                ];
+            }
+        }
+
+        DB::transaction(function () use ($request, $procedure, $hierarchies_sync_data, $modalities_sync_data) {
+            $procedure->update([
+                'start_date' => $request->start_date,
+                'contributions_limit' => $request->contributions_limit,
+            ]);
+
+            $procedure->hierarchies()->sync($hierarchies_sync_data);
+            $procedure->procedure_modalities()->sync($modalities_sync_data);
         });
 
         return response()->json(['message' => 'Editado correctamente.'], 200);
