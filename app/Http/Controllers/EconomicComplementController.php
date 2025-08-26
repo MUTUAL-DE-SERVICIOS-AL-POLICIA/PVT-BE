@@ -2201,8 +2201,12 @@ class EconomicComplementController extends Controller
           if($validator->fails()){
               return response()->json($validator->errors(), 406);
           }
-        $list_eco_com = EconomicComplement::where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
+        $list_eco_com = EconomicComplement::with('observations')->where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
         foreach ($list_eco_com as $item) {
+            // Validar que no tenga la observacion con id 63 (cuenta Bancaria)
+            if ($item->observations->where('id', 63)->isNotEmpty()) {
+                continue;
+            }
             // descuento por devoluciones por reposicion de fondos
             $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$item->id)->where("discount_type_id",6)->first();
             $exist_movement = EcoComMovement::where('affiliate_id', $item->affiliate_id)->exists();
