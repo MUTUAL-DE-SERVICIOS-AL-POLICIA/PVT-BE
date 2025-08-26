@@ -610,7 +610,6 @@ class RetirementFundController extends Controller
         //return $procedures_modalities_ids;
         $procedures_modalities = ProcedureModality::whereIn('procedure_type_id', $procedures_modalities_ids)->get();
         $file_modalities = ProcedureModality::get();
-        $requirements = ProcedureRequirement::where('procedure_modality_id', $retirement_fund->procedure_modality_id)->get();
         $documents = RetFunSubmittedDocument::where('retirement_fund_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
         $cities = City::get();
         $kinships = Kinship::get();
@@ -630,6 +629,7 @@ class RetirementFundController extends Controller
         $procedure_types = ProcedureType::where('module_id', 3)->get();
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+            ->where('procedure_modality_id', $retirement_fund->procedure_modality_id)
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
@@ -644,6 +644,18 @@ class RetirementFundController extends Controller
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id', $id);
         
+        // Sirve para listar documentos que fueron eliminados anteriormente
+        $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
+            return [$item->id => $item];
+        });
+        $restore_procedure_documents = collect();
+        foreach ($submitted->get() as $item) {
+            if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
+                $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
+            }
+        }
+        $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+
         // return $submitted->get();
         // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
@@ -707,6 +719,24 @@ class RetirementFundController extends Controller
         //
         //summary individuals account
         $ret_fun_index = $retirement_fund->procedureIndex();
+        if ($ret_fun_index == 0) {
+            $fields = [
+                'date_entry' => 'El campo "Fecha de Ingreso a la Institucional Policial" en Información Policial no puede estar vacío',
+                'date_derelict' => 'El campo "Fecha de Desvinculación" en Información Policial no puede estar vacío',
+            ];
+        } else if ($ret_fun_index == 1) {
+            $fields = [
+                'date_entry_reinstatement' => 'El campo "Fecha de Ingreso a la Institucional Policial (reincorporación)" en Información Policial no puede estar vacío',
+                'date_derelict_reinstatement' => 'El campo "Fecha de Desvinculación (reincorporación)" en Información Policial no puede estar vacío',
+            ];
+        }
+
+        foreach ($fields as $field => $message) {
+            if (!$affiliate->$field) {
+                Session::flash('message', $message);
+                return redirect('affiliate/' . $affiliate->id);
+            }
+        }
         $dates_global = $affiliate->getDatesGlobal($ret_fun_index == 1);
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($dates_global);
