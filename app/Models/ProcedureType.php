@@ -13,11 +13,17 @@ class ProcedureType extends Model
      */
     public const RET_FUN_PG = 1; // Pago global
     /**
+     * Fondo de Retiro
+     *
+     * @var int
+     */
+    public const RET_FUN = 2; // Fondo de retiro
+    /**
      * Fondo de Retiro Devolución de Aportes
      *
      * @var int
      */
-    public const RET_FUN_DP = 21; // Devolución de aportes
+    public const RET_FUN_DA = 21; // Devolución de aportes
 
     public function procedure_modalities()
     {

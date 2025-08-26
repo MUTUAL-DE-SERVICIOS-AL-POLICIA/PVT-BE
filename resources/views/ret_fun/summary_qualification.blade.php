@@ -196,8 +196,8 @@
                         </tr>
                     @endforeach
                     <tr class="success">
-                        <td>{{end($array_discounts_availability)['name']}}</td>
-                        <td>Bs {{Util::formatMoney(end($array_discounts_availability)['amount'])}}</td>
+                        <td>Fondo de Retiro</td>
+                        <td>Bs {{Util::formatMoney($retirement_fund->total)}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -207,7 +207,7 @@
 <div class="col-lg-12">
     <div class="ibox">
         <div class="ibox-title">
-            <h5>cuotas partes para los derechohabientes (DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD)</h5>
+            <h5>Cuotas partes para los derechohabientes (DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD)</h5>
         </div>
         <div class="ibox-content">
             <table class="table table-bordered">

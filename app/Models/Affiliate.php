@@ -149,34 +149,26 @@ class Affiliate extends Model
 
   public function contributionsInRange($reinstatement = false)
   {
-    $date_start = '';
-    $date_end = '';
-    if ($reinstatement) {
-      if (Util::verifyMonthYearDate($this->date_entry_reinstatement)) {
-        $date_start = Util::parseMonthYearDate($this->date_entry_reinstatement);
-      }
-      if (Util::verifyMonthYearDate($this->date_last_contribution_reinstatement)) {
-        $date_end = Util::parseMonthYearDate($this->date_last_contribution_reinstatement);
-      } else {
-        $date_end = Carbon::now()->startOfMonth()->toDateString();
-      }
-    } else {
-      if (Util::verifyMonthYearDate($this->date_entry)) {
-        $date_start = Util::parseMonthYearDate($this->date_entry);
-      }
-      if (Util::verifyMonthYearDate($this->date_last_contribution)) {
-        $date_end = Util::parseMonthYearDate($this->date_last_contribution);
-      } else {
-        $date_end = Carbon::now()->startOfMonth()->toDateString();
-      }
+    $dateEntry = $reinstatement
+      ? $this->date_entry_reinstatement
+      : $this->date_entry;
+
+    $dateLastContribution = $reinstatement
+      ? $this->date_last_contribution_reinstatement
+      : $this->date_last_contribution;
+
+    if (empty($dateEntry)) {
+      return $this->contributions();
     }
 
-    if($date_start == '' || $date_end == '') {
-      $contributions = $this->contributions();
+    $date_start = Carbon::createFromFormat('m/Y', $dateEntry)->startOfMonth();
+    if (empty($dateLastContribution)) {
+      $date_end = Carbon::now()->startOfMonth();
     } else {
-      $contributions = $this->contributions()->whereBetween('month_year', [$date_start, $date_end]);
+      $date_end = Carbon::createFromFormat('m/Y', $dateLastContribution)->startOfMonth();
     }
-    return $contributions;
+
+    return $this->contributions()->whereBetween('month_year', [$date_start, $date_end]);
   }
 
   public function reimbursements()
@@ -304,17 +296,25 @@ class Affiliate extends Model
     );
     return $contributions;
   }
-  public function getLastBaseWage($reinstatement = false)
+  /**
+   * Obtiene el último salario base (gain) registrado dentro del rango de contribuciones.
+   *
+   * Busca los aportes del afiliado filtrando únicamente
+   * las que tienen aportes positivos ("+"). Devuelve el valor mas reciente encontrado
+   * en base al campo `month_year`.
+   *
+   * @param  bool  $reinstatement  Indica si se debe usar el rango de reinstatement (reincorporación) o el normal.
+   * @return float|null            Retorna el último salario base o null si no existe.
+   */
+  public function getLastBaseWage(bool $reinstatement = false): ?float
   {
-    $contributions = $this->contributionsInRange($reinstatement)
+    $contribution = $this->contributionsInRange($reinstatement)
       ->leftJoin("contribution_types", "contributions.contribution_type_id", '=', "contribution_types.id")
       ->where('contribution_types.operator', '=', '+')
       ->orderBy('contributions.month_year', 'desc')
-      ->get();
-    if ($contributions->count()) {
-      return (float)$contributions->first()->gain;
-    }
-    return null;
+      ->first();
+
+    return $contribution ? (float) $contribution->gain : null;
   }
   public function fullName($style = "uppercase")
   {
@@ -399,7 +399,6 @@ class Affiliate extends Model
     $date_start = Util::verifyMonthYearDate($start) ? Util::parseMonthYearDate($start) : $start;
     $date_end = Util::verifyMonthYearDate($end) ? Util::parseMonthYearDate($end) : $end;
     $dates[] = (object)array(
-      // 'start' => ($date_start < '1976-05-01' && ) ? "1976-05-01" : $date_start,
       'start' => $date_start,
       'end' => $date_end
     );

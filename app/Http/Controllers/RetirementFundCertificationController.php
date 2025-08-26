@@ -474,7 +474,7 @@ class RetirementFundCertificationController extends Controller
         foreach ($value as $id) {
         //siempre tendra id
         // if (!$retirement_fund->discount_types()->find($id)) {
-          if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
+          if (!(optional(optional($retirement_fund->discount_types()->find($id))->pivot)->amount > 0)) {
             $sw = false;
           }
         }
@@ -584,9 +584,8 @@ class RetirementFundCertificationController extends Controller
       'years' => intval($total_dates / 12),
       'months' => $total_dates % 12,
     );
-
-    foreach (ContributionType::orderBy('id')->where('id', '=', 12)->orWhere('id','=',13)->get() as $c) {
-      // if($c->id != 1){
+    $contribution_types = ContributionType::whereIn('id', [12,13])->orderBy('id')->get();
+    foreach ($contribution_types as $c) {
       $contributionsWithType = $affiliate->getContributionsWithType($c->id);
       if (sizeOf($contributionsWithType) > 0) {
         $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
@@ -617,37 +616,17 @@ class RetirementFundCertificationController extends Controller
     $availability = ContributionType::find(12);
 
     /*  discount combinations*/
-    $array_discounts = array();
-    $array = DiscountType::where('module_id', 3)->get()->pluck('id');
-    $results = array(array());
-    foreach ($array as $element) {
-      foreach ($results as $combination) {
-        array_push($results, array_merge(array($element), $combination));
-      }
-    }
-    foreach ($results as $value) {
-      $sw = true;
-      foreach ($value as $id) {
-        // if (!$retirement_fund->discount_types()->find($id)) {
-        if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
-          $sw = false;
-        }
-      }
-      if ($sw) {
-        $temp_total_discount = 0;
-        foreach ($value as $id) {
-          $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
-        }
-        $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
-        array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+    $discount_types = DiscountType::where('module_id', 3)->get();
+    foreach ($discount_types as $discount_type) {
+      $discount = $retirement_fund->discount_types()->find($discount_type->id);
+      if (optional(optional($discount)->pivot)->amount > 0) {
+        $array_discounts_availability[] = ['name' => ' - ' . $discount->name, 'amount' => $discount->pivot->amount];
       }
     }
     if ($affiliate->hasAvailability()) {
-      $array_discounts_availability = [];
-       foreach ($array_discounts as $value) {
-        array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
-      }
-     }
+      $availability = $contribution_types->where('id', 12)->first();
+      $array_discounts_availability[] = ['name' => '+ ' . $availability->name, 'amount' => $retirement_fund->total_availability];
+    }
     /*  discount combinations*/
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
