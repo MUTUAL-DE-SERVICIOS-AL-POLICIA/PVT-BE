@@ -414,8 +414,12 @@ export default {
       }
       await axios[this.method](`/eco_com_procedure_${option}`, this.form)
         .then(response => {
-          console.log(response);
           this.$modal.hide("procedure-modal");
+          if (response.data.status === 'success') {
+            flash(response.data.message, 'success');
+          } else {
+            console.log(response);
+          }
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);
