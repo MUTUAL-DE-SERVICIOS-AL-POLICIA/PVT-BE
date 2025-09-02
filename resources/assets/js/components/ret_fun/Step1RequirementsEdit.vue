@@ -11,11 +11,6 @@
                         Editar</button>
                 </div>
             </div>
-            <div class="row" v-if="errorsValidate.length > 0">
-                <div v-for="err in errorsValidate" :key="err" class="alert alert-danger">
-                    <i class="fa fa-exclamation-triangle"></i> {{ err }}
-                </div>
-            </div>
             <form>
                 <div class="row">
                     <div v-for="(requirement, index) in requirementList" :key="index">
@@ -47,10 +42,6 @@
                                     <div class="vote-icon">
                                         <span style="color:#3c3c3c"><i class="fa "
                                                 :class="rq.status ? 'fa-check-square' : 'fa-square-o'"></i></span>
-                                        <div style="opacity:0" v-if="rol != 11">
-                                            <input type="checkbox" v-model="rq.status" value="checked"
-                                                :name="'document' + rq.id" class="largerCheckbox">
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -98,17 +89,17 @@ export default {
         'affiliate',
         'ret_fun',
         'submitted',
+        'requirements',
         'rol',
     ],
     data() {
         return {
-            requirementList: [],
+            requirementList: {},
             aditionalRequirements: [],
             aditionalRequirementsUploaded: [],
             aditionalRequirementsSelected: [],
             modality: null,
             editing: false,
-            errorsValidate: [],
             additionalCounter: 100, // Este numero se usa como indice en los requisitos con numero 0 para que se grafiquen al final de la lista
         }
     },
@@ -131,78 +122,93 @@ export default {
             }, 500);
         },
         async getRequirements() {
-            // Si el rol es 11, mapear directamente la lista sin llamar al backend
-            if (this.rol === 11) {
-                const temp = {};
-                this.submitted.map(submit => {
-                    const index = submit.number > 0 ? submit.number : this.additionalCounter;
-                    if (!temp[index]) {
-                        temp[index] = [];
-                    }
-                    temp[index].push({
-                        id: submit.id,
-                        name: submit.name,
-                        status: submit.is_valid,
-                        background: submit.is_valid ? 'bg-success-green' : '',
-                        comment: submit.comment,
-                        isUploaded: submit.is_uploaded,
-                        procedureRequirementId: submit.procedure_requirement_id,
-                        number: submit.number
+            const isLegalReview = this.rol === 11;
+
+            // Reiniciamos siempre para evitar basura
+            this.aditionalRequirementsUploaded = [];
+            this.aditionalRequirements = [];
+
+            if (isLegalReview) {
+                // Caso: Revisión Legal → agrupar `submitted` por número
+                this.requirementList = this.submitted.reduce((acc, sub) => {
+                    const index = sub.number > 0 ? sub.number : this.additionalCounter;
+
+                    if (!acc[index]) acc[index] = [];
+
+                    acc[index].push({
+                        id: sub.id,
+                        name: sub.name,
+                        status: sub.is_valid,
+                        background: sub.is_valid ? 'bg-success-green' : '',
+                        comment: sub.comment,
+                        isUploaded: sub.is_uploaded,
+                        procedureRequirementId: sub.procedure_requirement_id,
+                        number: sub.number
                     });
-                });
-                this.requirementList = temp;
-                this.aditionalRequirements = [];
-                this.aditionalRequirementsSelected = [];
-                return;
-            }
 
-            // Si no es rol 11, obtener los documentos desde la API
-            const uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
-
-            try {
-                const { data } = await axios.get(uri);
-
-                const submittedMap = new Map(
-                    this.submitted.map(doc => [doc.procedure_requirement_id, doc])
-                );
-
-                this.requirementList = Object.values(data.requiredDocuments).map(group =>
-                    group.map(doc => this.processRequirement(doc, submittedMap.get(doc.procedureRequirementId)))
-                );
-
-                this.aditionalRequirementsUploaded = data.additionallyDocumentsUpload || [];
-                this.aditionalRequirements = data.additionallyDocuments || [];
-            } catch (error) {
-                console.error('Error al obtener los requisitos:', error);
-            }
-
-            this.getAditionalRequirements(); // si esta función es necesaria
-        },
-        processRequirement(requirement, submittedDoc) {
-            const r = { ...requirement }; // copia para no mutar directamente
-
-            if (!submittedDoc) {
-                r.status = false;
-                r.background = '';
-                r.comment = null;
-                return r;
-            }
-
-            r.comment = submittedDoc.comment;
-            r.submit_document_id = submittedDoc.id;
-
-            if (this.rol !== 11) {
-                if (submittedDoc.is_uploaded !== r.isUploaded) {
-                    this.errorsValidate.push(`El documento "${r.name}" no coincide con el archivo escaneado.`);
-                }
-                r.status = true;
-                r.background = r.isUploaded ? 'bg-success-blue' : 'bg-success-green';
+                    return acc;
+                }, {});
             } else {
-                r.status = submittedDoc.is_valid;
-                r.background = submittedDoc.is_valid ? 'bg-success-green' : '';
+                // Preparamos mapa rápido de submitted por requirement_id
+                const submittedMap = new Map(
+                    this.submitted.map(s => [s.procedure_requirement_id, s])
+                );
+
+                const acc = {};
+
+                this.requirements.forEach(req => {
+                    const sub = submittedMap.get(req.id);
+
+                    if (req.number === 0) {
+                        // Requisitos adicionales
+                        const opReq = {
+                            name: req.document,
+                            number: req.number,
+                            procedureRequirementId: req.id,
+                            isUploaded: sub ? sub.is_uploaded : false
+                        };
+
+                        if (opReq.isUploaded) {
+                            this.aditionalRequirementsUploaded.push(opReq);
+                        } else {
+                            this.aditionalRequirements.push(opReq);
+                        }
+                    } else {
+                        if (!acc[req.number]) acc[req.number] = [];
+                        if (acc[req.number].some(item => item.isUploaded)) return;
+
+                        const baseReq = {
+                            id: req.id,
+                            name: req.document,
+                            status: false,
+                            background: '',
+                            comment: null,
+                            isUploaded: false,
+                            procedureRequirementId: req.id,
+                            number: req.number
+                        };
+
+                        if (sub) {
+                            baseReq.status = true;
+                            baseReq.background = sub.is_uploaded ? 'bg-success-blue' : 'bg-success-green';
+                            baseReq.comment = sub.comment;
+                            baseReq.isUploaded = sub.is_uploaded;
+
+                            // Si está escaneado, reemplazamos todas las opciones
+                            if (baseReq.isUploaded) {
+                                acc[req.number] = [baseReq];
+                                return;
+                            }
+                        }
+
+                        acc[req.number].push(baseReq);
+                    }
+                });
+
+                this.requirementList = acc;
             }
 
-            return r;
+            this.getAditionalRequirements();
         },
         getAditionalRequirements() {
             if (!this.modality) {
