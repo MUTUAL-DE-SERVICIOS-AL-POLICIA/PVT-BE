@@ -1533,11 +1533,6 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 6 || $discount_type_id = 8;
                 break;
         }
-        if (Gate::allows('qualify', $economic_complement)) {
-            if ($economic_complement->qualify()->status() == 422) {
-                return $economic_complement->qualify() ;
-            }
-        }
         $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_fixed_pension','eco_com_updated_pension'])->find($economic_complement->id);
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         $economic_complement->total_eco_com = $economic_complement->getOnlyTotalEcoCom();
