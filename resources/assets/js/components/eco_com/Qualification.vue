@@ -6,31 +6,32 @@
           Calificacion
           <strong>{{ namePensionEntity }}</strong>
         </h2>
-        <div class="ibox-tools" v-if="roleId == 103">
+        <div class="ibox-tools" v-if="$eco_com_helper.isEncargadoCalificacion(roleId)" >
             <!--Para borrar rentas calificación-->
           <button 
             class="btn btn-success"
             @click="edit('ceh')"
             data-toggle="tooltip"
             title="Replicar renta manual para calificación"
-            :disabled="!(ecoCom.eco_com_reception_type_id != 2 && ecoCom.rent_type == 'Automatico')"
+            :disabled="$eco_com_helper.isInclusion(ecoCom) || !$eco_com_helper.isAutomaticRent(ecoCom)"
           >
             <i class="fa fa-check"></i>Replicar renta fija para calificación
           </button>
           <!-- Para borrar rentas auxilio mortuorio--> 
-           <template v-if="ecoCom.eco_com_updated_pension != null">
-          <button  
-            class="btn btn-danger" 
-            @click="edit('amh')" 
-            data-toggle="tooltip" 
-            title="Habilitar renta manual para Aux. Mort."
-            :disabled="!(affiliate.pension_entity_id != 5 && this.ecoCom.eco_com_reception_type_id == 1 && ecoCom.eco_com_updated_pension.rent_type == 'Automatico')"
-          >
-            <i class="fa fa-check"></i>Habilitar renta manual para Aux. Mort.
-          </button>
+           
+          <template v-if="ecoCom.eco_com_updated_pension != null">
+            <button  
+              class="btn btn-danger" 
+              @click="edit('amh')" 
+              data-toggle="tooltip" 
+              title="Habilitar renta manual para Aux. Mort."
+              :disabled="isSenasir || !$eco_com_helper.isHabitual(ecoCom) || !$eco_com_helper.isAutomaticRent(ecoCom.eco_com_updated_pension)"
+            >
+              <i class="fa fa-check"></i>Habilitar renta manual para Aux. Mort.
+            </button>
           </template>
         </div>
-        <div class="ibox-tools" v-if="roleId == 4 || roleId == 5" >
+        <div class="ibox-tools" v-if="$eco_com_helper.isAreaTecnica(roleId) || $eco_com_helper.isJefatura(roleId)" >
           <button
             class="btn btn-primary"
             @click="refreshQualification()"
@@ -48,10 +49,10 @@
             title="Editar Rentas"
             :disabled="!can('update_economic_complement')"
           >
-            <i class="fa fa-pencil"></i> {{ this.ecoCom.eco_com_reception_type_id == 2 ? 'Renta o Pension' : 'Renta o Pension para calificación' }}
+            <i class="fa fa-pencil"></i> {{ $eco_com_helper.isInclusion(ecoCom) ? 'Renta o Pension' : 'Renta o Pension para calificación' }}
           </button>
           <!-- Para auxilio mortuorio--> 
-          <button v-if="affiliate.pension_entity_id != 5 && ecoCom.eco_com_reception_type_id != 2" 
+          <button v-if="!isSenasir && !$eco_com_helper.isInclusion(ecoCom)" 
             class="btn btn-primary" 
             @click="edit('am')" 
             data-toggle="tooltip" title="Editar Rentas"
@@ -65,7 +66,7 @@
           <div class="col-md-3">
             <eco-com-amortization :role_id=roleId :permissions="permissions" :observations="observations"></eco-com-amortization>
           </div>
-          <div class="col-md-3" v-if="eco_com_state_type_id===1 && roleId===4">
+          <div class="col-md-3" v-if="$eco_com_helper.isPaid(ecoCom) && $eco_com_helper.isAreaTecnica(roleId)">
             <button
               class="btn btn-primary"
               data-toggle="tooltip"
@@ -130,7 +131,7 @@
               </tbody>
             </table>
             <!-- Tabla de pension actualizada - No mostrar si es inclusión -->
-            <template v-if="ecoCom.eco_com_updated_pension && ecoCom.eco_com_reception_type_id != 2"> 
+            <template v-if="ecoCom.eco_com_updated_pension && !$eco_com_helper.isInclusion(ecoCom)"> 
               <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para descuento de Auxilio Mortuorio</strong></p>
               <table class="table table-bordered table-striped">
                 <thead>
@@ -240,7 +241,7 @@
                   <td style="text-align: right;">{{ ecoCom.total_eco_com | currency }}</td>
                 </tr>
                 <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
-                  <td><button class="btn btn-danger" type="button" v-if="d.id===7 && roleId===4" title="Eliminar" @click="deleteDiscount()">
+                  <td><button class="btn btn-danger" type="button" v-if="d.id===7 && $eco_com_helper.isAreaTecnica(roleId)" title="Eliminar" @click="deleteDiscount()">
                <i class="fa fa-trash"></i>
                  </button> {{ d.shortened }}</td>
                   <td style="text-align: right;">{{ d.pivot.amount | currency}}</td>
@@ -385,7 +386,7 @@
               </div>
             </div>
             <div class="hr-line-dashed"></div>
-              <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
+              <div class="row" v-if="!$eco_com_helper.isInclusion(EcoCom) && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
                 <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
                   <select 
                   class="col-sm-6"
@@ -485,7 +486,7 @@
                 </div>
               </div>
             </div>
-            <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
+            <div class="row" v-if="!$eco_com_helper.isInclusion(ecoCom) && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
               <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
                 <select 
                 class="col-sm-6"
@@ -647,7 +648,7 @@ export default {
       return this.$store.state.ecoComForm.ecoCom;
     },
     isSenasir() {
-      return isPensionEntitySenasir(this.affiliate.pension_entity_id);
+      return $affiliate_helper.isSenasir(this.affiliate);
     },
     namePensionEntity() {
       return getNamePensionEntity(this.affiliate.pension_entity_id);
