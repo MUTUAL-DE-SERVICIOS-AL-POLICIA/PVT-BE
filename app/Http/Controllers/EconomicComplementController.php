@@ -2000,6 +2000,28 @@ class EconomicComplementController extends Controller
         ->setOption('encoding', 'utf-8')
         ->stream("$namepdf");
     }
+    public function qualify(Request $request)
+    {
+        $eco_com = EconomicComplement::find($request->id);
+        try {
+            $this->authorize('qualify', $eco_com);
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para realizar la calificación'],
+            ], 403);
+        }
+        if ($eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
+            $eco_com_state = $eco_com->eco_com_state;
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['No se puede realizar la calificación porque el trámite ' . $eco_com->code . ' se encuentra en estado de ' . $eco_com_state->name],
+            ], 422);
+        }
+        $eco_com->qualify();
+        return $eco_com;
+    }
     public function recalificacion(Request $request)
     {
         $eco_com = EconomicComplement::find($request->id);

@@ -782,10 +782,9 @@ export default {
       this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
       this.ecoComModal.refresh = true;
       await axios
-        .patch(`/eco_com_update_rents`, this.ecoComModal)
+        .patch(`/eco_com/${this.ecoComId}/qualify`)
         .then(response => {
           this.$store.commit("ecoComForm/setEcoCom", response.data);
-          this.$modal.hide("rents-modal");
           flash("Calificacion Actualizada");
         })
         .catch(error => {
