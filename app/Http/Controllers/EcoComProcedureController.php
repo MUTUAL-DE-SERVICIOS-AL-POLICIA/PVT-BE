@@ -88,8 +88,6 @@ class EcoComProcedureController extends Controller
                 'normal_end_date' => 'required',
                 'lagging_start_date' => 'required',
                 'lagging_end_date' => 'required',
-                'additional_start_date' => 'required',
-                'additional_end_date' => 'required',
                 'indicator' => 'required',
             ]);
         } catch (ValidationException $exception) {
@@ -108,7 +106,7 @@ class EcoComProcedureController extends Controller
         $last_procedure = EcoComProcedure::orderByDesc('created_at')->first();
 
         $new_start_date = Carbon::parse(Util::parseBarDate($request->normal_start_date));
-        $last_end_date = Carbon::parse(Util::parseBarDate($last_procedure->additional_end_date));
+        $last_end_date = Carbon::parse(Util::parseBarDate($last_procedure->lagging_end_date));
 
         if ( $new_start_date->lte($last_end_date)) {
             return response()->json([
@@ -132,12 +130,13 @@ class EcoComProcedureController extends Controller
         $eco_com_procedure->normal_end_date = Util::verifyBarDate($request->normal_end_date) ? Util::parseBarDate($request->normal_end_date) : $request->normal_end_date;
         $eco_com_procedure->lagging_start_date = Util::verifyBarDate($request->lagging_start_date) ? Util::parseBarDate($request->lagging_start_date) : $request->lagging_start_date;
         $eco_com_procedure->lagging_end_date = Util::verifyBarDate($request->lagging_end_date) ? Util::parseBarDate($request->lagging_end_date) : $request->lagging_end_date;
-        $eco_com_procedure->additional_start_date = Util::verifyBarDate($request->additional_start_date) ? Util::parseBarDate($request->additional_start_date) : $request->additional_start_date;
-        $eco_com_procedure->additional_end_date = Util::verifyBarDate($request->additional_end_date) ? Util::parseBarDate($request->additional_end_date) : $request->additional_end_date;
         $eco_com_procedure->indicator = $request->indicator;
         $eco_com_procedure->eco_com_regulation_id = $eco_com_regulation->id;
         $eco_com_procedure->save();
-        return 'created';
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Creado exitosamente.',
+        ], 200);
     }
     public function update(Request $request)
     {
@@ -158,8 +157,6 @@ class EcoComProcedureController extends Controller
                 'normal_end_date' => 'required',
                 'lagging_start_date' => 'required',
                 'lagging_end_date' => 'required',
-                'additional_start_date' => 'required',
-                'additional_end_date' => 'required',
                 'indicator' => 'required',
             ]);
         } catch (ValidationException $exception) {
@@ -178,14 +175,15 @@ class EcoComProcedureController extends Controller
             $eco_com_procedure->normal_end_date = Util::verifyBarDate($request->normal_end_date) ? Util::parseBarDate($request->normal_end_date) : $request->normal_end_date;
             $eco_com_procedure->lagging_start_date = Util::verifyBarDate($request->lagging_start_date) ? Util::parseBarDate($request->lagging_start_date) : $request->lagging_start_date;
             $eco_com_procedure->lagging_end_date = Util::verifyBarDate($request->lagging_end_date) ? Util::parseBarDate($request->lagging_end_date) : $request->lagging_end_date;
-            $eco_com_procedure->additional_start_date = Util::verifyBarDate($request->additional_start_date) ? Util::parseBarDate($request->additional_start_date) : $request->additional_start_date;
-            $eco_com_procedure->additional_end_date = Util::verifyBarDate($request->additional_end_date) ? Util::parseBarDate($request->additional_end_date) : $request->additional_end_date;
             $eco_com_procedure->indicator = $request->indicator;
             $eco_com_procedure->save();
         } else {
             return response()->json(['errors' => ['No existe.']], 422);
         }
-        return "updated";
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Actualizado exitosamente.',
+        ], 200);
     }
     public function delete(Request $request)
     {
