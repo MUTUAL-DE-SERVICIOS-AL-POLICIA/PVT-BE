@@ -339,6 +339,7 @@ class ContributionController extends Controller
             null,
             base_wage,
             seniority_bonus,
+            null,
             study_bonus,
             position_bonus,
             border_bonus,
@@ -359,6 +360,7 @@ class ContributionController extends Controller
             unit_id,
             base_wage,
             seniority_bonus,
+            category_id,
             study_bonus,
             position_bonus,
             border_bonus,
@@ -394,6 +396,9 @@ class ContributionController extends Controller
             })
             ->editColumn('seniority_bonus', function ($contribution) {
                 return Util::formatMoney($contribution->seniority_bonus);
+            })
+            ->editColumn('category_id', function ($contribution) {
+                return $contribution->category_id ? $contribution->category->percentage: null;
             })
             ->editColumn('study_bonus', function ($contribution) {
                 return Util::formatMoney($contribution->study_bonus);
