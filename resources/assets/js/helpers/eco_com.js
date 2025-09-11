@@ -30,7 +30,12 @@ export default {
       },
       // state
       isPaid(eco_com) {
-        eco_com.eco_com_state.eco_com_state_type_id === state_type.PAGADO;
+        if (eco_com.eco_com_state == null) {
+          return false;
+        }
+        return (
+          eco_com.eco_com_state.eco_com_state_type_id === state_type.PAGADO
+        );
       },
     };
   },

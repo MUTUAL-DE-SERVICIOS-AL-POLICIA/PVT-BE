@@ -702,6 +702,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_recalificacion', 'EconomicComplementController@recalificacion');
 
     //fixed
+    Route::post('/eco_com_fixed_pensions', 'EcoComFixedPensionController@store');
     Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
 
     // Eco com Beneficiary

@@ -702,7 +702,9 @@ class EconomicComplementController extends Controller
             'eco_com_once_payment',
             'eco_com_fixed_pension',
             'eco_com_updated_pension',
-            'observations'
+            'observations',
+            'affiliate.address',
+            'affiliate.eco_com_fixed_pensions'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::where('is_active', true)->get();
@@ -791,23 +793,7 @@ class EconomicComplementController extends Controller
         /**
          ** for observations
          */
-        // $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
         $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'AT')->where('active',true)->get();
-        // $affiliate_observations = AffiliateObservation::where('affiliate_id', $economic_complement->affiliate_id)->get();
-        // foreach($affiliate_observations as $observation){
-        //     if($observation->observationType->type=='AT')
-        //     {
-        //         $eco_com_observation = EconomicComplementObservation::where('economic_complement_id',$economic_complement->id)
-        //         ->where('observation_type_id',$observation->observation_type_id)
-        //         ->first();
-        //         if(!$eco_com_observation)
-        //         {
-        //             $new_observation = ObservationType::find($observation->observation_type_id);
-        //             $observations_types->push($new_observation);
-        //             // ($observations_types,$new_observation);   
-        //         }
-        //     }
-        // }
 
         /**
          ** Permissions
@@ -1362,6 +1348,10 @@ class EconomicComplementController extends Controller
         // Si el tipo es "ce"
         if ($request->type == "ce" && $economic_complement->rent_type == "Automatico") {
 
+            $newFixed = EcoComFixedPension::findOrFail($request->new_fixed_id);
+            if($newFixed->id != $economic_complement->eco_com_fixed_pension_id){
+                $economic_complement->eco_com_fixed_pension()->associate($newFixed);
+            }
             $economic_complement->user_id = Auth::user()->id;
 
             $economic_complement->sub_total_rent = $economic_complement->eco_com_fixed_pension->sub_total_rent;

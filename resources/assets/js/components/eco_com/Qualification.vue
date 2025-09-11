@@ -386,7 +386,7 @@
               </div>
             </div>
             <div class="hr-line-dashed"></div>
-              <div class="row" v-if="!$eco_com_helper.isInclusion(EcoCom) && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
+              <div class="row" v-if="!$eco_com_helper.isInclusion(ecoCom) && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
                 <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
                   <select 
                   class="col-sm-6"
@@ -561,6 +561,10 @@
             <h3>Las Rentas Fueron Importadas Automáticamente.<br/><br/></h3>
 
             <template v-if="ecoComModal.type == 'ce'">
+              <h4 class="text-lg">Seleccione la renta fija que se usara para la réplica</h4>
+              <select class="p-xxs" name="newFixedId" id=""  v-model="newFixedId">
+                <option class="p-xxs" v-for="fixedPension in affiliate.eco_com_fixed_pensions" :value="fixedPension.id">{{ getProcedureSemester(fixedPension.eco_com_procedure_id) }}</option>
+              </select>
               <h3 class="text-danger">
                 ¿Esta seguro que realizar la replica de la renta fija para la Calificacion de este trámite?<br/><br/>
               </h3>
@@ -617,6 +621,7 @@ import {
   flashErrors
 } from "../../helper.js";
 import { mapState, mapMutations } from "vuex";
+import affiliate from "../../helpers/affiliate.js";
 
 export default {
   props: ["ecoComId", "affiliate", "permissions","roleId", "observations"],
@@ -631,7 +636,8 @@ export default {
       eco_com_state_type_id:0,
       idEcoCom:0,
       show_spinner:false,
-      procedures:[]
+      procedures:[],
+      newFixedId:null
     };
   },
   mounted() {
@@ -648,7 +654,7 @@ export default {
       return this.$store.state.ecoComForm.ecoCom;
     },
     isSenasir() {
-      return $affiliate_helper.isSenasir(this.affiliate);
+      return this.$affiliate_helper.isSenasir(this.affiliate);
     },
     namePensionEntity() {
       return getNamePensionEntity(this.affiliate.pension_entity_id);
@@ -878,40 +884,35 @@ export default {
       this.loadingButton = true;
       this.editing = false;
 
-      switch (type) {      
+      this.ecoComModal.id = this.ecoCom.id;
+      
+      switch (type) {
         case 'ce': // Complemento Economico
           if (this.ecoCom.rent_type == "Automatico") {
-          this.ecoCom.aps_total_fsa = this.ecoCom.eco_com_fixed_pension.aps_total_fsa;
-          this.ecoCom.aps_total_cc = this.ecoCom.eco_com_fixed_pension.aps_total_cc;
-          this.ecoCom.aps_total_fs = this.ecoCom.eco_com_fixed_pension.aps_total_fs;
-          this.ecoCom.aps_disability = this.ecoCom.eco_com_fixed_pension.aps_disability;
-          this.ecoCom.aps_total_death = this.ecoCom.eco_com_fixed_pension.aps_total_death;
-          this.ecoCom.sub_total_rent = this.ecoCom.eco_com_fixed_pension.sub_total_rent;
-          this.ecoCom.reimbursement = this.ecoCom.eco_com_fixed_pension.reimbursement;
-          this.ecoCom.dignity_pension = this.ecoCom.eco_com_fixed_pension.dignity_pension;
-          this.ecoComModal.id = this.ecoCom.id;
-          this.ecoComModal.type = "ce";
+            this.ecoComModal.type = "ce";
+            this.ecoComModal.new_fixed_id = this.newFixedId;
           }
+          break;
         case 'am': // Auxilio Mortuorio
           if (this.ecoCom.eco_com_updated_pension.rent_type == "Automatico") {
-            this.ecoComModal.id = this.ecoCom.id;
-            this.ecoComModal.type = "am";       
+            this.ecoComModal.type = "am";
           }
-          await axios
-            .patch(`/eco_com_change_rent_type`, this.ecoComModal)
-            .then(response => {
-              this.$store.commit("ecoComForm/setEcoCom", response.data);
-              this.$modal.hide("edit-rents-modal");
-              location.reload();
-              flash("Rentas Actualizadas con exito");
-            })
-            .catch(error => {
-              flashErrors("Error al procesar: ", error.response.data.errors);
-              this.$modal.hide("edit-rents-modal");
-            });
-          this.loadingButton = false;
-          this.editing = true;
+          break;
       }
+        await axios
+          .patch(`/eco_com_change_rent_type`, this.ecoComModal)
+          .then(response => {
+            this.$store.commit("ecoComForm/setEcoCom", response.data);
+            this.$modal.hide("edit-rents-modal");
+            location.reload();
+            flash("Rentas Actualizadas con exito");
+          })
+          .catch(error => {
+            flashErrors("Error al procesar: ", error.response.data.errors);
+            this.$modal.hide("edit-rents-modal");
+          });
+        this.loadingButton = false;
+        this.editing = true;
     }, 
     async getProcedures() {
       this.$scrollTo("#wrapper");
@@ -924,6 +925,10 @@ export default {
           flashErrors("Error al procesar: ", error.response.data.errors);
         });
     },
+    getProcedureSemester(id) {
+      const p = this.procedures.find(e => e.id == id);      
+      return p.semester + p.year.split('-')[0] + '(' + p.rent_month + ')'
+    }
   }
 };
 </script>

@@ -221,6 +221,7 @@ th.ellipsis-text {
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Renta/Pensión para la Calificación</h2>
+                                <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal()">Crear</button>
                             </div>
                             <div class="ibox-content">
                                 <div class="table-responsive">
@@ -268,7 +269,7 @@ th.ellipsis-text {
                                                     <td>{{ $eco_com_fixed_pension->total_rent }}</td>
                                                     @if($role == 103)
                                                     <td>
-                                                        <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal({{ json_encode($eco_com_fixed_pension) }})">Editar</button>
+                                                        <button class="btn btn-warning btn-sm" @click='$refs.editModal.openModal(@json($eco_com_fixed_pension))'>Editar</button>
                                                     </td>
                                                     @endif
                                                 </tr>
@@ -277,7 +278,7 @@ th.ellipsis-text {
                                     </table>
                                 </div>
                             </div>
-                            <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" ></edit-pension-modal>
+                            <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" :affiliate_id="{{$affiliate->id}}"></edit-pension-modal>
                         </div>
                         @endif
                         <!---End fixed-->
