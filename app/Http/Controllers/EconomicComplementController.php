@@ -972,12 +972,34 @@ class EconomicComplementController extends Controller
             ], 403);
         }
         $economic_complement = EconomicComplement::findOrFail($request->id);
+        if (isset($request->eco_com_state_id) && $request->eco_com_state_id != $economic_complement->eco_com_state_id) {
+            $is_paid = ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado);
+            $change_to_process = ($request->eco_com_state_id == ID::ecoComState()->in_process);
+            if ($is_paid && $change_to_process) {
+                if (Util::getRol()->id != 5) {
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => ['Solo Jefatura puede cambiar un trámite PAGADO a EN PROCESO.'],
+                    ], 403);
+                }
+                if ($economic_complement->discount_types()->where('discount_type_id', 6)->exists()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => ['El trámite tiene un descuento por Reposición de Fondos y no puede ser revertido a EN PROCESO.'],
+                    ], 403);
+                }
+            }
+            else if ($is_paid) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => ['Un trámite en estado PAGADO solo puede ser cambiado a EN PROCESO por Jefatura.'],
+                ], 403);
+            }
+        }
+
         // $economic_complement->degree_id = $request->degree_id;
         // $economic_complement->category_id = $request->category_id;
         $economic_complement->city_id = $request->city_id;
-        if (Util::getRol()->id == 5) {
-            $economic_complement->reception_date = $request->reception_date;
-        }
         $affiliate = $economic_complement->affiliate;
         
         // $affiliate->affiliate_state_id = $request->affiliate_state_id;
