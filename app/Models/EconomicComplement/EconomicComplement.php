@@ -388,10 +388,10 @@ class EconomicComplement extends Model
         $user_id = Auth::user()->id;
         if ($this->discount_types->count() > 0) {
             if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
-                $this->eco_com_state_id = 18;
+                $this->eco_com_state_id = 32;
                 $change_state = true;
             }else{
-                if ($this->eco_com_state_id == 18) {
+                if ($this->eco_com_state_id == 32) {
                     $this->eco_com_state_id = 16;
                     $change_state_process = true;
                 }
