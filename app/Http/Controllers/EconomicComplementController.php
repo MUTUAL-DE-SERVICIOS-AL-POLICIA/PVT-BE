@@ -995,6 +995,12 @@ class EconomicComplementController extends Controller
                     'errors' => ['Un trámite en estado PAGADO solo puede ser cambiado a EN PROCESO por Jefatura.'],
                 ], 403);
             }
+            if ($request->eco_com_state_id == 18 && $economic_complement->eco_com_state_id != 32) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => ['Un trámite solo puede pasar a EJECUTADO TOTAL AMORTIZADO desde el estado HABILITADO TOTAL AMORTIZADO.'],
+                ], 403);
+            }
         }
 
         // $economic_complement->degree_id = $request->degree_id;
@@ -1970,7 +1976,9 @@ class EconomicComplementController extends Controller
     }
     public function automatiQualification(Request $request)
     {
-        ini_set('max_execution_time', 300);
+        // ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '-1');
+
         $eco_com_procedure = EcoComProcedure::find($request->ecoComProcedureId);
         $eco_coms = EconomicComplement::with('eco_com_state')->where('eco_com_procedure_id', $eco_com_procedure->id)
             ->where('total_rent', '>', 0);
@@ -2150,9 +2158,9 @@ class EconomicComplementController extends Controller
         }
         if ($eco_com->discount_types->count() > 0) {
             if (round($eco_com->total_amount_semester * round(floatval($eco_com->complementary_factor) / 100, 3),2) ==  $eco_com->discount_types()->sum('amount')) {
-                $eco_com->eco_com_state_id = 18;
+                $eco_com->eco_com_state_id = 32;
             }else{
-                if ($eco_com->eco_com_state_id == 18) {
+                if ($eco_com->eco_com_state_id == 32) {
                     $eco_com->eco_com_state_id = 16;
                 }
             }
