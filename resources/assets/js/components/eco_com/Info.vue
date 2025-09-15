@@ -455,7 +455,7 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='29'
-          :disabled="!editing || ![4, 5].includes(roleId)" >
+          :disabled="!editing || ![4, 5, 103].includes(roleId)" >
           </div>
         </div>
         <div class="row">
@@ -468,7 +468,7 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='28'
-          :disabled="!editing || ![4, 5].includes(roleId)" >
+          :disabled="!editing || ![4, 5, 103].includes(roleId)" >
           </div>
         </div>
         <div class="row">
@@ -481,7 +481,7 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='32'
-          :disabled="!editing || ![4, 5].includes(roleId)" >
+          :disabled="!editing || ![4, 5, 103].includes(roleId)" >
           </div>
         </div>
         <div v-if="roleId == 5">
