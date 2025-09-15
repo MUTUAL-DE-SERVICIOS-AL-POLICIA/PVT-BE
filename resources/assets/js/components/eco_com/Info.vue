@@ -473,6 +473,34 @@
         </div>
         <div class="row">
           <div class="col-md-4">
+          <label for="eco_com_state_id">HABILITADO TOTAL AMORTIZADO</label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='32'
+          :disabled="!editing || ![4, 5].includes(roleId)" >
+          </div>
+        </div>
+        <div v-if="roleId == 5">
+            <div class="row">
+              <div class="col-md-4">
+              <label for="eco_com_state_id">EJECUTADO TOTAL AMORTIZADO</label>
+              </div>
+              <div class="col-md-2">
+              <input class ="mediumCheckbox"
+              type="radio" 
+              id="eco_com_state_id" 
+              v-model="form.eco_com_state_id" 
+              value='18'
+              :disabled="!editing" >
+              </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
           <label for="eco_com_state_id">NO PAGADO - REVERTIDO</label>
           </div>
           <div class="col-md-2">
