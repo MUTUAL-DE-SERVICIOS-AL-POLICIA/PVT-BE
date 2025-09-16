@@ -79,7 +79,7 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación</strong></p>
+            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación ({{ ecoCom.eco_com_fixed_pension ? ecoCom.eco_com_fixed_pension.period : "" }})</strong></p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
