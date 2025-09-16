@@ -339,6 +339,7 @@ Vue.component('summary-select-contributions', require('./components/contribution
 
 Vue.component('generate-charge', require('./components/voucher/GenerateCharge.vue'));
 Vue.component('ret-fun-alert', require('./components/ret_fun/Alert.vue'));
+Vue.component('ret-fun-judicial-retention', require('./components/ret_fun/JudicialRetention.vue'));
 /**
  * Treasury components
  */
@@ -449,6 +450,8 @@ Vue.component('eco-com-update-paid-bank', require('./components/eco_com/UpdatePa
 Vue.component('eco-com-automatic-qualification', require('./components/eco_com/AutomaticQualification.vue'));
 
 Vue.component('eco-com-estado-pagado', require('./components/eco_com/EstadoPagado.vue'));
+
+Vue.component('edit-pension-modal', require('./components/eco_com/EditPensionModal.vue'));
 // utils
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));

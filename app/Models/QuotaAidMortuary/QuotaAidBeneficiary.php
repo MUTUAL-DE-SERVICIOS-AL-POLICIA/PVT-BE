@@ -4,11 +4,12 @@ namespace Muserpol\Models\QuotaAidMortuary;
 
 use Illuminate\Database\Eloquent\Model;
 use Muserpol\Helpers\Util;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 class QuotaAidBeneficiary extends Model
 {
-    //
+    use SoftDeletes;
     public function quota_aid_mortuary()
     {
         return $this->belongsTo('Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary');

@@ -53,7 +53,6 @@
                         <td><strong>Nº</strong></td>
                         <td><strong>TRÁMITE</strong></td>
                         <td><strong>FECHA RECEP.</strong></td>
-                        <td><strong>CERT. </strong></td>
                         <td><strong>FECHA CERT.</strong></td>
                         <td><strong>C.I.</strong></td>
                         <td><strong>AFILIADO</strong></td>
@@ -72,7 +71,6 @@
                             <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($procedure->reception_date)) }}</td>
                             @php ($correlative = $procedure->getCorrelative($from_area->id))
                             @if ($correlative)
-                                <td class="uppercase px-5 text-right">{{ $correlative->code }}</td>
                                 <td class="uppercase px-5 text-right">{{ date('d/m/Y',strtotime($correlative->date)) }}</td>
                             @else
                                 @for ($i=0; $i<2; $i++)

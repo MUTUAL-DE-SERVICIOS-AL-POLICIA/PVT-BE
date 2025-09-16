@@ -5,7 +5,7 @@
         leave-active-class="animated bounceOutUp"
     >
     <!-- :onclick="`printJS(${print(c.path)})`" -->
-        <button v-for="(c) in retFun.contributionTypes" v-if="retFun.contributionTypes.length" :key="c" @click="modal(c)" class="btn btn-primary btn-md m-r-md m-b-md"><i class="fa fa-print"></i> {{ c.name }}</button>
+        <button v-for="(c) in retFun.contributionTypes" v-if="retFun.contributionTypes.length" :key="c.id" @click="modal(c)" class="btn btn-primary btn-md m-r-md m-b-md"><i class="fa fa-print"></i> {{ c.name }}</button>
 
     </transition-group>
 </div>

@@ -95,8 +95,16 @@
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
-            <div class="pull-left">
-                <correlative doc-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}" type="retFun"></correlative>
+            <div class="pull-left">            
+            @if(Util::getRol()->id == Muserpol\Helpers\ID::roles()->liquidationFR)
+                <ret-fun-certification-button
+                    title="Imprimir Liquidación"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_liquidation', $retirement_fund->id) }}"
+                >
+                </ret-fun-certification-button>
+            @endif
+
             @if(Util::getRol()->id == 10 || Util::isRegionalRole())
                 <ret-fun-certification-button
                     title="Imprimir recepción"
@@ -296,28 +304,17 @@
                             <div id="tab-beneficiaries" class="tab-pane">
 
                                     @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
-                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
+                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships,'kinship_beneficiaries'=>$kinship_beneficiaries])
                                     @endcan
 
                             </div>
                             <div id="tab-summited-document" class="tab-pane">
 
-                                @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                        {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}                                        
-                                    <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
-                                        @include('ret_fun.step1_requirements_edit')
+                                @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)                                     
+                                    <ret-fun-step1-requirements-edit :affiliate="{{ $affiliate }}" :ret_fun="{{ $retirement_fund }}" :submitted="{{$submit_documents}}" :requirements='@json($requirements)' :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
                                     </ret-fun-step1-requirements-edit>
                                 @endcan
-
                             </div>
-                            <div id="tab-headship" class="tab-pane">
-                                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
-                                    {{-- <ret-fun-heaship :ret_fun="{{ $retirement_fund }}" user="{{ $user }}" inline-template>
-                                        @include('ret_fun.headship')
-                                    </ret-fun-heaship> --}}
-                                {{-- @endcan --}}
-                            </div>
-
                             <div id="tab-individual-accounts" class="tab-pane">
                                 @can('view',new Muserpol\Models\Contribution\Contribution)
                                     <ret-fun-qualification

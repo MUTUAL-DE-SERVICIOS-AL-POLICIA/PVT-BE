@@ -555,7 +555,7 @@ class EconomicComplementController extends Controller
                 $spouse->official = $request->eco_com_beneficiary_official?? $request->eco_com_beneficiary_official;
                 $spouse->book = $request->eco_com_beneficiary_book ?? $request->eco_com_beneficiary_book;
                 $spouse->departure = $request->eco_com_beneficiary_departure ?? $request->eco_com_beneficiary_departure;
-                $spouse->marriage_date = $request->eco_com_beneficiary_marriage_date ?? $request->eco_com_beneficiary_marriage_date;
+                $spouse->marriage_date = Util::verifyBarDate($request->eco_com_beneficiary_marriage_date) ? Util::parseBarDate($request->eco_com_beneficiary_marriage_date) : $request->eco_com_beneficiary_marriage_date;
                 $spouse->save();
 
                 /**
@@ -581,24 +581,37 @@ class EconomicComplementController extends Controller
         /**
          ** save documents
          */
-        $requirements = ProcedureRequirement::where('procedure_modality_id', $request->modality_id)->get();
-        foreach ($requirements  as  $requirement) {
-            if ($request->input('document' . $requirement->id) == 'checked') {
+        if($request->required_requirements) {
+            $required_requirements = [];
+            foreach ($request->required_requirements as $number) {
+                foreach ($number as $req) {
+                    if(isset($req['status']) && $req['status'] == 'checked'){
+                        $required_requirements[] = $req;
+                    }
+                }
+            }
+            foreach($required_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
-                $submit->procedure_requirement_id = $requirement->id;
+                $submit->procedure_requirement_id = $requirement['procedureRequirementId'];
+                $submit->comment = $requirement['comment'];
+                $submit->is_uploaded = $requirement['isUploaded'];
                 $submit->reception_date = date('Y-m-d');
-                $submit->comment = $request->input('comment' . $requirement->id);
                 $submit->save();
             }
         }
         if ($request->aditional_requirements) {
-            foreach ($request->aditional_requirements  as  $requirement) {
+            $additional_requirements = [];
+            foreach ($request->aditional_requirements as $adr) {
+                $additional_requirements[] = json_decode($adr);
+            }
+            foreach ($additional_requirements  as  $requirement) {
                 $submit = new EcoComSubmittedDocument();
                 $submit->economic_complement_id = $economic_complement->id;
-                $submit->procedure_requirement_id = $requirement;
+                $submit->procedure_requirement_id = $requirement->procedureRequirementId;
                 $submit->reception_date = date('Y-m-d');
                 $submit->comment = null;
+                $submit->is_uploaded = $requirement->isUploaded;
                 $submit->save();
             }
         }
@@ -719,15 +732,29 @@ class EconomicComplementController extends Controller
         $procedure_types = ProcedureType::where('module_id', ID::module()->eco_com)->get();
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+            ->where('procedure_modality_id', $economic_complement->eco_com_modality->procedure_modality_id)
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
         $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', ID::procedureType()->eco_com)->select('id', 'name', 'procedure_type_id')->get();
-        $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid')
+        $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid', 'eco_com_submitted_documents.is_uploaded', 'procedure_documents.name')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
+            ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('eco_com_submitted_documents.economic_complement_id', $id);
 
+        // Sirve para listar documentos que fueron eliminados anteriormente
+        $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
+            return [$item->id => $item];
+        });
+        $restore_procedure_documents = collect();
+        foreach ($submitted->get() as $item) {
+            if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
+                $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
+            }
+        }
+        $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+        
         /**
          ** for validation and submit
          */
@@ -1151,53 +1178,51 @@ class EconomicComplementController extends Controller
                 'errors' => ['No tiene permisos para editar el Trámite'],
             ], 403);
         }
-        $num = $count = 0;
-        $eco_com = EconomicComplement::find($id);
-        // ? Algun dia
-        $submitted_documents = $eco_com->submitted_documents()->delete();
-        foreach ($request->requirements  as  $requirement) {
-            foreach ($requirement as $r) {
-                if ($r['status']) {
-                    $count++;
-                    $submit = new EcoComSubmittedDocument();
-                    $submit->economic_complement_id = $eco_com->id;
-                    $submit->procedure_requirement_id = $r['id'];
-                    $submit->reception_date = date('Y-m-d');
-                    $submit->comment = $r['comment'];
-                    $submit->save();
-                }
-            }
-        }
-        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
-            ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->where('procedure_requirements.number', '0')
-            ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-            ->orderBy('procedure_requirements.number', 'ASC')
-            ->get();
+        DB::transaction(function () use ($request, $id) {
+        $eco_com = EconomicComplement::findOrFail($id);
+        // Obtener documentos actuales indexados por procedure_requirement_id
+        $existingDocs = $eco_com->submitted_documents->keyBy('procedure_requirement_id');
 
-        $aditional =  $request->aditional_requirements;
-        $num = "";
-        foreach ($procedure_requirements as $requirement) {
-            $needle = EcoComSubmittedDocument::where('economic_complement_id', $id)
-                ->where('procedure_requirement_id', $requirement->id)
-                ->first();
-            if (isset($needle)) {
-                if (!in_array($requirement->id, $aditional)) {
-                    $num .= $requirement->id . ' ';
-                    $needle->delete();
-                    $needle->forceDelete();
-                }
-            } else {
-                if (in_array($requirement->id, $aditional)) {
-                    $submit = new EcoComSubmittedDocument();
-                    $submit->economic_complement_id = $eco_com->id;
-                    $submit->procedure_requirement_id = $requirement->id;
-                    $submit->reception_date = date('Y-m-d');
-                    $submit->comment = "";
-                    $submit->save();
-                }
-            }
+        // Nueva colección con todos los nuevos requisitos del request
+        $newRequirements = collect($request->requirements)
+            ->flatten(1)
+            ->filter(function ($r) { return $r['status']; });
+
+        $additionalRequirements = collect($request->aditional_requirements);
+        
+        // Unimos ambos arreglos por procedure_requirement_id
+        $incoming = $newRequirements->concat($additionalRequirements)
+                    ->mapWithKeys(function ($r) {
+                        return [
+                            $r['procedureRequirementId'] => [
+                                'is_uploaded' => $r['isUploaded'],
+                                'comment' => $r['comment'] ?? null,
+                            ]
+                        ];
+                    });
+
+        // Determinar los IDs actuales y los nuevos
+        $currentIds = $existingDocs->keys();
+        $incomingIds = $incoming->keys();
+
+        // 1. Eliminar los que ya no existen en el request
+        $toDelete = $currentIds->diff($incomingIds);
+        EcoComSubmittedDocument::where('economic_complement_id', $eco_com->id)
+            ->whereIn('procedure_requirement_id', $toDelete)
+            ->delete();
+
+        // 2. Crear o actualizar
+        foreach ($incoming as $procedureRequirementId => $data) {
+            $doc = $existingDocs->get($procedureRequirementId) ?? new EcoComSubmittedDocument();
+
+            $doc->economic_complement_id = $eco_com->id;
+            $doc->procedure_requirement_id = $procedureRequirementId;
+            $doc->is_uploaded = $data['is_uploaded'];
+            $doc->reception_date = now();
+            $doc->comment = $data['comment'];
+            $doc->save();
         }
+
         /**
          ** verify observation id = 6
          */
@@ -1205,7 +1230,7 @@ class EconomicComplementController extends Controller
         if ($number_docs->contains(0)) {
             $number_docs = $number_docs->slice(1);
         }
-        if ($count != $number_docs->count()) {
+        if (count($request->requirements) != $number_docs->count()) {
             if(!$eco_com->observations->contains(6)){
                 $eco_com->observations()->save(ObservationType::find(6), [
                     'user_id' => auth()->id(),
@@ -1231,7 +1256,8 @@ class EconomicComplementController extends Controller
                 ]);
             }
         }
-        return $num;
+        return ['deleted' => $toDelete];
+        });
     }
     public function editReviewProcedures(Request $request)
     {
@@ -1309,6 +1335,96 @@ class EconomicComplementController extends Controller
         $eco_com->total_eco_com = $eco_com->getOnlyTotalEcoCom();
         return $eco_com;
     }
+    public function changeRentType(Request $request) {
+        try {
+            $this->authorize('update', new EconomicComplement());
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para editar el Trámite'],
+            ], 403);
+        }
+    
+        // Encuentra el complemento económico junto con las relaciones necesarias
+        $economic_complement = EconomicComplement::with('discount_types', 'eco_com_fixed_pension', 'eco_com_updated_pension')
+            ->find($request->id);
+    
+        // Verifica si el trámite está en estado EN PROCESO
+        if ($economic_complement->eco_com_state->eco_com_state_type_id != ID::ecoComStateType()->creado ) {
+            $eco_com_state = $economic_complement->eco_com_state;
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['No se puede modificar las rentas del trámite ' . $economic_complement->code . ' porque se encuentra en estado de ' . $eco_com_state->name .'. Solo se pueden modificar los tramites en estado en PROCESO DE REVISIÓN'],
+            ], 422);
+        }
+    
+        // Si el tipo es "ce"
+        if ($request->type == "ce" && $economic_complement->rent_type == "Automatico") {
+
+            $economic_complement->user_id = Auth::user()->id;
+
+            $economic_complement->sub_total_rent = $economic_complement->eco_com_fixed_pension->sub_total_rent;
+            $economic_complement->reimbursement = $economic_complement->eco_com_fixed_pension->reimbursement;
+            $economic_complement->dignity_pension = $economic_complement->eco_com_fixed_pension->dignity_pension;
+
+            $economic_complement->aps_total_fsa = $economic_complement->eco_com_fixed_pension->aps_total_fsa;
+            $economic_complement->aps_total_cc = $economic_complement->eco_com_fixed_pension->aps_total_cc;
+            $economic_complement->aps_total_fs =  $economic_complement->eco_com_fixed_pension->aps_total_fs;
+            $economic_complement->aps_total_death = $economic_complement->eco_com_fixed_pension->aps_total_death;
+            $economic_complement->aps_disability = $economic_complement->eco_com_fixed_pension->aps_disability;
+            $economic_complement->total_rent = $economic_complement->eco_com_fixed_pension->total_rent;
+            //Limpia los campos si ya se hubiese calificado
+            $economic_complement->base_wage_id = null;
+            $economic_complement->complementary_factor_id = null;
+            $economic_complement->total_rent_calc = null;
+            $economic_complement->salary_reference = null;
+            $economic_complement->seniority = null;
+            $economic_complement->salary_quotable = null;
+            $economic_complement->difference = null;
+            $economic_complement->total_amount_semester = null;
+            $economic_complement->complementary_factor = null;
+            $economic_complement->total = null;
+        } 
+        // Si el tipo es "am", actualiza eco_com_updated_pension
+        else if ($request->type == "am") {
+
+            // Verificar que no tenga descuento por auxilio mortuorio para poder cambiar a MANUAL
+            $discount_type_id=7;
+            $exists = $economic_complement->hasDiscountType($discount_type_id);        
+            if ($exists) {
+                $pivot_id = $economic_complement->discount_types->where('id', $discount_type_id)->first()->pivot->id;
+                
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Error',
+                    'errors' => ['No se puede cambiar a estado MANUAL la renta para Aux. Mort. por que se tiene el registro de descuento ('. $pivot_id . '). Elimine el descuento previamente.']
+                ], 422);
+            }
+        
+            if ($economic_complement->eco_com_updated_pension) {
+                $economic_complement->eco_com_updated_pension->rent_type = "Manual";
+                $economic_complement->eco_com_updated_pension->user_id = Auth::user()->id;
+
+                $economic_complement->eco_com_updated_pension->sub_total_rent = null;
+                $economic_complement->eco_com_updated_pension->reimbursement = null;
+                $economic_complement->eco_com_updated_pension->dignity_pension = null;
+                $economic_complement->eco_com_updated_pension->aps_disability = null;
+                $economic_complement->eco_com_updated_pension->aps_total_fsa = null;
+                $economic_complement->eco_com_updated_pension->aps_total_cc = null;
+                $economic_complement->eco_com_updated_pension->aps_total_fs = null;
+                $economic_complement->eco_com_updated_pension->aps_total_death = null;
+                $economic_complement->eco_com_updated_pension->total_rent = null;
+
+                $economic_complement->eco_com_updated_pension->save();
+            }
+        }    
+        $economic_complement->save();
+        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_updated_pension'])->find($economic_complement->id);
+    
+        return $economic_complement;
+    }    
+    
     public function updateRents(Request $request)
     {
         try {
@@ -1395,7 +1511,7 @@ class EconomicComplementController extends Controller
                 $economic_complement->eco_com_fixed_pension->calculateTotalRentAps();
                 $economic_complement->eco_com_updated_pension->calculateTotalRentAps();
             }
-            if($request->type == "ce"){
+            if($request->type == "ce" && $economic_complement->rent_type != "Automatico"){
                 $economic_complement->rent_type = "Manual";
                 $economic_complement->eco_com_fixed_pension->rent_type = "Manual";
             } else if ($request->type == "am") {
@@ -1422,7 +1538,7 @@ class EconomicComplementController extends Controller
                 return $economic_complement->qualify() ;
             }
         }
-        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_updated_pension'])->find($economic_complement->id);
+        $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_fixed_pension','eco_com_updated_pension'])->find($economic_complement->id);
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         $economic_complement->total_eco_com = $economic_complement->getOnlyTotalEcoCom();
         return $economic_complement;
@@ -1495,13 +1611,21 @@ class EconomicComplementController extends Controller
         }
         $discount_type = DiscountType::findOrFail($discount_type_id);
 
-        $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
-        if( $last_movement ) {
-            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+
+        if($discount_type_id == 6) {//Amortización por Reposición de Fondos
+            $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
+            if( $last_movement == null ) {
                 return response()->json([
+                    'status' => 'error',
                     'msg' => 'Error',
-                    'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
+                    'errors' => ['No se puede realizar la amortización por Reposición de Fondos, porque no existe una deuda registrada.'],
                 ], 422);
+            }
+            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+                    return response()->json([
+                        'msg' => 'Error',
+                        'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
+                    ], 422);
             }
         }
         if ($eco_com->discount_types->contains($discount_type->id)) {
@@ -2082,7 +2206,7 @@ class EconomicComplementController extends Controller
             // descuento por devoluciones por reposicion de fondos
             $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$item->id)->where("discount_type_id",6)->first();
             $exist_movement = EcoComMovement::where('affiliate_id', $item->affiliate_id)->exists();
-            if ($exist_movement) {
+            if ($exist_movement && is_object($item_discount)) {
                 $last_movement = EcoComMovement::where("affiliate_id",$item->affiliate_id)->latest()->orderBy('id', 'desc')->first();
                 if($last_movement->balance > 0){
                     $eco_com_movement = new EcoComMovement();
@@ -2369,4 +2493,20 @@ class EconomicComplementController extends Controller
             ], 422);
         }
     }
+
+    public function getProceduresRegulation()
+    {
+
+        $eco_com_regulation = EcoComRegulation::where('eco_com_regulations.is_enable',true)->first();
+
+        if (!$eco_com_regulation) {
+            return response()->json(['message' => 'Regulación no encontrada'], 404);
+        }
+        $eco_com_procedures = EcoComProcedure::where('id', '>=', $eco_com_regulation->replica_eco_com_procedure_id)
+            ->select('id', 'year', 'semester', 'rent_month')
+            ->get();   
+
+        return response()->json($eco_com_procedures);
+    }
+
 }

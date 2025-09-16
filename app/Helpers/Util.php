@@ -666,7 +666,7 @@ class Util
   }
   public static function updateCreateSpousePersonalInfo($affiliate_id, $object)
   {
-    $spouse = Spouse::where('affiliate_id', $affiliate_id)->first();
+    $spouse = Spouse::where('affiliate_id', $affiliate_id)->latest('updated_at')->first();
     if (!$spouse) {
       $spouse = new Spouse();
       $spouse->affiliate_id = $affiliate_id;
@@ -1217,6 +1217,9 @@ class Util
         break;
       case 31:
         return 7;
+        break;
+      case 62:
+        return 9;
         break;
       default:
         return [];

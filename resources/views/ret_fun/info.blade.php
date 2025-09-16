@@ -18,6 +18,32 @@
                     </button>
                 </div>
             @endif
+            @if(Session::get('rol_id') == 103)
+                <div class="text-right col-md-6">
+                    <button
+                        data-animation="flip"
+                        data-toggle="tooltip"
+                        title="Imprimir Liquidación"
+                        class="btn btn-primary"
+                        @click="printLiquidation"
+                    >
+                        <i class="fa fa-print"></i> Imprimir Liquidación
+                    </button>
+                </div>
+            @endif
+            @if(Util::getRol()->id == 10 || Util::isRegionalRole())
+                <div class="text-right col-md-6">
+                    <button
+                        data-animation="flip"
+                        data-toggle="tooltip"
+                        title="Form recepción"
+                        class="btn btn-primary"
+                        @click="printReception"
+                    >
+                        <i class="fa fa-print"></i> Imprimir Formulario de Recepción
+                    </button>
+                </div>
+            @endif
             </div>
                 @can('update',new Muserpol\Models\RetirementFund\RetirementFund)
                 <div class="text-right" v-if="!read">
