@@ -57,13 +57,12 @@
                     <a href="{{ url('/eco_com') }}"><i class="{{Muserpol\Helpers\Util::IconModule(2)}}"></i> <span
                             class="nav-label">Complemento Economico</span></a>
                 </li>
-                @if(Muserpol\Helpers\Util::getRol()->id != 71)
-                    <li  data-toggle="tooltip" data-placement="right"
-                        title="Reportes">
-                        <a href="{{ url('/eco_com_report') }}"><i class="fa fa-file"></i> <span
-                                class="nav-label">Reportes Complemento Economico</span></a>
-                    </li>
-                @endif
+                <li  data-toggle="tooltip" data-placement="right"
+                    title="Reportes">
+                    <a href="{{ url('/eco_com_report') }}"><i class="fa fa-file"></i> <span
+                            class="nav-label">Reportes Complemento Economico</span></a>
+                </li>
+
             @endif
             @if (Util::rolIsRetFun())
                 <li class="{{ isActiveRoute('ret_fun.index') }}" data-toggle="tooltip" data-placement="right"
@@ -93,7 +92,7 @@
                         class="nav-label">Aportes</span></a>
                 @endif
             </li>
-            @if(Util::rolIsEcoCom() && Util::getRol()->id == 5)
+            @if(Util::rolIsEcoCom() && Util::getRol()->id == 5 || Util::getRol()->id == 103)
             <li data-toggle="tooltip" data-placement="right"
                 title="Paramentros para la calificacion del Complemento Economico">
                 <a href="{{ url('/eco_com_qualification_parameters') }}"><i

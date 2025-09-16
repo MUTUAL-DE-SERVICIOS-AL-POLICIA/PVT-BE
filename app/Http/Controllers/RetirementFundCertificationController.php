@@ -132,6 +132,7 @@ class RetirementFundCertificationController extends Controller
   public function printReception($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $isReinstatement = $retirement_fund->procedureIndex() == 1;
     $affiliate = $retirement_fund->affiliate;
     $degree = $affiliate->degree;
     $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
@@ -150,7 +151,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $submitted_documents = RetFunSubmittedDocument::leftJoin('procedure_requirements', 'procedure_requirements.id', '=', 'ret_fun_submitted_documents.procedure_requirement_id')->where('retirement_fund_id', $retirement_fund->id)->orderBy('procedure_requirements.number', 'asc')->get();
 
@@ -175,8 +175,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'bar_code' => $bar_code,
       'title' => $title,
       'institution' => $institution,
@@ -188,6 +186,7 @@ class RetirementFundCertificationController extends Controller
       'degree' => $degree,
       'submitted_documents' => $submitted_documents,
       'retirement_fund' => $retirement_fund,
+      'isReinstatement' => $isReinstatement,
       'legend_ret_fun'=> $legend_ret_fun,
       'article'=> $article,
     ];
@@ -220,7 +219,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     // $title = "CERTIFICACIÓN DE ARCHIVO – " . strtoupper($retirement_fund->procedure_modality->name ?? 'ERROR');
     $title = "CERTIFICACIÓN DE ARCHIVO";
@@ -231,9 +229,7 @@ class RetirementFundCertificationController extends Controller
      * !!TODO
      *!!revisar
      */
-    $cite = $number; // RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
 
-    $subtitle = $cite;
     $pdftitle = "Certificación de Archivo";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     //aqui
@@ -245,10 +241,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
-      'cite' => $cite,
-      'subtitle' => $subtitle,
       'title' => $title,
       'retirement_fund' => $retirement_fund,
       'affiliate' => $affiliate,
@@ -277,7 +269,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $title = "CERTIFICACI&Oacute;N DE DOCUMENTACI&Oacute;N PRESENTADA Y REVISADA";
     $submitted_documents = RetFunSubmittedDocument::select(
@@ -294,8 +285,6 @@ class RetirementFundCertificationController extends Controller
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_retirement_fund($retirement_fund->id), "QRCODE");
     // $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $this->generateBarCode($retirement_fund)])->render();
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
-    $cite = $number; //RetFunIncrement::getIncrement(Session::get('rol_id'), $retirement_fund->id);
-    $subtitle = $cite;
     $pdftitle = "Revision Legal";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
@@ -304,9 +293,6 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
-      'subtitle' => $subtitle,
       'title' => $title,
       'retirement_fund' => $retirement_fund,
       'affiliate' => $affiliate,
@@ -342,20 +328,17 @@ class RetirementFundCertificationController extends Controller
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
-    $subtitle = $number;
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'affiliate' => $affiliate,
       'applicant' => $applicant,
       'beneficiaries' => $beneficiaries,
@@ -378,21 +361,18 @@ class RetirementFundCertificationController extends Controller
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
-    $subtitle = $number;
 
     $title = "SALARIO PROMEDIO COTIZABLE";
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'retirement_fund' => $retirement_fund,
       'affiliate' => $affiliate,
       'number_contributions' => $number_contributions,
@@ -535,10 +515,8 @@ class RetirementFundCertificationController extends Controller
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
-    $subtitle = $number;
 
     $current_procedure = Util::getRetFunCurrentProcedure();
     $temp = [];
@@ -558,11 +536,10 @@ class RetirementFundCertificationController extends Controller
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'contributions' => $contributions,
       'total_quotes' => $total_quotes,
       'discounts' => $discounts,
@@ -678,20 +655,17 @@ class RetirementFundCertificationController extends Controller
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
-    $subtitle = $number;
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
+      'qualification_users' => $qualification_users,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'contributions' => $contributions,
       'total_quotes' => $total_quotes,
       'discounts' => $discounts,
@@ -762,19 +736,14 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
-
-    $subtitle = $number;
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
 
       'title' => $title,
-      'subtitle' => $subtitle,
       'array_discounts_availability' => $array_discounts_availability,
 
       'affiliate' => $affiliate,
@@ -806,6 +775,7 @@ class RetirementFundCertificationController extends Controller
     $pages[] = \View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
 
     $pages[] = \View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
+
     if ($affiliate->hasAvailability()) {
       if ($retirement_fund->total_availability > 0) {
         $pages[] = \View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
@@ -1008,14 +978,14 @@ class RetirementFundCertificationController extends Controller
   {
     // 60 aportes
     $retirement_fund = RetirementFund::find($id);
+    $ret_fund_index = $retirement_fund->procedureIndex();
     $affiliate = $retirement_fund->affiliate;
     $valid_contributions = ContributionType::select('id')->where('operator', '+')->pluck('id');
     $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
-    $contributions_sixty = Contribution::where('affiliate_id', $affiliate->id)
-      ->whereIn('contribution_type_id', $valid_contributions)
-      ->orderByDesc('month_year')
-      ->take($quantity)
-      ->get();
+    $contributions_sixty = $affiliate->contributionsInRange($ret_fund_index == 1)->whereIn('contribution_type_id', $valid_contributions)
+    ->orderByDesc('month_year')
+    ->take($quantity)
+    ->get();
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
       ->orderBy('month_year')
       ->get();
@@ -1025,7 +995,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE APORTES";
-    $subtitle = "Cuenta Individual";
 
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
@@ -1034,7 +1003,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1045,17 +1013,14 @@ class RetirementFundCertificationController extends Controller
     $pdftitle = "Cuentas Individuales";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
 
       'num' => $num,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'reimbursements' => $reimbursements,
@@ -1074,9 +1039,10 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationAvailability($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $disponibilidad = ContributionType::where('name', '=', 'Disponibilidad')->first();
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->orderBy('month_year')
       ->get();
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
@@ -1086,7 +1052,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE APORTES EN DISPONIBILIDAD";
-    $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
@@ -1094,7 +1059,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1105,7 +1069,6 @@ class RetirementFundCertificationController extends Controller
     $pdftitle = "Cuentas Individuales";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
 
-    $subtitle = $next_area_code->code;
 
     //total de los aportes
     $aporte = $retirement_fund->subtotal_availability;
@@ -1114,12 +1077,10 @@ class RetirementFundCertificationController extends Controller
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
 
       'num' => $num,
       'disponibilidad' => $disponibilidad,
       'aporte' => $aporte,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'reimbursements' => $reimbursements,
@@ -1139,9 +1100,10 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationItem0($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $item_cero_ids = [2, 3];
-    $contributions =  $affiliate->contributions()->whereIn('contribution_type_id', $item_cero_ids)->get();
+    $contributions =  $affiliate->contributionsInRange($ret_fun_index == 1)->whereIn('contribution_type_id', $item_cero_ids)->get();
     $month_years = $contributions->pluck('month_year');
     $months = implode(",", array_map(function ($item) {
       return "'" . $item . "'";
@@ -1191,7 +1153,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE CUENTAS INDIVIDUALES ITEM 0";
-    $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
@@ -1199,7 +1160,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1210,15 +1170,12 @@ class RetirementFundCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $item0_type = 2;
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'dateac' => $dateac,
@@ -1237,9 +1194,10 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationAvailabilityNew($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $item_cero_ids = [12, 13];
-    $contributions =  $affiliate->contributions()->whereIn('contribution_type_id', $item_cero_ids)->orderBy('month_year')->get();
+    $contributions =  $affiliate->contributionsInRange($ret_fun_index == 1)->whereIn('contribution_type_id', $item_cero_ids)->orderBy('month_year')->get();
     $month_years = $contributions->pluck('month_year');
     $months = implode(",", array_map(function ($item) {
       return "'" . $item . "'";
@@ -1253,14 +1211,12 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE CUENTAS INDIVIDUALES DISPONIBILIDAD";
-    $subtitle = "Cuenta Individual";
 
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
     $code = $retirement_fund->code;
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1271,15 +1227,12 @@ class RetirementFundCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $num=0;
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'reimbursements' => $reimbursements,
@@ -1300,19 +1253,20 @@ class RetirementFundCertificationController extends Controller
   public function printCertificationSecurity($id)
   {
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $security_contributions = ContributionType::where('name', '=', 'Período de Batallón de Seguridad Física Con Aporte')->first();
     $security_no_contributions = ContributionType::where('name', '=', 'Período de Batallón de Seguridad Física Sin Aporte')->first();
 
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->where(function ($query) use ($security_contributions, $security_no_contributions) {
         $query->where('contribution_type_id', $security_contributions->id)
           ->orWhere('contribution_type_id', $security_no_contributions->id);
       })
       ->orderBy('month_year')
       ->get();
-    $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id', $security_contributions->id)->count();
-    $contributions_total = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id', $security_contributions->id)->sum('total');
+    $contributions_number = $affiliate->contributionsInRange($ret_fun_index == 1)->where('contribution_type_id', $security_contributions->id)->count();
+    $contributions_total = $affiliate->contributionsInRange($ret_fun_index == 1)->where('contribution_type_id', $security_contributions->id)->sum('total');
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
       ->orderBy('month_year')
       ->get();
@@ -1320,7 +1274,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "BATALLÓN DE SEGURIDAD FÍSICA PRIVADA";
-    $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
@@ -1328,7 +1281,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1340,17 +1292,13 @@ class RetirementFundCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     // $total = Util::formatMoney($contributions_total);
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'num' => $num,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       // 'total'=>$total,
@@ -1379,11 +1327,12 @@ class RetirementFundCertificationController extends Controller
   {
 
     $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     $affiliate = $retirement_fund->affiliate;
     $certification_contribution = ContributionType::where('name', '=', 'Período Certificación Con Aporte')->first();
     $certification_no_contribution = ContributionType::where('name', '=', 'Período Certificación Sin Aporte')->first();
 
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->where(function ($query) use ($certification_contribution, $certification_no_contribution) {
         $query->where('contribution_type_id', $certification_contribution->id)
           ->orWhere('contribution_type_id', $certification_no_contribution->id)
@@ -1394,8 +1343,8 @@ class RetirementFundCertificationController extends Controller
       ->orderBy('month_year')
       ->get();
     // 9 id periodo no  trabajado
-    $contributions_number = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->count();
-    $contributions_total = Contribution::where('affiliate_id', $affiliate->id)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->sum('total');
+    $contributions_number = $affiliate->contributionsInRange($ret_fun_index == 1)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->count();
+    $contributions_total = $affiliate->contributionsInRange($ret_fun_index == 1)->whereIn('contribution_type_id', [$certification_contribution->id, 9])->sum('total');
     $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
       ->orderBy('month_year')
       ->get();
@@ -1403,7 +1352,6 @@ class RetirementFundCertificationController extends Controller
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $title = "CERTIFICACIÓN DE APORTES";
-    $subtitle = "Cuenta Individual";
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
@@ -1411,7 +1359,6 @@ class RetirementFundCertificationController extends Controller
     $area = $next_area_code->wf_state->first_shortened;
     $user = $next_area_code->user;
     $date = Util::getDateFormat($next_area_code->date);
-    $number = $next_area_code->code;
 
     $degree = Degree::find($affiliate->degree_id);
     $exp = City::find($affiliate->city_identity_card_id);
@@ -1423,17 +1370,13 @@ class RetirementFundCertificationController extends Controller
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $total = Util::formatMoney($contributions_total);
 
-    $subtitle = $next_area_code->code;
 
     $data = [
       'code' => $code,
       'area' => $area,
       'user' => $user,
       'date' => $date,
-      'number' => $number,
-
       'num' => $num,
-      'subtitle' => $subtitle,
       'place' => $place,
       'retirement_fund' => $retirement_fund,
       'total' => $total,
@@ -1456,6 +1399,56 @@ class RetirementFundCertificationController extends Controller
       ->setOption('footer-right', 'Pagina [page] de [toPage]')
       ->setOption('footer-left', 'PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL')
       ->stream("$namepdf");
+  }
+  public function printCertificationDevolution($id)
+  {
+    $retirement_fund = RetirementFund::find($id);
+    $ret_fun_index = $retirement_fund->procedureindex();
+    $affiliate = $retirement_fund->affiliate;
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
+      ->where('contribution_type_id', 15) // 15 - Devolución
+      ->orderBy('month_year')
+      ->get();
+    $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+    $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+    $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
+    $title = "CERTIFICACIÓN DE DEVOLUCIÓN DE DEPÓSITOS";
+
+    $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
+    $code = $retirement_fund->code;
+    $area = $next_area_code->wf_state->first_shortened;
+    $user = $next_area_code->user;
+    $date = Util::getDateFormat($next_area_code->date);
+
+    $degree = Degree::find($affiliate->degree_id);
+    $exp = City::find($affiliate->city_identity_card_id);
+    $exp = ($exp == Null) ? "-" : $exp->first_shortened;
+    $dateac = Carbon::now()->format('d/m/Y');
+    $place = City::find(Auth::user()->city_id);
+    $num = 0;
+    $pdftitle = "Cuentas Individuales";
+    $namepdf = Util::getPDFName($pdftitle, $affiliate);
+
+    $data = [
+      'code' => $code,
+      'area' => $area,
+      'user' => $user,
+      'date' => $date,
+      'num' => $num,
+      'place' => $place,
+      'retirement_fund' => $retirement_fund,
+      //'reimbursements' => $reimbursements,
+      'dateac' => $dateac,
+      'exp' => $exp,
+      'degree' => $degree,
+      'contributions' => $contributions,
+      'affiliate' => $affiliate,
+      'title' => $title,
+      'institution' => $institution,
+      'direction' => $direction,
+      'unit' => $unit,
+    ];
+    return \PDF::loadView('contribution.print.certification_devolution', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
   }
   public function printLegalDictum($id)
   {
@@ -1600,7 +1593,8 @@ class RetirementFundCertificationController extends Controller
     $accounts_id = 22;
     $accounts = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', $accounts_id)->first();
     $availability_code = 10;
-    $availability_number_contributions = Contribution::where('affiliate_id', $affiliate->id)->where('contribution_type_id', $availability_code)->count();
+    $ret_fun_index = $retirement_fund->procedureindex();
+    $availability_number_contributions = $affiliate->contributionsInRange($ret_fun_index == 1)->where('contribution_type_id', $availability_code)->count();
 
     $end_contributions = [
       '1'  => 'del fallecimiento del Titular.',
@@ -1885,6 +1879,7 @@ class RetirementFundCertificationController extends Controller
   {
     $retirement_fund =  RetirementFund::find($ret_fun_id);
     $affiliate = Affiliate::find($retirement_fund->affiliate_id);
+    $ret_fun_index = $retirement_fund->procedureindex();
     //$correlatives = RetFunCorrelative::where('retirement_fund_id',$retirement_fund->id)->get();
     //$wf_states = WorkflowState::where('sequence_number','!=',0)->where('role_id','<','28')->where('module_id',3)->orderBy('sequence_number')->get();
     $documents = array();
@@ -1893,21 +1888,21 @@ class RetirementFundCertificationController extends Controller
     array_push($documents, 'CERTIFICACIÓN Y VALIDACIÓN DE DOCUMENTOS POR EL ÁREA LEGAL');
     $valid_contributions = ContributionType::select('id')->where('operator', '+')->pluck('id');
     $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
-    $contributions_count = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions_count = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->whereIn('contribution_type_id', $valid_contributions)
       ->count();
     if ($contributions_count >= $quantity) {
       array_push($documents, 'CERTIFICACIÓN DE APORTES EN EL SERVICIO ACTIVO');
     }
     $item_cero_ids = [2, 3];
-    $item0 =  Contribution::where('affiliate_id', $affiliate->id)
+    $item0 =  $affiliate->contributionsInRange($ret_fun_index == 1)
       ->whereIn('contribution_type_id', $item_cero_ids)
       ->count();
     if ($item0 > 0) {
       array_push($documents, 'CERTIFICACIÓN DE APORTES ITEM "0"');
     }
     $valid_contributions = ContributionType::where('name', '=', 'Disponibilidad Con Aporte')->select('id')->pluck('id');
-    $availability = Contribution::where('affiliate_id', $affiliate->id)
+    $availability = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->whereIn('contribution_type_id', $valid_contributions)
       ->count();
     if ($availability > 0) {
@@ -1916,7 +1911,7 @@ class RetirementFundCertificationController extends Controller
     $security_contributions = ContributionType::where('name', '=', 'Período de Batallón de Seguridad Física Con Aporte')->first();
     $security_no_contributions = ContributionType::where('name', '=', 'Período de Batallón de Seguridad Física Sin Aporte')->first();
 
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->where(function ($query) use ($security_contributions, $security_no_contributions) {
         $query->where('contribution_type_id', $security_contributions->id)
           ->orWhere('contribution_type_id', $security_no_contributions->id);
@@ -1928,7 +1923,7 @@ class RetirementFundCertificationController extends Controller
     $certification_contribution = ContributionType::where('name', '=', 'Período Certificación Con Aporte')->first();
     $certification_no_contribution = ContributionType::where('name', '=', 'Período Certificación Sin Aporte')->first();
     $no_work_period = 9;
-    $contributions = Contribution::where('affiliate_id', $affiliate->id)
+    $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
       ->whereIn('contribution_type_id', [$certification_contribution->id, $certification_no_contribution->id, $no_work_period])
       ->count();
     if ($contributions > 0) {
@@ -1963,7 +1958,6 @@ class RetirementFundCertificationController extends Controller
     $data = [
       'retirement_fund' => $retirement_fund,
       'documents' =>  $documents,
-      'correlative'   =>  $number,
       'user'  =>  $user,
       'affiliate' =>  $affiliate,
       'title' =>  $retirement_fund->procedure_modality->procedure_type->second_name,
@@ -2706,5 +2700,44 @@ class RetirementFundCertificationController extends Controller
       return " y " . $text;
 
     return ", ";
+  }
+
+  public function printLiquidation($id)
+  {
+    $ret_fun = RetirementFund::find($id);
+    $next_area_code = RetFunCorrelative::where('retirement_fund_id', $ret_fun->id)->where('wf_state_id', ID::wf_state()->liquidationFR)->first();
+    $code = $ret_fun->code;
+    $date = Util::getDateFormat($next_area_code->date);
+    $title = 'LIQUIDACIÓN DE PAGO';
+    $affiliate = $ret_fun->affiliate;
+    $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $ret_fun->id)->first();
+    $beneficiaries = $ret_fun->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) >= 18")->get();
+    $beneficiaries_minor = $ret_fun->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) < 18")->get();
+    $bar_code = \DNS2D::getBarcodePNG($this->get_module_retirement_fund($ret_fun->id), "QRCODE");
+    $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
+    $subtitletwo = $ret_fun->procedure_modality->procedure_type->name;
+    $pdftitle = "Liquidación de Pago";
+    $namepdf = Util::getPDFName($pdftitle, $affiliate);
+    $data = [
+      'code' => $code,
+      'date' => $date,
+      'title' => $title,
+      'subtitletwo' => $subtitletwo,
+      'ret_fun' => $ret_fun,
+      'affiliate' => $affiliate,
+      'applicant' => $applicant,
+      'beneficiaries' => $beneficiaries,
+      'beneficiaries_minor' => $beneficiaries_minor,
+    ];
+    $pages = [];
+    for ($i = 1; $i <= 2; $i++) {
+      $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();
+    }
+    $pdf = \App::make('snappy.pdf.wrapper');
+    $pdf->loadHTML($pages);
+    return $pdf->setOption('encoding', 'utf-8')
+      ->setOption('margin-bottom', '15mm')
+      ->setOption('footer-html', $footerHtml)
+      ->stream("$namepdf");
   }
 }

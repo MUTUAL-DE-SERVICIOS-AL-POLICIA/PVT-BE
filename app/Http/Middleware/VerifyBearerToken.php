@@ -18,7 +18,7 @@ class VerifyBearerToken
     {
         $token = $request->bearerToken();
         
-        if (Hash::check(env("HASH_TOKEN"), $token)) {
+        if (env("HASH_TOKEN") == $token) {
             return $next($request);
         } else {
             return response()->json([

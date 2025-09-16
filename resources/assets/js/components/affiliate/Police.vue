@@ -103,6 +103,7 @@
 				{
 					this.form.affiliate_state_id = this.state.id;
 					this.form.date_entry = this.values.date_entry;
+					this.form.date_entry_reinstatement = this.values.date_entry_reinstatement;
 					this.form.category_id  = this.category.id;
 					this.form.degree_id  = this.degree.id;					
 					this.form.pension_entity_id = this.pension_entity.id;
@@ -117,7 +118,7 @@
 				}
 				console.log(`updating ${uri}`)
 				this.form.eco_com_id= this.ecoComId;
-				this.show_spinner=true;
+				this.show_spinner=true;				
 				axios.patch(uri,this.form)
 					.then(response=>{
 						this.editing = false;

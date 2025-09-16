@@ -598,7 +598,8 @@ class EconomicComplementController extends Controller
                 ], 403);
             }
             // Verifica si el afiliado es rehabilitación
-            if ($affiliate->stop_eco_com_consecutively()) {
+            $last_eco_com = $affiliate->economic_complements()->orderByDesc('id')->get()->first();
+            if ($last_eco_com->eco_com_reception_type_id != 2 && $affiliate->stop_eco_com_consecutively()) {
                 return response()->json([
                     'error' => false,
                     'canCreate' => false,

@@ -4,6 +4,9 @@
     <table class="table-info w-100 m-b-10">
         <thead class="bg-grey-darker">
             <tr class="font-medium text-white text-sm">
+            <td class="px-15 py text-center ">
+                    NUP
+                </td>
                 <td class="px-15 py text-center ">
                     GRADO
                 </td>
@@ -26,6 +29,7 @@
         </thead>
         <tbody>
             <tr class="text-sm">
+                <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->id ?? null }}</td>
                 <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened ?? null }}</td>
                 <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->first_name }}</td>
                 <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->second_name }}</td>
@@ -116,6 +120,7 @@
         </table>
     </div>
     <p class="text-left">Es cuanto se certifica los ultimos {{ $number_contributions }} salarios efectivamenete percibidos previos al destino a la disponibilidad de las letras, para fines consiguientes.</p>
-    @include('ret_fun.print.signature_footer',['user'=>$user])
+    {{-- @include('ret_fun.print.signature_footer',['user'=>$user]) --}}
+    @include('ret_fun.print.signature_footer_2',['qualification_users'=>$qualification_users])
 </div>
 @endsection

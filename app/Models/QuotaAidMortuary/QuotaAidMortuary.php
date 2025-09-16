@@ -33,9 +33,9 @@ class QuotaAidMortuary extends Model
     {
         return $this->belongsTo('Muserpol\Models\City', 'city_end_id');
     }
-    public function quota_aid_submitted_document()
+    public function submitted_documents()
 	{
-		return $this->hasMany('Muserpol\Models\QuotaAidMortuary\QuotaAidSubmittedDocument');
+		return $this->hasMany(QuotaAidSubmittedDocument::class);
     }
     // public function quota_aid_observation()
     // {
