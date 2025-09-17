@@ -36,6 +36,8 @@ use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionTypeQuotaAid;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
+use Muserpol\Models\Unit;
+
 class ContributionController extends Controller
 {
     /**
@@ -337,6 +339,7 @@ class ContributionController extends Controller
             null,
             base_wage,
             seniority_bonus,
+            null,
             study_bonus,
             position_bonus,
             border_bonus,
@@ -357,6 +360,7 @@ class ContributionController extends Controller
             unit_id,
             base_wage,
             seniority_bonus,
+            category_id,
             study_bonus,
             position_bonus,
             border_bonus,
@@ -392,6 +396,9 @@ class ContributionController extends Controller
             })
             ->editColumn('seniority_bonus', function ($contribution) {
                 return Util::formatMoney($contribution->seniority_bonus);
+            })
+            ->editColumn('category_id', function ($contribution) {
+                return $contribution->category_id ? $contribution->category->percentage: null;
             })
             ->editColumn('study_bonus', function ($contribution) {
                 return Util::formatMoney($contribution->study_bonus);
@@ -560,8 +567,8 @@ class ContributionController extends Controller
         $categories = Category::get();
         $cities = City::all()->pluck('first_shortened', 'id');
         $cities_objects = City::all();
-        $birth_cities = City::all()->pluck('name', 'id');                
-        
+        $birth_cities = City::all()->pluck('name', 'id');
+        $units = Unit::orderBy('id')->get(); 
 
         $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
         $month_end = $end[1];
@@ -599,7 +606,8 @@ class ContributionController extends Controller
             'affiliate' => $affiliate,
             'cities' => $cities,
             'cities_objects' => $cities_objects,
-            'birth_cities' => $birth_cities,                      
+            'birth_cities' => $birth_cities, 
+            'units' => $units,                   
         //    'commitment'    =>  $commitment,
             'today_date'         =>  date('Y-m-d'),            
         ];        
@@ -752,6 +760,9 @@ class ContributionController extends Controller
                             $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]);
                         }
                     }
+                    if(isset($request->unit_id[$key]))
+                    $contribution->unit_id = is_numeric($request->unit_id[$key]) ? $request->unit_id[$key]: null;
+
                     $contribution->user_id = Auth::user()->id;
                     $contribution->save();
                     array_push($contributions, $contribution);
@@ -856,6 +867,12 @@ class ContributionController extends Controller
                             else
                                 $contribution->mortuary_quota = strip_tags($request->mortuary_quota[$key]) ?? 0;  
                         }
+
+                        if(!isset($request->unit_id[$key]))
+                            $contribution->unit_id = null;
+                        else
+                            $contribution->unit_id = strip_tags($request->unit_id[$key]) ?? null;
+
                         $contribution->type = 'Planilla';
                         $contribution->save();
                         array_push($contributions, $contribution);
