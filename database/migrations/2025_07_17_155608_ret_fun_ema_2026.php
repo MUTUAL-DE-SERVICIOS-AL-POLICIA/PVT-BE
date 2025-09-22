@@ -7,8 +7,9 @@ use Muserpol\Models\Contribution\ContributionType;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Muserpol\Models\Hierarchy;
 use Muserpol\Models\ProcedureModality;
+use Muserpol\Models\ProcedureType;
 
-class RetFunContributionsLimit extends Migration
+class RetFunEma2026 extends Migration
 {
     /**
      * Run the migrations.
@@ -77,8 +78,8 @@ class RetFunContributionsLimit extends Migration
             $table->unique(['ret_fun_procedure_id', 'procedure_modality_id']); // evitar duplicados
         });
 
-        $PG_PROCEDURE = 1; // Procedure type - Pago global de aportes
-        $DA_PROCEDURE = 21; // Procedure type - Devolución de aportes
+        $PG_PROCEDURE = ProcedureType::RET_FUN_PG; // Procedure type - Pago global de aportes
+        $DA_PROCEDURE = ProcedureType::RET_FUN_DA; // Procedure type - Devolución de aportes
 
         $modalities = ProcedureModality::whereIn('procedure_type_id', [$PG_PROCEDURE, $DA_PROCEDURE])->get();
         $modalitiesSyncData = [];
@@ -108,6 +109,17 @@ class RetFunContributionsLimit extends Migration
         }
 
         ContributionType::where('name', 'Disponibilidad')->delete();
+
+        // Añadir nuevas submodalidades
+        $newModalities = [
+            ['procedure_type_id' => $PG_PROCEDURE, 'name' => 'Jubilación', 'shortened' => 'PGA - JUB'],
+            ['procedure_type_id' => $DA_PROCEDURE, 'name' => 'Retiro Forzoso', 'shortened' => 'DA - RF'],
+            ['procedure_type_id' => $DA_PROCEDURE, 'name' => 'Retiro Voluntario', 'shortened' => 'DA - RV'],
+        ];
+
+        foreach ($newModalities as $value) {
+            ProcedureModality::create($value);
+        }
     }
 
     /**
@@ -138,5 +150,7 @@ class RetFunContributionsLimit extends Migration
         ContributionType::where('name', 'Disponibilidad por Enfermedad sin aporte')->forceDelete();
 
         ContributionType::withTrashed()->where('name', 'Disponibilidad')->restore();
+
+        ProcedureModality::whereIn('shortened', ['PGA - JUB', 'DA - RF', 'DA - RV'])->delete();
     }
 }

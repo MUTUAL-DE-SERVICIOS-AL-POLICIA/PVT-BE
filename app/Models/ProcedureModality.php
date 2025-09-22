@@ -7,6 +7,8 @@ use Muserpol\Models\EconomicComplement\EcoComModality;
 
 class ProcedureModality extends Model
 {
+    protected $fillable = ['procedure_type_id', 'name', 'shortened'];
+
     public $timestamps = false;
 
     public function eco_com_modalities()

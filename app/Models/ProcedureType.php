@@ -6,24 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProcedureType extends Model
 {
-    /**
-     * Fondo de Retiro Pago Global
-     *
-     * @var int
-     */
-    public const RET_FUN_PG = 1; // Pago global
-    /**
-     * Fondo de Retiro
-     *
-     * @var int
-     */
-    public const RET_FUN = 2; // Fondo de retiro
-    /**
-     * Fondo de Retiro Devolución de Aportes
-     *
-     * @var int
-     */
-    public const RET_FUN_DA = 21; // Devolución de aportes
+    /** Pago global */
+    public const RET_FUN_PG = 1;
+
+    /** Fondo de retiro */
+    public const RET_FUN = 2;
+
+    /** Devolución de aportes */
+    public const RET_FUN_DA = 21;
 
     public function procedure_modalities()
     {
@@ -33,10 +23,5 @@ class ProcedureType extends Model
     public function module()
     {
         return $this->belongsTo('Muserpol\Models\Module');
-    }
-
-    public function modalities()
-    {
-        return $this->hasMany('Muserpol\Models\ProcedureModality');
     }
 }
