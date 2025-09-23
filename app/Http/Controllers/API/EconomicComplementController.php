@@ -162,7 +162,7 @@ class EconomicComplementController extends Controller
             $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
             $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
-            $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
+            $economic_complement->workflow_id = EcoComProcedure::whereDate('lagging_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
             $economic_complement->wf_current_state_id = $verified ? 1 : 60;
             $economic_complement->city_id = $last_eco_com->city_id;
             $economic_complement->degree_id = $affiliate->degree->id;
@@ -328,7 +328,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
                     $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
                     $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
-                    $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
+                    $economic_complement->workflow_id = EcoComProcedure::whereDate('lagging_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
                     $economic_complement->wf_current_state_id = $verified? 1 : 60;
                     $economic_complement->city_id = $last_eco_com->city_id;
                     $economic_complement->degree_id = $affiliate->degree->id;
@@ -809,7 +809,7 @@ class EconomicComplementController extends Controller
     private function createEconomicComplement($user_id, $affiliate, $wf_current_state_id, $last_eco_com, $eco_com_procedure_id) {
         $now = Carbon::now()->toDateString();
         $eco_com_modality = EcoComModality::where('procedure_modality_id', '=', $last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
-        $workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
+        $workflow_id = EcoComProcedure::whereDate('lagging_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
         $economic_complement = new EconomicComplement([
             'user_id' => $user_id,
             'affiliate_id' => $affiliate->id,
