@@ -29,7 +29,7 @@ class RetFunEma2026 extends Migration
 
         Schema::table('retirement_funds', function (Blueprint $table) {
             $table->integer('used_contributions_limit')->nullable();
-            $table->decimal('annual_yield', 8, 2)->default(0);
+            $table->decimal('yield', 13, 2)->default(0);
         });
 
         // Creación de tabla y datos para guardar el numero limite de aportes por jerarquía
@@ -139,7 +139,7 @@ class RetFunEma2026 extends Migration
 
         Schema::table('retirement_funds', function (Blueprint $table) {
             $table->dropColumn('used_contributions_limit');
-            $table->dropColumn('annual_yield');
+            $table->dropColumn('yield');
         });
 
         Schema::dropIfExists('ret_fun_procedures_hierarchies');
