@@ -3,7 +3,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Muserpol\Models\Workflow\WorkflowRecord;
+use Muserpol\Models\ProcedureRecord;
 
 class UpdateEcoComOriginChannelIdSeeder extends Seeder
 {
@@ -14,7 +14,7 @@ class UpdateEcoComOriginChannelIdSeeder extends Seeder
         DB::table('economic_complements')->update(['eco_com_origin_channel_id' => 1]);
 
         $this->command->info('Identificando trámites creados desde la App...');
-        $app_created_ids = WorkflowRecord::where('message', 'like', '%Trámite creado%')
+        $app_created_ids = ProcedureRecord::where('message', 'like', '%Se creó el trámite mediante aplicación móvil%')
                                             ->where('recordable_type', 'like', '%economic_complements%')
                                             ->pluck('recordable_id');
 
