@@ -18,7 +18,7 @@ class EconomicComplementObserver
         $user_id = $user ? $user->id : 171;
         $username = $user ? $user->username : '';
         switch ($eco_com->eco_com_origin_channel_id) {
-            case 1: // Ventanilla (Usuario Web)
+            case 1: // Ventanilla
                 $eco_com->wf_records()->create([
                     'user_id' => $user_id,
                     'record_type_id' => 7,
