@@ -172,6 +172,7 @@ class EconomicComplementController extends Controller
             $economic_complement->inbox_state = false;
             $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
             $economic_complement->uuid = Uuid::uuid1()->toString();
+            $economic_complement->eco_com_origin_channel_id = 2; // Canal Aplicación Móvil
             /*
             if ($affiliate->pension_entity_id == ID::pensionEntity()->senasir) {
                 $economic_complement->sub_total_rent = Util::parseMoney($last_eco_com->sub_total_rent);
@@ -302,15 +303,7 @@ class EconomicComplementController extends Controller
                 //     $path = 'eco_com/'.$request->affiliate->id.'/boleta_de_renta_'.$eco_com_procedure_id.'.jpg';
                 //     Storage::put($path, base64_decode($attachment['content']), 'public');
                 // }
-            }   
-
-            $economic_complement->procedure_records()->create([
-                'user_id' => 171,
-                'record_type_id' => 7,
-                'wf_state_id' =>  $verified? 1 : 60,
-                'date' => Carbon::now(),
-                'message' => 'Se creó el trámite mediante aplicación móvil.'
-            ]);
+            }
             /*creación de doble percepción*/
             if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
                 $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id',[2,5,9,7])->first();
@@ -418,13 +411,6 @@ class EconomicComplementController extends Controller
                         }
                     }
 
-                    $economic_complement->procedure_records()->create([
-                        'user_id' => 171,
-                        'record_type_id' => 7,
-                        'wf_state_id' => $verified ? 1 : 60,
-                        'date' => Carbon::now(),
-                        'message' => 'Se creó el trámite mediante aplicación móvil.'
-                    ]);
                 }
             }
 
@@ -752,13 +738,6 @@ class EconomicComplementController extends Controller
             
             $this->addObservations($economic_complement, $affiliate, $eco_com_beneficiary);
             
-            $economic_complement->procedure_records()->create([
-                'user_id' => $user_id,
-                'record_type_id' => 7,
-                'wf_state_id' =>  $wf_current_state_id,
-                'date' => Carbon::now(),
-                'message' => 'Se creó el trámite mediante kiosko.'
-            ]);
             /*creación de doble percepción*/
             if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
                 $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id',[2,5,9,7])->first();
@@ -782,13 +761,6 @@ class EconomicComplementController extends Controller
                     */
                     $this->addObservations($economic_complement, $affiliate, $eco_com_beneficiary);
 
-                    $economic_complement->procedure_records()->create([
-                        'user_id' => $user_id,
-                        'record_type_id' => 7,
-                        'wf_state_id' => $wf_current_state_id,
-                        'date' => Carbon::now(),
-                        'message' => 'Se creó el trámite mediante kiosko.'
-                    ]);
                 }
             }
 
@@ -825,6 +797,7 @@ class EconomicComplementController extends Controller
             'reception_date' => now(),
             'inbox_state' => false,
             'eco_com_reception_type_id' => ID::ecoCom()->habitual,
+            'eco_com_origin_channel_id' => 3, //Kiosco Digital
             'uuid' => Uuid::uuid1()->toString(),
         ]);
         $economic_complement->save();
