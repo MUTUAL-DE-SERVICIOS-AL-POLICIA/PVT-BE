@@ -117,20 +117,13 @@ class EcoComDashboardController extends Controller
         if (!$eco_com_procedure) {
             return [];
         }
-        $eco_coms = EconomicComplement::selectRaw('COUNT(*) AS quantity,
-            CASE
-                WHEN procedure_records.message ILIKE \'%Se creó el trámite mediante aplicación móvil.%\' THEN \'APP-Móvil\'
-                ELSE \'Recepción\'
-            END AS name')
-            ->leftJoin('procedure_records', 'economic_complements.id', '=', 'procedure_records.recordable_id')
-            ->leftJoin('users as u', 'economic_complements.user_id', '=', 'u.id')
-            ->whereIn('economic_complements.eco_com_procedure_id', [$eco_com_procedure->id])
-            ->where('procedure_records.record_type_id', 7)
-            ->where('procedure_records.message', 'ilike', '%creó%')
+        $eco_coms = EconomicComplement::selectRaw("COUNT(economic_complements.id) AS quantity, COALESCE(eco_com_origin_channel.name, 'No Definido') as name")
+            ->leftJoin('eco_com_origin_channel', 'economic_complements.eco_com_origin_channel_id', '=', 'eco_com_origin_channel.id')
+            ->where('economic_complements.eco_com_procedure_id', $eco_com_procedure->id)
             ->whereNull('economic_complements.deleted_at')
             ->groupBy('name')
-            ->get();   
-        return $eco_coms;    
+            ->get();
+        return $eco_coms;
     }    
     public function wfStates()
     {
