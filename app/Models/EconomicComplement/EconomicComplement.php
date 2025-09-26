@@ -29,6 +29,11 @@ class EconomicComplement extends Model
     {
         return $this->belongsTo('Muserpol\User');
     }
+
+    public function origin_channel()
+    {
+        return $this->belongsTo(\Muserpol\Models\EcoComOriginChannel::class, 'eco_com_origin_channel_id');
+    }
     public function affiliate()
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
