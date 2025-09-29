@@ -565,7 +565,7 @@ class Util
     return $procedure_active;
   }
   /**
-   * Calcula el total de meses de contribución a partir de un rango de fechas.
+   * Cuenta el total de meses de aportes a partir de un rango de fechas.
    *
    * Este método recibe un arreglo (o colección) de objetos con dos propiedades: 
    * - start (string|Carbon): fecha de inicio en formato 'Y-m-d'

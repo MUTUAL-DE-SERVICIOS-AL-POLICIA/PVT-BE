@@ -523,7 +523,6 @@ class RetirementFundCertificationController extends Controller
     if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
       $total_aporte = $retirement_fund->average_quotable;
       $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
-      //$yield = Util::compoundInterest($affiliate->getContributionsPlus(), $affiliate);
       $administrative_expenses = 0;
       $less_administrative_expenses = $yield;
       $temp = [

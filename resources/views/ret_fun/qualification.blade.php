@@ -7,52 +7,6 @@
         <div class="col-lg-7">
             {!!Breadcrumbs::render('show_qualification_retirement_fund', $retirement_fund)!!}
         </div>
-        <div class="col-md-5 text-center" style="margin-top:12px;">
-            {{-- <div class="pull-left">
-                <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Informacion General Solicitante y Afiliado" onclick="printJS({printable:'{!! route('ret_fun_print_beneficiaries_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Datos Personales</button>
-                @if (! $affiliate->selectedContributions() > 0)
-                    <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Salario Promedio Cotizable" onclick="printJS({printable:'{!! route('ret_fun_print_qualification_average_salary_quotable', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Salario Promedio Cotizable</button>
-                @endif
-                @if ($retirement_fund->total_ret_fun > 0)
-                    <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Información técnica</button>
-                @else
-                    <button v-if="totalRetFun > 0" class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Calificacion</button>
-                @endif
-                @if ($affiliate->hasAvailability())
-                    @if ($retirement_fund->total_availability > 0)
-                        <button class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad</button>
-                    @else
-                        <button v-if="totalAvailability > 0" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad</button>
-                    @endif
-                    @if($retirement_fund->total > 0)
-                
-                    @else
-                    
-                    @endif
-                @else
-                    <button v-if="hasAvailability" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad </button>
-                    
-                @endif
-                <button class="btn btn-danger btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir todos los documentos de Calificacion"
-                    onclick="printJS({printable:'{!! route('ret_fun_print_all_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Completo</button>
-            </div> --}}
-            <div class="pull-right">
-                {{-- @if ($has_validate)
-                <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
-                    <div>
-                        <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Trámite ya procesado">
-                            <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active"
-                                type="button" :disabled="! status == false "><i class="fa fa-check"></i></button>
-                        </div>
-                        <div v-else>
-                            <button data-toggle="tooltip" data-placement="top" title="Procesar Trámite" class="btn btn-primary btn-circle btn-outline btn-lg"
-                                type="button" @click="showModal()" :disabled="! status == false "><i class="fa fa-check"></i></button>
-                        </div>
-                    </div>
-                </swal-modal>
-                @endif --}}
-            </div>
-        </div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -212,7 +166,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar
+                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="calculateSubTotal"><i class="fa fa-save"></i> Guardar
                         <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
                             <div>
                                 <check-svg></check-svg>
@@ -229,36 +183,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                          @if ($retirement_fund->procedure_modality->procedure_type_id == 21)
                             <tr>
-                                    <td>Total Devolución de Aportes</td>
-                                    <td>@{{ totalAporte | currency }}
-                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                    </td>
-                                </tr>
-                          @else
-                                <tr>
-                                    <td>Total Aportes</td>
-                                    <td>@{{ totalAporte | currency }}
-                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                    </td>
-                                </tr>
+                                @if ($retirement_fund->procedure_modality->procedure_type_id == 21)
+                                <td>Total Devolución de Aportes</td>
+                                @else
+                                <td>Total Aportes</td>
+                                @endif
+                                <td>@{{ totalAporte | currency }}
+                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                </td>
+                            </tr>
                             <tr>
-                                    @if($retirement_fund->procedure_modality->procedure_type_id == 2)
-                                        <td>+ Rendimiento del 5% {{$retirement_fund->procedure_modality->procedure_type_id}}</td>
-                                    @else
-                                        <td>+ Rendimiento del 5% </td>
-                                    @endif
-                                    <td>@{{ yield | currency}} </td>
-                                </tr>
-                                <!-- <tr>
-                                    <td>- Gastos Administrativos del 10%</td>
-                                    <td>@{{ lessAdministrativeExpenses | currency }}</td>
-                                </tr> -->
-                           @endif
+                                <td>+ Rendimiento del @{{ percentageYield }}% </td>
+                                <td>@{{ yield | currency}} </td>
+                            </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar
+                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="calculateSubTotal"><i class="fa fa-save"></i> Guardar
                         <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
                             <div>
                                 <check-svg></check-svg>

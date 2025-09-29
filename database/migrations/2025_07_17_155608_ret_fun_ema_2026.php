@@ -18,7 +18,7 @@ class RetFunEma2026 extends Migration
      */
     public function up()
     {
-        // Modificación a tablas existentes
+        // **Modificación a tablas existentes**
         Schema::table('ret_fun_procedures', function (Blueprint $table) {
             $table->date('start_date')->default(now());
             $table->integer('contributions_limit')->default(0);
@@ -28,8 +28,8 @@ class RetFunEma2026 extends Migration
         });
 
         Schema::table('retirement_funds', function (Blueprint $table) {
-            $table->integer('used_contributions_limit')->nullable();
-            $table->decimal('yield', 13, 2)->default(0);
+            $table->decimal('sum_contributions', 13, 2)->nullable();
+            $table->decimal('yield', 13, 2)->nullable();
         });
 
         // Creación de tabla y datos para guardar el numero limite de aportes por jerarquía
@@ -113,6 +113,46 @@ class RetFunEma2026 extends Migration
         // Añadir nuevas submodalidades
         $newModalities = [
             ['procedure_type_id' => $PG_PROCEDURE, 'name' => 'Jubilación', 'shortened' => 'PGA - JUB'],
+            ['procedure_type_id' => $DA_PROCEDURE, 'name' => 'Retiro Forzoso', 'shortened' => 'DA - RF'],
+            ['procedure_type_id' => $DA_PROCEDURE, 'name' => 'Retiro Voluntario', 'shortened' => 'DA - RV'],
+        ];
+
+        foreach ($newModalities as $value) {
+            ProcedureModality::create($value);
+        }
+
+        // Nuevas tablas para guardar devoluciones de aportes
+        Schema::create('ret_fun_refund_type', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedBigInteger('contribution_type_id');
+            $table->string('name');
+            $table->decimal('annual_percentage_yield', 13, 2);
+            $table->timestamps();
+
+            $table->foreign('contribution_type_id')
+                ->references('id')->on('contribution_types')
+                ->onDelete('restrict');
+        });
+
+        Schema::create('ret_fun_refunds', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedBigInteger('retirement_fund_id');
+            $table->unsignedBigInteger('ret_fun_refund_type_id');
+            $table->decimal('subtotal', 13, 2);
+            $table->decimal('yield', 13, 2);
+            $table->decimal('total', 13, 2);
+            $table->timestamps();
+
+            $table->foreign('retirement_fund_id')
+                ->references('id')->on('retirement_funds')
+                ->onDelete('restrict');
+            $table->foreign('ret_fun_refund_type_id')
+                ->references('id')->on('ret_fun_refund_type')
+                ->onDelete('restrict');
+        });
+
+        $newRefundTypes = [
+            ['name' => 'Aportes superior a 30 años', 'name' => 'Jubilación', 'shortened' => 'PGA - JUB'],
             ['procedure_type_id' => $DA_PROCEDURE, 'name' => 'Retiro Forzoso', 'shortened' => 'DA - RF'],
             ['procedure_type_id' => $DA_PROCEDURE, 'name' => 'Retiro Voluntario', 'shortened' => 'DA - RV'],
         ];

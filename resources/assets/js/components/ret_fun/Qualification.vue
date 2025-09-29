@@ -102,8 +102,7 @@ export default {
 
       totalAporte: 0,
       yield: 0,
-      lessAdministrativeExpenses: 0,
-
+      percentageYield: 0,
     };
   },
   mounted(){
@@ -223,7 +222,7 @@ export default {
           if (this.globalPay) {
             this.totalAporte = response.data.total_aporte;
             this.yield = response.data.yield;
-            this.lessAdministrativeExpenses = response.data.less_administrative_expenses;
+            this.percentageYield = response.data.percentageYield;
           }
 
           TweenLite.to(this.$data, 0.5, { 
@@ -240,8 +239,8 @@ export default {
           this.showEconomicData = false;
       });
     },
-    saveAverageQuotable(){
-      let uri=`/ret_fun/${this.retirementFundId}/save_average_quotable`;
+    calculateSubTotal(){
+      let uri=`/ret_fun/${this.retirementFundId}/calculate_sub_total`;
       axios.get(uri).then(response => {
         flash("Salario Promedio Cotizable Actualizado")
         this.showEconomicDataTotal = true;
@@ -457,7 +456,7 @@ export default {
     async obtainDetailsOfJudicialRetention() {
       try {
         const response = await axios.get(`/ret_fun/${this.retirementFundId}/obtain_judicial_retention`)
-        if(response.data.data) {
+        if(response.data.data[0]) {
           if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
           if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
           if(response.data.data[0].note_code != undefined){
