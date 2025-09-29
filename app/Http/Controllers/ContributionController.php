@@ -908,14 +908,11 @@ class ContributionController extends Controller
 
         $date_entry_reinstatement = Util::parseMonthYearDate($affiliate->date_entry_reinstatement);
         $date_last_contribution_reinstatement = Util::parseMonthYearDate($affiliate->date_last_contribution_reinstatement);
-        $ret_fun_index = $ret_fun->procedureIndex();
-        if($ret_fun_index === false) {
-            return "Error";
-        }
+        $isReinstatement = $ret_fun->isReinstatement();
 
         $start_date = '';
         $end_date = '';
-        if ($ret_fun_index == 0) {
+        if (!$isReinstatement) {
             if (!(Carbon::hasFormat($date_entry, 'Y-m-d') && Carbon::hasFormat($date_last_contribution, 'Y-m-d'))) {
                 Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte del afiliado existan antes de continuar');
                 return redirect('ret_fun/' . $ret_fun_id);
@@ -926,7 +923,7 @@ class ContributionController extends Controller
             }
             $start_date = $date_entry;
             $end_date = $date_last_contribution;
-        } elseif ($ret_fun_index == 1) {
+        } elseif ($isReinstatement) {
             if (!(Carbon::hasFormat($date_entry_reinstatement, 'Y-m-d') && Carbon::hasFormat($date_last_contribution_reinstatement, 'Y-m-d'))) {
                 Session::flash('message', 'Verifique la fecha de entrada y último periodo de aporte de la reincorporación del afiliado existan antes de continuar');
                 return redirect('ret_fun/' . $ret_fun_id);
@@ -1087,13 +1084,12 @@ class ContributionController extends Controller
     }
     public function saveContributions(Request $request)
     {
-        // return $request->all();
         $request_contributions = collect($request->contributions);
         $ret_fun = RetirementFund::find($request->ret_fun_id);
         $usedContributionsLimit = $request->usedContributionsLimit;
-        $ret_fun_index = $ret_fun->procedureIndex();
+        $isReinstatement = $ret_fun->isReinstatement();
         $affiliate = $ret_fun->affiliate;
-        $aff_contributions = $affiliate->contributionsInRange($ret_fun_index == 1);
+        $aff_contributions = $affiliate->contributionsInRange($isReinstatement);
         DB::transaction(function () use ($request_contributions, $ret_fun, $affiliate, $aff_contributions, $usedContributionsLimit) {
 
             // Actualizamos el tipo de contribución
@@ -1112,7 +1108,7 @@ class ContributionController extends Controller
             $ret_fun->used_contributions_limit = $usedContributionsLimit;
             $ret_fun->save();
         });
-        $contribution_types_ids = $affiliate->contributionsInRange($ret_fun_index == 1)->select('contribution_type_id')->distinct()->pluck('contribution_type_id');
+        $contribution_types_ids = $affiliate->contributionsInRange($isReinstatement)->select('contribution_type_id')->distinct()->pluck('contribution_type_id');
         $contribution_types = ContributionType::whereIn('id',$contribution_types_ids)->orderBy('sequence')->select('name','id')->get();
         Util::getNextAreaCode($ret_fun->id);
         foreach($contribution_types as $index =>$c){
@@ -1148,12 +1144,12 @@ class ContributionController extends Controller
     public function printCertification($id)
     {
         $retirement_fund = RetirementFund::find($id);
-        $ret_fun_index = $retirement_fund->procedureindex();
+        $isReinstatement = $retirement_fund->isReinstatement();
         $affiliate = $retirement_fund->affiliate;
         $servicio = ContributionType::where('name','=','Servicio Activo')->first();
         $item_cero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
         $quantity = Util::getRetFunCurrentProcedure()->contributions_number;
-        $contributions_sixty = $affiliate->contributionsInRange($ret_fun_index == 1)
+        $contributions_sixty = $affiliate->contributionsInRange($isReinstatement)
                         ->where(function ($query) use ($servicio,$item_cero){
                             $query->where('contribution_type_id',$servicio->id)
                             ->orWhere('contribution_type_id',$item_cero->id);
@@ -1187,10 +1183,10 @@ class ContributionController extends Controller
     public function printCertificationAvailability($id)
     {
         $retirement_fund = RetirementFund::find($id);
-        $ret_fun_index = $retirement_fund->procedureindex();
+        $isReinstatement = $retirement_fund->isReinstatement();
         $affiliate = $retirement_fund->affiliate;
         $disponibilidad = ContributionType::where('name','=','Disponibilidad')->first();
-        $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
+        $contributions = $affiliate->contributionsInRange($isReinstatement)
                         ->orderBy('month_year')
                         ->get();
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
@@ -1222,10 +1218,10 @@ class ContributionController extends Controller
     {
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $ret_fun_index = $retirement_fund->procedureindex();
+        $isReinstatement = $retirement_fund->isReinstatement();
         $itemcero = ContributionType::where('name','=','Período en item 0 Con Aporte')->first();
         $itemcero_sin_aporte = ContributionType::where('name','=','Período en item 0 Sin Aporte')->first();
-        $contributions = $affiliate->contributionsInRange($ret_fun_index == 1)
+        $contributions = $affiliate->contributionsInRange($isReinstatement)
                         ->orderBy('month_year')
                         ->get();
         $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)

@@ -153,9 +153,9 @@ class RetirementFund extends Model
         return $this->hasMany('Muserpol\Models\InfoLoan');
     }
     /*
-    Función que devuelve si el trámite de fondo es el primero o el segundo del afiliado
+    Función que devuelve si el trámite de fondo pertenece a reincorporación
     */
-    public function procedureIndex()
+    public function isReinstatement()
     {
         $ret_fun_all = RetirementFund::where('affiliate_id', $this->affiliate_id)
             ->where('code', 'NOT LIKE', '%A')
@@ -163,6 +163,6 @@ class RetirementFund extends Model
             ->orderBy('id', 'ASC')
             ->pluck('id')->all();
         $index = array_search($this->id, $ret_fun_all);
-        return $index;
+        return $index == 1;
     }
 }
