@@ -92,6 +92,8 @@ class RetFunEma2026 extends Migration
             $table->foreign('ret_fun_refund_type_id')
                 ->references('id')->on('ret_fun_refund_types')
                 ->onDelete('restrict');
+
+            $table->unique(['retirement_fund_id', 'ret_fun_refund_type_id']); 
         });
     }
 
