@@ -37,6 +37,8 @@ use Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary;
 use Muserpol\Models\Contribution\ContributionTypeQuotaAid;
 use Muserpol\Models\QuotaAidMortuary\QuotaAidProcedure;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
+use Muserpol\Models\RetirementFund\RetFunRefund;
+use Muserpol\Models\RetirementFund\RetFunRefundType;
 
 class ContributionController extends Controller
 {
@@ -1090,10 +1092,12 @@ class ContributionController extends Controller
         $isReinstatement = $ret_fun->isReinstatement();
         $affiliate = $ret_fun->affiliate;
         $aff_contributions = $affiliate->contributionsInRange($isReinstatement);
-        DB::transaction(function () use ($request_contributions, $ret_fun, $affiliate, $aff_contributions, $usedContributionsLimit) {
+        
+        $refund_types = RetFunRefundType::all();
 
+        DB::transaction(function () use ($request_contributions, $ret_fun, $aff_contributions, $usedContributionsLimit) {
             // Actualizamos el tipo de contribución
-            $affiliateContributions = $aff_contributions->orderBy('month_year')->get();
+            $affiliateContributions = (clone $aff_contributions)->orderBy('month_year')->get();
             $RequestContributionsById = $request_contributions->keyBy('id');
             foreach ($affiliateContributions as $contribution) {
                 if ($RequestContributionsById->has($contribution->id)) {
@@ -1101,14 +1105,38 @@ class ContributionController extends Controller
                     $contribution->save();
                 }
             }
-
-            $availability = $affiliate->getContributionsAvailability();
-            $subtotal_availability = array_sum(array_column($availability, 'retirement_fund'));
-            $ret_fun->subtotal_availability = $subtotal_availability;
             $ret_fun->used_contributions_limit = $usedContributionsLimit;
             $ret_fun->save();
         });
-        $contribution_types_ids = $affiliate->contributionsInRange($isReinstatement)->select('contribution_type_id')->distinct()->pluck('contribution_type_id');
+        $contribution_types_ids = (clone $aff_contributions)->select('contribution_type_id')->distinct()->pluck('contribution_type_id');
+
+        DB::transaction(function () use ($ret_fun, $refund_types, $aff_contributions, $affiliate, $contribution_types_ids) {
+            // Guardamos los reembolsos
+            foreach ($refund_types as $refund_type) {
+                if($contribution_types_ids->contains($refund_type->contribution_type_id)) {
+                    $refund_contributions = (clone $aff_contributions)->select('affiliate_id','month_year','retirement_fund')
+                        ->whereIn('contribution_type_id', [$refund_type->contribution_type_id])
+                        ->addReimbursement($affiliate->id, ['retirement_fund'])
+                        ->get();
+                    $refund_subtotal = round($refund_contributions->sum('retirement_fund'), 2);
+                    $refund_yield = round($refund_subtotal * ($refund_type->annual_percentage_yield / 100), 2);
+                    $refund_total = round($refund_subtotal + $refund_yield, 2);
+    
+                    $ret_fun_refund = RetFunRefund::where('retirement_fund_id', $ret_fun->id)
+                        ->where('ret_fun_refund_type_id', $refund_type->id)
+                        ->first();
+                    if (!$ret_fun_refund) {
+                        $ret_fun_refund = new RetFunRefund();
+                        $ret_fun_refund->retirement_fund_id = $ret_fun->id;
+                        $ret_fun_refund->ret_fun_refund_type_id = $refund_type->id;
+                    }
+                    $ret_fun_refund->subtotal = $refund_subtotal;
+                    $ret_fun_refund->yield = $refund_yield;
+                    $ret_fun_refund->total = $refund_total;
+                    $ret_fun_refund->save();
+                }
+            }
+        });
         $contribution_types = ContributionType::whereIn('id',$contribution_types_ids)->orderBy('sequence')->select('name','id')->get();
         Util::getNextAreaCode($ret_fun->id);
         foreach($contribution_types as $index =>$c){
