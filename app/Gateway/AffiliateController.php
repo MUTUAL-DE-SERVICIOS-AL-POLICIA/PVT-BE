@@ -17,14 +17,14 @@ class AffiliateController extends BaseController
 
   public function affiliateDocuments($affiliateId)
   {
-      return json_decode($this->gateway->send('GET', "/api/affiliates/{$affiliateId}/documents"),true);
+      return json_decode($this->gateway->send('GET', "/api/beneficiaries/affiliates/{$affiliateId}/documents"),true);
   }
 
   public function createDocument(Request $request, $affiliateId, $procedureDocumentId)
   {
         $file = $request->file('documentPdf');
 
-        return json_decode($this->gateway->send('POST', "/api/affiliates/{$affiliateId}/document/{$procedureDocumentId}/createOrUpdate",
+        return json_decode($this->gateway->send('POST', "/api/beneficiaries/affiliates/{$affiliateId}/document/{$procedureDocumentId}/createOrUpdate",
             ['multipart' =>[
                 [
                     'name'     => 'documentPdf',
@@ -37,12 +37,12 @@ class AffiliateController extends BaseController
 
   public function collateDocument($affiliateId, $procedureModalityId)
   {
-    return json_decode($this->gateway->send('GET', "/api/affiliates/{$affiliateId}/modality/{$procedureModalityId}/collate"),true);
+    return json_decode($this->gateway->send('GET', "/api/beneficiaries/affiliates/{$affiliateId}/modality/{$procedureModalityId}/collate"),true);
   }
 
   public function findDocument($affiliateId, $procedureDocumentId)
   {
-    $res = $this->gateway->send('GET',"/api/affiliates/{$affiliateId}/documents/{$procedureDocumentId}");
+    $res = $this->gateway->send('GET',"/api/beneficiaries/affiliates/{$affiliateId}/documents/{$procedureDocumentId}");
     header('Content-Type: application/pdf');
     header('Content-Disposition: inline; filename="document.pdf"');
     header('Content-Length: ' . $res->getSize());
@@ -57,7 +57,7 @@ class AffiliateController extends BaseController
 
   public function analysisDocuments(Request $request)
   {
-    $response = $this->gateway->send('POST', "/api/affiliates/documents/analysis", [
+    $response = $this->gateway->send('POST', "/api/beneficiaries/affiliates/documents/analysis", [
         'form_params' => [
             'path' => $request->path,
             'user' => $request->user,
@@ -82,7 +82,7 @@ class AffiliateController extends BaseController
 
     $data_import = json_decode($request->input('data'), true);
 
-    $response = $this->gateway->send('POST', "/api/affiliates/documents/imports", [
+    $response = $this->gateway->send('POST', "/api/beneficiaries/affiliates/documents/imports", [
       'json' => $data_import
     ]);
 
