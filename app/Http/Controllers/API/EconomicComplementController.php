@@ -1290,7 +1290,6 @@ class EconomicComplementController extends Controller
                 'data' => [
                     'isDoblePerception' => $is_doble_perception,
                     'isEconomicComplement' => false,
-                    'a' => $last_eco_com->eco_com_beneficiary->identity_card,
                 ]
             ]);
         }
