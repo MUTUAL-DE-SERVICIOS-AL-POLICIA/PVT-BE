@@ -233,6 +233,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('ret_fun/{retirement_fund}/print/contributions_certification', 'RetirementFundCertificationController@printCertificationContributions')->name('ret_fun_print_contributions_certification');
     Route::get('ret_fun/{retirement_fund}/print/cer_availability_new', 'RetirementFundCertificationController@printCertificationAvailabilityNew')->name('ret_fun_print_certification_availability_new');
     Route::get('ret_fun/{retirement_fund}/print/cer_devolution', 'RetirementFundCertificationController@printCertificationDevolution')->name('ret_fun_print_certification_devolution');
+    Route::get('ret_fun/{retirement_fund}/print/cer_additional_stay', 'RetirementFundCertificationController@printAdditionalStay')->name('ret_fun_print_additional_stay');
     //AidContributions
     Route::resource('aid_contribution', 'AidContributionController');
     Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');

@@ -48,73 +48,69 @@ const mutations = {
   setContributionTypes(state, obj) {
     state.id = obj.id;
     state.contributionTypes = [];
-    if (obj.contributionTypes.some(item => item.id == 2 || item.id == 3)) {
-      let message = obj.contributionTypes.filter(item => item.id == 2 || item.id == 3);
-      state.contributionTypes.push({
+
+    const config = [
+      {
+        ids: [2, 3],
         id: 2,
         name: "Item 0",
         path: "print/cer_itemcero",
-        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
-      });
-    }
-    if (obj.contributionTypes.some(item => item.id == 4 || item.id == 5)) {
-      let message = obj.contributionTypes.filter(item => item.id == 4 || item.id == 5);
-      state.contributionTypes.push({
+      },
+      {
+        ids: [4, 5],
         id: 4,
         name: "Batallón de Seguridad Fisica",
         path: "print/security_certification",
-        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
-      });
-    }
-    if (
-      obj.contributionTypes.some(
-        item => item.id == 7 || item.id == 8 || item.id == 9
-      )
-    ) {
-      let message = obj.contributionTypes.filter(item => item.id == 7 || item.id == 8 || item.id == 9);
-      state.contributionTypes.push({
+      },
+      {
+        ids: [7, 8, 9],
         id: 7,
         name: "Certificación",
         path: "print/contributions_certification",
-        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
-      });
-    }
-    // if (obj.contributionTypes.some(item => item.id == 1)) {
-      let message = obj.contributionTypes.filter(item => item.id == 1);
-      state.contributionTypes.push({
+      },
+      {
+        ids: [1],
         id: 1,
         name: "60 Aportes",
         path: "print/certification",
-        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
-      });
-    // }
-    if (obj.contributionTypes.some(item => item.id == 10)) {
-      let message = obj.contributionTypes.filter(item => item.id == 10);
-      state.contributionTypes.push({
+      },
+      {
+        ids: [10],
         id: 10,
         name: "Disponibilidad",
         path: "print/cer_availability",
-        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
-      });
-    }
-    if (obj.contributionTypes.some(item => item.id == 12 || item.id == 13)) {
-      let message = obj.contributionTypes.filter(item => item.id == 12 || item.id == 13);
-      state.contributionTypes.push({
+      },
+      {
+        ids: [12, 13],
         id: 12,
         name: "Disponibilidad C/S",
         path: "print/cer_availability_new",
-        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
-      });
-    }
-    if (obj.contributionTypes.some(item => item.id == 15)) {
-      let message = obj.contributionTypes.filter(item => item.id == 15);
-      state.contributionTypes.push({
+      },
+      {
+        ids: [15],
         id: 15,
         name: "Aportes Devueltos",
         path: "print/cer_devolution",
-        message: message.length > 0 ? (message[0].message ? message[0].message : '' ) : '',
-      });
-    }
+      },
+      {
+        ids: [37],
+        id: 37,
+        name: "Aportes Superior 30 años",
+        path: "print/cer_additional_stay",
+      },
+    ];
+
+    config.forEach(({ ids, id, name, path }) => {
+      const match = obj.contributionTypes.find(item => ids.includes(item.id));
+      if (match) {
+        state.contributionTypes.push({
+          id,
+          name,
+          path,
+          message: match.message || "",
+        });
+      }
+    });
   },
   resetContributionTypes(state, array){
       state.contributionTypes = array;
