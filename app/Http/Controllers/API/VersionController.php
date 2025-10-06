@@ -22,7 +22,7 @@ class VersionController extends Controller
         switch($store) {
             case 'playstore':
                 $url_store = 'https://play.google.com/store/apps/details?id=com.muserpol.pvt';
-                return ($version == "3.0.8" || $version == "3.0.9")? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
+                return ($version == "4.0.1")? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
             case 'appstore':
                 $url_store = 'https://apps.apple.com/app/id284815942';
                 return $version == "3.0.9" ? $this->get_version(true, $url_store) : $this->get_version(false, $url_store);
