@@ -22,8 +22,10 @@ window.flash = function (message, level = 'success', timeOut = 5000) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import VModal from 'vue-js-modal'
+import GlobalHelpers from './helpers';
 
 Vue.use(VModal)
+Vue.use(GlobalHelpers);
 
 
  /**VUEX */
