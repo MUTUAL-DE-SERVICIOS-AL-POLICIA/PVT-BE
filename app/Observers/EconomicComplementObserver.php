@@ -57,6 +57,7 @@ class EconomicComplementObserver
     public function updating(EconomicComplement $eco_com)
     {
         $old = EconomicComplement::find($eco_com->id);
+        $eco_com->load(['eco_com_state', 'city', 'eco_com_procedure', 'degree', 'category', 'wf_state']);
 
         $message = 'El usuario ' . Auth::user()->username . ' modifico ';
         $temp = $message;
