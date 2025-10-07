@@ -883,13 +883,6 @@ class ContributionController extends Controller
         return false;
     }
 
-    public function generateContribution(Affiliate $affiliate) 
-    {
-        $this->authorize('create',Contribution::class);
-        $contributions = self::getMonthContributions($affiliate->id);
-        return View('contribution.create', compact('affiliate', 'contributions'));
-    }
-
     public function selectContributions($ret_fun_id)
     {
         $ret_fun = RetirementFund::with([
@@ -1116,9 +1109,9 @@ class ContributionController extends Controller
                 if($contribution_types_ids->contains($refund_type->contribution_type_id)) {
                     $refund_contributions = (clone $aff_contributions)->select('affiliate_id','month_year','retirement_fund')
                         ->whereIn('contribution_type_id', [$refund_type->contribution_type_id])
-                        ->addReimbursement($affiliate->id, ['retirement_fund'])
                         ->get();
-                    $refund_subtotal = round($refund_contributions->sum('retirement_fund'), 2);
+                    $refund_contributions_with_reimbursements = Contribution::sumReimbursement($refund_contributions, ['retirement_fund']);
+                    $refund_subtotal = round($refund_contributions_with_reimbursements->sum('retirement_fund'), 2);
                     $refund_yield = round($refund_subtotal * ($refund_type->annual_percentage_yield / 100), 2);
                     $refund_total = round($refund_subtotal + $refund_yield, 2);
     

@@ -81,54 +81,40 @@ class Contribution extends Model
         return $this->morphToMany('Muserpol\Models\Contribution\ContributionProcess', 'quotable')->withTimestamps();
     }
 
-    // Scopes
-
-    public function scopeAddReimbursement(Builder $query, $affiliateId, array $sumColumns = [])
+    public static function sumReimbursement($contributions, array $sumColumns = [])
     {
-        // Detectar las columnas seleccionadas en contributions
-        $columns = $query->getQuery()->columns;
-
-        if (empty($columns)) {
-            throw new InvalidArgumentException(
-                "Debes especificar columnas en contributions, incluyendo 'affiliate_id' y 'month_year'"
-            );
+        if ($contributions->isEmpty()) {
+            return collect(); // Nada que procesar
         }
 
-        // Verificar que existan las columnas obligatorias
-        foreach (['affiliate_id', 'month_year'] as $required) {
-            if (!in_array($required, $columns)) {
-                throw new InvalidArgumentException(
-                    "Falta la columna obligatoria '{$required}' en el SELECT de contributions"
-                );
-            }
-        }
+        $affiliateId = $contributions->first()->affiliate_id;
+        $contributionMonths = $contributions->pluck('month_year')->toArray();
 
-        // Query de reimbursements con las mismas columnas
-        $reimbursementsQuery = Reimbursement::query()
-            ->select($columns)
-            ->where('affiliate_id', $affiliateId)
+        // Obtener los reembolsos del mismo afiliado y meses
+        $reimbursements = Reimbursement::where('affiliate_id', $affiliateId)
+            ->select(array_merge(['affiliate_id', 'month_year'], $sumColumns))
+            ->whereIn('month_year', $contributionMonths)
             ->whereNull('deleted_at')
-            ->whereIn('month_year', $query->pluck('month_year'));
+            ->get()
+            ->keyBy('month_year');
 
-        // Unión
-        $union = $query->unionAll($reimbursementsQuery);
-        $unionQueryBuilder = $union->getQuery();
-
-        // Construir dinámicamente el SELECT final
-        $finalSelect = [
-            'cr.affiliate_id',
-            'cr.month_year',
-        ];
-
-        foreach ($sumColumns as $col) {
-            $finalSelect[] = DB::raw("SUM(cr.{$col}) as {$col}");
+        if ($reimbursements->isEmpty()) {
+            return json_decode(json_encode($contributions->values()));
         }
 
-        // Query final agrupada
-        return DB::table(DB::raw("({$unionQueryBuilder->toSql()}) as cr"))
-            ->mergeBindings($unionQueryBuilder)
-            ->select($finalSelect)
-            ->groupBy('cr.affiliate_id', 'cr.month_year')
-            ->orderBy('cr.month_year');
+        $result = $contributions->map(function ($contribution) use ($reimbursements, $sumColumns) {
+            $month = $contribution->month_year;
+
+            if ($reimbursements->has($month)) {
+                $reimbursement = $reimbursements->get($month);
+                foreach ($sumColumns as $col) {
+                    $contribution->$col += $reimbursement->$col;
+                }
+            }
+
+            return $contribution;
+        });
+        
+        return $result->values();
     }
 }

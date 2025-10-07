@@ -699,7 +699,9 @@ class Affiliate extends Model
     }
     $ret_fun = $this->retirement_funds()->where('code','not like','%A%')->orderBy('reception_date');
     $retirement_fund = $reinstatement ? $ret_fun->get()->last() : $ret_fun->first();
-    if ($retirement_fund->procedure_modality->procedure_type->id == 21) {
+    $used_contributions_limit = $retirement_fund->used_contributions_limit;
+
+    if ($retirement_fund->procedure_modality->procedure_type->id == ProcedureType::RET_FUN_DA) {
       $number_contributions = $this->getTotalQuotes($reinstatement);
     } else {
       $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
@@ -711,78 +713,26 @@ class Affiliate extends Model
       $start_date = Util::parseMonthYearDate($retirement_fund->affiliate->date_entry_reinstatement);
       $end_date = !!$retirement_fund->affiliate->date_last_contribution_reinstatement ? Util::parseMonthYearDate($retirement_fund->affiliate->date_last_contribution_reinstatement) : Util::parseMonthYearDate($retirement_fund->affiliate->date_derelict_reinstatement);
     }
-    $contributions = DB::select("
-          SELECT
-              contributions_reimbursements.month_year,
-              contributions_reimbursements.affiliate_id,
-              sum(contributions_reimbursements.base_wage) as base_wage,
-              sum(contributions_reimbursements.seniority_bonus) as seniority_bonus,
-              sum(contributions_reimbursements.total) as total,
-              sum(contributions_reimbursements.retirement_fund) as retirement_fund,
-              sum(contributions_reimbursements.mortuary_quota) as mortuary_quota,
-              sum(contributions_reimbursements.public_security_bonus) as public_security_bonus,
-              sum(contributions_reimbursements.gain) as gain
-              FROM(
-              SELECT
-                  reimbursements.id,
-              reimbursements.affiliate_id,
-              reimbursements.degree_id,
-              reimbursements.unit_id,
-              reimbursements.breakdown_id,
-              reimbursements.month_year,
-              reimbursements.type,
-              reimbursements.base_wage,
-              reimbursements.seniority_bonus,
-              reimbursements.study_bonus,
-              reimbursements.position_bonus,
-              reimbursements.border_bonus,
-              reimbursements.east_bonus,
-              reimbursements.public_security_bonus,
-              reimbursements.gain,
-              reimbursements.payable_liquid,
-              reimbursements.quotable,
-              reimbursements.retirement_fund,
-              reimbursements.mortuary_quota,
-              reimbursements.subtotal,
-              reimbursements.total
-                  FROM reimbursements
-                  WHERE affiliate_id = " . $this->id . "
-      and reimbursements.deleted_at is null
-                  and month_year in (SELECT contributions.month_year
-                                      FROM contributions
-                                      LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
-                                      WHERE contributions.affiliate_id = " . $this->id . " and  contributions.deleted_at is null and contribution_types.operator LIKE '+' and contributions.month_year BETWEEN '".$start_date."' and '".$end_date."')
-                  UNION ALL
-                  SELECT
-                  contributions.id,
-              contributions.affiliate_id,
-              contributions.degree_id,
-              contributions.unit_id,
-              contributions.breakdown_id,
-              contributions.month_year,
-              contributions.type,
-              contributions.base_wage,
-              contributions.seniority_bonus,
-              contributions.study_bonus,
-              contributions.position_bonus,
-              contributions.border_bonus,
-              contributions.east_bonus,
-              contributions.public_security_bonus,
-              contributions.gain,
-              contributions.payable_liquid,
-              contributions.quotable,
-              contributions.retirement_fund,
-              contributions.mortuary_quota,
-              contributions.subtotal,
-              contributions.total
-                  FROM contributions
-                  LEFT JOIN contribution_types ON contributions.contribution_type_id = contribution_types.id
-                  WHERE affiliate_id = " . $this->id . " and  contributions.deleted_at is null and contribution_types.operator LIKE '+' and contributions.month_year BETWEEN '".$start_date."' and '".$end_date."'
-          ) as contributions_reimbursements
-              GROUP BY contributions_reimbursements.month_year, contributions_reimbursements.affiliate_id
-              ORDER BY month_year DESC
-              LIMIT " . $number_contributions . "");
-    return array_reverse($contributions);
+
+    $sumColumns = ['base_wage', 'seniority_bonus', 'total', 'retirement_fund', 'mortuary_quota', 'public_security_bonus', 'gain'];
+    $cont = $this->contributions()
+      ->select(array_merge(['affiliate_id', 'month_year'], $sumColumns))
+      ->whereHas('contribution_type', function ($query) {
+        $query->where('operator', 'like', '+');
+      })
+      ->whereBetween('contributions.month_year', [$start_date, $end_date])
+      ->where('affiliate_id', $this->id)
+      ->orderBy('month_year', 'asc')
+      ->when($retirement_fund->used_contributions_limit > 0, function ($q) use ($retirement_fund) {
+          return $q->limit($retirement_fund->used_contributions_limit);
+      })
+      ->get();
+
+    $last_contributions = $cont->slice($used_contributions_limit - $number_contributions)->values();
+
+    $contributions_with_reimbursements = Contribution::sumReimbursement($last_contributions, $sumColumns);
+
+    return $contributions_with_reimbursements->reverse()->values();
   }
   //--**OBTIENE LAS CONTRIBUCIONES DE DISPONIBILIDAD**--//
   public function getContributionsAvailability($with_reimbursements = true)
@@ -864,17 +814,17 @@ class Affiliate extends Model
   {
     $ret_fun = $this->retirement_funds()->where('code','not like','%A%')->orderBy('reception_date');
     $retirement_fund = $reinstatement ? $ret_fun->get()->last() : $ret_fun->first();
-    if($retirement_fund->procedure_modality->procedure_type->id == 21){
+    if($retirement_fund->procedure_modality->procedure_type->id == ProcedureType::RET_FUN_DA){
       $number_contributions = $this->getTotalQuotes($reinstatement);
     }else{
-      $number_contributions = Util::getRetFunCurrentProcedure()->contributions_number;
-    } 
+      $number_contributions = $retirement_fund->ret_fun_procedure->contributions_number;
+    }
 
     $contributions = self::getContributionsPlus($reinstatement);
-    $total_base_wage = array_sum(array_column($contributions, 'base_wage'));
-    $total_seniority_bonus = array_sum(array_column($contributions, 'seniority_bonus'));
-    $total_aporte = array_sum(array_column($contributions, 'total'));
-    $total_retirement_fund = array_sum(array_column($contributions, 'retirement_fund'));
+    $total_base_wage = $contributions->sum('base_wage');
+    $total_seniority_bonus = $contributions->sum('seniority_bonus');
+    $total_aporte = $contributions->sum('total');
+    $total_retirement_fund = $contributions->sum('retirement_fund');
 
     $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
     $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
