@@ -1,4 +1,4 @@
-@extends('print_global.print')
+@extends('eco_com.print.print')
 @section('content')
 <div>
     <div style="min-height:900px;height:900px; max-height:900px;">

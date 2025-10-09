@@ -1,6 +1,6 @@
 <?php
 
-namespace Muserpol\Models;
+namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
 

@@ -22,7 +22,7 @@
                     </th>
                     <th class="align-top text-left text-xs font-normal align-middle px-10"
                         style="border-top: 2px solid; ">
-                        RECEPCIONADO POR: <span class="italic">{{ $user->fullName() }}</span><br>
+                        CREADO MEDIANTE: <span class="italic">{{ $eco_com->origin_channel->name }}</span><br>
                         PLATAFORMA VIRTUAL DE TRÁMITES
                         MUTUAL DE SERVICIOS AL POLICÍA - MUSERPOL <br>
                         <span class="italic">http://www.muserpol.gob.bo</span>

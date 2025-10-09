@@ -72,7 +72,7 @@ class EcoComCertificationController extends Controller
 
         //$bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
         $bar_code = \DNS2D::getBarcodePNG($this->get_module_eco_com($eco_com->id), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
