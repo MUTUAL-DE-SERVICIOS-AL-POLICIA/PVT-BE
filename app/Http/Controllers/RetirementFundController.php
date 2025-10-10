@@ -1573,13 +1573,9 @@ class RetirementFundController extends Controller
         $procedure_type_id = $retirement_fund->procedure_modality->procedure_type->id;
         $global_pay = false;
         $percentageYield = $retFunProcedure->getAnnualPercentageYieldForModality($retirement_fund->procedure_modality_id);
-        $salaryLimit = $retFunProcedure->getSalaryLimitForAffiliate($affiliate);
+        $averageSalaryLimit = $retFunProcedure->getSalaryLimitForAffiliate($affiliate);
 
         $temp = [];
-        $validate_limit_average = false;
-        if ($total_salary_quotable['total_average_salary_quotable'] > $salaryLimit) {
-            $validate_limit_average = true;
-        }
 
         if ($total_quotes < $retFunProcedure->contributions_number || $procedure_type_id != ProcedureType::RET_FUN) {
             $global_pay = true;
@@ -1597,7 +1593,7 @@ class RetirementFundController extends Controller
             'total_quotes' => $total_quotes,
             'lastBaseWage' => $lastBaseWage,
             'total_salary_quotable' => $total_salary_quotable,
-            'validate_limit_average' => $validate_limit_average,
+            'averageSalaryLimit' => $averageSalaryLimit,
         ];
 
         $data =  array_merge($data, $temp);

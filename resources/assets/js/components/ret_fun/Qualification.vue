@@ -91,7 +91,7 @@ export default {
       // perecentageAdvancePayment: 0,
       lastBaseWage: 0,
       totalAverageSalaryQuotable: 0,
-      validateLimitAverageQuotable: false,
+      averageSalaryLimit: 0,
       totalQuotes:0,
       guarantors:[],
 
@@ -229,7 +229,7 @@ export default {
             lastBaseWage: response.data.lastBaseWage,
             totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,
             totalQuotes: response.data.total_quotes,
-            validateLimitAverageQuotable: response.data.validate_limit_average
+            averageSalaryLimit: response.data.averageSalaryLimit,
           });
           setTimeout(() => {
             this.$scrollTo('#showEconomicData');
@@ -478,10 +478,6 @@ export default {
   computed: {
     totalAverageSalaryQuotableAnimated: function() {
       return this.totalAverageSalaryQuotable;
-    },
-
-    validateLimitAverageQuotableVerified: function() {
-      return this.validateLimitAverageQuotable;
     },
 
     totalQuotesAnimated: function() {

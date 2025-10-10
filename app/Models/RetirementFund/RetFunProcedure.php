@@ -66,7 +66,7 @@ class RetFunProcedure extends Model
                     ->where('hierarchy_id', $hierarchyId)
                     ->first()
                     ->pivot
-                    ->salario_maximo ?? null;
+                    ->average_salary_limit ?? null;
     }
 
     public function getAnnualPercentageYieldForModality($modalityId)

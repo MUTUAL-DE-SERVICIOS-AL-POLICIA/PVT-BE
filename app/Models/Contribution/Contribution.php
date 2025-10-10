@@ -99,7 +99,7 @@ class Contribution extends Model
             ->keyBy('month_year');
 
         if ($reimbursements->isEmpty()) {
-            return json_decode(json_encode($contributions->values()));
+            return $contributions->values();
         }
 
         $result = $contributions->map(function ($contribution) use ($reimbursements, $sumColumns) {
