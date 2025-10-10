@@ -2,7 +2,7 @@
 
 @section('title', 'Documentos Analizados')
 
-@php($verification = ($data['nonNumericIds'] || $data['dataErrorReadFolder'] || $data['dataErrorReadFiles']))
+@php($verification = ($data['nonNumericIds'] || $data['dataErrorReadFolder'] || $data['dataErrorReadFiles'] || $data['duplicateData']))
 
 @section('notice1')
   <div class="content2">
@@ -74,7 +74,7 @@
             @endif
           </tr>
           <tr>
-            <td class="sub_description">N° Total de Archivos de Carpetas con NUB VÁLIDO</td>
+            <td class="sub_description">N° Total de Archivos de las carpetas</td>
             <td class="result">{{ $data['filesValidFolder'] }}</td>
           </tr>
           <tr>
@@ -87,6 +87,23 @@
             @if($data['dataErrorReadFiles'])
               <td>
                 @foreach($data['dataErrorReadFiles'] as $id => $files)
+                  &#128193; {{ $id }} <br>
+                  @foreach($files as $file)
+                    &nbsp;&#128196;{{ $file }} <br>
+                  @endforeach
+                  @if (!$loop->last) <br> @endif
+                @endforeach
+              </td>
+            @else
+              <td class="result">0</td>
+            @endif
+          </tr>
+          <tr>
+            <td class="sub_description">Archivos .pdf duplicados</td>
+              
+            @if($data['duplicateData'])
+              <td>
+                @foreach($data['duplicateData'] as $id => $files)
                   &#128193; {{ $id }} <br>
                   @foreach($files as $file)
                     &nbsp;&#128196;{{ $file }} <br>
