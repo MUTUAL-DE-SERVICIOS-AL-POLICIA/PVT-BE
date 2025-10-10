@@ -1311,7 +1311,8 @@ class ContributionController extends Controller
                     return redirect('quota_aid/' . $ret_fun_id);
                 }
 
-                $date_min = $affiliate->date_last_contribution;
+                //$date_min = $affiliate->date_last_contribution;
+                $date_min = Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution)->addMonth()->format('m/Y');// se adciona un mes a date_last_contribution para AM  
                 $date_max = Carbon::parse(Util::parseBarDate($affiliate->date_death))->format('m/Y');
 
                 if (!(isset($date_min) && isset($date_max))) {
