@@ -305,7 +305,7 @@ class EcoComReports implements FromQuery, WithHeadings, ShouldAutoSize
             "Nro Tramite",
             "fecha_de_recepcion",
             "usuario",
-            "Modalidad de Recepcion",
+            "Origen",
             "CI Beneficiario",
             "Primer Nombre Beneficiario",
             "Segundo Nombre Beneficiario",

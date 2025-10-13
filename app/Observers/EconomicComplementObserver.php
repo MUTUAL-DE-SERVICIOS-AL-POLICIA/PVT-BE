@@ -19,59 +19,15 @@ class EconomicComplementObserver
         $user = Auth::user();
         $user_id = $user ? $user->id : 171;
         $username = $user ? $user->username : '';
-        switch ($eco_com->eco_com_origin_channel_id) {
-            case 1: // Ventanilla
-                $eco_com->wf_records()->create([
-                    'user_id' => $user_id,
-                    'record_type_id' => 7,
-                    'wf_state_id' => $eco_com->wf_current_state_id,
-                    'date' => Carbon::now(),
-                    'message' => 'El usuario ' . $username . ' recepcionó el trámite.'
-                ]);
-                $eco_com->procedure_records()->create([
-                    'user_id' => $user_id,
-                    'record_type_id' => 7,
-                    'wf_state_id' => Util::getRol()->wf_states->first()->id,
-                    'date' => Carbon::now(),
-                    'message' => 'El usuario ' . $username . ' creó el trámite.'
-                ]);
-                break;
-            case 2: // Aplicación móvil
-            case 3: // Punto Digital de Trámites (Kiosco)
-                $channel_name = ($eco_com->eco_com_origin_channel_id == 2) ? 'aplicación móvil' : 'Kiosco';
-                $eco_com->wf_records()->create([
-                    'user_id' => $user_id,
-                    'record_type_id' => 7,
-                    'wf_state_id' => $eco_com->wf_current_state_id,
-                    'date' => Carbon::now(),
-                    'message' => 'Trámite creado por ' . $channel_name . '.'
-                ]);
-                $eco_com->procedure_records()->create([
-                    'user_id' => $user_id,
-                    'record_type_id' => 7,
-                    'wf_state_id' => $eco_com->wf_current_state_id,
-                    'date' => Carbon::now(),
-                    'message' => 'Se creó el trámite mediante ' . $channel_name . '.'
-                ]);
-                break;
-
-            case 4: // Replicación Semestral
-                $eco_com->wf_records()->create([
-                    'user_id' => $user_id,
-                    'record_type_id' => 7,
-                    'wf_state_id' => $eco_com->wf_current_state_id,
-                    'date' => Carbon::now(),
-                    'message' => 'El usuario ' . $username . ' creó el trámite mediante replicación semestral'
-                ]);
-                $eco_com->procedure_records()->create([
-                    'user_id' => $user_id,
-                    'record_type_id' => 7,
-                    'wf_state_id' => $eco_com->wf_current_state_id,
-                    'date' => Carbon::now(),
-                    'message' => 'El usuario ' . $username . ' replicó el trámite.'
-                ]);
-                break;
-        }
+        $message = 'Trámite creado mediante ' . $eco_com->origin_channel->shortened
+        . (!$eco_com->origin_channel->has_responsible_user ? '.' : ' por el usuario ' . $username . '.');
+        $eco_com->wf_records()->create([
+                'user_id' => $user_id,
+                'record_type_id' => 7,
+                'wf_state_id' => $eco_com->wf_current_state_id,
+                'date' => Carbon::now(),
+                'message' => $message
+            ]);
     }
     private function defaultValuesWfRecord($wf_current_state_id = null, $record_type_id = null, $message = null, $old_wf_state_id = null, $old_user_id = null)
     {

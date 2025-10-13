@@ -266,6 +266,10 @@ export default {
           id: 30,
           name: "Afiliados con doble percepción del ultimo periodo"
         },
+        {
+          id: 32,
+          name: "Afiliados fallecidos por semestre"
+        }
         // {
           // id: 31,
           // name: "Gestión Documental 2017-2024"
