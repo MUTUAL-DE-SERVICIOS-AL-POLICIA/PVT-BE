@@ -8,7 +8,9 @@ use Muserpol\Helpers\Util;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use Muserpol\Models\Workflow\WorkflowState;
 use Carbon\Carbon;
+use Muserpol\Models\EconomicComplement\EcoComStateType;
 use Muserpol\Models\EconomicComplement\ReviewProcedure;
+use Illuminate\Support\Arr;
 
 class EconomicComplementObserver
 {
@@ -43,6 +45,7 @@ class EconomicComplementObserver
     public function updating(EconomicComplement $eco_com)
     {
         $old = EconomicComplement::find($eco_com->id);
+        $eco_com->load(['eco_com_state', 'city', 'eco_com_procedure', 'degree', 'category', 'wf_state']);
 
         $message = 'El usuario ' . Auth::user()->username . ' modifico ';
         $temp = $message;
@@ -91,6 +94,13 @@ class EconomicComplementObserver
         }
         if ($eco_com->eco_com_state_id != $old->eco_com_state_id) {
             $message = $message . ' el estado de ' . $old->eco_com_state->name . ' a ' . $eco_com->eco_com_state->name . ', ';
+
+            if ($old->eco_com_state->eco_com_state_type_id === EcoComStateType::PAGADO) {
+                $old_eco_com = Arr::except($old->toArray(), ['old_eco_com']);
+                if (is_null($eco_com->old_eco_com)) {
+                    $eco_com->old_eco_com = json_encode($old_eco_com);
+                }
+            }
         }
         if($temp !=  $message){
             $message = $message . ' ';

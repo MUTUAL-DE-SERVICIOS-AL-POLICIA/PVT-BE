@@ -622,7 +622,6 @@ class QuotaAidMortuaryController extends Controller
     $procedures_modalities = ProcedureModality::whereIn('procedure_type_id', $procedures_modalities_ids)->get();
     $file_modalities = ProcedureModality::get();
 
-    $requirements = ProcedureRequirement::where('procedure_modality_id', $quota_aid->procedure_modality_id)->whereNull('deleted_at')->get();
 
     $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
     $cities = City::get();
@@ -644,6 +643,7 @@ class QuotaAidMortuaryController extends Controller
     $procedure_types = ProcedureType::where('module_id', 4)->get();
     $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
       ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+      ->where('procedure_modality_id', $quota_aid->procedure_modality_id)
       ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
       ->orderBy('procedure_requirements.number', 'ASC')
       ->get();
@@ -658,6 +658,19 @@ class QuotaAidMortuaryController extends Controller
       ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
       ->orderby('procedure_requirements.number', 'ASC')
       ->where('quota_aid_submitted_documents.quota_aid_mortuary_id', $id);
+
+    // Sirve para listar documentos que fueron eliminados anteriormente
+    $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
+        return [$item->id => $item];
+    });
+    $restore_procedure_documents = collect();
+    foreach ($submitted->get() as $item) {
+      if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
+        $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
+      }
+    }
+    $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+
     // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
     /**for validate doc*/
     $rol = Util::getRol();
@@ -1287,47 +1300,35 @@ class QuotaAidMortuaryController extends Controller
   public function getTestimonies($quota_aid_id)
   {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $applicants = $quota_aid->quota_aid_beneficiaries()->where('type', 'S')->get()->all();
-    $testimonies = [];
-    if (count($applicants) > 0) {
-      foreach ($applicants as $applicant) {
-        $testimonies = array_merge($testimonies, $applicant->testimonies()->with('quota_aid_beneficiaries')->get()->all());
-      }
-    }
-    // $affiliate = $quota_aid->affiliate;
-    // $testimonies = $affiliate->testimony()->with('quota_aid_beneficiaries')->get();
+    $affiliate = $quota_aid->affiliate;
+    $testimonies = $affiliate->testimony()
+      ->whereHas('quota_aid_beneficiaries') // solo testimonios con relación
+      ->with('quota_aid_beneficiaries')     // eager load de la relación
+      ->get();
     return $testimonies;
   }
   public function updateBeneficiaryTestimony(Request $request, $quota_aid_id)
   {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     $affiliate = $quota_aid->affiliate;
+    
+    $testimonies_array_request = array_filter(array_pluck($request->all(), 'id'));
+    
+    foreach ($affiliate->testimony as $t) {
+        if (!in_array($t->id, $testimonies_array_request)) {
+            $hasBeneficiary = $t->quota_aid_beneficiaries()
+                ->where('quota_aid_mortuary_id', $quota_aid_id)
+                ->exists();
 
-    $testimonies_array_request = array();
-    foreach (array_pluck($request->all(), 'id') as $key => $value) {
-      if ($value) {
-        array_push($testimonies_array_request, $value);
-      }
-    }
-    $testimonies = $affiliate->testimony;
-    foreach ($testimonies as $key => $t) {
-      $index = array_search($t->id, $testimonies_array_request);
-      if ($index === false) {
-        $beneficiaries = $t->quota_aid_beneficiaries()->where('type', 'S')->get();
-        foreach ($beneficiaries as $b) {
-          if ($b->quota_aid_mortuary_id == $quota_aid_id) {
-            $t->delete();
-            break;
-          }
+            if ($hasBeneficiary) {
+                $t->delete();
+            }
         }
-      }
     }
-    foreach ($request->all() as $key => $t) {
-      if ($t['id'] == 'new') {
-        $testimony = new Testimony();
-      } else {
-        $testimony = Testimony::find($t['id']);
-      }
+    foreach ($request->all() as $t) {
+      $testimony = ($t['id'] == 'new')
+            ? new Testimony()
+            : Testimony::find($t['id']);
       $testimony->user_id = Util::getAuthUser()->id;
       $testimony->affiliate_id = $affiliate->id;
       $testimony->document_type = $t['document_type'];
@@ -1337,11 +1338,8 @@ class QuotaAidMortuaryController extends Controller
       $testimony->place = $t['place'];
       $testimony->notary = $t['notary'];
       $testimony->save();
-      $ids_ben = array();
-      foreach ($t['quota_aid_beneficiaries'] as $ben) {
-        array_push($ids_ben, $ben['id']);
-      }
-      $testimony->quota_aid_beneficiaries()->sync($ids_ben);
+     
+      $testimony->quota_aid_beneficiaries()->sync(array_pluck($t['quota_aid_beneficiaries'], 'id'));
     }
     return;
   }

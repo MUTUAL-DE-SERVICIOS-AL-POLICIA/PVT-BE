@@ -221,6 +221,9 @@ th.ellipsis-text {
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Renta/Pensión para la Calificación</h2>
+                                @if($role == 103)
+                                <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal()">Crear</button>
+                                @endif
                             </div>
                             <div class="ibox-content">
                                 <div class="table-responsive">
@@ -249,7 +252,7 @@ th.ellipsis-text {
                                         </thead>
                                         <tbody>
                                             @foreach ($eco_com_fixed_pensions as $eco_com_fixed_pension)
-                                                <tr>
+                                                <tr @if($loop->first) style="background-color: #CCE5FF;" @endif>
                                                     <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->start_production_date)->format('Y') }} - 
                                                         {{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->end_production_date)->format('Y') }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_procedure->year)->format('Y') }} - {{ $eco_com_fixed_pension->eco_com_procedure->semester }}</td>
@@ -268,16 +271,23 @@ th.ellipsis-text {
                                                     <td>{{ $eco_com_fixed_pension->total_rent }}</td>
                                                     @if($role == 103)
                                                     <td>
-                                                        <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal({{ json_encode($eco_com_fixed_pension) }})">Editar</button>
+                                                        <button class="btn btn-warning btn-sm" @click='$refs.editModal.openModal(@json($eco_com_fixed_pension))'>Editar</button>
                                                     </td>
                                                     @endif
                                                 </tr>
+                                                @if($loop->first)
+                                                <tr>
+                                                    <td colspan="100%" style="background-color:#CCE5FF; font-style:italic; text-align:center;">
+                                                        Renta que se usará en nuevos trámites
+                                                    </td>
+                                                </tr>
+                                                @endif
                                             @endforeach
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                            <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" ></edit-pension-modal>
+                            <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" :affiliate_id="{{$affiliate->id}}"></edit-pension-modal>
                         </div>
                         @endif
                         <!---End fixed-->
@@ -308,7 +318,8 @@ th.ellipsis-text {
                                             <th>Ubicación</th>
                                             <th>Estado</th>
                                             <th>Complemento Economico</th>
-                                            <th>liquido Pagable</th>
+                                            <th>Liquido Pagable</th>
+                                            <th>Periodo Renta Fija</th>
                                             <th>Opciones</th>
                                             </tr>
                                         </thead>
@@ -324,6 +335,9 @@ th.ellipsis-text {
                                                 <td>{{$eco_com->eco_com_state->name }}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->getOnlyTotalEcoCom())}}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->total)}}</td>
+                                                @if (isset($eco_com->eco_com_fixed_pension))
+                                                <td>{{ \Carbon\Carbon::parse($eco_com->eco_com_fixed_pension->eco_com_procedure->year)->format('Y')}} - {{$eco_com->eco_com_fixed_pension->eco_com_procedure->semester}}</td>
+                                                @endif
                                                 <td style="vertical-align:middle">
                                                 @can('update', new Muserpol\Models\EconomicComplement\EconomicComplement)
                                                     <a href="/eco_com/{{$eco_com->id}}">
@@ -334,7 +348,7 @@ th.ellipsis-text {
                                                 </tr>
                                                 @if ($eco_com->discount_types->count() > 0)
                                                     <tr class="danger">
-                                                        <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" >
+                                                        <td colspan="3" rowspan="{{ $eco_com->discount_types->count() + 1  }}" >
                                                         </td>
                                                         <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" style="vertical-align:middle">
                                                             <strong>

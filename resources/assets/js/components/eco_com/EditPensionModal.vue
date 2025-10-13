@@ -1,4 +1,3 @@
-
 <template>
   <div class="modal fade" id="editPensionModal" tabindex="-1" role="dialog" aria-labelledby="editPensionModalLabel"
     aria-hidden="true">
@@ -7,7 +6,7 @@
         <div class="modal-header">
         </div>
         <div class="modal-body">
-          <form @submit.prevent="updatePension">
+          <form @submit.prevent="savePension">
             <input type="hidden" v-model="eco_com_fixed_pension.id">
 
             <div cass="ibox-title">
@@ -17,79 +16,29 @@
               </h2>
             </div>
             <div class="ibox-content">
-              <div class="row" v-if="affiliate_pension_entity_id != 5">
-                <div class="col-md-10 col-xs-offset-2">
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Fracción de Saldo Acumulado</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="aps_total_fsa"
-                          v-model="eco_com_fixed_pension.aps_total_fsa" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-plus" style="font-size:20px"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Fracción de Cotización</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="aps_total_cc"
-                          v-model="eco_com_fixed_pension.aps_total_cc" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-plus" style="font-size:20px"></i>
+              <div class="row">
+                <div class="col-md-10 col-xs-offset-1">
+                  <template v-for="input in inputs">
+                    <div class="row" style="margin-bottom: 5px;" v-if="input.show">
+                      <div class="form-group">
+                        <label class="col-sm-6 control-label">{{ input.label }}</label>
+                        <div class="col-sm-4">
+                          <input type="text" class="form-control" v-money :name="input.name"
+                            v-model="eco_com_fixed_pension[input.name]" />
+                        </div>
+                        <div class="col-sm-2">
+                          <i class="fa" :class="'fa-' + input.icon" style="font-size:20px"></i>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <br />
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Fracción Solidaria</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="aps_total_fs"
-                          v-model="eco_com_fixed_pension.aps_total_fs" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-plus" style="font-size:20px"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Renta Invalidez</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="aps_disability"
-                          v-model="eco_com_fixed_pension.aps_disability" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-plus" style="font-size:20px"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Renta Muerte</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="aps_disability"
-                          v-model="eco_com_fixed_pension.aps_total_death" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-plus" style="font-size:20px"></i>
-                      </div>
-                    </div>
-                  </div>
+                  </template>
                   <div class="hr-line-dashed"></div>
                   <div class="row">
                     <div class="form-group">
-                      <label class="col-sm-4 control-label">Total Fracciones</label>
+                      <label class="col-sm-4 control-label">{{ modal.totalLabel }}</label>
                       <div class="col-sm-4">
                         <strong>
-                          <animated-integer v-bind:value="totalSumFractions"></animated-integer>
+                          <animated-integer v-bind:value="modal.totalValue"></animated-integer>
                         </strong>
                       </div>
                     </div>
@@ -99,81 +48,8 @@
                     <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
                     <select class="col-sm-6" name="Periodo que correponde la renta"
                       v-model="eco_com_fixed_pension.eco_com_procedure_id">
-                      <option v-for="p in procedures" :value="p.id" :key="p.id">{{ p.semester + p.year.split('-')[0] +'('+ p.rent_month+')' }}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="row" v-if="affiliate_pension_entity_id == 5">
-                <div class="col-md-10 col-xs-offset-2">
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Total Ganado Renta ó Pensión</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="sub_total_rent"
-                          v-model="eco_com_fixed_pension.sub_total_rent" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-plus" style="font-size:20px"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Reintegro</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="reimbursement"
-                          v-model="eco_com_fixed_pension.reimbursement" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-minus" style="font-size:20px"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Renta Dignidad</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="dignity_pension"
-                          v-model="eco_com_fixed_pension.dignity_pension" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-minus" style="font-size:20px"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Renta Invalidez</label>
-                      <div class="col-sm-4">
-                        <input type="text" class="form-control" v-money name="aps_disability"
-                          v-model="eco_com_fixed_pension.aps_disability" />
-                      </div>
-                      <div class="col-sm-2">
-                        <i class="fa fa-plus" style="font-size:20px"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="hr-line-dashed"></div>
-
-                  <div class="row">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Total Renta ó Pensión</label>
-                      <div class="col-sm-4">
-                        <strong>
-                          <animated-integer v-bind:value="totalSumSenasir"></animated-integer>
-                        </strong>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
-                    <select class="col-sm-6" name="Periodo que correponde la renta"
-                      v-model="eco_com_fixed_pension.eco_com_procedure_id">
-                      <option v-for="p in procedures" :value="p.id" :key="p.id">{{ p.semester + p.year.split('-')[0] +'('+ p.rent_month+')' }}</option>
+                      <option v-for="p in procedures" :value="p.id" :key="p.id">{{ p.semester + p.year.split('-')[0]
+                        + '(' + p.rent_month + ')' }}</option>
                     </select>
                   </div>
                 </div>
@@ -184,7 +60,7 @@
                     <i class="fa fa-times-circle"></i>&nbsp;&nbsp;
                     <span class="bold">Cancelar</span>
                   </button>
-                  <button type="button" class="btn btn-primary" @click="updatePension()" :disabled="loadingButton">
+                  <button type="button" class="btn btn-primary" @click="savePension()" :disabled="loadingButton">
                     <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
                     <i v-else class="fa fa-save"></i>
                     &nbsp;
@@ -212,7 +88,7 @@ import {
 } from "../../helper.js";
 
 export default {
-  props: ["affiliate_pension_entity_id"],
+  props: ["affiliate_pension_entity_id", "affiliate_id"],
 
   mounted() {
     this.getProcedures();
@@ -221,22 +97,51 @@ export default {
     return {
       eco_com_fixed_pension: {
         id: null,
-        rent_type: '',
         aps_total_cc: null,
-        // Otros campos
+        aps_total_fsa: null,
+        aps_total_fs: null,
+        aps_disability: null,
+        aps_total_death: null,
+        sub_total_rent: null,
+        reimbursement: null,
+        dignity_pension: null,
       },
-      editing: false,
       loadingButton: false,
       procedures: []
     };
   },
+
   computed: {
-    // ecoCom() {
-    //   return this.$store.state.ecoComForm.ecoCom;
-    // },
-    // isSenasir() {
-    //   return isPensionEntitySenasir(this.affiliate.pension_entity_id);
-    // },
+    isNew() {
+      return this.eco_com_fixed_pension.id == null;
+    },
+    inputs() {
+      return [
+        { name: 'aps_total_fsa', label: 'Fracción de Saldo Acumulado', icon: 'plus', show: !this.isSenasir, },
+        { name: 'aps_total_cc', label: 'Fracción de Cotización', icon: 'plus', show: !this.isSenasir, },
+        { name: 'aps_total_fs', label: 'Fracción Solidaria', icon: 'plus', show: !this.isSenasir, },
+        { name: 'aps_disability', label: 'Renta Invalidez', icon: 'plus', show: !this.isSenasir, },
+        { name: 'aps_total_death', label: 'Renta Muerte', icon: 'plus', show: !this.isSenasir, },
+        { name: 'sub_total_rent', label: 'Total Ganado Renta ó Pensión', icon: 'plus', show: this.isSenasir, },
+        { name: 'reimbursement', label: 'Reintegro', icon: 'minus', show: this.isSenasir, },
+        { name: 'dignity_pension', label: 'Renta Dignidad', icon: 'minus', show: this.isSenasir, },
+        { name: 'aps_disability', label: 'Renta Invalidez', icon: 'plus', show: this.isSenasir, },
+      ];
+    },
+    modal() {
+      return {
+        totalLabel: this.isGestora
+          ? "Total Renta ó Pensión"
+          : "Total Fracciones",
+        totalValue: this.isGestora ? this.totalSumSenasir : this.totalSumFractions
+      };
+    },
+    isSenasir() {
+      return isPensionEntitySenasir(this.affiliate_pension_entity_id);
+    },
+    totalValue() {
+      return this.isSenasir ? this.totalSumSenasir : this.totalSumFractions;
+    },
     namePensionEntity() {
       return getNamePensionEntity(this.affiliate_pension_entity_id);
     },
@@ -259,10 +164,26 @@ export default {
     }
   },
 
-
   methods: {
-    openModal(eco_com_fixed_pension) {
-      this.eco_com_fixed_pension = { ...eco_com_fixed_pension };
+    openModal(eco_com_fixed_pension = null) {
+      if (eco_com_fixed_pension) {
+        this.eco_com_fixed_pension = { ...eco_com_fixed_pension };
+      } else {
+        this.eco_com_fixed_pension = {
+          id: null,
+          affiliate_id: this.affiliate_id,
+          rent_type: 'Manual',
+          aps_total_cc: null,
+          aps_total_fsa: null,
+          aps_total_fs: null,
+          aps_disability: null,
+          aps_total_death: null,
+          sub_total_rent: null,
+          reimbursement: null,
+          dignity_pension: null,
+          eco_com_procedure_id: null,
+        };
+      }
       $('#editPensionModal').modal('show');
     },
     closeModal() {
@@ -278,41 +199,47 @@ export default {
       this.eco_com_fixed_pension.sub_total_rent = parseMoney(this.eco_com_fixed_pension.sub_total_rent);
       this.eco_com_fixed_pension.reimbursement = parseMoney(this.eco_com_fixed_pension.reimbursement);
       this.eco_com_fixed_pension.dignity_pension = parseMoney(this.eco_com_fixed_pension.dignity_pension);
-      
-      if(this.affiliate_pension_entity_id != 5){
-        this.eco_com_fixed_pension.total_rent =  parseFloat(parseMoney(this.eco_com_fixed_pension.aps_total_fsa)) +
-        parseFloat(parseMoney(this.eco_com_fixed_pension.aps_total_cc)) +
-        parseFloat(parseMoney(this.eco_com_fixed_pension.aps_total_fs)) +
-        parseFloat(parseMoney(this.eco_com_fixed_pension.aps_total_death)) +
-        parseFloat(parseMoney(this.eco_com_fixed_pension.aps_disability))
-        console.log(this.eco_com_fixed_pension.total_rent )
-      }        
-      else{
-        this.eco_com_fixed_pension.total_rent =  parseFloat(parseMoney(this.eco_com_fixed_pension.sub_total_rent)) -
-        parseFloat(parseMoney(this.eco_com_fixed_pension.reimbursement)) -
-        parseFloat(parseMoney(this.eco_com_fixed_pension.dignity_pension)) +
-        parseFloat(parseMoney(this.eco_com_fixed_pension.aps_disability))
-      }        
+
+      if (this.isSenasir) {
+        this.eco_com_fixed_pension.total_rent = this.totalSumSenasir;
+      }
+      else {
+        this.eco_com_fixed_pension.total_rent = this.totalSumFractions;
+      }
     },
 
-    async updatePension() {
+    async savePension() {
       // if(!this.can('update_economic_complement', this.permissions)){
       //     return;
       // }
       this.cleanMonetaryValues();
-      await axios
-        .patch(`/eco_com_fixed_pensions/${this.eco_com_fixed_pension.id}`, this.eco_com_fixed_pension)
-        .then(response => {
-          this.$store.commit("ecoComForm/setEcoCom", response.data);
-          this.closeModal();
-          //this.$modal.hide("")
-          flash("Rentas actualizadas con exito")
-          location.reload();
-        })
-        .catch(error => {
-          flashErrors("Error al procesar:", error.response.data.errors);
-           this.closeModal();
-        })
+      if (this.isNew) {
+        console.log('Creando nueva renta');
+        await axios
+          .post(`/eco_com_fixed_pensions`, this.eco_com_fixed_pension)
+          .then(response => {
+            this.closeModal();
+            flash("Rentas actualizadas con exito")
+            location.reload();
+          })
+          .catch(error => {
+            flashErrors("Error al procesar:", error.response.data.errors);
+            this.closeModal();
+          })
+      } else {
+        console.log('Editando renta existente');
+        await axios
+          .patch(`/eco_com_fixed_pensions/${this.eco_com_fixed_pension.id}`, this.eco_com_fixed_pension)
+          .then(response => {
+            this.closeModal();
+            flash("Rentas actualizadas con exito")
+            location.reload();
+          })
+          .catch(error => {
+            flashErrors("Error al procesar:", error.response.data.errors);
+            this.closeModal();
+          })
+      }
     },
     async getProcedures() {
       this.$scrollTo("#wrapper");
