@@ -8,13 +8,33 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 
 
-class AffiliateDeceasedSemesterExport implements FromCollection, WithHeadings, ShouldAutoSize
+use Maatwebsite\Excel\Concerns\WithMapping;
+
+class AffiliateDeceasedSemesterExport implements FromCollection, WithHeadings, ShouldAutoSize, WithMapping
 {
     protected $eco_com_procedure_id;
+    private $index = 1;
 
     public function __construct($eco_com_procedure_id)
     {
         $this->eco_com_procedure_id = $eco_com_procedure_id;
+    }
+
+    public function map($row): array
+    {
+        return [
+            $this->index++,
+            $row['nup'],
+            $row['ci'],
+            $row['full_name'],
+            $row['modalidad'],
+            $row['last_complement_number'],
+            $row['death_date'],
+            $row['death_cert_number'],
+            $row['cause_death'],
+            $row['death_reg_date'],
+            $row['user'],
+        ];
     }
 
     public function collection()
@@ -84,6 +104,7 @@ class AffiliateDeceasedSemesterExport implements FromCollection, WithHeadings, S
     public function headings(): array
     {
         return [
+            'N°',
             'NUP',
             'CI',
             'Nombre Completo',
