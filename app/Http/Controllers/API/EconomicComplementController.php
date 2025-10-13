@@ -456,7 +456,7 @@ class EconomicComplementController extends Controller
             $size_down = 80;
         }
         $bar_code = \DNS2D::getBarcodePNG($economic_complement->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $economic_complement])->render();
 
         $data = [
             'direction' => $direction,

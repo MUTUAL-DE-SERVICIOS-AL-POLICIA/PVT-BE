@@ -13,6 +13,7 @@ use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\EconomicComplement\EcoComModality;
 use Muserpol\Models\EconomicComplement\EcoComFixedPension;
 use Muserpol\Helpers\ID;
+use Muserpol\Observers\EconomicComplementObserver;
 
 class EconomicComplementReplicationController extends Controller
 {
@@ -164,6 +165,9 @@ class EconomicComplementReplicationController extends Controller
                 })
                 ->chunk(200, function ($candidates) use ($request, &$total_replicated_count, &$last_code_number, $code_semester_char, $code_year) {
                     foreach ($candidates as $candidate) {
+
+                        EconomicComplement::observe(EconomicComplementObserver::class);
+
                         $last_code_number++;
                         $replicated = new EconomicComplement;
                         $replicated->affiliate_id = $candidate->affiliate_id;
@@ -183,6 +187,8 @@ class EconomicComplementReplicationController extends Controller
                         $replicated->uuid = \Ramsey\Uuid\Uuid::uuid1()->toString();
                         $replicated->eco_com_reception_type_id = 1; // ID para "Habitual"
                         $replicated->save();
+
+                        EconomicComplement::FlushEventListeners();
                         $this->updateEcoComWithFixedPension($replicated->id);
 
                         $original_beneficiary = $candidate->eco_com_beneficiary;
