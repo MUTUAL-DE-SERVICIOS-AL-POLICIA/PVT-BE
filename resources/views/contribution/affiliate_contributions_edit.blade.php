@@ -149,6 +149,9 @@
                                             <tr>
                                                 <td>Cuota Mortuoria</td>
                                             </tr>
+                                            <tr>
+                                                <td>Unidad</td>
+                                            </tr>
                                         </table>
                                     </td>
                                     @for($i=1;$i<13;$i++)
@@ -252,6 +255,21 @@
                                                                 <input type="hidden" disabled name="mortuary_quota[{{$period}}]" value="{{$contributions[$period]->mortuary_quota ??'-'}}">
                                                             </td>
                                                         </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <select class="editcontent-select" >
+                                                                    <option value="" selected>-Selec.-</option>
+                                                                    @foreach($units as $unit)
+                                                                        <option value="{{ $unit->id }}"
+                                                                            @if(isset($contributions[$period]) && $contributions[$period]->unit_id == $unit->id) selected @endif>
+                                                                            {{ $unit->id }} - {{ $unit->code }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+
+                                                                <input type="hidden" disabled name="unit_id[{{$period}}]" value="{{ $contributions[$period]->unit_id ?? '' }}">
+                                                            </td>
+                                                        </tr>
                                                     </table>
                                                 </td>
                                             @else
@@ -350,6 +368,18 @@
                                                             <td>
                                                                 <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">0</div>
                                                                 <input type="hidden" disabled name="mortuary_quota[{{$period}}]" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                            <select class="editcontent-select" name="unit_id[{{$period}}]">
+                                                                <option value="" selected disabled>-Selec.-</option>
+                                                                @foreach($units as $unit)
+                                                                    <option value="{{ $unit->id }}">
+                                                                        {{ $unit->id }} - {{ $unit->code }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -529,6 +559,15 @@ $('.editcontent').blur(function() {
     //}    
     $(this).closest('table').find('tr:first').find('td:first').find('input').removeAttr('disabled');
 });
+$(document).on('change', '.editcontent-select', function() {
+    $(this).next('input')
+        .val($(this).val())
+        .removeAttr('disabled');
+
+    $(this).closest('table')
+        .find('tr:first td:first input')
+        .removeAttr('disabled');
+});
 function createReimbursement(year){
     this.clearModal();
     this.actual_year = year;
@@ -571,7 +610,7 @@ function storeReimbursement(){
     $.ajax({
         url: "{{asset('reimbursement')}}",
         method: "POST",
-        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total,retirement_fund:retirement_fund,mortuary_quota:mortuary_quota},
+        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total,retirement_fund:retirement_fund,mortuary_quota:mortuary_quota, unit_id:unit_id},
         beforeSend: function (xhr, settings) {
             if (settings.url.indexOf(document.domain) >= 0) {
                 xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");

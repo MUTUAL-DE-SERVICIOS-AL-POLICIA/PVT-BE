@@ -703,7 +703,9 @@ class EconomicComplementController extends Controller
             'eco_com_once_payment',
             'eco_com_fixed_pension',
             'eco_com_updated_pension',
-            'observations'
+            'observations',
+            'affiliate.address',
+            'affiliate.eco_com_fixed_pensions'
         ])->findOrFail($id);
         $affiliate = $economic_complement->affiliate;
         $degrees = Degree::where('is_active', true)->get();
@@ -733,15 +735,29 @@ class EconomicComplementController extends Controller
         $procedure_types = ProcedureType::where('module_id', ID::module()->eco_com)->get();
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+            ->where('procedure_modality_id', $economic_complement->eco_com_modality->procedure_modality_id)
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
         $procedure_modalities = ProcedureModality::where('procedure_type_id', '=', ID::procedureType()->eco_com)->select('id', 'name', 'procedure_type_id')->get();
-        $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid', 'eco_com_submitted_documents.is_uploaded')
+        $submitted = EcoComSubmittedDocument::select('eco_com_submitted_documents.id', 'procedure_requirements.number', 'eco_com_submitted_documents.procedure_requirement_id', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_valid', 'eco_com_submitted_documents.is_uploaded', 'procedure_documents.name')
             ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
+            ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('eco_com_submitted_documents.economic_complement_id', $id);
 
+        // Sirve para listar documentos que fueron eliminados anteriormente
+        $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
+            return [$item->id => $item];
+        });
+        $restore_procedure_documents = collect();
+        foreach ($submitted->get() as $item) {
+            if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
+                $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
+            }
+        }
+        $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+        
         /**
          ** for validation and submit
          */
@@ -778,23 +794,7 @@ class EconomicComplementController extends Controller
         /**
          ** for observations
          */
-        // $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'T')->get();
         $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'AT')->where('active',true)->get();
-        // $affiliate_observations = AffiliateObservation::where('affiliate_id', $economic_complement->affiliate_id)->get();
-        // foreach($affiliate_observations as $observation){
-        //     if($observation->observationType->type=='AT')
-        //     {
-        //         $eco_com_observation = EconomicComplementObservation::where('economic_complement_id',$economic_complement->id)
-        //         ->where('observation_type_id',$observation->observation_type_id)
-        //         ->first();
-        //         if(!$eco_com_observation)
-        //         {
-        //             $new_observation = ObservationType::find($observation->observation_type_id);
-        //             $observations_types->push($new_observation);
-        //             // ($observations_types,$new_observation);   
-        //         }
-        //     }
-        // }
 
         /**
          ** Permissions
@@ -959,12 +959,40 @@ class EconomicComplementController extends Controller
             ], 403);
         }
         $economic_complement = EconomicComplement::findOrFail($request->id);
+        if (isset($request->eco_com_state_id) && $request->eco_com_state_id != $economic_complement->eco_com_state_id) {
+            $is_paid = ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado);
+            $change_to_process = ($request->eco_com_state_id == ID::ecoComState()->in_process);
+            if ($is_paid && $change_to_process) {
+                if (Util::getRol()->id != 5) {
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => ['Solo Jefatura puede cambiar un trámite PAGADO a EN PROCESO.'],
+                    ], 403);
+                }
+                if ($economic_complement->discount_types()->where('discount_type_id', 6)->exists()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'errors' => ['El trámite tiene un descuento por Reposición de Fondos y no puede ser revertido a EN PROCESO.'],
+                    ], 403);
+                }
+            }
+            else if ($is_paid) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => ['Un trámite en estado PAGADO solo puede ser cambiado a EN PROCESO por Jefatura.'],
+                ], 403);
+            }
+            if ($request->eco_com_state_id == 18 && $economic_complement->eco_com_state_id != 32) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => ['Un trámite solo puede pasar a EJECUTADO TOTAL AMORTIZADO desde el estado HABILITADO TOTAL AMORTIZADO.'],
+                ], 403);
+            }
+        }
+
         // $economic_complement->degree_id = $request->degree_id;
         // $economic_complement->category_id = $request->category_id;
         $economic_complement->city_id = $request->city_id;
-        if (Util::getRol()->id == 5) {
-            $economic_complement->reception_date = $request->reception_date;
-        }
         $affiliate = $economic_complement->affiliate;
         
         // $affiliate->affiliate_state_id = $request->affiliate_state_id;
@@ -1313,6 +1341,9 @@ class EconomicComplementController extends Controller
         }
         $eco_com = EconomicComplement::with(['discount_types', 'eco_com_state:id,name,eco_com_state_type_id', 'degree','category','eco_com_modality', 'eco_com_fixed_pension', 'eco_com_updated_pension'])->findOrFail($id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
+        if($eco_com->eco_com_fixed_pension) {
+            $eco_com->eco_com_fixed_pension->period = $eco_com->eco_com_fixed_pension->eco_com_procedure->semester . ' ' . $eco_com->eco_com_fixed_pension->eco_com_procedure->getYear();
+        }
         if ($rol->id == 4) {
             $devolution = $eco_com->affiliate->devolutions()->where('observation_type_id',13)->first();
             if ($devolution) {
@@ -1349,6 +1380,10 @@ class EconomicComplementController extends Controller
         // Si el tipo es "ce"
         if ($request->type == "ce" && $economic_complement->rent_type == "Automatico") {
 
+            $newFixed = EcoComFixedPension::findOrFail($request->new_fixed_id);
+            if($newFixed->id != $economic_complement->eco_com_fixed_pension_id){
+                $economic_complement->eco_com_fixed_pension()->associate($newFixed);
+            }
             $economic_complement->user_id = Auth::user()->id;
 
             $economic_complement->sub_total_rent = $economic_complement->eco_com_fixed_pension->sub_total_rent;
@@ -1452,7 +1487,7 @@ class EconomicComplementController extends Controller
             }
         }
         if ($request->refresh == false) {
-            if ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
+            if (Util::getRol()->id != 5 && ($economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $economic_complement->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado)) {
                 $eco_com_state = $economic_complement->eco_com_state;
                 return response()->json([
                     'status' => 'error',
@@ -1519,11 +1554,6 @@ class EconomicComplementController extends Controller
             case 4: // complemento
                 $discount_type_id = 6 || $discount_type_id = 8;
                 break;
-        }
-        if (Gate::allows('qualify', $economic_complement)) {
-            if ($economic_complement->qualify()->status() == 422) {
-                return $economic_complement->qualify() ;
-            }
         }
         $economic_complement = EconomicComplement::with(['discount_types', 'degree','category','eco_com_modality','eco_com_fixed_pension','eco_com_updated_pension'])->find($economic_complement->id);
         $economic_complement->discount_amount = optional(optional($economic_complement->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
@@ -1601,13 +1631,18 @@ class EconomicComplementController extends Controller
 
         if($discount_type_id == 6) {//Amortización por Reposición de Fondos
             $last_movement = EcoComMovement::where("affiliate_id",$eco_com->affiliate_id)->latest()->orderBy('id', 'desc')->first();
-            if( $last_movement ) {
-                if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
+            if( $last_movement == null ) {
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Error',
+                    'errors' => ['No se puede realizar la amortización por Reposición de Fondos, porque no existe una deuda registrada.'],
+                ], 422);
+            }
+            if( doubleval($last_movement->balance) < doubleval($request->amount) ) {
                     return response()->json([
                         'msg' => 'Error',
                         'errors' => ['No se puede realizar la amortización, el descuento es mayor a su deuda.']
                     ], 422);
-                }
             }
         }
         if ($eco_com->discount_types->contains($discount_type->id)) {
@@ -1930,7 +1965,9 @@ class EconomicComplementController extends Controller
     }
     public function automatiQualification(Request $request)
     {
-        ini_set('max_execution_time', 300);
+        // ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '-1');
+
         $eco_com_procedure = EcoComProcedure::find($request->ecoComProcedureId);
         $eco_coms = EconomicComplement::with('eco_com_state')->where('eco_com_procedure_id', $eco_com_procedure->id)
             ->where('total_rent', '>', 0);
@@ -1986,6 +2023,28 @@ class EconomicComplementController extends Controller
         ->setPaper('letter')
         ->setOption('encoding', 'utf-8')
         ->stream("$namepdf");
+    }
+    public function qualify(Request $request)
+    {
+        $eco_com = EconomicComplement::find($request->id);
+        try {
+            $this->authorize('qualify', $eco_com);
+        } catch (AuthorizationException $exception) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['No tiene permisos para realizar la calificación'],
+            ], 403);
+        }
+        if ($eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->pagado || $eco_com->eco_com_state->eco_com_state_type_id == ID::ecoComStateType()->enviado) {
+            $eco_com_state = $eco_com->eco_com_state;
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['No se puede realizar la calificación porque el trámite ' . $eco_com->code . ' se encuentra en estado de ' . $eco_com_state->name],
+            ], 422);
+        }
+        $eco_com->qualify();
+        return $eco_com;
     }
     public function recalificacion(Request $request)
     {
@@ -2110,9 +2169,9 @@ class EconomicComplementController extends Controller
         }
         if ($eco_com->discount_types->count() > 0) {
             if (round($eco_com->total_amount_semester * round(floatval($eco_com->complementary_factor) / 100, 3),2) ==  $eco_com->discount_types()->sum('amount')) {
-                $eco_com->eco_com_state_id = 18;
+                $eco_com->eco_com_state_id = 32;
             }else{
-                if ($eco_com->eco_com_state_id == 18) {
+                if ($eco_com->eco_com_state_id == 32) {
                     $eco_com->eco_com_state_id = 16;
                 }
             }
@@ -2183,8 +2242,12 @@ class EconomicComplementController extends Controller
           if($validator->fails()){
               return response()->json($validator->errors(), 406);
           }
-        $list_eco_com = EconomicComplement::where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
+        $list_eco_com = EconomicComplement::with('observations')->where('eco_com_procedure_id', $request->ecoComProcedureId)->where('eco_com_state_id',$request->ecoComState)->where('procedure_date', $request->procedureDate)->get();
         foreach ($list_eco_com as $item) {
+            // Validar que no tenga la observacion con id 63 (cuenta Bancaria)
+            if ($item->observations->where('id', 63)->isNotEmpty()) {
+                continue;
+            }
             // descuento por devoluciones por reposicion de fondos
             $item_discount = DB::table('discount_type_economic_complement')->where("economic_complement_id",$item->id)->where("discount_type_id",6)->first();
             $exist_movement = EcoComMovement::where('affiliate_id', $item->affiliate_id)->exists();

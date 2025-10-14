@@ -145,7 +145,6 @@ class LivenessController extends Controller
     public function store(LivenessForm $request)
     {
         $device = $request->affiliate->affiliate_token->affiliate_device;
-        $new_device_id = $request->device_id ?? null;
         $continue = true;
         if (str_contains($request->image, ';base64,')) {
             $image = explode(";base64,", $request->image)[1];
@@ -161,9 +160,6 @@ class LivenessController extends Controller
         $remaining_actions = $liveness_actions->where('successful', false)->count();
         $current_action = $liveness_actions->where('successful', false)->first();
         $current_action_index = $total_actions - $remaining_actions;
-        if ($request->device_id) {
-            $remaining_actions = 1;
-        }
 
         if ((env('USER_TEST_DEVICE') == $request->affiliate['identity_card']) && env('TEST_APP')) {
             return response()->json([
@@ -265,43 +261,15 @@ class LivenessController extends Controller
                                                 'enrolled' => true,
                                                 'liveness_actions' => null
                                             ]);
-                                        } else { // para control de vivencia
+                                        } else { 
                                             $current_procedure = EcoComProcedure::affiliate_available_procedures($request->affiliate->id)->first();
-                                            if ($current_procedure && is_null($new_device_id)) {
+                                            if ($current_procedure) {
                                                 $device->update([
                                                     'eco_com_procedure_id' => $current_procedure->id,
                                                     'liveness_actions' => null
                                                 ]);
-                                            } elseif ($new_device_id) {
-                                                $affiliate_token = $request->affiliate->affiliate_token;
-                                                $affiliate_token->firebase_token = $request->firebase_token;
-                                                $affiliate_token->update();
-                                                //$device->device_id = $new_device_id;
-                                                $device->update();
-                                                return response()->json([
-                                                    'error' => false,
-                                                    'message' => 'Reconocimiento facial realizado exitosamente',
-                                                    'data' => [
-                                                        'completed' => true,
-                                                        'type' => 'Face recognition',
-                                                        'verified' => $device->verified
-                                                    ]
-                                                ], 200);
-                                            } else {
-                                                return response()->json([
-                                                    'error' => true,
-                                                    'message' => 'Ocurrió un error inesperado, comuniquese con el personal de MUSERPOL.',
-                                                    'data' => []
-                                                ], 500);
                                             }
-                                        } // para enrolamiento
-                                        if (!is_null($new_device_id)) {
-                                            $affiliate_token = $request->affiliate->affiliate_token;
-                                            $affiliate_token->firebase_token = $request->firebase_token;
-                                            $affiliate_token->update();
-                                            //$device->device_id = $new_device_id;
-                                            $device->update();
-                                        }
+                                        } 
                                         return response()->json([
                                             'error' => false,
                                             'message' => ($enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado exitosamente.',

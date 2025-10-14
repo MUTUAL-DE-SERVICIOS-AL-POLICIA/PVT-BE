@@ -154,9 +154,13 @@ class EconomicComplement extends Model
     {
         return $this->complementary_factor;
     }
-    public function getTotalSemester()
+    public function getTotalSemester($months_of_payment)
     {
-        return $this->difference * 6;
+        $months_of_payment = (int) $months_of_payment;
+        if($months_of_payment == 0) //null
+            $months_of_payment =  6;
+            
+        return $this->difference * $months_of_payment;
     }
     public function getOnlyTotalEcoCom()
     {
@@ -387,17 +391,17 @@ class EconomicComplement extends Model
         $change_state = false;
         $change_state_process = false;
         $user_id = Auth::user()->id;
-        if ($this->discount_types->count() > 0) {
-            if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
-                $this->eco_com_state_id = 18;
-                $change_state = true;
-            }else{
-                if ($this->eco_com_state_id == 18) {
-                    $this->eco_com_state_id = 16;
-                    $change_state_process = true;
-                }
-            }
-        }
+        // if ($this->discount_types->count() > 0) {
+        //     if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
+        //         $this->eco_com_state_id = 32;
+        //         $change_state = true;
+        //     }else{
+        //         if ($this->eco_com_state_id == 32) {
+        //             $this->eco_com_state_id = 16;
+        //             $change_state_process = true;
+        //         }
+        //     }
+        // }
         $this->save();
         if($change_state){
             //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives

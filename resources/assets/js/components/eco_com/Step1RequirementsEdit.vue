@@ -11,11 +11,6 @@
             Editar</button>
         </div>
       </div>
-      <div class="row" v-if="errorsValidate.length > 0">
-        <div v-for="err in errorsValidate" :key="err" class="alert alert-danger">
-          <i class="fa fa-exclamation-triangle"></i> {{ err }}
-        </div>
-      </div>
       <form id="brianytati">
         <div class="row">
           <div v-for="(requirement, index) in requirementList" :key="index">
@@ -47,10 +42,6 @@
                   <div class="vote-icon">
                     <span style="color:#3c3c3c"><i class="fa "
                         :class="rq.status ? 'fa-check-square' : 'fa-square-o'"></i></span>
-                    <div style="opacity:0" v-if="rol != 11">
-                      <input type="checkbox" v-model="rq.status" value="checked" :name="'document' + rq.id"
-                        class="largerCheckbox">
-                    </div>
                   </div>
                 </div>
               </div>
@@ -63,15 +54,16 @@
           <ul>
             <li v-for="(requirement, index) in aditionalRequirementsUploaded">
               {{ requirement.name }}
-              <input type="hidden" id="aditionalRequirementsUploaded" name="aditionalRequirementsUploaded" :value="convertToStringJson(requirement)">
+              <input type="hidden" id="aditionalRequirementsUploaded" name="aditionalRequirementsUploaded"
+                :value="convertToStringJson(requirement)">
             </li>
           </ul>
         </div>
         <div v-if="aditionalRequirements.length > 0" style="margin-bottom:180px">
           <h4>Documentos adicionales</h4>
-          <select data-placeholder="Documentos adicionales..." class="chosen-select" id="aditionalRequirementsSelected" name="aditionalRequirementsSelected[]"
-            multiple style="width: 350px; display: none;" tabindex="-1" v-model="aditionalRequirementsSelected"
-            v-bind:disabled="!editing">
+          <select data-placeholder="Documentos adicionales..." class="chosen-select" id="aditionalRequirementsSelected"
+            name="aditionalRequirementsSelected[]" multiple style="width: 350px; display: none;" tabindex="-1"
+            v-model="aditionalRequirementsSelected" v-bind:disabled="!editing">
             <option v-for="(requirement, index) in aditionalRequirements" :value="convertToStringJson(requirement)"
               :key="index">{{ requirement.name }}</option>
           </select>
@@ -93,17 +85,17 @@ export default {
     "affiliate",
     "ecoCom",
     "submitted",
+    "requirements",
     "rol"
   ],
   data() {
     return {
-      requirementList: [],
+      requirementList: {},
       aditionalRequirements: [],
       aditionalRequirementsUploaded: [],
       aditionalRequirementsSelected: [],
       modality: null,
       editing: false,
-      errorsValidate: []
     };
   },
   mounted() {
@@ -125,58 +117,63 @@ export default {
       }, 500);
     },
     async getRequirements() {
-      let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
+      this.aditionalRequirementsUploaded = [];
+      this.aditionalRequirements = [];
 
-      await axios
-        .get(uri)
-        .then(response => {
-          let requiredDocuments = response.data.requiredDocuments;
-          Object.values(requiredDocuments).forEach(value => {
-            value.forEach(r => {
-              let submit_document = this.submitted.find(function (document) {
-                return document.procedure_requirement_id === r.procedureRequirementId;
-              });
-              if (this.rol != 11) {
-                //revision legal
-                if (submit_document) {
-                  if (submit_document.is_uploaded != r['isUploaded']) {
-                    this.errorsValidate.push(`El documento "${r.name}" no coincide con el archivo escaneado.`);
-                  }
-                  r["status"] = true;
-                  r["background"] = r['isUploaded'] ? 'bg-success-blue' : "bg-success-green";
-                  r["comment"] = submit_document.comment;
-                } else {
-                  r["status"] = false;
-                  r["background"] = "";
-                  r["comment"] = null;
-                }
-                return r;
-              } else {
-                if (submit_document) {
-                  if (submit_document.is_valid) {
-                    r["status"] = true;
-                    r["background"] = "bg-success-green";
-                    r["comment"] = submit_document.comment;
-                    r["submit_document_id"] = submit_document.id;
-                  } else {
-                    r["status"] = false;
-                    r["background"] = "";
-                    r["comment"] = submit_document.comment;
-                    r["submit_document_id"] = submit_document.id;
-                  }
-                  return r;
-                }
-              }
-            });
-          });
-          this.requirementList = requiredDocuments
+      const submittedMap = new Map(
+        this.submitted.map(s => [s.procedure_requirement_id, s])
+      );
 
-          this.aditionalRequirementsUploaded = response.data.additionallyDocumentsUpload;
-          this.aditionalRequirements = response.data.additionallyDocuments;
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      const acc = {};
+
+      this.requirements.forEach(req => {
+        const sub = submittedMap.get(req.id);
+
+        if (req.number === 0) {
+          const opReq = {
+            name: req.document,
+            number: req.number,
+            procedureRequirementId: req.id,
+            isUploaded: sub ? sub.is_uploaded : false
+          };
+
+          if (opReq.isUploaded) {
+            this.aditionalRequirementsUploaded.push(opReq);
+          } else {
+            this.aditionalRequirements.push(opReq);
+          }
+        } else {
+          if (!acc[req.number]) acc[req.number] = [];
+          if (acc[req.number].some(item => item.isUploaded)) return;
+
+          const baseReq = {
+            id: req.id,
+            name: req.document,
+            status: false,
+            background: '',
+            comment: null,
+            isUploaded: false,
+            procedureRequirementId: req.id,
+            number: req.number
+          };
+
+          if (sub) {
+            baseReq.status = true;
+            baseReq.background = sub.is_uploaded ? 'bg-success-blue' : 'bg-success-green';
+            baseReq.comment = sub.comment;
+            baseReq.isUploaded = sub.is_uploaded;
+
+            if (baseReq.isUploaded) {
+              acc[req.number] = [baseReq];
+              return;
+            }
+          }
+
+          acc[req.number].push(baseReq);
+        }
+      });
+
+      this.requirementList = acc;
 
       this.getAditionalRequirements();
     },
@@ -195,7 +192,7 @@ export default {
           this.aditionalRequirementsSelected.push(this.convertToStringJson(element));
         }
       });
-      
+
       setTimeout(() => {
         $(".chosen-select")
           .chosen({ width: "100%" })

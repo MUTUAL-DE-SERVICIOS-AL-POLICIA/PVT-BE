@@ -670,6 +670,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('/update_affiliate_police_eco_com', 'EconomicComplementController@updateAffiliatePoliceEcoCom');
 
     Route::get('eco_com/{eco_com_id}', 'EconomicComplementController@show')->name('eco_com_show');
+    Route::patch('eco_com/{id}/qualify', 'EconomicComplementController@qualify')->name('eco_com_qualify');
     Route::get('eco_com', 'EconomicComplementController@index')->name('eco_com');
     Route::get('get_all_eco_com', 'EconomicComplementController@getAllEcoCom');
     Route::post('eco_com/{eco_com}/edit_requirements', 'EconomicComplementController@editRequirements')->name('eco_com_edit_requirements');
@@ -701,6 +702,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_recalificacion', 'EconomicComplementController@recalificacion');
 
     //fixed
+    Route::post('/eco_com_fixed_pensions', 'EcoComFixedPensionController@store');
     Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
 
     // Eco com Beneficiary

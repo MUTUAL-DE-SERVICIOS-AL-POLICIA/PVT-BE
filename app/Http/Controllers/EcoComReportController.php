@@ -26,6 +26,7 @@ use Muserpol\Exports\EcoComOverpaymentsSheet;
 use Muserpol\Exports\AffiliateNoScanner;
 use Muserpol\Exports\AffiliateDoublePerception;
 use Muserpol\Exports\AffiliateDeceasedSemesterExport;
+use Muserpol\Exports\EcoComDocumentManagementReport;
 
 class EcoComReportController extends Controller
 {
@@ -121,6 +122,9 @@ class EcoComReportController extends Controller
             case 30:
                 return Excel::download(new AffiliateDoublePerception(), 'Afiliados doble percepcion.xlsx');
                 break;
+            case 31:
+                 return Excel::download(new EcoComDocumentManagementReport(), 'Gestion Documental.xlsx');  
+                 break;
             case 32:
                 return Excel::download(new AffiliateDeceasedSemesterExport($eco_com_procedure->id), 'Afiliados_fallecidos_semestre.xlsx');
                 break;
