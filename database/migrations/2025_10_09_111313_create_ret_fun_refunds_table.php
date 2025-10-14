@@ -21,6 +21,7 @@ class CreateRetFunRefundsTable extends Migration
             $table->decimal('yield', 13, 2);
             $table->decimal('total', 13, 2);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('retirement_fund_id')
                 ->references('id')->on('retirement_funds')

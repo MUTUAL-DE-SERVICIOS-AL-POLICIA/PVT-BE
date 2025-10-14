@@ -19,6 +19,7 @@ class CreateRetFunRefundAmountsTable extends Migration
             $table->unsignedBigInteger('ret_fun_refund_id');
             $table->integer('percentage', false, true)->max(100);
             $table->decimal('amount', 13, 2);
+            $table->timestamps();
 
             $table->foreign('ret_fun_beneficiary_id')
                 ->references('id')->on('ret_fun_beneficiaries')
