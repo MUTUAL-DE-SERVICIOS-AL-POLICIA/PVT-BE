@@ -356,6 +356,6 @@ class LivenessController extends Controller
             'error' => true,
             'message' => 'No es posible crear trámites',
             'data' => [],
-        ], 400);
+        ], 200);
     }
 }
