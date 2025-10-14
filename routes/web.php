@@ -93,6 +93,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('ret_fun/reports', 'RetFunReportController@index');
     Route::resource('ret_fun', 'RetirementFundController');
     Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification')->name('ret_fun_qualification');
+    Route::get('ret_fun/{ret_fun_id}/qualification/refunds', 'RetirementFundController@getRefundsQualification')->name('get_ret_fun_refunds_qualification');
     Route::get('ret_fun/{ret_fun_id}/get_average_quotable', 'RetirementFundController@getAverageQuotable');
     Route::get('ret_fun/{ret_fun_id}/qualification/certification', 'RetirementFundController@qualificationCertification')->name('qualification_certification');
     Route::get('ret_fun/{ret_fun_id}/calculate_sub_total', 'RetirementFundController@calculateSubTotal')->name('calculate_sub_total');
@@ -108,6 +109,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('ret_fun/{ret_fun_id}/edit_requirements', 'RetirementFundController@editRequirements')->name('edit_requirements');
     Route::get('ret_fun/{ret_fun_id}/correlative/{wf_state_id}', 'RetirementFundController@getCorrelative')->name('ret_fun_get_correlative');
     Route::get('ret_fun/{ret_fun_id}/info', 'RetirementFundController@info')->name('ret_fun_info');
+
+    Route::patch('ret_fun_refund/{id}/amounts', 'RetirementFund\RetFunRefundController@storeAmounts');
 
     //Retirement Fund Certification
     Route::get('ret_fun/{retirement_fund}/print/liquidation', 'RetirementFundCertificationController@printLiquidation')->name('ret_fun_print_liquidation');

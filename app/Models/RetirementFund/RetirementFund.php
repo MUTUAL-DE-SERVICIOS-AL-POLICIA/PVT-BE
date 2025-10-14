@@ -5,6 +5,7 @@ namespace Muserpol\Models\RetirementFund;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Helpers\Util;
 
@@ -111,6 +112,10 @@ class RetirementFund extends Model
     public function submitted_documents()
     {
         return $this->hasMany(RetFunSubmittedDocument::class);
+    }
+    public function ret_fun_refunds(): HasMany
+	{
+		return $this->hasMany(RetFunRefund::class);
     }
     public function getReceptionSummary(){
         

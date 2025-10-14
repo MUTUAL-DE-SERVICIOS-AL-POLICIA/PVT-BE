@@ -94,6 +94,8 @@ export default {
       averageSalaryLimit: 0,
       totalQuotes:0,
       guarantors:[],
+      refundsData: [],
+      refundIndex: 0,
 
       maxPercentage: 100.00,
       serviceYears:this.affiliate.service_years,
@@ -167,12 +169,6 @@ export default {
         if (data.type == 'afiliado') {
           this.guarantors[index].full_name = `${data.first_name} ${data.second_name} ${data.last_name} ${data.mothers_last_name} ${data.surname_husband}`;
           this.guarantors[index].id = data.id;
-          // if(data.first_name){
-          //   let lastIndex = this.$refs.guarantoramount.length-1;
-          //   this.$refs.guarantoramount[lastIndex].focus();
-
-          // }
-
         }
       })
       .catch(function (error) {
@@ -302,9 +298,9 @@ export default {
         this.showEconomicDataTotal = false
       });
     },
-    saveTotalRetFun(reload){
+    async saveTotalRetFun(reload){
       let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun`;
-      axios.patch(uri,
+      await axios.patch(uri,
         {
           advancePayment: parseMoney(this.advancePayment),
           retentionLoanPayment: parseMoney(this.retentionLoanPayment),
@@ -347,89 +343,88 @@ export default {
           this.showPercentagesRetFun = false;
       });
     },
-    // requalificationTotal(index){
-    //   this.beneficiaries[index].temp_amount = (this.totalRetFun * this.beneficiaries[index].temp_percentage)/100;
-    // },
-    savePercentages(reload){
-      let uri =`/ret_fun/${this.retirementFundId}/save_percentages`;
-      axios.patch(uri,
+    async savePercentages(reload) {
+      let uri = `/ret_fun/${this.retirementFundId}/save_percentages`;
+      await axios.patch(uri,
         {
           beneficiaries: this.beneficiaries,
           reload,
         }
-      ).then(response =>{
+      ).then(response => {
         if (reload) {
           flash("Montos recalculados.");
-        }else{
+        } else {
           flash("Porcentages actualizados a los derechohabientes.");
         }
-          this.hasAvailability = response.data.has_availability;
-          this.subTotalAvailability = response.data.subtotal_availability;
-          this.totalAnnualYield = response.data.total_annual_yield;
-          this.totalAvailability = response.data.total_availability;
-          this.total = response.data.total;
-          this.beneficiariesAvailability = response.data.beneficiaries;
-          this.finishRetFun = true,
-          this.arrayDiscounts = response.data.array_discounts;
-          console.log('Has Availability: '+response.data.has_availability);
-          setTimeout(() => {
-            if (this.hasAvailability) {
-              this.$scrollTo('#hasAvailabilityScroll');
-            }else{
-              this.$scrollTo('#wrapper');
-            }
-          }, 800);
-      }).catch(error =>{
+        this.total = response.data.total;
+        this.finishRetFun = true;
+      }).catch(error => {
         console.log(error);
-          this.finishRetFun = false,
-          flash("Error al guardar los porcentages", "error");
+        this.finishRetFun = false;
+        flash("Error al guardar los porcentages", "error");
       });
-    },
-    savePercentagesAvailability(reload){
-      let uri =`/ret_fun/${this.retirementFundId}/save_percentages_availability`;
-      axios.patch(uri,
-        {
-          beneficiaries: this.beneficiariesAvailability,
-          reload,
-        }
-      ).then(response =>{
-        if(reload){
-          flash("Montos recalculados.");
-        }else{
-          flash("Montos de Disponibilidad Actualizados.");
-        }
-          this.beneficiariesRetFunAvailability = response.data.beneficiaries;
-          this.showPercentagesRetFunAvailability = true;
-          setTimeout(() => {
-            this.$scrollTo('#showPercentagesRetFunAvailability');
-          }, 800);
-      }).catch(error =>{
-          flash("Error al guardar Montos de Disponibilidad", "error");
-          this.showPercentagesRetFunAvailability = false;
-      });
-    },
-    saveTotalRetFunAvailability(){
-      let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun_availability`;
-      axios.patch(uri,
-        {
-          beneficiaries: this.beneficiariesRetFunAvailability,
-        }
-      ).then(response =>{
-          this.finishAvailability =  true,
-          flash("Montos de Fondo de Retiro + Disponibilidad Actualizados.");
-          setTimeout(() => {
+      let uriRefunds = `/ret_fun/${this.retirementFundId}/qualification/refunds`;
+      await axios.get(uriRefunds)
+        .then(response => {
+          console.log(response.data.refunds);
+          this.refundsData = response.data.refunds;
+          if (this.refundsData.length > 0) {
+            this.showNextRefund();
+          } else {
             this.$scrollTo('#wrapper');
-          }, 800);
-      }).catch(error =>{
-          flash("Error al guardar Montos de Fondo de Retiro + Disponibilidad", "error");
-      });
+          }
+        })
+        .catch(err => {
+          if (err.response) {
+            let error = err.response.data.message || err.response.data.error || 'Error en la consulta';
+            flashErrors(error);
+            console.error(err.response);
+          } else {
+            flashErrors('No se pudo conectar con el servidor');
+          }
+        })
     },
-    // requalificationTotalAvailability(index){
-    //   this.beneficiariesAvailability[index].temp_amount_availability = (this.totalAvailability * this.beneficiariesAvailability[index].percentage)/100;
-    // },
-    // requalificationTotalRetFunAvailability(index){
-    //   this.beneficiariesRetFunAvailability[index].temp_amount_total = (this.total * this.beneficiariesAvailability[index].percentage)/100;
-    // },
+    async saveRefundPercentages(refund) {
+      let uri = `/ret_fun_refund/${refund.id}/amounts`;
+      try {
+        await axios.patch(uri, {
+          beneficiaries: refund.beneficiaries
+        });
+        flash('Todos los montos fueron guardados correctamente.');
+        this.showNextRefund();
+      } catch (err) {
+        this.handleAxiosError(err);
+      }
+    },
+    showNextRefund(){      
+      if (this.refundIndex < this.refundsData.length) {                
+        this.refundsData[this.refundIndex].show = true;
+        setTimeout(() => {
+          this.$scrollTo('#refund'+this.refundsData[this.refundIndex].id);
+          this.refundIndex++;
+        }, 800);
+      } else {
+        setTimeout(() => {
+          this.$scrollTo('#wrapper');
+        }, 800);
+      }
+    },
+    handleAxiosError(err) {     
+      console.log(err.response.data.message);
+       
+      if (err.response) {
+        const error =
+          err.response.data.message ||
+          err.response.data.error ||
+          'Error en la consulta';
+
+        flash(error, "error");
+        console.error(err.response);
+      } else {
+        flash('No se pudo conectar con el servidor', "error");
+        console.error(err);
+      }
+    },
     max(a, b){
       return (parseFloat(a.toFixed(2)) > parseFloat(b.toFixed(2)) || isNaN(a));
     },
@@ -479,7 +474,6 @@ export default {
     totalAverageSalaryQuotableAnimated: function() {
       return this.totalAverageSalaryQuotable;
     },
-
     totalQuotesAnimated: function() {
       return this.totalQuotes;
     },
@@ -498,46 +492,8 @@ export default {
     percentageRetentionGuarantor(){
       return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.retentionGuarantor))/this.subTotalRetFun : 0;
     },
-
     percentageRetentionJudicial(){
       return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.judicialRetentionAmount))/this.subTotalRetFun : 0;
-    },
-
-    totalPercentageRetFun(){
-      const sum = this.beneficiaries.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.temp_percentage);
-       }, 0.0);
-       return sum;
-    },
-    totalAmountRetFun(){
-      const sum = this.beneficiaries.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.temp_amount);
-       }, 0.0);
-       return sum;
-    },
-    totalPercentageAvailability(){
-      const sum = this.beneficiariesAvailability.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.percentage);
-       }, 0.0);
-       return sum;
-    },
-    totalAmountAvailability(){
-      const sum = this.beneficiariesAvailability.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.temp_amount_availability);
-       }, 0.0);
-       return sum;
-    },
-    totalPercentageRetFunAvailability(){
-      const sum = this.beneficiariesRetFunAvailability.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.percentage);
-       }, 0.0);
-       return sum;
-    },
-    totalAmountRetFunAvailability(){
-      const sum = this.beneficiariesRetFunAvailability.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.temp_amount_total);
-       }, 0.0);
-       return sum;
     },
   },
 };

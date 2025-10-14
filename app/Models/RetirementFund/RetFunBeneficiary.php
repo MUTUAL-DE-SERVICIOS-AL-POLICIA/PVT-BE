@@ -10,6 +10,12 @@ use Carbon\Carbon;
 class RetFunBeneficiary extends Model
 {
     use SoftDeletes;
+
+    protected $casts = [
+        'percentage' => 'float',
+        'amount_ret_fun' => 'float',
+    ];
+
     public function getBirthDateAttribute($value)
     {
         if (!$value) {

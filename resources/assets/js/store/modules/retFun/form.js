@@ -93,8 +93,8 @@ const mutations = {
         path: "print/cer_devolution",
       },
       {
-        ids: [37],
-        id: 37,
+        ids: [16],
+        id: 16,
         name: "Aportes Superior 30 años",
         path: "print/cer_additional_stay",
       },
