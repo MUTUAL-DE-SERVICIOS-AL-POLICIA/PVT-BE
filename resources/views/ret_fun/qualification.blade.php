@@ -154,6 +154,7 @@
                                 <td>Salario Promedio Cotizable</td>
                                 <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
                                     <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                    <button @click="openContributionTableModal('{{ url('get_data_certification', $retirement_fund->id) }}', 'title', 'name')">Soy un boton</button>
                                 </td>
                             </tr>
                             <tr v-if="averageSalaryLimit > 0">
@@ -191,6 +192,7 @@
                                 @endif
                                 <td>@{{ totalAporte | currency }}
                                     <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                    <button @click="openContributionTableModal('{{ url('get_data_certification', $retirement_fund->id) }}', 'title', 'name')">Soy un boton</button>
                                 </td>
                             </tr>
                             <tr>
@@ -421,7 +423,14 @@
                                                 <td>@{{ refund.yield | currency }}</td>
                                                 <td>
                                                     @{{ refund.total | currency }}
-                                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal2" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                                    <button @click="openContributionTableModal(
+                                                        '{{ url('get_data_availability', $retirement_fund->id) }}',
+                                                        'title',
+                                                        'name'
+                                                        )">
+                                                        Soy un boton
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -437,6 +446,7 @@
             </div>
         </div>
     </div>
+    <contributions-table :data-url="contributionTableDataUrl"/>
     </div>
 </ret-fun-qualification>
 <div class="modal inmodal" id="averageSalaryQuotable" tabindex="-1" role="dialog">

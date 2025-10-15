@@ -105,6 +105,11 @@ export default {
       totalAporte: 0,
       yield: 0,
       percentageYield: 0,
+
+      showContributionTable: false,
+      contributionTableDataUrl: "",
+      contributionTableTitle: "",
+      contributionTableFileName: "",
     };
   },
   mounted(){
@@ -424,6 +429,20 @@ export default {
         flash('No se pudo conectar con el servidor', "error");
         console.error(err);
       }
+    },
+    openContributionTableModal(dataUrl, title, fileName) {
+      console.log("openContributionTableModal");
+      this.showContributionTable = true;
+      this.$modal.show('contribution-table');
+      this.contributionTableDataUrl = dataUrl;
+      this.contributionTableTitle = title;
+      this.contributionTableFileName = fileName;
+    },
+    closeContributionTableModal() {
+      this.showContributionTable = false;
+      this.contributionTableDataUrl = "";
+      this.contributionTableTitle = "";
+      this.contributionTableFileName = "";
     },
     max(a, b){
       return (parseFloat(a.toFixed(2)) > parseFloat(b.toFixed(2)) || isNaN(a));

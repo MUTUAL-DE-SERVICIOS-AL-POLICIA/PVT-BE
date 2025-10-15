@@ -337,6 +337,7 @@ Vue.component('ret-fun-report-form', require('./components/ret_fun/ReportForm.vu
 Vue.component('ret-fun-beneficiary-testimony-list', require('./components/ret_fun/BeneficiaryTestimonyList.vue'));
 Vue.component('ret-fun-beneficiary-testimony', require('./components/ret_fun/BeneficiaryTestimony.vue'));
 Vue.component('beneficiaries-qualification-amounts', require('./components/ret_fun/BeneficiariesQualificationAmounts.vue'));
+Vue.component('contributions-table', require('./components/ret_fun/qualifications_components/ContributionsTable.vue'));
 
 Vue.component('summary-select-contributions', require('./components/contribution/SummarySelectContributions.vue'));
 
