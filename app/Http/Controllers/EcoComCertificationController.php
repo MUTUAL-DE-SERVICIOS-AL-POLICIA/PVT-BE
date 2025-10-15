@@ -215,7 +215,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
@@ -263,7 +263,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
@@ -316,7 +316,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
@@ -368,7 +368,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
