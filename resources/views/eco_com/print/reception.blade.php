@@ -137,34 +137,36 @@
             </div>
         @endif
         <br>
-        <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
-        @if($eco_com->eco_com_reception_type_id == 2 || $eco_com->eco_com_reception_type_id == 3)
-        <table style="margin-top: {{$size_down}}px;" class="m-t-50 table-info">
-                <tr>
-                    <td class="no-border text-center text-base w-20 align-bottom"
-                        style="border-radius: 0.5em 0 0 0!important;">
-                        <span class="font-bold">
-                            ----------------------------------------------------
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="no-border text-center text-base w-10 align-top">
-                        <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
-                        <br />
-                        <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
-                        <br>
-                        <span class="font-bold">TEL. CEL. {{ $eco_com_beneficiary->phone_number }} {{ $eco_com_beneficiary->cell_phone_number }}</span>
-                            <br>
-                            <span class="font-bold">
-                                CORREO ELECTRÓNICO:
-                            </span>
-                            <span class="inline-block w-60"></span>
-                    </td>
-                </tr>
-        </table>
-        @endif
-        @if($habitual)
+                <div style="page-break-inside: avoid; margin-top: 50px;">
+                    <div class="text-justify text-sm">Sin otro particular me despido de usted muy atentamente.</div>
+                    @if($eco_com->eco_com_reception_type_id == 2 || $eco_com->eco_com_reception_type_id == 3)
+                    <table style="margin-top: {{$size_down}}px;" class="m-t-50 table-info signature-block-margin">
+                            <tr>
+                                <td class="no-border text-center text-base w-20 align-bottom"
+                                    style="border-radius: 0.5em 0 0 0!important;">
+                                    <span class="font-bold">
+                                        ----------------------------------------------------
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="no-border text-center text-base w-10 align-top">
+                                    <span class="font-bold">{!! strtoupper($eco_com_beneficiary->fullName()) !!}</span>
+                                    <br />
+                                    <span class="font-bold">C.I. {{ $eco_com_beneficiary->ciWithExt() }}</span>
+                                    <br>
+                                    <span class="font-bold">TEL. CEL. {{ $eco_com_beneficiary->phone_number }} {{ $eco_com_beneficiary->cell_phone_number }}</span>
+                                        <br>
+                                        <span class="font-bold">
+                                            CORREO ELECTRÓNICO:
+                                        </span>
+                                        <span class="inline-block w-60"></span>
+                                </td>
+                            </tr>
+                    </table>
+                    @endif
+                </div>
+                @if($habitual)
             <div style="margin-top: {{$size}}px;" class="font-bold text-xxs">
         @else
             <div style="margin-top: 20px;" class="font-bold text-xxs">
