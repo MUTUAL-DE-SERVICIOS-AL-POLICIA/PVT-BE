@@ -55,6 +55,10 @@ class RetFunBeneficiary extends Model
     {
         return $this->belongsToMany('Muserpol\Models\Testimony')->withTimestamps();
     }
+    public function ret_fun_refund_amounts()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunRefundAmount', 'ret_fun_beneficiary_id');
+    }
 
     /**
      * Methods

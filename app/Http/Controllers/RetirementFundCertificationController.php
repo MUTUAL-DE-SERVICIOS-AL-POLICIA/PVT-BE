@@ -45,6 +45,7 @@ use Muserpol\Models\Role;
 use Muserpol\Models\Workflow\WorkflowState;
 use Muserpol\Models\Testimony;
 use Muserpol\Helpers\ID;
+use Muserpol\Models\RetirementFund\RetFunRefund;
 
 class RetirementFundCertificationController extends Controller
 {
@@ -518,7 +519,7 @@ class RetirementFundCertificationController extends Controller
     $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
     $date = Util::getDateFormat($next_area_code->date);
 
-    $current_procedure = Util::getRetFunCurrentProcedure();
+    $current_procedure = $retirement_fund->ret_fun_procedure;
     $temp = [];
     if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
       $total_aporte = $retirement_fund->average_quotable;
@@ -560,12 +561,78 @@ class RetirementFundCertificationController extends Controller
     }
     return $data;
   }
+  public function printDataQualificationRefund($ret_fun_id, $refund_id)
+  {
+    $retirement_fund = RetirementFund::find($ret_fun_id);
+    $current_procedure = $retirement_fund->ret_fun_procedure;
+    $isReinstatement = $retirement_fund->isReinstatement();
+    $refund = RetFunRefund::find($refund_id);
+    logger()->info('refund', [$refund]);
+    $contribution_type = $refund->ret_fun_refund_type->contribution_type;
+    $title = "DEVOLUCIÓN DE APORTES - " . strtoupper($contribution_type->name);
+    $affiliate = $retirement_fund->affiliate;
+    $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
+    $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->with('ret_fun_refund_amounts')->orderByDesc('type')->orderBy('id')->get();
+    $pdftitle = "Calificacion";
+    $namepdf = Util::getPDFName($pdftitle, $affiliate);
+    $group_dates = [];
+    $contributionsWithType = $affiliate->getContributionsWithType($contribution_type->id, $isReinstatement);
+    if (sizeOf($contributionsWithType) > 0) {
+      $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+      $dates = array(
+        'id' => $contribution_type->id,
+        'dates' => $contributionsWithType,
+        'name' => $contribution_type->name,
+        'operator' => $contribution_type->operator,
+        'description' => $contribution_type->description,
+        'years' => intval($sub_total_dates / 12),
+        'months' => $sub_total_dates % 12,
+      );
+      $group_dates[] = $dates;
+    }
+    $contributions = array(
+      'contribution_types' => $group_dates,
+      'years' => intval($sub_total_dates / 12),
+      'months' => $sub_total_dates % 12
+    );
+    $total_quotes = $affiliate->getTotalQuotes();
+    $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 23)->first();
+    $code = $retirement_fund->code;
+    $area = $next_area_code->wf_state->first_shortened;
+    $user = $next_area_code->user;
+    $qualification_users = User::where('status', 'active')->where('position', 'ilike', '%Calificación de Fondo de Retiro, Cuota y Auxilio Mortuorio%')->get();
+    $date = Util::getDateFormat($next_area_code->date);
+
+    foreach ($beneficiaries as $beneficiary) {
+      $beneficiary->ret_fun_refund_amounts = $beneficiary->ret_fun_refund_amounts()->where('ret_fun_refund_id', $refund->id)->first()->amount;
+    }
+
+    $data = [
+      'code' => $code,
+      'area' => $area,
+      'user' => $user,
+      'qualification_users' => $qualification_users,
+      'date' => $date,
+      'title' => $title,
+      'total_quotes' => $total_quotes,
+      'affiliate' => $affiliate,
+      'applicant' => $applicant,
+      'beneficiaries' => $beneficiaries,
+      'retirement_fund' => $retirement_fund,
+      'current_procedure' => $current_procedure,
+      'refund' => $refund,
+      'yield_percentage' => $refund->ret_fun_refund_type->annual_percentage_yield,
+      'display_name' => $contribution_type->name,
+      'contributions' => $contributions,
+    ];
+    return $data;
+  }
   //---**IMPRIMIR FORMULARIO DE CALIFICACIÓN DISPONIBILIDAD**--//
   public function printDataQualificationAvailability($id, $only_print = true)
   {
     $retirement_fund = RetirementFund::find($id);
 
-    $current_procedure = Util::getRetFunCurrentProcedure();
+    $current_procedure = $retirement_fund->ret_fun_procedure;
     $title = "DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD";
     $affiliate = $retirement_fund->affiliate;
     $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
@@ -740,6 +807,11 @@ class RetirementFundCertificationController extends Controller
   {
     $retirement_fund = RetirementFund::find($id);
     $affiliate = $retirement_fund->affiliate;
+
+    $refunds = $retirement_fund->ret_fun_refunds;
+    foreach ($refunds as $refund) {
+      $pages[] = \View::make('ret_fun.print.qualification_data_refund', self::printDataQualificationRefund($id, $refund->id))->render();
+    }
 
     if ($affiliate->hasAvailability()) {
       if ($retirement_fund->total_availability > 0) {
