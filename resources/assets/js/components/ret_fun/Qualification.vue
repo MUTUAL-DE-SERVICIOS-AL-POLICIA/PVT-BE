@@ -106,7 +106,6 @@ export default {
       yield: 0,
       percentageYield: 0,
 
-      showContributionTable: false,
       contributionTableDataUrl: "",
       contributionTableTitle: "",
       contributionTableFileName: "",
@@ -430,19 +429,21 @@ export default {
         console.error(err);
       }
     },
-    openContributionTableModal(dataUrl, title, fileName) {
-      console.log("openContributionTableModal");
-      this.showContributionTable = true;
+    openTableModal(uri, title, fileName) {
+      console.log("openTableModal");
       this.$modal.show('contribution-table');
-      this.contributionTableDataUrl = dataUrl;
+      this.contributionTableDataUrl = uri;
       this.contributionTableTitle = title;
       this.contributionTableFileName = fileName;
     },
-    closeContributionTableModal() {
-      this.showContributionTable = false;
+    closeTableModal() {
       this.contributionTableDataUrl = "";
       this.contributionTableTitle = "";
       this.contributionTableFileName = "";
+    },
+    showRefundTable(retFunId, refundId, title, fileName){
+      let uriRefunds = `/ret_fun/${retFunId}/refund/${refundId}/contributions`;
+      this.openTableModal(uriRefunds, title, fileName);
     },
     max(a, b){
       return (parseFloat(a.toFixed(2)) > parseFloat(b.toFixed(2)) || isNaN(a));

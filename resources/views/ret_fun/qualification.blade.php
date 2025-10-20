@@ -137,7 +137,7 @@
                 <div class="ibox-title">
                     <h5>Datos Economicos</h5>
                 </div>
-                <div class="ibox-content" v-if="!globalPay">
+                <div class="ibox-content">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -146,60 +146,47 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Ultimo Sueldo Percibido</td>
-                                <td>@{{ lastBaseWage | currency }}</td>
-                            </tr>
-                            <tr>
-                                <td>Salario Promedio Cotizable</td>
-                                <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
-                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                    <button @click="openContributionTableModal('{{ url('get_data_certification', $retirement_fund->id) }}', 'title', 'name')">Soy un boton</button>
-                                </td>
-                            </tr>
-                            <tr v-if="averageSalaryLimit > 0">
-                                <td>Salario Promedio Cotizable Limitado</td>
-                                <td>Bs @{{ averageSalaryLimit }}</td>
-                            </tr>
-                            <tr>
-                                <td>Densidad Total de Cotizaciones</td>
-                                <td>@{{ totalQuotesAnimated }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="calculateSubTotal"><i class="fa fa-save"></i> Guardar
-                        <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
-                            <div>
-                                <check-svg></check-svg>
-                            </div>
-                        </transition>
-                    </button>
-                </div>
-                <div class="ibox-content" v-else>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Cotizacion</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                @if ($retirement_fund->procedure_modality->procedure_type_id == 21)
-                                <td>Total Devolución de Aportes</td>
-                                @else
-                                <td>Total Aportes</td>
-                                @endif
-                                <td>@{{ totalAporte | currency }}
-                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                    <button @click="openContributionTableModal('{{ url('get_data_certification', $retirement_fund->id) }}', 'title', 'name')">Soy un boton</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>+ Rendimiento del @{{ percentageYield }}% </td>
-                                <td>@{{ yield | currency}} </td>
-                            </tr>
-                        </tbody>
+                            <template v-if="!globalPay">
+                                <tr>
+                                    <td>Ultimo Sueldo Percibido</td>
+                                    <td>@{{ lastBaseWage | currency }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Salario Promedio Cotizable</td>
+                                    <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
+                                        <button type="button" class="btn btn-xs btn-primary" style="margin-left:15px;"
+                                        @click="openTableModal('{{ url('get_data_certification', $retirement_fund->id) }}', 
+                                            'SALARIO PROMEDIO COTIZABLE', '{{$retirement_fund->id}}')">
+                                            <i class="fa fa-calculator"></i> 
+                                            Ver completo
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr v-if="averageSalaryLimit > 0">
+                                    <td>Salario Promedio Cotizable Limitado</td>
+                                    <td>Bs @{{ averageSalaryLimit }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Densidad Total de Cotizaciones</td>
+                                    <td>@{{ totalQuotesAnimated }}</td>
+                                </tr>
+                            </template>
+                            <template v-else>
+                                <tr>
+                                    <td>{{$retirement_fund->procedure_modality->procedure_type_id == 21 ? 'Total Devolución de Aportes' : 'Total Aportes'}}</td>
+                                    <td>@{{ totalAporte | currency }}
+                                        <button type="button" class="btn btn-xs btn-primary" style="margin-left:15px;"
+                                        @click="openTableModal('{{ url('get_data_certification', $retirement_fund->id) }}','{{$retirement_fund->procedure_modality->procedure_type->name}}', '{{$retirement_fund->id}}')">
+                                            <i class="fa fa-calculator"></i> 
+                                            Ver completo
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>+ Rendimiento del @{{ percentageYield }}% </td>
+                                    <td>@{{ yield | currency}} </td>
+                                </tr>
+                            </template>
                     </table>
                     <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="calculateSubTotal"><i class="fa fa-save"></i> Guardar
                         <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
@@ -423,13 +410,13 @@
                                                 <td>@{{ refund.yield | currency }}</td>
                                                 <td>
                                                     @{{ refund.total | currency }}
-                                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal2" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                                    <button @click="openContributionTableModal(
-                                                        '{{ url('get_data_availability', $retirement_fund->id) }}',
-                                                        'title',
-                                                        'name'
+                                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal2" style="margin-left:15px;" 
+                                                    @click="showRefundTable(
+                                                        retirementFundId, refund.id,
+                                                        'Devolución de Aportes - '+refund.name,
+                                                        refund.name+'-'+retirementFundId
                                                         )">
-                                                        Soy un boton
+                                                        <i class="fa fa-calculator"></i> ver completo
                                                     </button>
                                                 </td>
                                             </tr>
@@ -446,112 +433,9 @@
             </div>
         </div>
     </div>
-    <contributions-table :data-url="contributionTableDataUrl"/>
+    <contributions-table :data-url="contributionTableDataUrl" :title="contributionTableTitle" :file-name="contributionTableFileName"/>
     </div>
 </ret-fun-qualification>
-<div class="modal inmodal" id="averageSalaryQuotable" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content animated bounceInRight">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                @if ($retirement_fund->procedure_modality->procedure_type_id == 2)
-                    <h4 class="modal-title">SALARIO PROMEDIO COTIZABLE</h4>
-                @else
-                    <h4 class="modal-title">{{$retirement_fund->procedure_modality->procedure_type->name}}</h4>
-                @endif
-            </div>
-            <div class="modal-body">
-                <div class="col-lg-12">
-                    <table class="table table-striped" id="datatables-certification">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Periodo</th>
-                                <th>Haber Basico</th>
-                                <th>Categoria</th>
-                                <th>Salario Cotizable</th>
-                                <th>Total Aporte</th>
-                                <th>Aporte FRPS</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <table class="table table-bordered table-striped">
-                        <tbody>
-                            @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
-                                <tr>
-                                    <td>Total Aportes FRPS</td>
-                                    <td>Bs {{ Util::formatMoney($total_retirement_fund) }}</td>
-                                </tr>
-                            @elseif($retirement_fund->procedure_modality->procedure_type_id == 21)
-                            <tr>
-                                    <td>Total Devolución de Aportes </td>
-                                    <td>Bs {{ Util::formatMoney($total_retirement_fund) }}</td>
-                                </tr>
-                            @else
-                                <tr>
-                                    <td>Total Aportes Fondo de Retiro Policial Solidario</td>
-                                    <td>{{ $total_retirement_fund }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Salario Total</td>
-                                    <td>{{ $sub_total_average_salary_quotable }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Salario Promedio</td>
-                                    <td>{{ $total_average_salary_quotable }}</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal inmodal" id="availability-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content animated bounceInRight">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                <h4 class="modal-title">Devolución de Aportes en Disponibilidad</h4>
-            </div>
-            <div class="modal-body">
-                <div class="col-lg-12">
-                    <table class="table table-striped" id="datatables-availability">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Periodo</th>
-                                <th>Haber Basico</th>
-                                <th>Categoria</th>
-                                <th>Salario Cotizable</th>
-                                <th>Total Aporte</th>
-                                <th>Aporte FRPS</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <td>Total</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
@@ -559,62 +443,6 @@
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
 <script src="{{ asset('/js/datatables.js')}}"></script>
-<script>
-    $(document).ready(function () {
-        var datatable_contri = $('#datatables-certification').DataTable({
-            responsive: true,
-            fixedHeader: {
-            header: true,
-            footer: true,
-                headerOffset: $('#navbar-fixed-top').outerHeight()
-            },
-            order: [],
-            ajax: "{{ url('get_data_certification', $retirement_fund->id) }}",
-            lengthMenu: [[60, -1], [60, "Todos"]],
-            dom: '< "html5buttons"B>lTfgitp',
-            buttons:[
-                { extend: 'copy'},
-                { extend: 'csv'},
-                { extend: 'excel', title: "{!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
-            ],
-            columns:[
-                {data: 'DT_Row_Index' },
-                {data: 'month_year' },
-                {data: 'base_wage'},
-                {data: 'seniority_bonus'},
-                {data: 'quotable_salary'},
-                {data: 'total'},
-                {data: 'retirement_fund'},
-            ],
-        });
-        var datatable_availability = $('#datatables-availability').DataTable({
-            responsive: true,
-            fixedHeader: {
-            header: true,
-            footer: true,
-                headerOffset: $('#navbar-fixed-top').outerHeight()
-            },
-            order: [],
-            ajax: "{{ url('get_data_availability', $retirement_fund->id) }}",
-            lengthMenu: [[60, -1], [60, "Todos"]],
-            dom: '< "html5buttons"B>lTfgitp',
-            buttons:[
-                { extend: 'copy'},
-                { extend: 'csv'},
-                { extend: 'excel', title: "Dispobiblidad - {!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
-            ],
-            columns:[
-                {data: 'DT_Row_Index' },
-                {data: 'month_year' },
-                {data: 'base_wage'},
-                {data: 'seniority_bonus'},
-                {data: 'quotable_salary'},
-                {data: 'total'},
-                {data: 'retirement_fund'},
-            ],
-        });
-    });
-</script>
 @endsection
 
 <style>

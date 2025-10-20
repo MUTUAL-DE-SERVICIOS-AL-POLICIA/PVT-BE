@@ -49,7 +49,9 @@ use Illuminate\Support\Collection;
 use Muserpol\Models\FinancialEntity;
 use Muserpol\Models\KinshipBeneficiary;
 use Muserpol\Models\Hierarchy;
+use Muserpol\Models\RetirementFund\RetFunRefund;
 use Muserpol\Models\RetirementFund\RetFunRefundAmount;
+use Muserpol\Models\Contribution\Contribution;
 use Ramsey\Uuid\Uuid;
 
 class RetirementFundController extends Controller
@@ -1598,6 +1600,41 @@ class RetirementFundController extends Controller
         $affiliate = $retirement_fund->affiliate;
         $contributions = $affiliate->getContributionsPlus($isReinstatement);
         return $datatables->of($contributions)
+            ->editColumn('month_year', function ($contribution) {
+                return Util::getDateFormat($contribution->month_year);
+            })
+            ->editColumn('base_wage', function ($contribution) {
+                return $contribution->base_wage;
+            })
+            ->editColumn('seniority_bonus', function ($contribution) {
+                return $contribution->seniority_bonus;
+            })
+            ->editColumn('total', function ($contribution) {
+                return $contribution->total;
+            })
+            ->editColumn('retirement_fund', function ($contribution) {
+                return $contribution->retirement_fund;
+            })
+            ->editColumn('quotable_salary', function ($contribution) {
+                $quotable_salary = $contribution->seniority_bonus + $contribution->base_wage;
+                return $quotable_salary;
+            })
+            ->addIndexColumn()
+            ->make(true);
+    }
+    public function getDataQualificationRefund(Datatables $datatables, $retirement_fund_id, $refund_id){
+        $retirement_fund = RetirementFund::find($retirement_fund_id);
+        $isReinstatement = $retirement_fund->isReinstatement();
+        $affiliate = $retirement_fund->affiliate;
+        $refund = RetFunRefund::with('ret_fun_refund_type')->find($refund_id);
+        $sumColumns = ['base_wage', 'seniority_bonus', 'total', 'retirement_fund'];
+        $contributions = $affiliate->contributionsInRange($isReinstatement)
+        ->select(array_merge(['affiliate_id', 'month_year'], $sumColumns))
+        ->where('contribution_type_id', $refund->ret_fun_refund_type->contribution_type_id)
+        ->orderBy('month_year', 'asc')
+        ->get();
+        $contributions_with_reimbursements = Contribution::sumReimbursement($contributions, $sumColumns);
+        return $datatables->of($contributions_with_reimbursements)
             ->editColumn('month_year', function ($contribution) {
                 return Util::getDateFormat($contribution->month_year);
             })

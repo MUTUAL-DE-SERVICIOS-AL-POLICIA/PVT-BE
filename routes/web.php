@@ -103,6 +103,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('ret_fun/{ret_fun_id}/save_total_ret_fun_availability', 'RetirementFundController@saveTotalRetFunAvailability')->name('save_total_ret_fun_availability');
     Route::get('get_data_certification/{ret_fun_id}', 'RetirementFundController@getDataQualificationCertification')->name('get_data_certification');
     Route::get('get_data_availability/{ret_fun_id}', 'RetirementFundController@getDataQualificationAvailability')->name('get_data_availability');
+    Route::get('ret_fun/{ret_fun_id}/refund/{refund_id}/contributions', 'RetirementFundController@getDataQualificationRefund')->name('get_data_refund');
     Route::resource('ret_fun_observation', 'RetirementFundObservationController');
     Route::post('retFuneditObservation', 'RetirementFundObservationController@editObservation')->name('retFuneditObservation');
     Route::post('retFundeleteObservation', 'RetirementFundObservationController@destroy')->name('retFundeleteObservation');
