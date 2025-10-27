@@ -1858,12 +1858,11 @@ class RetirementFundController extends Controller
         if (sizeOf($spouse) > 0) {
             $has_spouse = true;
             $total_spouse = $total_ret_fun / 2;
-            $total_spouse_percentage = 100 / 2;
+            $total_spouse_percentage = 50;
             $total_derechohabientes_percentage = round($total_spouse_percentage / sizeOf($beneficiaries), 2);
             $total_spouse_percentage = round($total_spouse_percentage + $total_derechohabientes_percentage, 2);
-            $total_spouse = $total_ret_fun / 2;
-            $total_derechohabientes = round(($total_spouse / sizeOf($beneficiaries)), 2);
-            $total_spouse = round(($total_spouse + $total_derechohabientes), 2);
+            $total_spouse = round($total_ret_fun * $total_spouse_percentage  / 100, 2);
+            $total_derechohabientes = round(($total_ret_fun * $total_derechohabientes_percentage / 100), 2);
         } else {
             $has_spouse = false;
             $total_derechohabientes = round($total_ret_fun / sizeOf($beneficiaries), 2);

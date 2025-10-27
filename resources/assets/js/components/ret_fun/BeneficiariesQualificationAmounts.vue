@@ -25,7 +25,7 @@
                 <tbody>
                     <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
                         <td>{{ beneficiary.full_name }}</td>
-                        <td><input class="form-control" disabled type="number" step="0.01"
+                        <td><input class="form-control" type="number" step="0.01"
                                 v-model="beneficiary.percentage"></td>
                         <td>
                             <div :class="{ 'has-error': max(totalAmount, total) }">
