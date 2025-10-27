@@ -54,6 +54,7 @@ use Muserpol\Models\RetirementFund\RetFunRefundAmount;
 use Muserpol\Models\Contribution\Contribution;
 use Ramsey\Uuid\Uuid;
 
+
 class RetirementFundController extends Controller
 {
     /**
@@ -1622,7 +1623,7 @@ class RetirementFundController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
-    public function getDataQualificationRefund(Datatables $datatables, $retirement_fund_id, $refund_id){
+    public function getDataQualificationRefund(Datatables $datatables, int $retirement_fund_id, $refund_id){
         $retirement_fund = RetirementFund::find($retirement_fund_id);
         $isReinstatement = $retirement_fund->isReinstatement();
         $affiliate = $retirement_fund->affiliate;

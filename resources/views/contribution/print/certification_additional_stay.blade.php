@@ -68,7 +68,7 @@
 </table>
 <br>
 <div>
-    Es cuanto se certifica para fines consiguientes
+    Es cuanto se certifica los aportes antes al destino a la disponibilidad de las letras, para fines consiguientes.
 </div>
 <br>
 @if($message)

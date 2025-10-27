@@ -168,7 +168,7 @@ export default {
                     label: 'Número de Aportes Máximo',
                     name: 'contributions_limit',
                     type: 'number',
-                    validation: 'required|numeric_locale|min_value:1'
+                    validation: 'required|numeric_locale|min_value:0'
                 },],
                 hierarchies: this.hierarchies.map(hierarchy => ({
                     id: hierarchy.id,
@@ -269,8 +269,6 @@ export default {
                     if (this.$validator.errors.items.length) {
                         console.log('Errores');
                         console.log(this.$validator.errors);
-                        
-                        
                         return;
                     }
                     await axios.patch(`/ret_fun_procedure/${this.form.id}`, this.form)

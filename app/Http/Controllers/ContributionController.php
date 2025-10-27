@@ -1084,15 +1084,14 @@ class ContributionController extends Controller
         $usedContributionsLimit = $request->usedContributionsLimit;
         $isReinstatement = $ret_fun->isReinstatement();
         $affiliate = $ret_fun->affiliate;
-        $aff_contributions = $affiliate->contributionsInRange($isReinstatement);
+        $aff_contributions = $affiliate->contributionsInRange($isReinstatement)->orderBy('month_year')->get();
         
         $refund_types = RetFunRefundType::all();
 
         DB::transaction(function () use ($request_contributions, $ret_fun, $aff_contributions, $usedContributionsLimit) {
             // Actualizamos el tipo de contribución
-            $affiliateContributions = (clone $aff_contributions)->orderBy('month_year')->get();
             $RequestContributionsById = $request_contributions->keyBy('id');
-            foreach ($affiliateContributions as $contribution) {
+            foreach ($aff_contributions as $contribution) {
                 if ($RequestContributionsById->has($contribution->id)) {
                     $contribution->contribution_type_id = $RequestContributionsById->get($contribution->id)['contribution_type_id'];
                     $contribution->save();
@@ -1101,15 +1100,18 @@ class ContributionController extends Controller
             $ret_fun->used_contributions_limit = $usedContributionsLimit;
             $ret_fun->save();
         });
-        $contribution_types_ids = (clone $aff_contributions)->select('contribution_type_id')->distinct()->pluck('contribution_type_id');
+        $contribution_types_ids = $aff_contributions->pluck('contribution_type_id')->unique()->values();
 
         DB::transaction(function () use ($ret_fun, $refund_types, $aff_contributions, $affiliate, $contribution_types_ids) {
             // Guardamos los reembolsos
             foreach ($refund_types as $refund_type) {
                 if($contribution_types_ids->contains($refund_type->contribution_type_id)) {
-                    $refund_contributions = (clone $aff_contributions)->select('affiliate_id','month_year','retirement_fund')
+                    $refund_contributions = $aff_contributions
                         ->whereIn('contribution_type_id', [$refund_type->contribution_type_id])
-                        ->get();
+                        ->map(function ($item) {
+                            return collect($item)->only(['affiliate_id', 'month_year', 'retirement_fund']);
+                        })
+                        ->values();
                     $refund_contributions_with_reimbursements = Contribution::sumReimbursement($refund_contributions, ['retirement_fund']);
                     $refund_subtotal = round($refund_contributions_with_reimbursements->sum('retirement_fund'), 2);
                     $refund_yield = round($refund_subtotal * ($refund_type->annual_percentage_yield / 100), 2);
@@ -1117,7 +1119,11 @@ class ContributionController extends Controller
     
                     $ret_fun_refund = RetFunRefund::where('retirement_fund_id', $ret_fun->id)
                         ->where('ret_fun_refund_type_id', $refund_type->id)
+                        ->withTrashed()
                         ->first();
+                    if($ret_fun_refund->trashed()) {
+                        $ret_fun_refund->restore();
+                    }
                     if (!$ret_fun_refund) {
                         $ret_fun_refund = new RetFunRefund();
                         $ret_fun_refund->retirement_fund_id = $ret_fun->id;
@@ -1127,6 +1133,12 @@ class ContributionController extends Controller
                     $ret_fun_refund->yield = $refund_yield;
                     $ret_fun_refund->total = $refund_total;
                     $ret_fun_refund->save();
+                    
+                } else {
+                    // Eliminar el reembolso si el tipo de aporte ya no está seleccionado
+                    RetFunRefund::where('retirement_fund_id', $ret_fun->id)
+                        ->where('ret_fun_refund_type_id', $refund_type->id)
+                        ->delete();
                 }
             }
         });

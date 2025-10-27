@@ -15,13 +15,20 @@
                 </tr>
             </thead>
             <tbody class="table-striped">
+                @if($refund->yield > 0)
                 <tr class="text-sm">
-                    <td class="w-60 text-left px-10 py-3 uppercase">Total aportesd</td>
+                    <td class="w-60 text-left px-10 py-3 uppercase">Total aportes</td>
                     <td class="w-25 text-right uppercase px-5 py-3"> {{ Util::formatMoney($refund->subtotal)}} </td>
                     <td class="w-15  text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>
                 <tr class="text-sm">
-                    <td class="text-left px-10 py-3 uppercase">Devolución de aportes con el {{$yield_percentage}}% de rendimiento </td>
+                    <td class="text-left px-10 py-3 uppercase">Rendimiento del {{$yield_percentage}}%</td>
+                    <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($refund->yield) }} </td>
+                    <td class="text-center uppercase px-5 py-3"> Bs. </td>
+                </tr>
+                @endif
+                <tr class="text-sm">
+                    <td class="text-left px-10 py-3 uppercase font-bold">Total devolución de aportes por {{$display_name}}</td>
                     <td class="text-right uppercase px-5 py-3"> {{ Util::formatMoney($refund->total) }} </td>
                     <td class="text-center uppercase px-5 py-3"> Bs. </td>
                 </tr>

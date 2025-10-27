@@ -567,7 +567,6 @@ class RetirementFundCertificationController extends Controller
     $current_procedure = $retirement_fund->ret_fun_procedure;
     $isReinstatement = $retirement_fund->isReinstatement();
     $refund = RetFunRefund::find($refund_id);
-    logger()->info('refund', [$refund]);
     $contribution_type = $refund->ret_fun_refund_type->contribution_type;
     $title = "DEVOLUCIÓN DE APORTES - " . strtoupper($contribution_type->name);
     $affiliate = $retirement_fund->affiliate;
@@ -817,22 +816,21 @@ class RetirementFundCertificationController extends Controller
       if ($retirement_fund->total_availability > 0) {
         $pages[] = \View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
       }
-      // if ($retirement_fund->total > 0) {
-      //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
-      // }
     }
 
     $pages[] = \View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();
 
     $pages[] = \View::make('ret_fun.print.beneficiaries_qualification', self::printBeneficiariesQualification($id, false))->render();
 
+    $refunds = $retirement_fund->ret_fun_refunds;
+    foreach ($refunds as $refund) {
+      $pages[] = \View::make('ret_fun.print.qualification_data_refund', self::printDataQualificationRefund($id, $refund->id))->render();
+    }
+
     if ($affiliate->hasAvailability()) {
       if ($retirement_fund->total_availability > 0) {
         $pages[] = \View::make('ret_fun.print.qualification_data_availability', self::printDataQualificationAvailability($id, false))->render();
       }
-      // if ($retirement_fund->total > 0) {
-      //     $pages[] =\View::make('ret_fun.print.qualification_data_ret_fun_availability', self::printDataQualificationRetFunAvailability($id, false))->render();
-      // }
     }
 
     $pages[] = \View::make('ret_fun.print.qualification_step_data', self::printDataQualification($id, false))->render();

@@ -132,7 +132,7 @@ class RetFunProcedureController extends Controller
                     }
                 },
             ],
-            'contributions_limit' => 'required|numeric|min:1',
+            'contributions_limit' => 'required|numeric|min:0',
         ]);
 
         $hierarchies_sync_data = [];
