@@ -30,7 +30,7 @@
                     </tr>
                 </tfoot>
             </table>
-            <button type="button" class="btn btn-white">Cerrar</button>
+            <button type="button" class="btn btn-white" @click="closeModal">Cerrar</button>
         </div>
     </modal>
 </template>
@@ -103,6 +103,7 @@ export default {
                 this.table = null;
             }
             this.data = [];
+            this.$modal.hide('contribution-table');
         }
     }
 }

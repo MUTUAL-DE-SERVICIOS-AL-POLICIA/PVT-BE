@@ -26,4 +26,9 @@ class RetFunRefund extends Model
     {
         return $this->belongsTo(RetFunRefundType::class);
     }
+
+    public function ret_fun_refund_amounts()
+    {
+        return $this->hasMany(RetFunRefundAmount::class);
+    }
 }
