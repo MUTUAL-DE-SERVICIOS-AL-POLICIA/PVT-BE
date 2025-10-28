@@ -370,12 +370,13 @@ export default {
       let uriRefunds = `/ret_fun/${this.retirementFundId}/qualification/refunds`;
       await axios.get(uriRefunds)
         .then(response => {
-          console.log(response.data.refunds);
-          this.refundsData = response.data.refunds;
-          if (this.refundsData.length > 0) {
+          if (response.data.refunds && response.data.refunds.length > 0) {
+            this.refundsData = response.data.refunds;
             this.showNextRefund();
           } else {
-            this.$scrollTo('#wrapper');
+            setTimeout(() => {
+              this.$scrollTo('#wrapper');
+            }, 800);
           }
         })
         .catch(err => {

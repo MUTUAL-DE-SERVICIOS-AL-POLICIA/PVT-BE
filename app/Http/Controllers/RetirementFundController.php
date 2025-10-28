@@ -130,35 +130,6 @@ class RetirementFundController extends Controller
             'applicant_identity_card'   =>  'required',
         ];
 
-
-        // $requirements = ProcedureRequirement::where('procedure_modality_id', $request->ret_fun_modality)->whereNull('deleted_at')->select('id', 'number')->orderBy('number', 'asc')->get();
-        // $array_requirements = [];
-        // foreach ($requirements as $requirement) {
-        //     $array_requirements[$requirement->number] = 0;
-        // }
-
-        // foreach ($requirements as $requirement) {
-        //     if ($request->input('document' . $requirement->id) == 'checked') {
-        //         $array_requirements[$requirement->number]++;
-        //     }
-        // }
-        //return $array_requirements;
-        // foreach ($array_requirements as $key => $requirement) {
-
-        //     if ($requirement == 0 && $key != 0) {
-        //         $biz_rules = [
-        //             'no_document' . $key   =>  'required'
-        //         ];
-        //     }
-        //     if ($requirement > 1) {
-        //         $biz_rules = [
-        //             'double_document' . $key  =>  'required'
-        //         ];
-        //     }
-        //     $rules = array_merge($rules, $biz_rules);
-        // }
-
-
         $has_lastname = false;
         $legal_has_lastname = false;
         if ($request->applicant_last_name == '' && $request->applicant_mothers_last_name == '')
@@ -178,13 +149,6 @@ class RetirementFundController extends Controller
             'legal_guardian_first_name' => $account_type == ID::applicant()->legal_guardian_id ? 'required' : '',
             'legal_has_lastname' => $legal_has_lastname ? 'required' : '',
             'correct_role' => !$correct_role ? 'required' : '',
-            //'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
-            //'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',
-            //'legal_guardian_notary_of_public_faith' => $account_type==3 ? 'required' : '',
-            //'legal_guardian_notary'  => $account_type==3 ? 'required' : '',
-            //'advisor_name_court'    =>  $account_type==2 ? 'required' : '',
-            //'advisor_resolution_number'    =>  $account_type==2 ? 'required' : '',
-            //'advisor_resolution_date'   => $account_type==2 ? 'required' : '',
         ];
 
         $rules = array_merge($rules, $biz_rules);
@@ -210,47 +174,20 @@ class RetirementFundController extends Controller
             return redirect(route('create_ret_fun', $request->affiliate_id))
                 ->withErrors($validator)
                 ->withInput();
-            // return Redirect::back()->withErrors($validator)->withInput();
-            //return response()->json($validator->errors(), 406);
         }
 
         //*********END VALIDATOR************//
-
-
-        $requirements = ProcedureRequirement::select('id')->get();
-
+        DB::beginTransaction();
+        try {
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::active_procedure();
-
-
-        $validator = Validator::make($request->all(), [
-            //'applicant_first_name' => 'required|max:5',
-        ]);
-        //custom this validator
-        $validator->after(function ($validator) {
-            if (false)
-                $validator->errors()->add('Modalidad', 'el campo modalidad no puede ser tramitada este mes');
-        });
-        if ($validator->fails()) {
-            return $validator->errors();
-        }
 
         $nextcode = RetirementFund::where('affiliate_id', $request->affiliate_id)->where('code', 'LIKE', '%A')->first();
         if (isset($nextcode->id)) {
             $code = str_replace("A", "", $nextcode->code);
         } else {
-
-            //$ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
-            $ret_fund = RetirementFund::select('id', 'code')
-                ->limit(10)
-                ->orderBy('id', 'desc')
-                ->get();
-
-            // $ret_fun_code = $this->getLastCode($ret_fund);
             $ret_fun_code = Util::getLastCode(RetirementFund::class);
-            //  $this->getLastCode($ret_fund);
             $code = Util::getNextCode($ret_fun_code);
         }
-
 
         $retirement_fund = new RetirementFund();
         $this->authorize('create', $retirement_fund);
@@ -277,9 +214,6 @@ class RetirementFundController extends Controller
         $retirement_fund->save();
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
 
-
-
-
         $af = Affiliate::find($request->affiliate_id);
         $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
         $af->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
@@ -293,7 +227,6 @@ class RetirementFundController extends Controller
             case 1:
             case 4:
                 $af->affiliate_state_id = ID::affiliateState()->fallecido;
-
                 $af->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
                 $af->reason_death = $request->reason_death;
                 break;
@@ -305,6 +238,9 @@ class RetirementFundController extends Controller
             case 7:
             case 62:
             case 24:
+            case 101:
+            case 102:
+            case 103:
                 $af->affiliate_state_id = ID::affiliateState()->jubilado;
                 break;
             default:
@@ -313,7 +249,6 @@ class RetirementFundController extends Controller
         }
         $af->save();
 
-        //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
        //Guarda los requisitos requeridos
         if($request->required_requirements){
             $required_requirements = [];
@@ -523,8 +458,13 @@ class RetirementFundController extends Controller
                 }
             }
         }
-        $data = [];
-
+        DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return redirect(route('create_ret_fun', $request->affiliate_id))
+                ->withErrors('Ocurrió un error al registrar el trámite.');
+        }
         return redirect('ret_fun/' . $retirement_fund->id);
     }
     /**

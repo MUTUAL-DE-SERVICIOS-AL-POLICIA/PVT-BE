@@ -219,13 +219,10 @@ export default {
                 }
                 this.form.procedureType = {};
                 for (const modalities of procedure.procedure_modalities) {
-                    if (!this.form.procedureType[modalities.procedure_type_id]) {
-                        this.form.procedureType[modalities.procedure_type_id] = {
-                            id: modalities.procedure_type_id,
-                            //name: type.name,
-                            percentageYield: modalities.pivot.annual_percentage_yield,
-                            modalitiesIds: []
-                        }
+                    this.form.procedureType[modalities.procedure_type_id] = {
+                        id: modalities.procedure_type_id,
+                        percentageYield: modalities.pivot.annual_percentage_yield,
+                        modalitiesIds: []
                     }
                     this.form.procedureType[modalities.procedure_type_id].modalitiesIds.push(modalities.pivot.procedure_modality_id);
                 }

@@ -47,11 +47,15 @@ class RetFunProcedure extends Model
 
     // FUNCIONES
 
-    public static function active_procedure()
+    public static function active_procedure(): ?self
     {
-        return self::where('start_date', '<=', Carbon::now())
-                   ->orderBy('start_date', 'desc')
-                   ->first();
+        $procedure = self::whereDate('start_date', '<=', Carbon::now())
+            ->latest('start_date')
+            ->first();
+        if (!$procedure) {
+            Logger()->warning('No se encontró un procedimiento activo.');
+        }
+        return $procedure;
     }
 
     public function getSalaryLimitForAffiliate(Affiliate $affiliate)

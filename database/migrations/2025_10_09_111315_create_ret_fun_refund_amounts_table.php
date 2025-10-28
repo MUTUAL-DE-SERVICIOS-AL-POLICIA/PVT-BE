@@ -17,7 +17,7 @@ class CreateRetFunRefundAmountsTable extends Migration
             $table->increments('id');
             $table->unsignedBigInteger('ret_fun_beneficiary_id');
             $table->unsignedBigInteger('ret_fun_refund_id');
-            $table->decimal('amount', 6, 2)->max(100);
+            $table->decimal('percentage', 6, 2)->max(100);
             $table->decimal('amount', 13, 2);
             $table->timestamps();
 

@@ -7,6 +7,7 @@ use Muserpol\Models\RetirementFund\RetFunProcedure;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Muserpol\Models\Hierarchy;
+use Muserpol\Models\ProcedureModality;
 
 class RetFunProcedureController extends Controller
 {
@@ -51,7 +52,7 @@ class RetFunProcedureController extends Controller
                     }
                 },
             ],
-            'contributions_limit' => 'required|numeric|min:1',
+            'contributions_limit' => 'required|numeric|min:0',
         ]);
 
         $actualProcedure = RetFunProcedure::active_procedure();
@@ -145,7 +146,8 @@ class RetFunProcedureController extends Controller
 
         $modalities_sync_data = [];
         foreach ($request->procedureType as $procedureTypeKey => $procedureTypeValues) {
-            foreach ($procedureTypeValues['modalitiesIds'] as $modalityId) {
+            $db_modalities_ids =  ProcedureModality::where('procedure_type_id', $procedureTypeKey)->pluck('id')->toArray();
+            foreach ($db_modalities_ids as $modalityId) {
                 $modalities_sync_data[$modalityId] = [
                     'annual_percentage_yield' => $procedureTypeValues['percentageYield'],
                 ];

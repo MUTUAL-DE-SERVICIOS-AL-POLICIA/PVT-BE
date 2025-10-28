@@ -394,18 +394,10 @@ class RetirementFundCertificationController extends Controller
     $affiliate = $retirement_fund->affiliate;
     $applicant = $retirement_fund->ret_fun_beneficiaries()->where('type', 'S')->with('kinship')->first();
     $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->get();
+    $name_procedure_type =$retirement_fund->procedure_modality->procedure_type->name;
+    
     $pdftitle = "Calificación - INFORMACIÓN TÉCNICA";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
-    if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
-
-      $title = 'CALIFICACIÓN DE PAGO GLOBAL POR ' . $retirement_fund->procedure_modality->name;
-    }elseif ($retirement_fund->procedure_modality->procedure_type_id == 21){//DA
-      $title = 'DEVOLUCIÓN DE APORTES - ' . $retirement_fund->procedure_modality->name;
-    }else {//FRPS
-      $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
-    }
-    $name_procedure_type =$retirement_fund->procedure_modality->procedure_type->name;
-
 
     $group_dates = [];
     $total_dates = Util::sumTotalContributions($affiliate->getDatesGlobal());
@@ -429,7 +421,6 @@ class RetirementFundCertificationController extends Controller
     );
     $group_dates[] = $dates;
     foreach (ContributionType::orderBy('id')->get() as $c) {
-      // if($c->id != 1){
       $contributionsWithType = $affiliate->getContributionsWithType($c->id);
       if (sizeOf($contributionsWithType) > 0) {
         $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
@@ -447,7 +438,6 @@ class RetirementFundCertificationController extends Controller
         }
         $group_dates[] = $dates;
       }
-      // }
     }
 
     $contributions = array(
@@ -490,9 +480,9 @@ class RetirementFundCertificationController extends Controller
         }
       }
     }
-    if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
+    if ($retirement_fund->procedure_modality->procedure_type_id == ProcedureType::RET_FUN_PG) {//PGA
       $title = 'CALIFICACIÓN DE PAGO GLOBAL POR ' . $retirement_fund->procedure_modality->name;
-    }elseif ($retirement_fund->procedure_modality->procedure_type_id == 21){//DA
+    }elseif ($retirement_fund->procedure_modality->procedure_type_id == ProcedureType::RET_FUN_DA){//DA
       $title = 'DEVOLUCIÓN DE APORTES - ' . $retirement_fund->procedure_modality->name;
     }else {//FRPS
       $title = 'CALIFICACIÓN FONDO DE RETIRO POLICIAL SOLIDARIO';
@@ -521,15 +511,14 @@ class RetirementFundCertificationController extends Controller
 
     $current_procedure = $retirement_fund->ret_fun_procedure;
     $temp = [];
-    if ($retirement_fund->procedure_modality->procedure_type_id == 1) {//PGA
-      $total_aporte = $retirement_fund->average_quotable;
-      $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
-      $administrative_expenses = 0;
-      $less_administrative_expenses = $yield;
+    if (in_array($retirement_fund->procedure_modality->procedure_type_id , [1,21])) {//PGA
+      $sum_contributions = $retirement_fund->sum_contributions;
+      $yield = $retirement_fund->yield;
+      $percentage_yield = $retirement_fund->ret_fun_procedure->getAnnualPercentageYieldForModality($retirement_fund->procedure_modality_id);
       $temp = [
+        'sum_contributions' => $sum_contributions,
         'yield' => $yield,
-        'administrative_expenses' => $administrative_expenses,
-        'less_administrative_expenses' => $less_administrative_expenses,
+        'percentage_yield' => $percentage_yield,
       ];
     }
     $data = [
