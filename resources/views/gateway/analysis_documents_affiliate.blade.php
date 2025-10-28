@@ -2,7 +2,12 @@
 
 @section('title', 'Documentos Analizados')
 
-@php($verification = ($data['nonNumericIds'] || $data['dataErrorReadFolder'] || $data['dataErrorReadFiles'] || $data['duplicateData']))
+@php($verification = (
+  ($data['nonNumericIds'] ?? false) ||
+  ($data['dataErrorReadFolder'] ?? false) ||
+  ($data['dataErrorReadFiles'] ?? false) ||
+  ($data['duplicateData'] ?? false)
+))
 
 @section('notice1')
   <div class="content2">
