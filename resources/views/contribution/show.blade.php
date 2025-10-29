@@ -43,6 +43,7 @@
                                 <th>Unidad</th>
                                 <th>Sueldo</th>
                                 <th>Antigüedad</th>
+                                <th>Categoria</th>
                                 <th>Estudio</th>
                                 <th>Cargo</th>
                                 <th>Frontera</th>
@@ -145,6 +146,7 @@
                 {data: 'unit_id'},
                 {data: 'base_wage'},
                 {data: 'seniority_bonus'},
+                {data: 'category_id',},
                 {data: 'study_bonus', visible:false},
                 {data: 'position_bonus', visible:false},
                 {data: 'border_bonus',visible:false},

@@ -239,7 +239,7 @@
                                         <div class="w-70 text-right">{{ $beneficiary->percentage }}</div>
                                     </td>
                                     <td class="text-center uppercase font-bold px-5 py-3">
-                                        {{Util::formatMoney($ret_fun->total_availability*($beneficiary->percentage/100))}}
+                                        {{Util::formatMoney($beneficiary->amount_availability)}}
                                     </td>
                                     <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
                                 </tr>
@@ -276,7 +276,7 @@
                                         <div class="w-70 text-right">{{ $beneficiary->percentage }}</div>
                                     </td>
                                     <td class="text-center uppercase px-5 py-3">
-                                        {{Util::formatMoney($ret_fun->total_availability*($beneficiary->percentage/100))}}
+                                        {{Util::formatMoney($beneficiary->amount_availability)}}
                                     </td>
                                     <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
                                     <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->fullName() : ''}}</td>

@@ -38,6 +38,8 @@
                             class="fa fa-users"></i> Rango de Fechas</a></li>
                 <!-- <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-rents"><a href="#"><i
                             class="fa fa-users"></i> Importar Rentas SENASIR</a></li> -->
+                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-replication-data"><a href="#"><i
+                            class="fa fa-users"></i> Replicación de Trámites</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-rents-aps"><a href="#"><i
                             class="fa fa-users"></i> Importar Rentas APS</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-import-pago-futuro"><a href="#"><i
@@ -72,6 +74,9 @@
             </div>
             <div id="tab-eco-com-import-rents" class="tab-pane">
             <eco-com-import-rents :permissions="{{ $permissions }}"></eco-com-import-rents>
+            </div>
+            <div id="tab-eco-com-replication-data" class="tab-pane">
+            <eco-com-replication-procedures :permissions="{{ $permissions }}"></eco-com-replication-procedures>
             </div>
             <div id="tab-eco-com-import-rents-aps" class="tab-pane">
             <eco-com-import-rents-aps :permissions="{{ $permissions }}"></eco-com-import-rents-aps>

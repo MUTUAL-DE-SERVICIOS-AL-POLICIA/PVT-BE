@@ -22,8 +22,10 @@ window.flash = function (message, level = 'success', timeOut = 5000) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import VModal from 'vue-js-modal'
+import GlobalHelpers from './helpers';
 
 Vue.use(VModal)
+Vue.use(GlobalHelpers);
 
 
  /**VUEX */
@@ -445,6 +447,7 @@ Vue.component('eco-com-procedure', require('./components/eco_com/Procedure.vue')
 Vue.component('eco-com-select-report', require('./components/eco_com/SelectReport.vue'));
 Vue.component('eco-com-import-rents', require('./components/eco_com/ImportRents.vue'));
 Vue.component('eco-com-import-rents-aps', require('./components/eco_com/ImportRentsAPS.vue'));
+Vue.component('eco-com-replication-procedures', require('./components/eco_com/Replication.vue'));
 Vue.component('eco-com-import-pago-futuro', require('./components/eco_com/ImportPagoFuturo.vue'));
 Vue.component('eco-com-update-paid-bank', require('./components/eco_com/UpdatePaidBank.vue'));
 Vue.component('eco-com-automatic-qualification', require('./components/eco_com/AutomaticQualification.vue'));

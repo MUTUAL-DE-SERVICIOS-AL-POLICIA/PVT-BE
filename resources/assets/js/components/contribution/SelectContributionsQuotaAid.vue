@@ -55,7 +55,7 @@
 								<thead>
 									<tr>
 										<th class="col-md-2">Fecha </th>
-										<th class="col-md-2">Cuota mortuoria</th>
+										<th class="col-md-2">{{retfund_procedure_modality.procedure_type_id == '3' ? "Cuota mortuoria":"Auxilio Mortuorio"}}</th>
 										<th class="col-md-2">Total</th>
 										<th class="col-md-4">Tipo</th>
 									</tr>
@@ -63,7 +63,7 @@
 								<tbody id="contenedor">
 									<tr v-for="(contribution,index) in contributions" :key="`contribution-${index}`" :style="{'background':getColor1(contribution.contribution_type_mortuary_id)}" >
 										<td class="col-md-2">{{ contribution.month_year | monthYear }}</td>
-										<td class="col-md-2">{{ contribution.mortuary_quota }}</td>
+										<td class="col-md-2">{{retfund_procedure_modality.procedure_type_id == '3' ? contribution.mortuary_quota : contribution.total }}</td>
 										<td class="col-md-2">{{ contribution.total }}</td>
 										<td class="col-md-4">
 											<select class="form-control" v-model="contribution.contribution_type_mortuary_id" @change="resetPrintButton()">
@@ -117,7 +117,8 @@ export default {
 	"types",
 	"retfunid",
 	"startDate",
-	"endDate"
+	"endDate",
+	"retfund_procedure_modality"
   ],
   data() {
 	return {
