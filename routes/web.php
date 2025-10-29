@@ -606,6 +606,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('/update_affiliate_police_eco_com', 'EconomicComplementController@updateAffiliatePoliceEcoCom');
 
     Route::get('eco_com/{eco_com_id}', 'EconomicComplementController@show')->name('eco_com_show');
+    Route::patch('eco_com/{id}/qualify', 'EconomicComplementController@qualify')->name('eco_com_qualify');
     Route::get('eco_com', 'EconomicComplementController@index')->name('eco_com');
     Route::get('get_all_eco_com', 'EconomicComplementController@getAllEcoCom');
     Route::post('eco_com/{eco_com}/edit_requirements', 'EconomicComplementController@editRequirements')->name('eco_com_edit_requirements');
@@ -637,6 +638,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('eco_com_recalificacion', 'EconomicComplementController@recalificacion');
 
     //fixed
+    Route::post('/eco_com_fixed_pensions', 'EcoComFixedPensionController@store');
     Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
 
     // Eco com Beneficiary
@@ -758,5 +760,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('review_show/{eco_com_id}', 'EcoComReviewProcedureController@show')->name('show');
     Route::post('eco_com/review_edit', 'EconomicComplementController@editReviewProcedures')->name('eco_com_review_edit');
     Route::get('eco_com/{eco_com_id}/print/revision_certificate', 'EcoComCertificationController@printRevisionCertificate')->name('eco_com_print_revision_certificate');
+    Route::post('eco_com_replicate', 'EconomicComplementReplicationController@prepareReplication')->name('eco_com_replicate');
+    Route::post('eco_com_replicate/execute', 'EconomicComplementReplicationController@executeReplication')->name('eco_com_replicate.execute');
+    Route::get('eco_com_replicate/history', 'EconomicComplementReplicationController@getReplicationHistory')->name('eco_com_replicate.history');
+    Route::get('eco_com_replicate/status', 'EconomicComplementReplicationController@canCreateReplication')->name('eco_com_replicate.status');
   });
 });
