@@ -2810,8 +2810,9 @@ class RetirementFundCertificationController extends Controller
     $title = 'LIQUIDACIÓN DE PAGO';
     $affiliate = $ret_fun->affiliate;
     $applicant = RetFunBeneficiary::where('type', 'S')->where('retirement_fund_id', $ret_fun->id)->first();
-    $beneficiaries = $ret_fun->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) >= 18")->get();
-    $beneficiaries_minor = $ret_fun->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) < 18")->get();
+    $beneficiaries = $ret_fun->ret_fun_beneficiaries()->with('ret_fun_refund_amounts')->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) >= 18")->get();
+    $beneficiaries_minor = $ret_fun->ret_fun_beneficiaries()->with('ret_fun_refund_amounts')->orderByDesc('type')->orderBy('id')->where('state', true)->whereRaw("DATE_PART('year', AGE(birth_date)) < 18")->get();
+    $refunds = $ret_fun->ret_fun_refunds()->get();
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_retirement_fund($ret_fun->id), "QRCODE");
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
     $subtitletwo = $ret_fun->procedure_modality->procedure_type->name;
@@ -2827,7 +2828,10 @@ class RetirementFundCertificationController extends Controller
       'applicant' => $applicant,
       'beneficiaries' => $beneficiaries,
       'beneficiaries_minor' => $beneficiaries_minor,
+      'refunds' => $refunds,
+      'hasRefund' => $refunds->count() > 0,
     ];
+    logger()->info($data['beneficiaries']);
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {
       $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();
