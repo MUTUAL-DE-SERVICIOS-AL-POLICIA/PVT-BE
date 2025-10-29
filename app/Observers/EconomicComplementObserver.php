@@ -15,31 +15,19 @@ use Illuminate\Support\Arr;
 class EconomicComplementObserver
 {
     public function created(EconomicComplement $eco_com)
-    {   
-        if (Auth::user()) {
-            $eco_com->wf_records()->create([
-                'user_id' => Auth::user()->id,
+    {
+        $user = Auth::user();
+        $user_id = $user ? $user->id : 171;
+        $username = $user ? $user->username : '';
+        $message = 'Trámite creado mediante ' . $eco_com->origin_channel->shortened
+        . (!$eco_com->origin_channel->has_responsible_user ? '.' : ' por el usuario ' . $username . '.');
+        $eco_com->wf_records()->create([
+                'user_id' => $user_id,
                 'record_type_id' => 7,
                 'wf_state_id' => $eco_com->wf_current_state_id,
                 'date' => Carbon::now(),
-                'message' => 'El usuario '.Auth::user()->username.' recepcionó el trámite.'
+                'message' => $message
             ]);
-            $eco_com->procedure_records()->create([
-                'user_id' => Auth::user()->id,
-                'record_type_id' => 7,
-                'wf_state_id' => Util::getRol()->wf_states->first()->id,
-                'date' => Carbon::now(),
-                'message' => 'El usuario '.Auth::user()->username.' creó el trámite.'
-            ]);
-        } else {
-            $eco_com->wf_records()->create([
-                'user_id' => 171,
-                'record_type_id' => 7,
-                'wf_state_id' => $eco_com->wf_current_state_id,
-                'date' => Carbon::now(),
-                'message' => 'Trámite creado por aplicación.'
-            ]);
-        }
     }
     private function defaultValuesWfRecord($wf_current_state_id = null, $record_type_id = null, $message = null, $old_wf_state_id = null, $old_user_id = null)
     {
