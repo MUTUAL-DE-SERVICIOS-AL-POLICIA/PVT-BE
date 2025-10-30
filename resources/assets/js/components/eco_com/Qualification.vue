@@ -287,11 +287,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Fracción de Saldo Acumulado"
                     v-money
                     name="aps_total_fsa"
                     v-model="ecoComModal.aps_total_fsa"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_total_fsa')" class="text-danger">
+                    {{ errors.first('aps_total_fsa') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -306,11 +311,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Fracción de Cotización"
                     v-money
                     name="aps_total_cc"
                     v-model="ecoComModal.aps_total_cc"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_total_cc')" class="text-danger">
+                    {{ errors.first('aps_total_cc') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -325,11 +335,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Fracción Solidaria"
                     v-money
                     name="aps_total_fs"
                     v-model="ecoComModal.aps_total_fs"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_total_fs')" class="text-danger">
+                    {{ errors.first('aps_total_fs') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -344,11 +359,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Renta Invalidez"
                     v-money
                     name="aps_disability"
                     v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_disability')" class="text-danger">
+                    {{ errors.first('aps_disability') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -363,11 +383,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Renta Muerte"
                     v-money
-                    name="aps_disability"
+                    name="aps_total_death"
                     v-model="ecoComModal.aps_total_death"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_total_death')" class="text-danger">
+                    {{ errors.first('aps_total_death') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -406,11 +431,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Total Ganado Renta ó Pensión"
                     v-money
                     name="sub_total_rent"
                     v-model="ecoComModal.sub_total_rent"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('sub_total_rent')" class="text-danger">
+                    {{ errors.first('sub_total_rent') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -425,11 +455,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Reintegro"
                     v-money
                     name="reimbursement"
                     v-model="ecoComModal.reimbursement"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('reimbursement')" class="text-danger">
+                    {{ errors.first('reimbursement') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-minus" style="font-size:20px"></i>
@@ -444,11 +479,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Renta Dignidad"
                     v-money
                     name="dignity_pension"
                     v-model="ecoComModal.dignity_pension"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('dignity_pension')" class="text-danger">
+                    {{ errors.first('dignity_pension') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-minus" style="font-size:20px"></i>
@@ -463,11 +503,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Renta Invalidez"
                     v-money
                     name="aps_disability"
                     v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_disability')" class="text-danger">
+                    {{ errors.first('aps_disability') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -763,21 +808,25 @@ export default {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
-      this.loadingButton = true;
-      this.editing = false;
-      this.ecoComModal.pension_entity_id = this.affiliate.pension_entity_id;
-      await axios
-        .patch(`/eco_com_update_rents`, this.ecoComModal)
-        .then(response => {
-          this.$store.commit("ecoComForm/setEcoCom", response.data);
-          this.$modal.hide("rents-modal");
-          flash("Rentas Actualizadas con exito");
-        })
-        .catch(error => {
-          flashErrors("Error al procesar: ", error.response.data.errors);
-        });
-      this.loadingButton = false;
-      this.editing = true;
+      this.$validator.validateAll().then(async valid => {
+        if (!valid) return;
+
+        this.loadingButton = true;
+        this.editing = false;
+        this.ecoComModal.pension_entity_id = this.affiliate.pension_entity_id;
+        await axios
+          .patch(`/eco_com_update_rents`, this.ecoComModal)
+          .then(response => {
+            this.$store.commit("ecoComForm/setEcoCom", response.data);
+            this.$modal.hide("rents-modal");
+            flash("Rentas Actualizadas con exito");
+          })
+          .catch(error => {
+            flashErrors("Error al procesar: ", error.response.data.errors);
+          });
+        this.loadingButton = false;
+        this.editing = true;
+      });
     },
     async refreshQualification(){
       if (!this.can("qualify_economic_complement", this.permissions)) {

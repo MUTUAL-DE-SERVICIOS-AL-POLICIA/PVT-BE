@@ -419,7 +419,7 @@ class EcoComCertificationController extends Controller
         $title = "HOJA DE CALCULO DEL COMPLEMENTO ECONÓMICO";
         $subtitle = $eco_com_procedure->semester . " SEMESTRE " . $eco_com_procedure->getYear();
         $code = $eco_com->code;
-        $area = $eco_com->wf_state->first_shortened;
+        $area = Util::getRol()->display_name;;
         $user = $eco_com->user;
         // $date = Util::getDateFormat($eco_com->reception_date);
         $date = Util::getTextDate(now());
