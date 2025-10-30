@@ -32,7 +32,7 @@ class EconomicComplement extends Model
 
     public function origin_channel()
     {
-        return $this->belongsTo(\Muserpol\Models\EcoComOriginChannel::class, 'eco_com_origin_channel_id');
+        return $this->belongsTo(EcoComOriginChannel::class, 'eco_com_origin_channel_id');
     }
     public function affiliate()
     {
@@ -589,7 +589,7 @@ class EconomicComplement extends Model
             ->where( function($query) {
                 $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
             });
-    }
+        }
     public function scopeInfoBasic($query)
     {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')

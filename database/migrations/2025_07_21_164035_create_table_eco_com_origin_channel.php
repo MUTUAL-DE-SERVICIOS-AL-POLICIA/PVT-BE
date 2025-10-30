@@ -16,6 +16,8 @@ class CreateTableEcoComOriginChannel extends Migration
         Schema::create('eco_com_origin_channel', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('shortened');
+            $table->boolean('has_responsible_user')->default(false);
             $table->timestamps();
         });
     }

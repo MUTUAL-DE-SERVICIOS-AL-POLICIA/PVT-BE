@@ -610,7 +610,7 @@ function storeReimbursement(){
     $.ajax({
         url: "{{asset('reimbursement')}}",
         method: "POST",
-        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total,retirement_fund:retirement_fund,mortuary_quota:mortuary_quota, unit_id:unit_id},
+        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total,retirement_fund:retirement_fund,mortuary_quota:mortuary_quota},
         beforeSend: function (xhr, settings) {
             if (settings.url.indexOf(document.domain) >= 0) {
                 xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");

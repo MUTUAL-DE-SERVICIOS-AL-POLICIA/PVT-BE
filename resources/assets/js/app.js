@@ -22,8 +22,10 @@ window.flash = function (message, level = 'success', timeOut = 5000) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import VModal from 'vue-js-modal'
+import GlobalHelpers from './helpers';
 
 Vue.use(VModal)
+Vue.use(GlobalHelpers);
 
 
  /**VUEX */
@@ -250,8 +252,8 @@ let moneyInputMask = {
   digits: 2,
   digitsOptional: false,
   prefix: "Bs ",
-  placeholder: "0",
-  max:1000000000
+  max:1000000000,
+  min:0,
 };
 Vue.directive('money',{
   inserted: function(el) {

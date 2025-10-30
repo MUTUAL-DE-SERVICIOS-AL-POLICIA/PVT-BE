@@ -35,18 +35,20 @@ class EconomicComplementController extends Controller
      */
     public function index(Request $request)
     {
-       $affiliate_ids = array();
-       array_push($affiliate_ids, $request->affiliate->id);
-       $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
-       $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
-
-       if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
-           $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id',[2,5,9,7])->first();
-           $affiliate_widowhood = $eco_com_beneficiary->economic_complement->affiliate;
-           array_push($affiliate_ids, $affiliate_widowhood->id);
-       }
-       $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
-       if (filter_var($request->query('current'), FILTER_VALIDATE_BOOLEAN, false)) {
+        $affiliate_ids = array();
+        array_push($affiliate_ids, $request->affiliate->id);
+        $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function ($q) {$q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
+        $last_eco_com_beneficiary = null;
+        if ($last_eco_com) {
+            $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
+        }
+        if ($last_eco_com_beneficiary && Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
+            $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id',[2,5,9,7])->first();
+                $affiliate_widowhood = $eco_com_beneficiary->economic_complement->affiliate;
+                array_push($affiliate_ids, $affiliate_widowhood->id);
+        }
+        $current_procedures = EcoComProcedure::current_procedures()->pluck('id');
+        if (filter_var($request->query('current'), FILTER_VALIDATE_BOOLEAN, false)) {
         $state_types = EcoComStateType::whereIn('name', ['Enviado', 'Creado'])->pluck('id');
         $data = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
             ->leftJoin('eco_com_states', 'economic_complements.eco_com_state_id', '=', 'eco_com_states.id')
@@ -725,7 +727,7 @@ class EconomicComplementController extends Controller
             $size_down = 80;
         }
         $bar_code = \DNS2D::getBarcodePNG($economic_complement->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $economic_complement])->render();
 
         $data = [
             'direction' => $direction,

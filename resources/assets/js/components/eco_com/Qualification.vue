@@ -6,31 +6,32 @@
           Calificacion
           <strong>{{ namePensionEntity }}</strong>
         </h2>
-        <div class="ibox-tools" v-if="roleId == 103">
+        <div class="ibox-tools" v-if="$eco_com_helper.isEncargadoCalificacion(roleId)" >
             <!--Para borrar rentas calificación-->
           <button 
             class="btn btn-success"
             @click="edit('ceh')"
             data-toggle="tooltip"
             title="Replicar renta manual para calificación"
-            :disabled="!(ecoCom.eco_com_reception_type_id != 2 && ecoCom.rent_type == 'Automatico')"
+            :disabled="$eco_com_helper.isInclusion(ecoCom) || !$eco_com_helper.isAutomaticRent(ecoCom)"
           >
             <i class="fa fa-check"></i>Replicar renta fija para calificación
           </button>
           <!-- Para borrar rentas auxilio mortuorio--> 
-           <template v-if="ecoCom.eco_com_updated_pension != null">
-          <button  
-            class="btn btn-danger" 
-            @click="edit('amh')" 
-            data-toggle="tooltip" 
-            title="Habilitar renta manual para Aux. Mort."
-            :disabled="!(affiliate.pension_entity_id != 5 && this.ecoCom.eco_com_reception_type_id == 1 && ecoCom.eco_com_updated_pension.rent_type == 'Automatico')"
-          >
-            <i class="fa fa-check"></i>Habilitar renta manual para Aux. Mort.
-          </button>
+           
+          <template v-if="ecoCom.eco_com_updated_pension != null">
+            <button  
+              class="btn btn-danger" 
+              @click="edit('amh')" 
+              data-toggle="tooltip" 
+              title="Habilitar renta manual para Aux. Mort."
+              :disabled="isSenasir || !$eco_com_helper.isHabitual(ecoCom) || !$eco_com_helper.isAutomaticRent(ecoCom.eco_com_updated_pension)"
+            >
+              <i class="fa fa-check"></i>Habilitar renta manual para Aux. Mort.
+            </button>
           </template>
         </div>
-        <div class="ibox-tools" v-if="roleId == 4 || roleId == 5" >
+        <div class="ibox-tools" v-if="$eco_com_helper.isAreaTecnica(roleId) || $eco_com_helper.isJefatura(roleId)" >
           <button
             class="btn btn-primary"
             @click="refreshQualification()"
@@ -48,10 +49,10 @@
             title="Editar Rentas"
             :disabled="!can('update_economic_complement')"
           >
-            <i class="fa fa-pencil"></i> {{ this.ecoCom.eco_com_reception_type_id == 2 ? 'Renta o Pension' : 'Renta o Pension para calificación' }}
+            <i class="fa fa-pencil"></i> {{ $eco_com_helper.isInclusion(ecoCom) ? 'Renta o Pension' : 'Renta o Pension para calificación' }}
           </button>
           <!-- Para auxilio mortuorio--> 
-          <button v-if="affiliate.pension_entity_id != 5 && ecoCom.eco_com_reception_type_id != 2" 
+          <button v-if="!isSenasir && !$eco_com_helper.isInclusion(ecoCom)" 
             class="btn btn-primary" 
             @click="edit('am')" 
             data-toggle="tooltip" title="Editar Rentas"
@@ -65,7 +66,7 @@
           <div class="col-md-3">
             <eco-com-amortization :role_id=roleId :permissions="permissions" :observations="observations"></eco-com-amortization>
           </div>
-          <div class="col-md-3" v-if="eco_com_state_type_id===1 && roleId===4">
+          <div class="col-md-3" v-if="$eco_com_helper.isPaid(ecoCom) && $eco_com_helper.isAreaTecnica(roleId)">
             <button
               class="btn btn-primary"
               data-toggle="tooltip"
@@ -78,7 +79,7 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación</strong></p>
+            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación ({{ ecoCom.eco_com_fixed_pension ? ecoCom.eco_com_fixed_pension.period : "" }})</strong></p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -130,7 +131,7 @@
               </tbody>
             </table>
             <!-- Tabla de pension actualizada - No mostrar si es inclusión -->
-            <template v-if="ecoCom.eco_com_updated_pension && ecoCom.eco_com_reception_type_id != 2"> 
+            <template v-if="ecoCom.eco_com_updated_pension && !$eco_com_helper.isInclusion(ecoCom)"> 
               <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para descuento de Auxilio Mortuorio</strong></p>
               <table class="table table-bordered table-striped">
                 <thead>
@@ -240,7 +241,7 @@
                   <td style="text-align: right;">{{ ecoCom.total_eco_com | currency }}</td>
                 </tr>
                 <tr v-for="d in ecoCom.discount_types" :key="d.id" class="danger">
-                  <td><button class="btn btn-danger" type="button" v-if="d.id===7 && roleId===4" title="Eliminar" @click="deleteDiscount()">
+                  <td><button class="btn btn-danger" type="button" v-if="d.id===7 && $eco_com_helper.isAreaTecnica(roleId)" title="Eliminar" @click="deleteDiscount()">
                <i class="fa fa-trash"></i>
                  </button> {{ d.shortened }}</td>
                   <td style="text-align: right;">{{ d.pivot.amount | currency}}</td>
@@ -286,11 +287,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Fracción de Saldo Acumulado"
                     v-money
                     name="aps_total_fsa"
                     v-model="ecoComModal.aps_total_fsa"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_total_fsa')" class="text-danger">
+                    {{ errors.first('aps_total_fsa') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -305,11 +311,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Fracción de Cotización"
                     v-money
                     name="aps_total_cc"
                     v-model="ecoComModal.aps_total_cc"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_total_cc')" class="text-danger">
+                    {{ errors.first('aps_total_cc') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -324,11 +335,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Fracción Solidaria"
                     v-money
                     name="aps_total_fs"
                     v-model="ecoComModal.aps_total_fs"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_total_fs')" class="text-danger">
+                    {{ errors.first('aps_total_fs') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -343,11 +359,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Renta Invalidez"
                     v-money
                     name="aps_disability"
                     v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_disability')" class="text-danger">
+                    {{ errors.first('aps_disability') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -362,11 +383,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Renta Muerte"
                     v-money
-                    name="aps_disability"
+                    name="aps_total_death"
                     v-model="ecoComModal.aps_total_death"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_total_death')" class="text-danger">
+                    {{ errors.first('aps_total_death') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -385,7 +411,7 @@
               </div>
             </div>
             <div class="hr-line-dashed"></div>
-              <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
+              <div class="row" v-if="!$eco_com_helper.isInclusion(ecoCom) && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
                 <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
                   <select 
                   class="col-sm-6"
@@ -405,11 +431,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Total Ganado Renta ó Pensión"
                     v-money
                     name="sub_total_rent"
                     v-model="ecoComModal.sub_total_rent"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('sub_total_rent')" class="text-danger">
+                    {{ errors.first('sub_total_rent') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -424,11 +455,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Reintegro"
                     v-money
                     name="reimbursement"
                     v-model="ecoComModal.reimbursement"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('reimbursement')" class="text-danger">
+                    {{ errors.first('reimbursement') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-minus" style="font-size:20px"></i>
@@ -443,11 +479,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Renta Dignidad"
                     v-money
                     name="dignity_pension"
                     v-model="ecoComModal.dignity_pension"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('dignity_pension')" class="text-danger">
+                    {{ errors.first('dignity_pension') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-minus" style="font-size:20px"></i>
@@ -462,11 +503,16 @@
                   <input
                     type="text"
                     class="form-control"
+                    v-validate="'required'"
+                    data-vv-as="Renta Invalidez"
                     v-money
                     name="aps_disability"
                     v-model="ecoComModal.aps_disability"
                     :disabled="!editing"
                   />
+                  <small v-if="errors.has('aps_disability')" class="text-danger">
+                    {{ errors.first('aps_disability') }}
+                  </small>
                 </div>
                 <div class="col-sm-2">
                   <i class="fa fa-plus" style="font-size:20px"></i>
@@ -485,7 +531,7 @@
                 </div>
               </div>
             </div>
-            <div class="row" v-if="ecoCom.eco_com_reception_type_id != 2 && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
+            <div class="row" v-if="!$eco_com_helper.isInclusion(ecoCom) && ecoComModal.type !='am' && ecoComModal.eco_com_fixed_pension != null">
               <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
                 <select 
                 class="col-sm-6"
@@ -560,6 +606,10 @@
             <h3>Las Rentas Fueron Importadas Automáticamente.<br/><br/></h3>
 
             <template v-if="ecoComModal.type == 'ce'">
+              <h4 class="text-lg">Seleccione la renta fija que se usara para la réplica</h4>
+              <select class="p-xxs" name="newFixedId" id=""  v-model="newFixedId">
+                <option class="p-xxs" v-for="fixedPension in affiliate.eco_com_fixed_pensions" :value="fixedPension.id">{{ getProcedureSemester(fixedPension.eco_com_procedure_id) }}</option>
+              </select>
               <h3 class="text-danger">
                 ¿Esta seguro que realizar la replica de la renta fija para la Calificacion de este trámite?<br/><br/>
               </h3>
@@ -616,6 +666,7 @@ import {
   flashErrors
 } from "../../helper.js";
 import { mapState, mapMutations } from "vuex";
+import affiliate from "../../helpers/affiliate.js";
 
 export default {
   props: ["ecoComId", "affiliate", "permissions","roleId", "observations"],
@@ -630,7 +681,8 @@ export default {
       eco_com_state_type_id:0,
       idEcoCom:0,
       show_spinner:false,
-      procedures:[]
+      procedures:[],
+      newFixedId:null
     };
   },
   mounted() {
@@ -647,7 +699,7 @@ export default {
       return this.$store.state.ecoComForm.ecoCom;
     },
     isSenasir() {
-      return isPensionEntitySenasir(this.affiliate.pension_entity_id);
+      return this.$affiliate_helper.isSenasir(this.affiliate);
     },
     namePensionEntity() {
       return getNamePensionEntity(this.affiliate.pension_entity_id);
@@ -756,21 +808,25 @@ export default {
       if (!this.can("update_economic_complement", this.permissions)) {
         return;
       }
-      this.loadingButton = true;
-      this.editing = false;
-      this.ecoComModal.pension_entity_id = this.affiliate.pension_entity_id;
-      await axios
-        .patch(`/eco_com_update_rents`, this.ecoComModal)
-        .then(response => {
-          this.$store.commit("ecoComForm/setEcoCom", response.data);
-          this.$modal.hide("rents-modal");
-          flash("Rentas Actualizadas con exito");
-        })
-        .catch(error => {
-          flashErrors("Error al procesar: ", error.response.data.errors);
-        });
-      this.loadingButton = false;
-      this.editing = true;
+      this.$validator.validateAll().then(async valid => {
+        if (!valid) return;
+
+        this.loadingButton = true;
+        this.editing = false;
+        this.ecoComModal.pension_entity_id = this.affiliate.pension_entity_id;
+        await axios
+          .patch(`/eco_com_update_rents`, this.ecoComModal)
+          .then(response => {
+            this.$store.commit("ecoComForm/setEcoCom", response.data);
+            this.$modal.hide("rents-modal");
+            flash("Rentas Actualizadas con exito");
+          })
+          .catch(error => {
+            flashErrors("Error al procesar: ", error.response.data.errors);
+          });
+        this.loadingButton = false;
+        this.editing = true;
+      });
     },
     async refreshQualification(){
       if (!this.can("qualify_economic_complement", this.permissions)) {
@@ -782,10 +838,9 @@ export default {
       this.ecoComModal = JSON.parse(JSON.stringify(this.ecoCom));
       this.ecoComModal.refresh = true;
       await axios
-        .patch(`/eco_com_update_rents`, this.ecoComModal)
+        .patch(`/eco_com/${this.ecoComId}/qualify`)
         .then(response => {
           this.$store.commit("ecoComForm/setEcoCom", response.data);
-          this.$modal.hide("rents-modal");
           flash("Calificacion Actualizada");
         })
         .catch(error => {
@@ -878,40 +933,35 @@ export default {
       this.loadingButton = true;
       this.editing = false;
 
-      switch (type) {      
+      this.ecoComModal.id = this.ecoCom.id;
+      
+      switch (type) {
         case 'ce': // Complemento Economico
           if (this.ecoCom.rent_type == "Automatico") {
-          this.ecoCom.aps_total_fsa = this.ecoCom.eco_com_fixed_pension.aps_total_fsa;
-          this.ecoCom.aps_total_cc = this.ecoCom.eco_com_fixed_pension.aps_total_cc;
-          this.ecoCom.aps_total_fs = this.ecoCom.eco_com_fixed_pension.aps_total_fs;
-          this.ecoCom.aps_disability = this.ecoCom.eco_com_fixed_pension.aps_disability;
-          this.ecoCom.aps_total_death = this.ecoCom.eco_com_fixed_pension.aps_total_death;
-          this.ecoCom.sub_total_rent = this.ecoCom.eco_com_fixed_pension.sub_total_rent;
-          this.ecoCom.reimbursement = this.ecoCom.eco_com_fixed_pension.reimbursement;
-          this.ecoCom.dignity_pension = this.ecoCom.eco_com_fixed_pension.dignity_pension;
-          this.ecoComModal.id = this.ecoCom.id;
-          this.ecoComModal.type = "ce";
+            this.ecoComModal.type = "ce";
+            this.ecoComModal.new_fixed_id = this.newFixedId;
           }
+          break;
         case 'am': // Auxilio Mortuorio
           if (this.ecoCom.eco_com_updated_pension.rent_type == "Automatico") {
-            this.ecoComModal.id = this.ecoCom.id;
-            this.ecoComModal.type = "am";       
+            this.ecoComModal.type = "am";
           }
-          await axios
-            .patch(`/eco_com_change_rent_type`, this.ecoComModal)
-            .then(response => {
-              this.$store.commit("ecoComForm/setEcoCom", response.data);
-              this.$modal.hide("edit-rents-modal");
-              location.reload();
-              flash("Rentas Actualizadas con exito");
-            })
-            .catch(error => {
-              flashErrors("Error al procesar: ", error.response.data.errors);
-              this.$modal.hide("edit-rents-modal");
-            });
-          this.loadingButton = false;
-          this.editing = true;
+          break;
       }
+        await axios
+          .patch(`/eco_com_change_rent_type`, this.ecoComModal)
+          .then(response => {
+            this.$store.commit("ecoComForm/setEcoCom", response.data);
+            this.$modal.hide("edit-rents-modal");
+            location.reload();
+            flash("Rentas Actualizadas con exito");
+          })
+          .catch(error => {
+            flashErrors("Error al procesar: ", error.response.data.errors);
+            this.$modal.hide("edit-rents-modal");
+          });
+        this.loadingButton = false;
+        this.editing = true;
     }, 
     async getProcedures() {
       this.$scrollTo("#wrapper");
@@ -924,6 +974,10 @@ export default {
           flashErrors("Error al procesar: ", error.response.data.errors);
         });
     },
+    getProcedureSemester(id) {
+      const p = this.procedures.find(e => e.id == id);      
+      return p.semester + p.year.split('-')[0] + '(' + p.rent_month + ')'
+    }
   }
 };
 </script>
