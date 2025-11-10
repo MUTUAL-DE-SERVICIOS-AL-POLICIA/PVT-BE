@@ -72,7 +72,7 @@ class EcoComCertificationController extends Controller
 
         //$bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
         $bar_code = \DNS2D::getBarcodePNG($this->get_module_eco_com($eco_com->id), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
+        $footerHtml = view()->make('eco_com.print.footer_reception', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
@@ -215,7 +215,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
         $data = [
             'direction' => $direction,
@@ -316,7 +316,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
         $data = [
             'direction' => $direction,
@@ -368,7 +368,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
 
         $data = [
             'direction' => $direction,
@@ -477,7 +477,7 @@ class EcoComCertificationController extends Controller
         $type = $eco_com->getType();
         $type_modality = $eco_com->eco_com_modality->procedure_modality->name;
         $user = auth()->user();
-        $area = Util::getRol()->wf_states->first()->first_shortened;
+        $area = Util::getRol()->display_name;
         $date = Util::getTextDate();
 
         $eco_coms_query = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
@@ -553,7 +553,7 @@ class EcoComCertificationController extends Controller
 
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer_reception', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
