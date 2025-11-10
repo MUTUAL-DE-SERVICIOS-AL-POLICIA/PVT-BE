@@ -477,7 +477,7 @@ class EcoComCertificationController extends Controller
         $type = $eco_com->getType();
         $type_modality = $eco_com->eco_com_modality->procedure_modality->name;
         $user = auth()->user();
-        $area = Util::getRol()->wf_states->first()->first_shortened;
+        $area = Util::getRol()->display_name;
         $date = Util::getTextDate();
 
         $eco_coms_query = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
