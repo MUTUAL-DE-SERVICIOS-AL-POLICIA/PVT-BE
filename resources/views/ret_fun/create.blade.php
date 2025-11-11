@@ -36,8 +36,8 @@
                             @on-loading="setLoading"
                             >
                         <ret-fun-create-info></ret-fun-create-info> 
-                            <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
-                                <ret-fun-step1-requirements :modalities="{{ $modalities }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :affiliate="{{ $affiliate }}"
+                            <tab-content title="Modalidad y Requisitos" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
+                                <ret-fun-step1-requirements ref="uno" :modalities="{{ $modalities }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :affiliate="{{ $affiliate }}"
                                 >
                                 </ret-fun-step1-requirements>
                             </tab-content>

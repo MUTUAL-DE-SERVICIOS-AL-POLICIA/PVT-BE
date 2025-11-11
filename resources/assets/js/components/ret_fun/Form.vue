@@ -30,7 +30,7 @@ export default {
       this.loadingWizard = value;
     },
     async validateFirstStep() {      
-      const isValid = await this.$refs.uno.$children[0].validateStep();      
+      const isValid = await this.$refs.uno.validateStep();      
       if (isValid) {
         this.showSecondStep = true;
         const scrollToFooterCreateBeneficiaries = scroller();

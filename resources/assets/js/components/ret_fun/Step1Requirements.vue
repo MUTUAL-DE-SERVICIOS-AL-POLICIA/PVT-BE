@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
-            <requirement-select ref="requirements" :requirement-list.sync="requirementList"
+            <requirement-select ref="requirements" :requirement-list="requirementList"
                 :aditional-requirements-uploaded="aditionalRequirementsUploaded"
                 :aditional-requirements="aditionalRequirements"></requirement-select>
         </div>
@@ -118,13 +118,7 @@ export default {
             else {
                 let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
                 const data = (await axios.get(uri)).data;
-                const requiredDocuments = data.requiredDocuments;
-                Object.values(requiredDocuments).forEach(value => {
-                    value.forEach(r => {
-                        r['status'] = false;
-                    });
-                });
-                this.requirementList = requiredDocuments;
+                this.requirementList = data.requiredDocuments;
                 this.aditionalRequirements = data.additionallyDocuments;
                 this.aditionalRequirementsUploaded = data.additionallyDocumentsUpload;
             }
@@ -137,25 +131,6 @@ export default {
             setTimeout(() => {
                 $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
             }, 500);
-        },
-
-        checked(index, i) {
-            for (var k = 0; k < this.requirementList[index].length; k++) {
-                if (k != i) {
-                    this.requirementList[index][k].status = false;
-                    this.requirementList[index][k].background = 'bg-warning-yellow';
-
-                }
-            }
-            this.requirementList[index][i].status = !this.requirementList[index][i].status;
-            this.requirementList[index][i].background = this.requirementList[index][i].background == 'bg-success-green' ? '' : 'bg-success-green';
-            if (this.requirementList[index].every(r => !r.status)) {
-                for (var k = 0; k < this.requirementList[index].length; k++) {
-                    if (!this.requirementList[index][k].status) {
-                        this.requirementList[index][k].background = '';
-                    }
-                }
-            }
         },
         onChooseCity(event) {
             const options = event.target.options;

@@ -120,11 +120,9 @@ export default {
                     }
                 }
             }
-
-            this.$emit('update:requirementList', this.localRequirementList);
         },
         validate() {
-            const isRequirementsValid = Object.values(this.requirementList).every(requirementGroup =>
+            const isRequirementsValid = Object.values(this.localRequirementList).every(requirementGroup =>
                 requirementGroup.some(rq => rq.status)
             );
             if(!isRequirementsValid){
