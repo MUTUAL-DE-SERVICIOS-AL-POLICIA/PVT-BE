@@ -5,13 +5,13 @@ export default {
     return {
       pass: false,
       loadingWizard: false,
-      showRequirementsError: false,
       count: 0,
       name: null,
       email: null,
       phone: null,
       url: null,
-      loading: false
+      loading: false,
+      showSecondStep: false,
     };
   },
   methods: {
@@ -29,45 +29,14 @@ export default {
     setLoading: function(value) {
       this.loadingWizard = value;
     },
-    showRequirementsErrorChanged(val) {
-      console.log("llegue emmit");
-
-      this.showRequirementsError = val;
-    },
-    validateFirstStep() {
-      return true;
-      this.showRequirementsError = false;
-      if (!this.$refs.uno.$children[0].city_end_id) {
-        return false;
+    async validateFirstStep() {      
+      const isValid = await this.$refs.uno.$children[0].validateStep();      
+      if (isValid) {
+        this.showSecondStep = true;
+        const scrollToFooterCreateBeneficiaries = scroller();
+        scrollToFooterCreateBeneficiaries("#ret-fun-form-header");
       }
-      if (!this.$refs.uno.$children[0].modality) {
-        return false;
-      }
-      let x = this.$refs.uno.$children[0].requirementList;
-      var someRequirement = true;
-      Object.keys(x).forEach(function(key) {
-        if (!x[key].some(rq => rq.status)) {
-          someRequirement = false;
-        }
-      });
-      if (!someRequirement) {
-        this.showRequirementsError = !this.showRequirementsError;
-        return false;
-      }
-      const scrollToFooterCreateBeneficiaries = scroller();
-      scrollToFooterCreateBeneficiaries("#ret-fun-form-header");
-      return true;
-      // var deferred = $.Deferred();
-
-      // const val = this.$validator;
-      // setTimeout(function(){
-      //     val.validateAll((res)=>{
-      //         this.pass=res;
-      //     })
-      //     console.log("long func completed");
-      //     deferred.resolve("hello");
-      // }, 1000);
-      // return deferred.promise().then((h)=>{return this.pass});
+      return isValid;
     },
     validateSecondStep() {
       if (!this.$refs.dos.$children[0].applicant_type) {

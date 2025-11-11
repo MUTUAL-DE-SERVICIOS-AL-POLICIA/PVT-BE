@@ -459,6 +459,7 @@ Vue.component('edit-pension-modal', require('./components/eco_com/EditPensionMod
 Vue.component('sweet-alert-modal', require('./components/utils/SweetAlertModal.vue'));
 Vue.component('correlative', require('./components/utils/Correlative.vue'));
 Vue.component('certification-button', require('./components/utils/CertificationButton.vue'));
+Vue.component('requirement-select', require('./components/utils/RequirementSelect.vue'));
 // Edit user
 Vue.component('edit-user', require('./components/user/EditUser.vue'));
 

@@ -1,3 +1,63 @@
+<template>
+    <div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="form-group" :class="{ 'has-error': errors.has('procedure_type_id') }">
+                    <label class="col-sm-3 control-label">Tipo de Pago</label>
+                    <div class="col-sm-8">
+                        <select class="form-control m-b" ref="procedure_type_id" name="procedure_type_id"
+                            @change="onChooseProcedureType" v-model="procedure_type_id" v-validate.initial="'required'">
+                            <option :value="null"></option>
+                            <option v-for="type in procedureTypes" :value="type.id" :key="type.id">{{ type.name }}
+                            </option>
+                        </select>
+                        <i v-show="errors.has('procedure_type_id')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('procedure_type_id')" class="text-danger">{{
+                            errors.first('procedure_type_id') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" :class="{ 'has-error': errors.has('city_end_id') }">
+                    <label class="col-sm-4 control-label">Regional</label>
+                    <div class="col-sm-8">
+                        <select class="form-control m-b" ref="city_end" name="city_end_id" @change="onChooseCity"
+                            v-model="city_end_id" v-validate.initial="'required'">
+                            <option :value="null"></option>
+                            <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
+                        </select>
+                        <i v-show="errors.has('city_end_id')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('city_end_id')" class="text-danger">{{ errors.first('city_end_id')
+                            }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" :class="{ 'has-error': errors.has('ret_fun_modality') }">
+                    <label class="col-sm-4 control-label">Modalidad</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality"
+                            name="ret_fun_modality" id="ret_fun_modality" v-validate.initial="'required'">
+                            <option :value="null"></option>
+                            <option v-for="(modality, index) in modalitiesFilter" :value="modality.id" :key="index">
+                                {{ modality.name }}</option>
+                        </select>
+                        <i v-show="errors.has('ret_fun_modality')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('ret_fun_modality')" class="text-danger">{{
+                            errors.first('ret_fun_modality') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <requirement-select ref="requirements" :requirement-list.sync="requirementList"
+                :aditional-requirements-uploaded="aditionalRequirementsUploaded"
+                :aditional-requirements="aditionalRequirements"></requirement-select>
+        </div>
+    </div>
+</template>
 <script>
 export default {
     props: [
@@ -6,12 +66,11 @@ export default {
         'user',
         'cities',
         'procedureTypes',
-        'showRequirementsError'
     ],
     data() {
         return {
             editing: false,
-            requirementList: [],
+            requirementList: {},
             aditionalRequirements: [],
             aditionalRequirementsUploaded: [],
             modality: null,
@@ -29,6 +88,11 @@ export default {
         this.onChooseProcedureType();
     },
     methods: {
+        async validateStep() {            
+            const isStepValid = await this.$validator.validateAll();
+            const isRequirementsValid = this.$refs.requirements.validate();
+            return isStepValid && isRequirementsValid;
+        },
         onChooseProcedureType() {
             this.modalitiesFilter = this.modalities.filter((m) => {
                 return m.procedure_type_id == this.procedure_type_id;
@@ -50,15 +114,14 @@ export default {
             this.getAditionalRequirements();
         },
         async getRequirements() {
-            if (!this.modality) { this.requirementList = [] }
+            if (!this.modality) { this.requirementList = {} }
             else {
                 let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
                 const data = (await axios.get(uri)).data;
                 const requiredDocuments = data.requiredDocuments;
                 Object.values(requiredDocuments).forEach(value => {
                     value.forEach(r => {
-                        r['status'] = r['isUploaded'];
-                        r['background'] = r['isUploaded'] ? 'bg-success-blue' : '';
+                        r['status'] = false;
                     });
                 });
                 this.requirementList = requiredDocuments;
@@ -77,7 +140,6 @@ export default {
         },
 
         checked(index, i) {
-            if (this.requirementList[index][i].isUploaded) return;
             for (var k = 0; k < this.requirementList[index].length; k++) {
                 if (k != i) {
                     this.requirementList[index][k].status = false;
@@ -94,7 +156,6 @@ export default {
                     }
                 }
             }
-
         },
         onChooseCity(event) {
             const options = event.target.options;
