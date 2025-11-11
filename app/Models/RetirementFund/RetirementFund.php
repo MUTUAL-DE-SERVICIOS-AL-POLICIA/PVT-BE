@@ -5,6 +5,7 @@ namespace Muserpol\Models\RetirementFund;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Muserpol\Models\RetirementFund\RetFunBeneficiary;
 use Muserpol\Helpers\Util;
 
@@ -112,6 +113,10 @@ class RetirementFund extends Model
     {
         return $this->hasMany(RetFunSubmittedDocument::class);
     }
+    public function ret_fun_refunds(): HasMany
+	{
+		return $this->hasMany(RetFunRefund::class);
+    }
     public function getReceptionSummary(){
         
         $beneficiary = RetFunBeneficiary::where('type','S')->where('retirement_fund_id',$this->id)->first();
@@ -153,9 +158,9 @@ class RetirementFund extends Model
         return $this->hasMany('Muserpol\Models\InfoLoan');
     }
     /*
-    Función que devuelve si el trámite de fondo es el primero o el segundo del afiliado
+    Función que devuelve si el trámite de fondo pertenece a reincorporación
     */
-    public function procedureIndex()
+    public function isReinstatement()
     {
         $ret_fun_all = RetirementFund::where('affiliate_id', $this->affiliate_id)
             ->where('code', 'NOT LIKE', '%A')
@@ -163,6 +168,6 @@ class RetirementFund extends Model
             ->orderBy('id', 'ASC')
             ->pluck('id')->all();
         $index = array_search($this->id, $ret_fun_all);
-        return $index;
+        return $index == 1;
     }
 }

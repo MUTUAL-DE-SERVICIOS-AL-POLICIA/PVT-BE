@@ -2,8 +2,13 @@
 
 namespace Muserpol\Models\Contribution;
 
+use InvalidArgumentException;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class Contribution extends Model
 {
@@ -76,5 +81,42 @@ class Contribution extends Model
     public function contribution_process()
     {
         return $this->morphToMany('Muserpol\Models\Contribution\ContributionProcess', 'quotable')->withTimestamps();
+    }
+
+    public static function sumReimbursement(Collection $contributions, array $sumColumns = []) : Collection
+    {
+        if ($contributions->isEmpty()) {
+            throw new \Exception("Es necesario al menos una contribución para sumar los reembolsos.");
+        }
+
+        $affiliateId = $contributions->first()['affiliate_id'];
+        $contributionMonths = $contributions->pluck('month_year')->toArray();
+
+        // Obtener los reembolsos del mismo afiliado y meses
+        $reimbursements = Reimbursement::where('affiliate_id', $affiliateId)
+            ->select(array_merge(['affiliate_id', 'month_year'], $sumColumns))
+            ->whereIn('month_year', $contributionMonths)
+            ->whereNull('deleted_at')
+            ->get()
+            ->keyBy('month_year');
+
+        if ($reimbursements->isEmpty()) {
+            return $contributions->values();
+        }
+
+        $result = $contributions->map(function ($contribution) use ($reimbursements, $sumColumns) {
+            $month = $contribution->month_year;
+
+            if ($reimbursements->has($month)) {
+                $reimbursement = $reimbursements->get($month);
+                foreach ($sumColumns as $col) {
+                    $contribution->$col += $reimbursement->$col;
+                }
+            }
+
+            return $contribution;
+        });
+        
+        return $result->values();
     }
 }

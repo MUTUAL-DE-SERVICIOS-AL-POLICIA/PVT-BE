@@ -24,13 +24,16 @@
                 TOTAL GANADO
             </td>
             <td class="px-15 py text-center">
-                SUELDO
+                TOTAL COTIZABLE
             </td>
             <td class="px-15 py text-center">
-                Antigüedad
+                APORTE F.R.P.S
             </td>
             <td class="px-15 py text-center">
-                APORTE
+                APORTE C.M.
+            </td>
+            <td class="px-15 py text-center">
+                TOTAL APORTE
             </td>               
         </tr>
     </thead><br>
@@ -41,8 +44,9 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($contribution->month_year)) }}</td>
                     <td class="text-center uppercase font-bold px-5 py-3">{{ $contribution->gain > 0 ? Util::formatMoney($contribution->gain) : Util::formatMoney($contribution->base_wage) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->base_wage) }}</td>
-                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->seniority_bonus) }}</td>                        
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->quotable) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->retirement_fund) }}</td>
+                    <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->mortuary_quota) }}</td>                        
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                 </tr> 
                 @foreach($reimbursements as $reimbursement)
@@ -52,9 +56,10 @@
                             <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>                            
                             <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->gain) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->base_wage) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->seniority_bonus) }}</td>
-                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>                            
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->quotable) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->retirement_fund) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->mortuary_quota) }}</td>                        
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>                           
                         </tr>
                     @endif        
                 @endforeach
@@ -63,7 +68,7 @@
 </table>
 <br>
 <div>
-    Es cuanto se certifica para fines consiguientes
+    Es cuanto se certifica los aportes antes al destino a la disponibilidad de las letras, para fines consiguientes.
 </div>
 <br>
 @if($message)

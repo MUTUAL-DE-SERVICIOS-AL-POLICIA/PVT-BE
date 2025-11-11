@@ -7,6 +7,8 @@ use Muserpol\Models\EconomicComplement\EcoComModality;
 
 class ProcedureModality extends Model
 {
+    protected $fillable = ['procedure_type_id', 'name', 'shortened'];
+
     public $timestamps = false;
 
     public function eco_com_modalities()
@@ -26,6 +28,13 @@ class ProcedureModality extends Model
     public function retirement_funds()
     {
         return $this->hasMany('Muserpol\Models\RetirementFund\RetirementFund','procedure_modality_id');
+    }
+
+    public function ret_fun_procedures()
+    {
+        return $this->belongsToMany('Muserpol\Models\RetirementFund\RetFunProcedure', 'ret_fun_procedures_modalities')
+            ->withPivot('annual_percentage_yield')
+            ->withTimestamps();
     }
 
     public function affiliate_folders()
