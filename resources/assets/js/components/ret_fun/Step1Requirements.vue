@@ -53,7 +53,6 @@
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <requirement-select ref="requirements" :requirement-list="requirementList"
-                :aditional-requirements-uploaded="aditionalRequirementsUploaded"
                 :aditional-requirements="aditionalRequirements"></requirement-select>
         </div>
     </div>
@@ -69,17 +68,11 @@ export default {
     ],
     data() {
         return {
-            editing: false,
             requirementList: {},
             aditionalRequirements: [],
-            aditionalRequirementsUploaded: [],
             modality: null,
-            show_spinner: false,
-            modality_id: 3,
-            actual_target: 1,
             city_end_id: this.user.city_id,
             procedure_type_id: 2,
-            my_index: 1,
             modalitiesFilter: [],
         }
     },
@@ -88,6 +81,7 @@ export default {
         this.onChooseProcedureType();
     },
     methods: {
+        // Valida el primer paso del formulario, llamado desde el padre
         async validateStep() {            
             const isStepValid = await this.$validator.validateAll();
             const isRequirementsValid = this.$refs.requirements.validate();
@@ -98,9 +92,8 @@ export default {
                 return m.procedure_type_id == this.procedure_type_id;
             })
             this.modality = null;
-            this.getRequirements();
         },
-        onChooseModality(event) {
+        onChooseModality() {
             const mod = this.modalities.filter(e => e.id == this.modality)[0];
             if (mod) {
                 let object = {
@@ -111,7 +104,6 @@ export default {
                 this.$store.commit('retFunForm/setModality', object);
             }
             this.getRequirements();
-            this.getAditionalRequirements();
         },
         async getRequirements() {
             if (!this.modality) { this.requirementList = {} }
@@ -120,14 +112,7 @@ export default {
                 const data = (await axios.get(uri)).data;
                 this.requirementList = data.requiredDocuments;
                 this.aditionalRequirements = data.additionallyDocuments;
-                this.aditionalRequirementsUploaded = data.additionallyDocumentsUpload;
             }
-        },
-        convertToStringJson(objeto) {
-            return JSON.stringify(objeto);
-        },
-        getAditionalRequirements() {
-            if (!this.modality) { this.aditionalRequirements = [] }
             setTimeout(() => {
                 $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
             }, 500);
