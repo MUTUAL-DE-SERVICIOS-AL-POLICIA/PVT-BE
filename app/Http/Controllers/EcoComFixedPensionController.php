@@ -10,6 +10,47 @@ use Muserpol\Models\EconomicComplement\EconomicComplement;
 
 class EcoComFixedPensionController extends Controller
 {
+    public function store(Request $request)
+    {
+        // Validar los datos de entrada
+        $request->validate([
+            'eco_com_procedure_id' => 'required|numeric',
+            'affiliate_id' => 'required|numeric',
+            'rent_type' => 'required|in:Manual,Replica',
+            'aps_total_cc' => 'nullable|numeric',
+            'aps_total_fsa' => 'nullable|numeric',
+            'aps_total_fs' => 'nullable|numeric',
+            'aps_disability' => 'nullable|numeric',
+            'aps_total_death' => 'nullable|numeric',
+            'sub_total_rent' => 'nullable|numeric',
+            'reimbursement' => 'nullable|numeric',
+            'dignity_pension' => 'nullable|numeric',
+            'total_rent' => 'nullable|numeric',
+        ]);
+
+        // Crear un nuevo registro
+        $fixed = new EcoComFixedPension();
+        $fixed->user_id = Auth::user()->id;
+        $fixed->affiliate_id = $request->affiliate_id;
+        $fixed->eco_com_procedure_id = $request->eco_com_procedure_id;
+        $fixed->eco_com_regulation()->associate(EcoComRegulation::where('is_enable', true)->first());
+        // Campos para gestora
+        $fixed->aps_total_fsa = $request->aps_total_fsa;
+        $fixed->aps_total_cc = $request->aps_total_cc;
+        $fixed->aps_total_fs = $request->aps_total_fs;
+        $fixed->aps_disability = $request->aps_disability;
+        $fixed->aps_total_death = $request->aps_total_death;
+        // Campos para senasir
+        $fixed->sub_total_rent = $request->sub_total_rent;
+        $fixed->total_rent = $request->total_rent;
+        $fixed->reimbursement = $request->reimbursement;
+        $fixed->dignity_pension = $request->dignity_pension;
+
+        $fixed->rent_type = 'Manual';
+        $fixed->save();
+        return $fixed;
+    }
+
     // Mostrar el formulario de edición
     public function edit($id)
     {

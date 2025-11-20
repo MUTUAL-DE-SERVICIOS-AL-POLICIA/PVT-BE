@@ -1183,7 +1183,7 @@ class QuotaAidMortuaryController extends Controller
     ///
 
 
-    if( $active_auxilio>=1 || $active_quota>=1){
+    if( $active_auxilio>=1 || $active_quota>=2){
       $procedure_types = ProcedureType::where('id', '4')->get();
     }else{
       $procedure_types = ProcedureType::where('id', '3')->orWhere('id', '4')->get();
@@ -1300,47 +1300,35 @@ class QuotaAidMortuaryController extends Controller
   public function getTestimonies($quota_aid_id)
   {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
-    $applicants = $quota_aid->quota_aid_beneficiaries()->where('type', 'S')->get()->all();
-    $testimonies = [];
-    if (count($applicants) > 0) {
-      foreach ($applicants as $applicant) {
-        $testimonies = array_merge($testimonies, $applicant->testimonies()->with('quota_aid_beneficiaries')->get()->all());
-      }
-    }
-    // $affiliate = $quota_aid->affiliate;
-    // $testimonies = $affiliate->testimony()->with('quota_aid_beneficiaries')->get();
+    $affiliate = $quota_aid->affiliate;
+    $testimonies = $affiliate->testimony()
+      ->whereHas('quota_aid_beneficiaries') // solo testimonios con relación
+      ->with('quota_aid_beneficiaries')     // eager load de la relación
+      ->get();
     return $testimonies;
   }
   public function updateBeneficiaryTestimony(Request $request, $quota_aid_id)
   {
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     $affiliate = $quota_aid->affiliate;
+    
+    $testimonies_array_request = array_filter(array_pluck($request->all(), 'id'));
+    
+    foreach ($affiliate->testimony as $t) {
+        if (!in_array($t->id, $testimonies_array_request)) {
+            $hasBeneficiary = $t->quota_aid_beneficiaries()
+                ->where('quota_aid_mortuary_id', $quota_aid_id)
+                ->exists();
 
-    $testimonies_array_request = array();
-    foreach (array_pluck($request->all(), 'id') as $key => $value) {
-      if ($value) {
-        array_push($testimonies_array_request, $value);
-      }
-    }
-    $testimonies = $affiliate->testimony;
-    foreach ($testimonies as $key => $t) {
-      $index = array_search($t->id, $testimonies_array_request);
-      if ($index === false) {
-        $beneficiaries = $t->quota_aid_beneficiaries()->where('type', 'S')->get();
-        foreach ($beneficiaries as $b) {
-          if ($b->quota_aid_mortuary_id == $quota_aid_id) {
-            $t->delete();
-            break;
-          }
+            if ($hasBeneficiary) {
+                $t->delete();
+            }
         }
-      }
     }
-    foreach ($request->all() as $key => $t) {
-      if ($t['id'] == 'new') {
-        $testimony = new Testimony();
-      } else {
-        $testimony = Testimony::find($t['id']);
-      }
+    foreach ($request->all() as $t) {
+      $testimony = ($t['id'] == 'new')
+            ? new Testimony()
+            : Testimony::find($t['id']);
       $testimony->user_id = Util::getAuthUser()->id;
       $testimony->affiliate_id = $affiliate->id;
       $testimony->document_type = $t['document_type'];
@@ -1350,11 +1338,8 @@ class QuotaAidMortuaryController extends Controller
       $testimony->place = $t['place'];
       $testimony->notary = $t['notary'];
       $testimony->save();
-      $ids_ben = array();
-      foreach ($t['quota_aid_beneficiaries'] as $ben) {
-        array_push($ids_ben, $ben['id']);
-      }
-      $testimony->quota_aid_beneficiaries()->sync($ids_ben);
+     
+      $testimony->quota_aid_beneficiaries()->sync(array_pluck($t['quota_aid_beneficiaries'], 'id'));
     }
     return;
   }
