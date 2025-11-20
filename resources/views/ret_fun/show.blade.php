@@ -311,7 +311,7 @@
                             <div id="tab-summited-document" class="tab-pane">
 
                                 @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)                                     
-                                    <ret-fun-step1-requirements-edit :affiliate="{{ $affiliate }}" :ret_fun="{{ $retirement_fund }}" :submitted="{{$submit_documents}}" :requirements='@json($requirements)' :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
+                                    <ret-fun-step1-requirements-edit :affiliate="{{ $affiliate }}" :ret_fun="{{ $retirement_fund }}" :requirements='@json($requirements)' :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
                                     </ret-fun-step1-requirements-edit>
                                 @endcan
                             </div>

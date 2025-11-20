@@ -24,8 +24,10 @@
                             </h1>
                         </div>
                         <div class="col-md-10" style="display: flex; flex-direction: column; align-items: flex-start;">
-                            <span class="label label-success">{{ rq.isUploaded ? "DOCUMENTO DIGITAL" : "" }}</span>
-                            <strong style="font-size: 17px;">{{ rq.name }}</strong>
+                            <div>
+                                <strong style="font-size: 17px;">{{ rq.name }}</strong>
+                                <span v-if="rq.isUploaded" class="label label-success">DOCUMENTO DIGITAL</span>
+                            </div>
                             <div style="display: flex; align-items: center; margin-top: 2px; width: 50%;">
                                 <i class="fa fa-comments-o"></i> Comentario:
                                 <input type="text" @click.stop

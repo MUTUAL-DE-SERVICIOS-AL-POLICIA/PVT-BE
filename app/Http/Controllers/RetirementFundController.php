@@ -551,10 +551,8 @@ class RetirementFundController extends Controller
             $guardian = new RetFunLegalGuardian();
 
         $procedures_modalities_ids = ProcedureModality::join('procedure_types', 'procedure_types.id', '=', 'procedure_modalities.procedure_type_id')->where('procedure_types.module_id', '=', 3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
-        //return $procedures_modalities_ids;
         $procedures_modalities = ProcedureModality::whereIn('procedure_type_id', $procedures_modalities_ids)->get();
         $file_modalities = ProcedureModality::get();
-        $documents = RetFunSubmittedDocument::where('retirement_fund_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
         $cities = City::get();
         $kinships = Kinship::get();
         $kinship_beneficiaries = KinshipBeneficiary::get();
@@ -566,42 +564,16 @@ class RetirementFundController extends Controller
         $states = RetFunState::get();
 
         $ret_fun_records = RetFunRecord::where('ret_fun_id', $id)->orderBy('id', 'desc')->get();
-        //return $retirement_fund->ret_fun_state->name;
-
-        ///proof
         $user = User::find(Auth::user()->id);
         $procedure_types = ProcedureType::where('module_id', 3)->get();
-        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
-            ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->where('procedure_modality_id', $retirement_fund->procedure_modality_id)
-            ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-            ->orderBy('procedure_requirements.number', 'ASC')
-            ->get();
         $modalities = ProcedureModality::where('procedure_type_id', '<=', '21')->select('id', 'name', 'procedure_type_id')->get();
-
         $observation_types = ObservationType::where('module_id', 3)->get();
 
-        //selected documents
-        $submitted = RetFunSubmittedDocument::select('ret_fun_submitted_documents.id', 'procedure_requirements.number', 'ret_fun_submitted_documents.procedure_requirement_id', 'ret_fun_submitted_documents.comment', 'ret_fun_submitted_documents.is_valid', 'ret_fun_submitted_documents.is_uploaded', 'procedure_documents.name')
-            ->leftJoin('procedure_requirements', 'ret_fun_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
-            ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->orderby('procedure_requirements.number', 'ASC')
-            ->where('ret_fun_submitted_documents.retirement_fund_id', $id);
+        // submit documents tab
         
-        // Sirve para listar documentos que fueron eliminados anteriormente
-        $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
-            return [$item->id => $item];
-        });
-        $restore_procedure_documents = collect();
-        foreach ($submitted->get() as $item) {
-            if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
-                $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
-            }
-        }
-        $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+        $requirements = $retirement_fund->requirementsList();
 
-        // return $submitted->get();
-        // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
+        // end submit documents tab
         /**for validate doc*/
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
@@ -613,28 +585,13 @@ class RetirementFundController extends Controller
         $workflow_records = $retirement_fund->wf_records()->orderBy('date', 'desc')->get();
 
         $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
-        /*if ($first_wf_state) {
-            $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
-            $str = $first_wf_state->message;
-            preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-            $user_name = $matches[0][0];
-            $rol = User::where('username', '=', $user_name)->first()->roles->first();
-            $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
-        }*/
-
-
-        // dd($first_wf_state);
 
         $wf_states = WorkflowState::where('module_id', '=', $module->id)->where('sequence_number', '>', ($first_wf_state->sequence_number ?? 1))->orderBy('sequence_number')->get();
 
-        $correlatives = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->get();
-        $steps = [];
         $data = $retirement_fund->getReceptionSummary();
         $is_editable = ID::getNonEditableId();
         if (isset($retirement_fund->id) && ($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 2))
             $is_editable = ID::getEditableId();
-
-
 
         $wf_sequences_back = DB::table("wf_states")
             ->where("wf_states.module_id", "=", $module->id)
@@ -758,7 +715,6 @@ class RetirementFundController extends Controller
             'legal_guardian'    =>  $guardian,
             'procedure_modalities' => $procedures_modalities,
             'file_modalities'   =>  $file_modalities,
-            'documents' => $documents,
             'cities'    =>  $cities,
             'kinships'   =>  $kinships,
             'kinship_beneficiaries' => $kinship_beneficiaries,
@@ -767,14 +723,12 @@ class RetirementFundController extends Controller
             'states'    =>  $states,
             'financial_entities'    =>  $financial_entities,
             'ret_fun_records' => $ret_fun_records,
-            'requirements'  =>  $procedure_requirements,
+            'requirements'  =>  $requirements,
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
             'observations' => $retirement_fund->ret_fun_observations,
-            'submitted' =>  $submitted->pluck('ret_fun_submitted_documents.procedure_requirement_id', 'procedure_requirements.number'),
-            'submit_documents' => $submitted->get(),
             'can_validate' =>  $can_validate,
             'can_cancel' =>  $can_cancel,
             'workflow_records' =>  $workflow_records,
@@ -992,7 +946,7 @@ class RetirementFundController extends Controller
             foreach ($request->submit_documents as $document_array) {
 
                 foreach ($document_array as $document) {
-                    $submit_document = RetFunSubmittedDocument::find($document['id']);
+                    $submit_document = RetFunSubmittedDocument::find($document['submittedDocumentId']);
                     $submit_document->is_valid = $document['status'];
                     $submit_document->comment = $document['comment'];
                     $submit_document->save();
