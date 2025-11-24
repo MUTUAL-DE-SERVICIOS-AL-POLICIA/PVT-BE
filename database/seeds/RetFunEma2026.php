@@ -31,6 +31,7 @@ class RetFunEma2026 extends Seeder
             $procedure->hierarchies()->sync($hierarchiesSyncData);
 
             // Procedimientos
+            $RF_PROCEDURE = ProcedureType::RET_FUN;
             $PG_PROCEDURE = ProcedureType::RET_FUN_PG;
             $DA_PROCEDURE = ProcedureType::RET_FUN_DA;
 
@@ -61,6 +62,7 @@ class RetFunEma2026 extends Seeder
 
             // Nuevas submodalidades
             $newModalities = [
+                ['procedure_type_id' => $RF_PROCEDURE, 'name' => 'Invalidez', 'shortened' => 'FRPS - I'],
                 ['procedure_type_id' => $PG_PROCEDURE, 'name' => 'Jubilación', 'shortened' => 'PGA - JUB'],
                 ['procedure_type_id' => $DA_PROCEDURE, 'name' => 'Retiro Forzoso', 'shortened' => 'DA - RF'],
                 ['procedure_type_id' => $DA_PROCEDURE, 'name' => 'Retiro Voluntario', 'shortened' => 'DA - RV'],
