@@ -1183,7 +1183,7 @@ class QuotaAidMortuaryController extends Controller
     ///
 
 
-    if( $active_auxilio>=1 || $active_quota>=1){
+    if( $active_auxilio>=1 || $active_quota>=2){
       $procedure_types = ProcedureType::where('id', '4')->get();
     }else{
       $procedure_types = ProcedureType::where('id', '3')->orWhere('id', '4')->get();

@@ -22,6 +22,7 @@
                     </th>
                     <th class="align-top text-left text-xs font-normal align-middle px-10"
                         style="border-top: 2px solid; ">
+                        CREADO MEDIANTE: <span class="italic">{{ $eco_com->origin_channel->name }}</span><br>
                         PLATAFORMA VIRTUAL DE TRÁMITES
                         MUTUAL DE SERVICIOS AL POLICÍA - MUSERPOL <br>
                         <span class="italic">http://www.muserpol.gob.bo</span>
@@ -36,12 +37,5 @@
             </table>
         </div>
     </div>
-    {{-- <div style="width: 100%;margin:0;paddin:0; display:inline">
-        <img src="data:image/png;base64, {{ $bar_code }}" />
-    </div>
-    <div style="float:right; font-family:sans-serif; font-size:14px;">
-        <span>PLATAFORMA VIRTUAL DE TRÁMITES - MUSERPOL &nbsp;</span>
-    </div> --}}
 </body>
-
 </html>
