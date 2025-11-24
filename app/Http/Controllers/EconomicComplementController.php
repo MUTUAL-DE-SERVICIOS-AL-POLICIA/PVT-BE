@@ -601,9 +601,9 @@ class EconomicComplementController extends Controller
                 $submit->save();
             }
         }
-        if ($request->aditional_requirements) {
+        if ($request->additional_requirements) {
             $additional_requirements = [];
-            foreach ($request->aditional_requirements as $adr) {
+            foreach ($request->additional_requirements as $adr) {
                 $additional_requirements[] = json_decode($adr);
             }
             foreach ($additional_requirements  as  $requirement) {
@@ -1180,7 +1180,7 @@ class EconomicComplementController extends Controller
             ->flatten(1)
             ->filter(function ($r) { return $r['status']; });
 
-        $additionalRequirements = collect($request->aditional_requirements);
+        $additionalRequirements = collect($request->additional_requirements);
         
         // Unimos ambos arreglos por procedure_requirement_id
         $incoming = $newRequirements->concat($additionalRequirements)

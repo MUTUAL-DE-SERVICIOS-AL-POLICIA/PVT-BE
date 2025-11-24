@@ -53,7 +53,7 @@
         </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <requirement-select ref="requirements" :requirement-list="requirementList"
-                :aditional-requirements="aditionalRequirements"></requirement-select>
+                :additional-requirements="additionalRequirements" :is-loading="loadingReq"></requirement-select>
         </div>
     </div>
 </template>
@@ -69,7 +69,8 @@ export default {
     data() {
         return {
             requirementList: {},
-            aditionalRequirements: [],
+            additionalRequirements: [],
+            loadingReq: false,
             modality: null,
             city_end_id: this.user.city_id,
             procedure_type_id: 2,
@@ -92,6 +93,8 @@ export default {
                 return m.procedure_type_id == this.procedure_type_id;
             })
             this.modality = null;
+            this.requirementList = {};
+            this.additionalRequirements = [];
         },
         onChooseModality() {
             const mod = this.modalities.filter(e => e.id == this.modality)[0];
@@ -106,16 +109,24 @@ export default {
             this.getRequirements();
         },
         async getRequirements() {
-            if (!this.modality) { this.requirementList = {} }
+            if (!this.modality) {
+                this.requirementList = {};
+                this.additionalRequirements = [];
+                return;
+            }
             else {
                 let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
-                const data = (await axios.get(uri)).data;
-                this.requirementList = data.requiredDocuments;
-                this.aditionalRequirements = data.additionallyDocuments;
+                this.loadingReq = true;
+                try {
+                    const data = (await axios.get(uri)).data;
+                    this.requirementList = data.requiredDocuments;
+                    this.additionalRequirements = data.additionallyDocuments;
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    this.loadingReq = false;
+                }
             }
-            setTimeout(() => {
-                $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-            }, 500);
         },
         onChooseCity(event) {
             const options = event.target.options;

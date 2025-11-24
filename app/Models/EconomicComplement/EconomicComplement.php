@@ -879,7 +879,7 @@ class EconomicComplement extends Model
                 'Muserpol\Gateway\AffiliateController@collateDocument',
                 [
                     'affiliateId' => $this->affiliate->id,
-                    'procedureModalityId' => $this->procedure_modality_id
+                    'procedureModalityId' => $this->eco_com_modality->procedure_modality_id
                 ]
             );
         } catch (\Exception $e) {

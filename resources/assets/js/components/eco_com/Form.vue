@@ -25,36 +25,14 @@ export default {
 
       this.showRequirementsError = val;
     },
-    async validateFirstStep() {
-      let keys = ["modality_id", "pension_entity_id", "city_id"];
-      try {
-        await keys.forEach(k => {
-          this.$refs.uno.$children[0].$validator.validate(k);
-        });
-      } catch (error) {
-        console.log("some error");
+    async validateFirstStep() { 
+      const isValid = await this.$refs.uno.validateStep();
+      if (isValid) {
+        this.showSecondStep = true;
+        const scrollToFooter = scroller();
+        scrollToFooter("#eco-com-form-header");
       }
-      await this.$refs.uno.$children[0].$validator.validateAll();
-      await this.$refs.dos.$children[0].$validator.validateAll();
-      let x = this.$refs.uno.$children[0].requirementList;
-      let documentLoaded = this.$refs.uno.$children[0].documentsLoaded;
-      if (!documentLoaded) {
-        this.showRequirementsError = true;
-        return false;
-      }
-      var someRequirement = true;
-      Object.keys(x).forEach(function(key) {
-        if (!x[key].some(rq => rq.status)) {
-          someRequirement = false;
-        }
-      });
-      if (!someRequirement) {
-        this.showRequirementsError = !this.showRequirementsError;
-        return false;
-      }
-      const scrollToFooter = scroller();
-      scrollToFooter("#eco-com-form-header");
-      return true;
+      return isValid;
     },
     async validateSecondStep() {
       await this.$refs.dos.$children[0].$validator.validateAll();
