@@ -335,9 +335,11 @@ th.ellipsis-text {
                                                 <td>{{$eco_com->eco_com_state->name }}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->getOnlyTotalEcoCom())}}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->total)}}</td>
+                                                <td>
                                                 @if (isset($eco_com->eco_com_fixed_pension))
-                                                <td>{{ \Carbon\Carbon::parse($eco_com->eco_com_fixed_pension->eco_com_procedure->year)->format('Y')}} - {{$eco_com->eco_com_fixed_pension->eco_com_procedure->semester}}</td>
+                                                    {{ \Carbon\Carbon::parse($eco_com->eco_com_fixed_pension->eco_com_procedure->year)->format('Y')}} - {{$eco_com->eco_com_fixed_pension->eco_com_procedure->semester}}
                                                 @endif
+                                                </td>
                                                 <td style="vertical-align:middle">
                                                 @can('update', new Muserpol\Models\EconomicComplement\EconomicComplement)
                                                     <a href="/eco_com/{{$eco_com->id}}">
