@@ -12,7 +12,7 @@
                                 <label for="year-select">Seleccione un Año:</label>
                                 <div class="input-group">
                                     <select id="year-select" class="form-control" v-model="selectedYear" :disabled="isLoading">
-                                        <option v-if="isLoading" value="" disabled>Actualizando lista de años...</option>
+                                        <option v-if="isLoading" value="" disabled>Cargando...</option>
                                         <option v-else value="">-- Seleccione --</option>
                                         <option v-for="year in years" :key="year" :value="year">
                                             {{ year }}
@@ -118,7 +118,7 @@ export default {
         },
         async updateBaseWages() {
             if (!this.selectedYear) return;
-            
+
             this.updating = true;
             this.isLoading = true;
             this.updateMessage = '';
@@ -132,7 +132,7 @@ export default {
                 this.updateMessage = response.data.message;
                 this.salaries = [];
                 this.selectedYear = '';
-                
+
                 await this.fetchYears();
                 window.events.$emit('salary-updated');
 
