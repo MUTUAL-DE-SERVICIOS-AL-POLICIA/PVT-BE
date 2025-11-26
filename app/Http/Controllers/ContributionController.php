@@ -1138,7 +1138,7 @@ class ContributionController extends Controller
                         ->where('ret_fun_refund_type_id', $refund_type->id)
                         ->withTrashed()
                         ->first();
-                    if($ret_fun_refund->trashed()) {
+                    if($ret_fun_refund && $ret_fun_refund->trashed()) {
                         $ret_fun_refund->restore();
                     }
                     if (!$ret_fun_refund) {

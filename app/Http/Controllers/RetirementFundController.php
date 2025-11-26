@@ -899,12 +899,6 @@ class RetirementFundController extends Controller
             ->find($affiliate->id);
         # 3 id of ret_fun
         $procedure_types = ProcedureType::where('module_id', 3)->get();
-        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id','procedure_requirements.deleted_at')
-            ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->whereNull('procedure_requirements.deleted_at')
-            ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-            ->orderBy('procedure_requirements.number', 'ASC')
-            ->get();
 
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
         if (!isset($spouse->id))
@@ -922,7 +916,6 @@ class RetirementFundController extends Controller
 
         $data = [
             'user' => $user,
-            //'requirements' => $procedure_requirements,
             'procedure_types'    => $procedure_types,
             'modalities'    => $modalities,
             'affiliate'  => $affiliate,

@@ -105,12 +105,12 @@ class Contribution extends Model
         }
 
         $result = $contributions->map(function ($contribution) use ($reimbursements, $sumColumns) {
-            $month = $contribution->month_year;
+            $month = $contribution['month_year'];
 
             if ($reimbursements->has($month)) {
                 $reimbursement = $reimbursements->get($month);
                 foreach ($sumColumns as $col) {
-                    $contribution->$col += $reimbursement->$col;
+                    $contribution[$col] += $reimbursement[$col];
                 }
             }
 
