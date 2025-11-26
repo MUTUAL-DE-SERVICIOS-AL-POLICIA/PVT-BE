@@ -13,7 +13,7 @@ class SalaryCalculationController extends Controller
 {
     public function getYears()
     {
-        $baseWageYears = BaseWage::select(DB::raw('EXTRACT(YEAR FROM month_year) as year'))->where('is_real_value', true)->distinct()->pluck('year');
+        $baseWageYears = BaseWage::select(DB::raw('EXTRACT(YEAR FROM month_year) as year'))->distinct()->pluck('year');
 
         $contributionYears = Contribution::select(DB::raw('EXTRACT(YEAR FROM month_year) as year'))
             ->where(function($q){
@@ -93,7 +93,6 @@ class SalaryCalculationController extends Controller
                 [
                     'user_id' => $userId,
                     'amount' => $contribution->salary,
-                    'is_real_value' => true
                 ]
             );
 

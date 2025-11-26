@@ -28,11 +28,8 @@ class BaseWageController extends Controller
         $hierarchies = Hierarchy::with(['degrees' => function ($query) {
             $query->where('is_active', true)->orderBy('id', 'asc');
         }, 'degrees.base_wages' => function ($query) {
-            $query->where('is_real_value', true)->orderBy('month_year', 'asc');
+            $query->orderBy('month_year', 'asc');
         }])
-        ->whereHas('degrees.base_wages', function ($query) {
-            $query->where('is_real_value', true);
-        })
         ->orderBy('id', 'asc')->get();
 
         $transformedHierarchies = $hierarchies->map(function ($hierarchy) {
