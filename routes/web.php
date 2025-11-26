@@ -748,6 +748,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('print_average', 'EconomicComplementController@printAverage')->name('print_average');
     // Route::get('export_average/{year}/{semester}', 'EconomicComplementReportController@export_average')->name('export_average');
 
+    // eco com_rent
+    Route::post('import_averages', 'EcoComRentController@importAverage');
+    Route::get('exportDegreesWithPrestations', 'EcoComRentController@exportDegreesWithPrestations');
+    Route::resource('ecocomrents', 'EcoComRentController');
+    
     // observations
     Route::get('eco_com_get_observations/{eco_com_id}', 'EcoComObservationController@getObservations');
     Route::get('eco_com_get_delete_observations/{eco_com_id}', 'EcoComObservationController@getDeleteObservations');
