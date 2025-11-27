@@ -36,18 +36,25 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                                 <tr>
+                                    <th>Nro</th>
                                     <th>Grado</th>
+                                    <th>Nombre</th>
                                     <th>Salario</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="salary in salaries" :key="salary.degree_name">
+                                <tr v-for="(salary, index) in salaries" :key="index">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>{{ salary.degree_shortened }}</td>
                                     <td>{{ salary.degree_name }}</td>
-                                    <td>{{ salary.contribution_salary !== null ? (salary.contribution_salary | currency) : '-' }}</td>
+                                    <td>{{ (salary.contribution_salary !== null && salary.contribution_salary != 0) ? (salary.contribution_salary | currency) : '-' }}</td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="text-right">
+                            <a :href="'/salary_calculation/export?year=' + selectedYear" class="btn btn-success" type="button" v-if="salaries.length > 0">
+                                <i class="fa fa-file-excel-o"></i> Exportar a Excel
+                            </a>
                             <button class="btn btn-success" type="button" @click="updateBaseWages" :disabled="!selectedYear || isLoading || updating">
                                 <span v-if="updating"><i class="fa fa-spinner fa-spin"></i> Actualizando...</span>
                                 <span v-else>Actualizar Salarios</span>
