@@ -29,6 +29,11 @@ class EconomicComplement extends Model
     {
         return $this->belongsTo('Muserpol\User');
     }
+
+    public function origin_channel()
+    {
+        return $this->belongsTo(EcoComOriginChannel::class, 'eco_com_origin_channel_id');
+    }
     public function affiliate()
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
@@ -149,9 +154,13 @@ class EconomicComplement extends Model
     {
         return $this->complementary_factor;
     }
-    public function getTotalSemester()
+    public function getTotalSemester($months_of_payment)
     {
-        return $this->difference * 6;
+        $months_of_payment = (int) $months_of_payment;
+        if($months_of_payment == 0) //null
+            $months_of_payment =  6;
+            
+        return $this->difference * $months_of_payment;
     }
     public function getOnlyTotalEcoCom()
     {
@@ -382,17 +391,17 @@ class EconomicComplement extends Model
         $change_state = false;
         $change_state_process = false;
         $user_id = Auth::user()->id;
-        if ($this->discount_types->count() > 0) {
-            if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
-                $this->eco_com_state_id = 18;
-                $change_state = true;
-            }else{
-                if ($this->eco_com_state_id == 18) {
-                    $this->eco_com_state_id = 16;
-                    $change_state_process = true;
-                }
-            }
-        }
+        // if ($this->discount_types->count() > 0) {
+        //     if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
+        //         $this->eco_com_state_id = 32;
+        //         $change_state = true;
+        //     }else{
+        //         if ($this->eco_com_state_id == 32) {
+        //             $this->eco_com_state_id = 16;
+        //             $change_state_process = true;
+        //         }
+        //     }
+        // }
         $this->save();
         if($change_state){
             //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
@@ -572,13 +581,15 @@ class EconomicComplement extends Model
             ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
             ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
+            ->leftJoin('eco_com_origin_channel', 'economic_complements.eco_com_origin_channel_id', '=', 'eco_com_origin_channel.id')
             ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
             ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
             ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->leftJoin('users as creator', 'creator.id', '=', 'eco_com_user.user_id')
             ->where( function($query) {
                 $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
             });
-    }
+        }
     public function scopeInfoBasic($query)
     {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
@@ -599,9 +610,11 @@ class EconomicComplement extends Model
             ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
             ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
+            ->leftJoin('eco_com_origin_channel', 'economic_complements.eco_com_origin_channel_id', '=', 'eco_com_origin_channel.id')
             ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
             ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
             ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->leftJoin('users as creator', 'creator.id', '=', 'eco_com_user.user_id')
             ->where( function($query) {
                 $query->where('eco_com_user.message','like','%eliminó%')
                 ->orWhereNull('eco_com_user.id');
@@ -658,7 +671,8 @@ class EconomicComplement extends Model
         economic_complements.affiliate_id as NUP,
         economic_complements.code as eco_com_code,
         economic_complements.reception_date as fecha_recepcion,
-        eco_com_user.message as usuario," .
+        CASE WHEN economic_complements.eco_com_origin_channel_id IN (2, 3) THEN '' ELSE creator.username END as usuario,
+        eco_com_origin_channel.name as modalidad_de_recepcion," .
             EconomicComplement::basic_info_beneficiary() . "," .
             EconomicComplement::basic_info_affiliates() . ",
         eco_com_city.name as regional,

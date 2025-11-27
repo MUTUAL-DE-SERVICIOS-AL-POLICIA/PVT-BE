@@ -531,74 +531,6 @@ class RetirementFundController extends Controller
     //public function show(RetirementFund $retirementFund)
     public function show($id)
     {
-        //         $data = [
-
-        //         ];
-        //         return \PDF::loadView('ret_fun.print.legal_dictum', $data)
-        // 				->setPaper('letter')
-        // 				->setOption('encoding', 'utf-8')
-        //                 ->stream("dictamenLegal.pdf");
-
-        //         return 123;
-        //         $retirement_fund = RetirementFund::find($id);
-        //         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
-        //         $discounts = $retirement_fund->discount_types(); //DiscountType::where('retirement_fund_id',$retirement_fund->id)->orderBy('discount_type_id','ASC')->get();
-        //         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-        //         $body = "Por consiguiente, habiendo sido remitido el presente trámite al Área Legal Unidad de
-        //         Otorgación del Fondo de Retiro Policial Solidario, autorizado por Jefatura de la Unidad de
-        //         Otorgación del Fondo de Retiro Policial Solidario, conforme a los Art. 2, 3, 5, 10, 26, 27, 28,
-        //         32, 36, 37, 38, 41, 42, 44, 45, 48, 49, 50, 70, 71, 72, 73, 74 y la Disposición Transitoria
-        //         Segunda, del Reglamento de Fondo de Retiro Policial Solidario, aprobado mediante
-        //         Resolución de Directorio N° 31/2017 en fecha 24 de agosto de 2017 y modificado mediante
-        //         Resolución de Directorio N° 36/2017 en fecha 20 de septiembre de 2017. Se DICTAMINA en
-        //         mérito a la documentación de respaldo contenida en el presente, ";
-
-        //         $flagy = 0;
-        //         if($discounts->count()>0)
-        //             $body .= "proceder a realizar el descuento de ";
-
-        //         $discount = $discounts->where('discount_type_id','1')->first();
-
-        //         if(isset($discount->id)){
-        //             $body.="Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).") por concepto de anticipo de Fondo de Retiro Policial de conformidad a la nota Nro. ".$discount->pivot->note_code." de fecha ".Util::getStringDate($discount->pivot->date);
-        //         }
-
-        //         $discounts = $retirement_fund->discount_types();
-
-        //         if(isset($discount->id)){
-        //             $body .= $this->getFlagy(3,2);
-        //             // if($flagy == 1)
-        //             // $body .= " y la suma de ";
-        //             $body.="Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).") por concepto de saldo de deuda con la MUSERPOL de conformidad al contrato de préstamo Nro. ".$discount->code." y nota ".$discount->note_code." de fecha ".Util::getStringDate($discount->date);
-        //         }
-        //         //
-        //         $discounts = $retirement_fund->discount_types();
-        //         $discount = $discounts->where('discount_type_id','3')->first();
-        //         $loans = InfoLoan::where('affiliate_id',$affiliate->id)->get();
-
-        //         $body.="Bs ".Util::formatMoney($discount->pivot->amount)." (".Util::convertir($discount->pivot->amount).") por concepto de garantía de préstamo a favor de";// los señores. ".$discount->code." y nota ".$discount->note_code." de fecha ".$discount->date;
-        //         $num_loans = $loans->count();
-        //         if($num_loans==1)
-        //             $body .= "l señore ";
-        //         else
-        //             $body .= " los señores ";
-        //         $i=0;
-        //         foreach($loans as $loan){
-        //             $i++;
-        //             if($i!=1)
-        //             {
-        //                 if($num_loans-$i==0)
-        //                     $body .= " y ";
-        //                 else
-        //                     $body .= ", ";
-        //             }
-        //             $body.= $loan->affiliate_guarantor->fullName()." con C.I. N° ".$loan->affiliate_guarantor->identity_card." en la suma de Bs ".Util::formatMoney($loan->amount)." (".Util::convertir($discount->pivot->amount);
-        //         }
-        //         $body .= " en conformidad al contrato de préstamo Nro. ".$discount->pivot->code." y la nota ".$discount->pivot->note_code." de fecha ". Util::getStringDate($retirement_fund->reception_date) ." de la Dirección de Estrategias Sociales e Inversiones. Reconocer los derechos y se otorgue el beneficio del Fondo de Retiro Policial Solidario por <b>".strtoupper($retirement_fund->procedure_modality->name)."</b> a favor de:<br><br>";
-        //         $body .= $affiliate->degree->shortened." ".$affiliate->fullName()." con C.I. N° ".$affiliate->identity_card."., el monto de Bs ".Util::formatMoney($retirement_fund->total_ret_fun)." (".Util::convertir($retirement_fund->total_ret_fun).").";
-        //         return $body;
-        // return "123";
-
         $retirement_fund = RetirementFund::with(['discount_types' => function ($query) {
             $query->orderBy('id');
         }])->where('id', $id)->first();
@@ -677,7 +609,6 @@ class RetirementFundController extends Controller
         //return $procedures_modalities_ids;
         $procedures_modalities = ProcedureModality::whereIn('procedure_type_id', $procedures_modalities_ids)->get();
         $file_modalities = ProcedureModality::get();
-        $requirements = ProcedureRequirement::where('procedure_modality_id', $retirement_fund->procedure_modality_id)->get();
         $documents = RetFunSubmittedDocument::where('retirement_fund_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
         $cities = City::get();
         $kinships = Kinship::get();
@@ -697,6 +628,7 @@ class RetirementFundController extends Controller
         $procedure_types = ProcedureType::where('module_id', 3)->get();
         $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
             ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+            ->where('procedure_modality_id', $retirement_fund->procedure_modality_id)
             ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
             ->orderBy('procedure_requirements.number', 'ASC')
             ->get();
@@ -711,6 +643,18 @@ class RetirementFundController extends Controller
             ->orderby('procedure_requirements.number', 'ASC')
             ->where('ret_fun_submitted_documents.retirement_fund_id', $id);
         
+        // Sirve para listar documentos que fueron eliminados anteriormente
+        $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
+            return [$item->id => $item];
+        });
+        $restore_procedure_documents = collect();
+        foreach ($submitted->get() as $item) {
+            if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
+                $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
+            }
+        }
+        $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+
         // return $submitted->get();
         // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
         /**for validate doc*/
@@ -774,6 +718,24 @@ class RetirementFundController extends Controller
         //
         //summary individuals account
         $ret_fun_index = $retirement_fund->procedureIndex();
+        if ($ret_fun_index == 0) {
+            $fields = [
+                'date_entry' => 'El campo "Fecha de Ingreso a la Institucional Policial" en Información Policial no puede estar vacío',
+                'date_derelict' => 'El campo "Fecha de Desvinculación" en Información Policial no puede estar vacío',
+            ];
+        } else if ($ret_fun_index == 1) {
+            $fields = [
+                'date_entry_reinstatement' => 'El campo "Fecha de Ingreso a la Institucional Policial (reincorporación)" en Información Policial no puede estar vacío',
+                'date_derelict_reinstatement' => 'El campo "Fecha de Desvinculación (reincorporación)" en Información Policial no puede estar vacío',
+            ];
+        }
+
+        foreach ($fields as $field => $message) {
+            if (!$affiliate->$field) {
+                Session::flash('message', $message);
+                return redirect('affiliate/' . $affiliate->id);
+            }
+        }
         $dates_global = $affiliate->getDatesGlobal($ret_fun_index == 1);
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($dates_global);
