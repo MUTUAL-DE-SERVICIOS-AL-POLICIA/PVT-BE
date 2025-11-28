@@ -35,4 +35,9 @@ class EcoComRent extends Model
         {
             return $this->belongsTo(ProcedureModality::class);
         }
+
+        public function economic_complements()
+        {
+            return $this->hasMany(EconomicComplement::class);
+        }
 }

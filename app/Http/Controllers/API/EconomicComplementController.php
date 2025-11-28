@@ -226,7 +226,7 @@ class EconomicComplementController extends Controller
 
             //Desactivar Observers
             EconomicComplement::FlushEventListeners(); 
-            $this->updateEcoComWithFixedPension($economic_complement->id);    
+            $economic_complement->updateEcoComWithFixedPension();    
             //Activar Observers
             EconomicComplement::Boot();
 
@@ -356,7 +356,7 @@ class EconomicComplementController extends Controller
 
                     //Desactivar Observers
                     EconomicComplement::FlushEventListeners(); 
-                    $this->updateEcoComWithFixedPension($economic_complement->id);    
+                    $economic_complement->updateEcoComWithFixedPension();    
                     //Activar Observers
                     EconomicComplement::Boot();
                     
@@ -484,7 +484,7 @@ class EconomicComplementController extends Controller
 
             //Desactivar Observers
             EconomicComplement::FlushEventListeners(); 
-            $this->updateEcoComWithFixedPension($economic_complement->id);    
+            $economic_complement->updateEcoComWithFixedPension();    
             //Activar Observers
             EconomicComplement::Boot();
 
@@ -599,7 +599,7 @@ class EconomicComplementController extends Controller
 
                     //Desactivar Observers
                     EconomicComplement::FlushEventListeners(); 
-                    $this->updateEcoComWithFixedPension($economic_complement->id);    
+                    $economic_complement->updateEcoComWithFixedPension();    
                     //Activar Observers
                     EconomicComplement::Boot();
                     
@@ -846,34 +846,6 @@ class EconomicComplementController extends Controller
        }
        return $eco_com;
     }
-    public function updateEcoComWithFixedPension($economic_complement_id)
-    {
-        $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
-        if(!!$economic_complement){
-            if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
-                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)
-                ->orderBy('created_at','desc')
-                ->first();
-                if(!!$fixed_pension){  
-                    $economic_complement->eco_com_fixed_pension_id = $fixed_pension->id; 
-                    $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
-                    $economic_complement->aps_total_cc = $fixed_pension->aps_total_cc;      //APS
-                    $economic_complement->aps_total_fs = $fixed_pension->aps_total_fs;      //APS
-                    $economic_complement->aps_total_death = $fixed_pension->aps_total_death;//APS
-                    $economic_complement->aps_disability = $fixed_pension->aps_disability;  //APS //SENASIR
-
-                    $economic_complement->sub_total_rent = $fixed_pension->sub_total_rent;  //SENASIR
-                    $economic_complement->reimbursement = $fixed_pension->reimbursement;    //SENASIR
-                    $economic_complement->dignity_pension = $fixed_pension->dignity_pension;//SENASIR
-                    $economic_complement->total_rent = $fixed_pension->total_rent;          //SENASIR total_rent=sub_total_rent-descuentos planilla
-
-                    $economic_complement->rent_type = 'Automatico';
-                    $economic_complement->save();             
-                }
-            }
-        }
-    }
-
     // Por migrar a microservicio
     private function checkObservations($affiliate)
     {
@@ -1148,7 +1120,7 @@ class EconomicComplementController extends Controller
 
         //Desactivar Observers
         EconomicComplement::FlushEventListeners(); 
-        $this->updateEcoComWithFixedPension($economic_complement->id);    
+        $economic_complement->updateEcoComWithFixedPension();    
         //Activar Observers
         EconomicComplement::Boot();
 

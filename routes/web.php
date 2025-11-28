@@ -704,6 +704,7 @@ Route::group(['middleware' => ['auth']], function () {
     //fixed
     Route::post('/eco_com_fixed_pensions', 'EcoComFixedPensionController@store');
     Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
+    Route::get('/affiliate/{affiliate_id}/eco_com_fixed_pensions/create', 'EcoComFixedPensionController@create');
 
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');

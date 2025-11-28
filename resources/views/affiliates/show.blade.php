@@ -245,6 +245,10 @@ th.ellipsis-text {
                                                     <th>Renta Dignidad</th>
                                                 @endif
                                                 <th>Total Renta</th>
+                                                <th>Modalidad</th>
+                                                <th>Promedio</th>
+                                                <th>Limite Referencial</th>
+                                                <th>Sueldo Base</th>
                                                 @if($role == 103)
                                                 <th>Acciones</th>
                                                 @endif
@@ -269,6 +273,10 @@ th.ellipsis-text {
                                                         <td>{{ $eco_com_fixed_pension->dignity_pension }}</td>
                                                     @endif
                                                     <td>{{ $eco_com_fixed_pension->total_rent }}</td>
+                                                    <td>{{ $eco_com_fixed_pension->eco_com_rent->procedureModality->name }}</td>
+                                                    <td>{{ $eco_com_fixed_pension->eco_com_rent->average }}</td>
+                                                    <td>{{ $eco_com_fixed_pension->eco_com_rent->referencial_limit }}</td>
+                                                    <td>{{ $eco_com_fixed_pension->base_wage->amount}}</td>
                                                     @if($role == 103)
                                                     <td>
                                                         <button class="btn btn-warning btn-sm" @click='$refs.editModal.openModal(@json($eco_com_fixed_pension))'>Editar</button>

@@ -3,6 +3,7 @@
 namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
+use Muserpol\Models\BaseWage;
 
 class EcoComFixedPension extends Model
 {
@@ -39,6 +40,14 @@ class EcoComFixedPension extends Model
     public function economic_complements()
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EconomicComplement');
+    }
+    public function eco_com_rent()
+    {
+        return $this->belongsTo(EcoComRent::class);
+    }
+    public function base_wage()
+    {
+        return $this->belongsTo(BaseWage::class);
     }
     public function calculateTotalRentAps()
     {
