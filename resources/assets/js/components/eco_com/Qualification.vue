@@ -79,6 +79,34 @@
         </div>
         <div class="row">
           <div class="col-md-6">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th colspan="3" style="text-align: center;">Parámetros Calificación</th>
+                </tr>
+                <tr>
+                  <th>Detalle</th>
+                  <th>Monto</th>
+                  <th>Periodo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="ecoCom.base_wage">
+                  <td>Sueldo Base</td>
+                  <td>{{ ecoCom.base_wage.amount | currency }}</td>
+                  <td>{{ ecoCom.base_wage.month_year | monthYear}}</td>
+                </tr>
+                <tr v-if="ecoCom.eco_com_rent">
+                  <td>Limite Referencial</td>
+                  <td>{{ecoCom.eco_com_rent.referencial_limit | currency}}</td>
+                  <td rowspan="2" style="vertical-align: middle;">{{ecoCom.eco_com_rent.semester}}/{{ecoCom.eco_com_rent.year | year}}</td>
+                </tr>
+                <tr v-if="ecoCom.eco_com_rent">
+                  <td>Promedio</td>
+                  <td>{{ecoCom.eco_com_rent.average | currency}}</td>
+                </tr>
+              </tbody>
+            </table>
             <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación ({{ ecoCom.eco_com_fixed_pension ? ecoCom.eco_com_fixed_pension.period : "" }})</strong></p>
             <table class="table table-bordered table-striped">
               <thead>
@@ -542,6 +570,29 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <label class="col-sm-6 control-label">Periodo de Sueldo Base</label>
+          <select class="col-sm-6" name="Periodo que correponde la renta" v-model="ecoComModal.base_wage_id">
+            <option v-for="bw in baseWages" :value="bw.id" :key="'baseWage' + bw.id">{{ bw.month_year | monthYear }} - {{
+              bw.amount | currency }}</option>
+          </select>
+        </div>
+        <div class="row">
+          <label class="col-sm-6 control-label">Periodo de Promedio y Limite Referencial ({{ typeRent }})</label>
+          <select class="col-sm-6" name="Periodo que correponde la renta"
+            v-model="ecoComModal.eco_com_rent_id">
+            <option v-for="r in ecoComRents" :value="r.id" :key="'baseWage' + r.id">{{ r.year | year }} - {{ r.semester }}
+            </option>
+          </select>
+        </div>
+        <div class="row">
+          <template v-if="ecoComModal.eco_com_rent_id">
+            <p class="col-sm-6 control-label">Promedio {{ecoComRents.find(r => r.id ==
+              ecoComModal.eco_com_rent_id).average | currency}}</p>
+            <p class="col-sm-6 control-label">Limite Referencial {{ecoComRents.find(r => r.id ==
+              ecoComModal.eco_com_rent_id).referencial_limit | currency}}</p>
+          </template>
+        </div>
         <div class="col-md-12">
           <div class="text-center m-sm">
             <button class="btn btn-danger" type="button" @click="cancel()">
@@ -659,15 +710,11 @@
 
 <script>
 import {
-  isPensionEntitySenasir,
   getNamePensionEntity,
   parseMoney,
   canOperation,
   flashErrors
 } from "../../helper.js";
-import { mapState, mapMutations } from "vuex";
-import affiliate from "../../helpers/affiliate.js";
-
 export default {
   props: ["ecoComId", "affiliate", "permissions","roleId", "observations"],
   data() {
@@ -682,7 +729,10 @@ export default {
       idEcoCom:0,
       show_spinner:false,
       procedures:[],
-      newFixedId:null
+      newFixedId:null,
+      baseWages: [],
+      ecoComRents: [],
+      typeRent: "",
     };
   },
   mounted() {
@@ -690,6 +740,7 @@ export default {
       "click",
       () => {
         this.getEcoCom();
+        this.createFixedRent();
       },
       { passive: true }
     );
@@ -795,7 +846,7 @@ export default {
       this.$scrollTo("#wrapper");
       await axios
         .get(`/get_eco_com/${this.ecoComId}`)
-        .then(response => {
+        .then(response => {          
           this.$store.commit("ecoComForm/setEcoCom", response.data);
           this.eco_com_state_type_id=response.data.eco_com_state.eco_com_state_type_id;
           this.getProcedures();
@@ -840,7 +891,7 @@ export default {
       await axios
         .patch(`/eco_com/${this.ecoComId}/qualify`)
         .then(response => {
-          this.$store.commit("ecoComForm/setEcoCom", response.data);
+          this.$store.commit("ecoComForm/setEcoCom", response.data);          
           flash("Calificacion Actualizada");
         })
         .catch(error => {
@@ -977,7 +1028,20 @@ export default {
     getProcedureSemester(id) {
       const p = this.procedures.find(e => e.id == id);      
       return p.semester + p.year.split('-')[0] + '(' + p.rent_month + ')'
-    }
+    },
+    async createFixedRent() {
+      await axios
+        .get(`/affiliate/${this.affiliate.id}/eco_com_fixed_pensions/create`)
+        .then(response => {
+          console.log(response.data);
+          this.baseWages = response.data.base_wages;
+          this.ecoComRents = response.data.eco_com_rents;
+          this.type = response.data.type;
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
+    },
   }
 };
 </script>

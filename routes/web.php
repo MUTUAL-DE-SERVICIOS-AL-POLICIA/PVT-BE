@@ -704,6 +704,7 @@ Route::group(['middleware' => ['auth']], function () {
     //fixed
     Route::post('/eco_com_fixed_pensions', 'EcoComFixedPensionController@store');
     Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
+    Route::get('/affiliate/{affiliate_id}/eco_com_fixed_pensions/create', 'EcoComFixedPensionController@create');
 
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');
@@ -834,5 +835,6 @@ Route::post('eco_com_replicate', 'EconomicComplementReplicationController@prepar
     Route::get('get_calculation_years', 'SalaryCalculationController@getYears')->name('get_calculation_years');
     Route::get('get_comparative_salaries', 'SalaryCalculationController@calculateComparativeSalaries')->name('get_comparative_salaries');
     Route::post('execute_update_base_wage', 'SalaryCalculationController@executeUpdateBaseWage')->name('execute_update_base_wage');
+    Route::get('salary_calculation/export', 'SalaryCalculationController@exportExcel')->name('salary_calculation.export');
   });
 });

@@ -13,7 +13,6 @@ class BaseWage extends Model
 		'degree_id',
 		'month_year',
 		'amount',
-		'is_real_value'
 	];
 
 	public function degree()

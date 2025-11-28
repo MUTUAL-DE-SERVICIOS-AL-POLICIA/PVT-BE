@@ -450,12 +450,7 @@ class AffiliateController extends Controller
          * Renta fija CE
          */
 
-        $eco_com_fixed_pensions = $affiliate->eco_com_fixed_pensions()->orderBy('eco_com_procedure_id', 'desc')->get();
-        foreach ($eco_com_fixed_pensions as $eco_com_fixed_pension){
-            $eco_com_fixed_pension->eco_com_regulation = $eco_com_fixed_pension->eco_com_regulation;
-            $eco_com_fixed_pension->eco_com_procedure = $eco_com_fixed_pension->eco_com_procedure;
-        }
-
+        $eco_com_fixed_pensions = $affiliate->eco_com_fixed_pensions()->with(['base_wage','eco_com_rent.procedureModality'])->orderBy('eco_com_procedure_id', 'desc')->get();
         $data = array(
             'quota_aids'=>$quota_aids,
             'retirement_funds'=>$retirement_funds,
