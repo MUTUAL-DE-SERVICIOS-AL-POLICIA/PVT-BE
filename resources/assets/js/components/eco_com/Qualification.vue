@@ -86,25 +86,27 @@
                 </tr>
                 <tr>
                   <th>Detalle</th>
-                  <th>Monto</th>
                   <th>Periodo</th>
+                  <th>Monto</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-if="ecoCom.base_wage">
                   <td>Sueldo Base</td>
-                  <td>{{ ecoCom.base_wage.amount | currency }}</td>
                   <td>{{ ecoCom.base_wage.month_year | monthYear}}</td>
+                  <td style="text-align: right;">{{ ecoCom.base_wage.amount | currency }}</td>
                 </tr>
-                <tr v-if="ecoCom.eco_com_rent">
-                  <td>Limite Referencial</td>
-                  <td>{{ecoCom.eco_com_rent.referencial_limit | currency}}</td>
-                  <td rowspan="2" style="vertical-align: middle;">{{ecoCom.eco_com_rent.semester}}/{{ecoCom.eco_com_rent.year | year}}</td>
-                </tr>
-                <tr v-if="ecoCom.eco_com_rent">
-                  <td>Promedio</td>
-                  <td>{{ecoCom.eco_com_rent.average | currency}}</td>
-                </tr>
+                <template v-if="showAverage">
+                  <tr>
+                    <td>Limite Referencial</td>
+                    <td rowspan="2" style="vertical-align: middle;">{{ecoCom.eco_com_rent.semester}}/{{ecoCom.eco_com_rent.year | year}}</td>
+                    <td style="text-align: right;">{{ecoCom.eco_com_rent.referencial_limit | currency}}</td>
+                  </tr>
+                  <tr>
+                    <td>Promedio</td>
+                    <td style="text-align: right;">{{ecoCom.eco_com_rent.average | currency}}</td>
+                  </tr>
+                </template>
               </tbody>
             </table>
             <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación ({{ ecoCom.eco_com_fixed_pension ? ecoCom.eco_com_fixed_pension.period : "" }})</strong></p>
@@ -579,7 +581,7 @@
         </div>
         <div class="row">
           <label class="col-sm-6 control-label">Periodo de Promedio y Limite Referencial ({{ typeRent }})</label>
-          <select class="col-sm-6" name="Periodo que correponde la renta"
+          <select class="col-sm-6" disabled name="Periodo que correponde la renta"
             v-model="ecoComModal.eco_com_rent_id">
             <option v-for="r in ecoComRents" :value="r.id" :key="'baseWage' + r.id">{{ r.year | year }} - {{ r.semester }}
             </option>
@@ -771,6 +773,19 @@ export default {
         parseFloat(parseMoney(this.ecoComModal.dignity_pension)) +
         parseFloat(parseMoney(this.ecoComModal.aps_disability))
       );
+    },
+    showAverage() {
+      let ecoCom = this.$store.state.ecoComForm.ecoCom;
+      if (!ecoCom.eco_com_rent) {
+        return false;
+      }
+      if (![4, 5, 10].includes(ecoCom.eco_com_modality.id) && ecoCom.total_rent < ecoCom.eco_com_rent.referencial_limit) {
+        return true;
+      } else if([4, 5, 10].includes(ecoCom.eco_com_modality.id) && ecoCom.total_rent < ecoCom.eco_com_rent.average) {
+        return true;
+      } else {
+        return false;
+      }
     }
   },
   methods: {
