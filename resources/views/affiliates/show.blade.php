@@ -273,10 +273,10 @@ th.ellipsis-text {
                                                         <td>{{ $eco_com_fixed_pension->dignity_pension }}</td>
                                                     @endif
                                                     <td>{{ $eco_com_fixed_pension->total_rent }}</td>
-                                                    <td>{{ $eco_com_fixed_pension->eco_com_rent->procedureModality->name }}</td>
-                                                    <td>{{ $eco_com_fixed_pension->eco_com_rent->average }}</td>
-                                                    <td>{{ $eco_com_fixed_pension->eco_com_rent->referencial_limit }}</td>
-                                                    <td>{{ $eco_com_fixed_pension->base_wage->amount}}</td>
+                                                    <td>{{ optional(optional($eco_com_fixed_pension->eco_com_rent)->procedureModality)->name }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->eco_com_rent)->average }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->eco_com_rent)->referencial_limit }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->base_wage)->amount}}</td>
                                                     @if($role == 103)
                                                     <td>
                                                         <button class="btn btn-warning btn-sm" @click='$refs.editModal.openModal(@json($eco_com_fixed_pension))'>Editar</button>
