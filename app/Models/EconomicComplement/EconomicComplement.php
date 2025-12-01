@@ -521,7 +521,7 @@ class EconomicComplement extends Model
     // }
     public function scopeInfo($query)
     {
-        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
+        $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
             ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
             ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')
             ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
@@ -529,12 +529,26 @@ class EconomicComplement extends Model
             ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
             ->leftJoin('eco_com_origin_channel', 'economic_complements.eco_com_origin_channel_id', '=', 'eco_com_origin_channel.id')
             ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
-            ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
-            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
-            ->leftJoin('users as creator', 'creator.id', '=', 'eco_com_user.user_id')
-            ->where( function($query) {
-                $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
-            });
+            ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id');
+        
+        //juntamos los records que hay en procedure_records
+        $query->leftJoin('procedure_records as pr', function ($join) {
+            $join->on('pr.recordable_id', '=', 'economic_complements.id')
+                ->where('pr.recordable_type', '=', 'economic_complements')
+                ->where(function ($q) {
+                    $q->where('pr.message', 'like', '%creó el trámite%')
+                      ->orWhere('pr.message', 'like', 'Se creó el trámite mediante aplicación móvil.');
+                });
+        });
+        //unimos los records que hay en wf_records
+        $query->leftJoin('wf_records as wr', function ($join) {
+            $join->on('wr.recordable_id', '=', 'economic_complements.id')
+                ->where('wr.recordable_type', '=', 'economic_complements')
+                ->where('wr.message', 'like', '%Trámite creado mediante%');
+        });
+        $query->leftJoin('users as creator', 'creator.id', '=', DB::raw('COALESCE(pr.user_id, wr.user_id)'));
+
+        return $query;
         }
     public function scopeInfoBasic($query)
     {
