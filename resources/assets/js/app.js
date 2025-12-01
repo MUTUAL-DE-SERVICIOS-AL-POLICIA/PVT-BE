@@ -250,7 +250,7 @@ let moneyInputMask = {
   groupSeparator: ",",
   autoGroup: true,
   digits: 2,
-  digitsOptional: false,
+  //digitsOptional: false,
   prefix: "Bs ",
   max:1000000000,
   min:0,

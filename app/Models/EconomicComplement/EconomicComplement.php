@@ -217,7 +217,7 @@ class EconomicComplement extends Model
                 'errors' => ['Verifique los datos de los factores de complementación de la gestion ' . $eco_com_procedure->fullName()],
             ], 422);
         }
-        $indicator = $eco_com_rent->referencial_limit;
+        $indicator = $eco_com_rent->referential_limit;
         
         /**
          ** updating modality with components
