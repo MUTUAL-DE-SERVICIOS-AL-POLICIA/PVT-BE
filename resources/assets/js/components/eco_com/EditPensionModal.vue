@@ -69,7 +69,7 @@
                   <div class="row">
                     <template v-if="eco_com_fixed_pension.eco_com_rent_id">
                       <p class="col-sm-6 control-label">Promedio {{ ecoComRents.find(r => r.id == eco_com_fixed_pension.eco_com_rent_id).average | currency}}</p>
-                      <p class="col-sm-6 control-label">Limite Referencial {{ ecoComRents.find(r => r.id == eco_com_fixed_pension.eco_com_rent_id).referencial_limit | currency}}</p>
+                      <p class="col-sm-6 control-label">Limite Referencial {{ ecoComRents.find(r => r.id == eco_com_fixed_pension.eco_com_rent_id).referential_limit | currency}}</p>
                     </template>
                   </div>
                 </div>

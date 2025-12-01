@@ -100,7 +100,7 @@
                   <tr>
                     <td>Limite Referencial</td>
                     <td rowspan="2" style="vertical-align: middle;">{{ecoCom.eco_com_rent.semester}}/{{ecoCom.eco_com_rent.year | year}}</td>
-                    <td style="text-align: right;">{{ecoCom.eco_com_rent.referencial_limit | currency}}</td>
+                    <td style="text-align: right;">{{ecoCom.eco_com_rent.referential_limit | currency}}</td>
                   </tr>
                   <tr>
                     <td>Promedio</td>
@@ -592,7 +592,7 @@
             <p class="col-sm-6 control-label">Promedio {{ecoComRents.find(r => r.id ==
               ecoComModal.eco_com_rent_id).average | currency}}</p>
             <p class="col-sm-6 control-label">Limite Referencial {{ecoComRents.find(r => r.id ==
-              ecoComModal.eco_com_rent_id).referencial_limit | currency}}</p>
+              ecoComModal.eco_com_rent_id).referential_limit | currency}}</p>
           </template>
         </div>
         <div class="col-md-12">
@@ -779,7 +779,7 @@ export default {
       if (!ecoCom.eco_com_rent) {
         return false;
       }
-      if (![4, 5, 10].includes(ecoCom.eco_com_modality.id) && ecoCom.total_rent < ecoCom.eco_com_rent.referencial_limit) {
+      if (![4, 5, 10].includes(ecoCom.eco_com_modality.id) && ecoCom.total_rent < ecoCom.eco_com_rent.referential_limit) {
         return true;
       } else if([4, 5, 10].includes(ecoCom.eco_com_modality.id) && ecoCom.total_rent < ecoCom.eco_com_rent.average) {
         return true;

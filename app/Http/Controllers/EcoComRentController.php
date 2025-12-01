@@ -52,7 +52,7 @@ class EcoComRentController extends Controller
             'higher' => 'numeric',
             'average' => 'required|numeric',
             'procedure_modality_id' => 'exists:procedure_modalities,id',
-            'referencial_limit' => 'numeric',
+            'referential_limit' => 'numeric',
         ]);
 
         $rent = EcoComRent::create($validated);
@@ -90,7 +90,7 @@ class EcoComRentController extends Controller
             'higher' => 'nullable|numeric',
             'average' => 'required|numeric',
             'procedure_modality_id' => 'exists:procedure_modalities,id',
-            'referencial_limit' => 'nullable|numeric',
+            'referential_limit' => 'nullable|numeric',
         ]);
 
         $rent->update($validated);
@@ -193,7 +193,7 @@ class EcoComRentController extends Controller
                 [
                     'user_id' => Auth::id(),
                     'average' => $average,
-                    'referencial_limit' => $limit ?: null,
+                    'referential_limit' => $limit ?: null,
                     'minor' => null,
                     'higher' => null
                 ]

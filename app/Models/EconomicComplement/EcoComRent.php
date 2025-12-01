@@ -18,7 +18,7 @@ class EcoComRent extends Model
         'higher',
         'average',
         'procedure_modality_id',
-        'referencial_limit'
+        'referential_limit'
     ];
 
         public function user()
