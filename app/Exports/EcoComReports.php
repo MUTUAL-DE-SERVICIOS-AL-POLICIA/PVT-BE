@@ -110,7 +110,6 @@ class EcoComReports implements FromQuery, WithHeadings, ShouldAutoSize
                     "wf_states.first_shortened",
                     "eco_com_modalities.name",
                     "workflows.name",
-                    "eco_com_user.id",
                     "eco_com_states.name",
                     "eco_com_origin_channel.name",
                     "affiliate_devices.enrolled",
