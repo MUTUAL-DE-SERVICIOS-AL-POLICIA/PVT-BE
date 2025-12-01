@@ -847,6 +847,7 @@ class EconomicComplement extends Model
                 $this->save();
             }
         }
+    }
     public function requirementsList()
     {
         try {
