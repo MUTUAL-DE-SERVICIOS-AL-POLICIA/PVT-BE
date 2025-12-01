@@ -30,6 +30,45 @@
                         </div>
                     </div>
 
+                    <div class="hr-line-dashed"></div>
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Importar Sueldos Base</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Plantilla de Importación:</label>
+                                        <div class="input-group">
+                                            <a href="/salary_calculation/download_template" class="btn btn-primary" type="button" target="_blank">
+                                                <i class="fa fa-download"></i> Descargar Plantilla
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Archivo Excel (.xlsx, .csv):</label>
+                                        <input type="file" ref="fileInput" @change="handleFileUpload" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <button class="btn btn-success" @click="importSalaries" :disabled="!uploadFile || loadingImport">
+                                        <span v-if="loadingImport"><i class="fa fa-spinner fa-spin"></i> Importando...</span>
+                                        <span v-else><i class="fa fa-upload"></i> Importar Sueldos</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-if="importMessage" class="alert alert-success mt-2">{{ importMessage }}</div>
+                            <div v-if="importError" class="alert alert-danger mt-2">{{ importError }}</div>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+
                     <div class="table-responsive" v-if="salaries.length > 0">
                         <hr>
                         <h4>Lista de salarios base {{ selectedYear }}</h4>
@@ -37,6 +76,7 @@
                             <thead>
                                 <tr>
                                     <th>Nro</th>
+                                    <th>Codigo de Grado</th>
                                     <th>Grado</th>
                                     <th>Nombre</th>
                                     <th>Salario</th>
@@ -45,6 +85,7 @@
                             <tbody>
                                 <tr v-for="(salary, index) in salaries" :key="index">
                                     <td>{{ index + 1 }}</td>
+                                    <td>{{ salary.degree_id }}</td>
                                     <td>{{ salary.degree_shortened }}</td>
                                     <td>{{ salary.degree_name }}</td>
                                     <td>{{ (salary.contribution_salary !== null && salary.contribution_salary != 0) ? (salary.contribution_salary | currency) : '-' }}</td>
@@ -55,10 +96,10 @@
                             <a :href="'/salary_calculation/export?year=' + selectedYear" class="btn btn-success" type="button" v-if="salaries.length > 0">
                                 <i class="fa fa-file-excel-o"></i> Exportar a Excel
                             </a>
-                            <button class="btn btn-success" type="button" @click="updateBaseWages" :disabled="!selectedYear || isLoading || updating">
+                            <!-- <button class="btn btn-success" type="button" @click="updateBaseWages" :disabled="!selectedYear || isLoading || updating">
                                 <span v-if="updating"><i class="fa fa-spinner fa-spin"></i> Actualizando...</span>
                                 <span v-else>Actualizar Salarios</span>
-                            </button>
+                            </button> -->
                         </div>
                     </div>
                 </div>
@@ -79,6 +120,10 @@ export default {
             calculating: false,
             updating: false,
             updateMessage: '',
+            uploadFile: null,
+            loadingImport: false,
+            importMessage: '',
+            importError: '',
         };
     },
     mounted() {
@@ -153,6 +198,64 @@ export default {
             } finally {
                 this.updating = false;
                 this.isLoading = false;
+            }
+        },
+        // funcionalidad para la importacion de sueldos
+        handleFileUpload(event) {
+            this.uploadFile = event.target.files[0];
+            this.importError = ''; // Borrar errores anteriores
+            this.importMessage = ''; // Borrar mensajes anteriores
+        },
+        downloadSalaryTemplate() {
+            this.importError = '';
+            this.importMessage = '';
+            const url = '/salary_calculation/download_template';
+            window.open(url, '_blank');
+        },
+        async importSalaries() {
+            if (!this.uploadFile) {
+                this.importError = 'Por favor, seleccione un archivo para importar.';
+                return;
+            }
+
+            this.loadingImport = true;
+            this.importError = '';
+            this.importMessage = '';
+
+            let formData = new FormData();
+            formData.append('file', this.uploadFile);
+
+            try {
+                const response = await axios.post('/salary_calculation/import', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                this.importMessage = response.data.message || 'Sueldos importados correctamente.';
+                this.uploadFile = null;
+                this.$refs.fileInput.value = ''; // borrar el input file
+                this.salaries = []; // Borrar los sueldos mostrados actualmente, forzando un recálculo si es necesario
+                window.events.$emit('salary-updated'); // Disparar actualización para cualquier otro componente
+            } catch (error) {
+                console.error("Error al importar sueldos:", error);
+                if (error.response && error.response.data && error.response.data.message) {
+                    this.importError = `Error: ${error.response.data.message}`;
+                } else if (error.response && error.response.data && error.response.data.errors) {
+                     // manejar errores de validación de Laravel
+                     const errors = error.response.data.errors;
+                     let errorMessages = [];
+                     for (const key in errors) {
+                         if (errors.hasOwnProperty(key)) {
+                             errorMessages.push(errors[key].join(', '));
+                         }
+                     }
+                     this.importError = `Errores de validación: ${errorMessages.join('; ')}`;
+                }
+                else {
+                    this.importError = "Ocurrió un error inesperado al importar los sueldos.";
+                }
+            } finally {
+                this.loadingImport = false;
             }
         }
     }
