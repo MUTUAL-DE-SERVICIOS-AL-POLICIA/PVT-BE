@@ -183,7 +183,7 @@ class UpdateEcoComRentSeeder extends Seeder
     // -----------------------------------------
     // Función para mostrar resultados descriptivos
     // -----------------------------------------
-    private function logResult($afectados, $descripcion)
+    private function logResult($descripcion, $afectados )
     {
         $this->command->info("----------------------------------------");
         $this->command->info("Descripción: $descripcion");
