@@ -14,7 +14,7 @@ class AddReferencialLimitToEcoComRentsTable extends Migration
     public function up()
     {
         Schema::table('eco_com_rents', function (Blueprint $table) {
-            $table->decimal('referencial_limit', 15, 2)->nullable();
+            $table->decimal('referential_limit', 15, 2)->nullable();
             $table->decimal('minor', 15, 2)->nullable()->change();
             $table->decimal('higher', 15, 2)->nullable()->change();
         });
@@ -28,7 +28,7 @@ class AddReferencialLimitToEcoComRentsTable extends Migration
     public function down()
     {
         Schema::table('eco_com_rents', function (Blueprint $table) {
-            $table->dropColumn('referencial_limit');
+            $table->dropColumn('referential_limit');
             $table->decimal('minor', 15, 2)->nullable(false)->change();
             $table->decimal('higher', 15, 2)->nullable(false)->change();
         });
