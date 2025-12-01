@@ -88,7 +88,6 @@ class EcoComProcedureController extends Controller
                 'normal_end_date' => 'required',
                 'lagging_start_date' => 'required',
                 'lagging_end_date' => 'required',
-                'indicator' => 'required',
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -130,7 +129,6 @@ class EcoComProcedureController extends Controller
         $eco_com_procedure->normal_end_date = Util::verifyBarDate($request->normal_end_date) ? Util::parseBarDate($request->normal_end_date) : $request->normal_end_date;
         $eco_com_procedure->lagging_start_date = Util::verifyBarDate($request->lagging_start_date) ? Util::parseBarDate($request->lagging_start_date) : $request->lagging_start_date;
         $eco_com_procedure->lagging_end_date = Util::verifyBarDate($request->lagging_end_date) ? Util::parseBarDate($request->lagging_end_date) : $request->lagging_end_date;
-        $eco_com_procedure->indicator = $request->indicator;
         $eco_com_procedure->eco_com_regulation_id = $eco_com_regulation->id;
         $eco_com_procedure->save();
         return response()->json([
@@ -157,7 +155,6 @@ class EcoComProcedureController extends Controller
                 'normal_end_date' => 'required',
                 'lagging_start_date' => 'required',
                 'lagging_end_date' => 'required',
-                'indicator' => 'required',
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -175,7 +172,6 @@ class EcoComProcedureController extends Controller
             $eco_com_procedure->normal_end_date = Util::verifyBarDate($request->normal_end_date) ? Util::parseBarDate($request->normal_end_date) : $request->normal_end_date;
             $eco_com_procedure->lagging_start_date = Util::verifyBarDate($request->lagging_start_date) ? Util::parseBarDate($request->lagging_start_date) : $request->lagging_start_date;
             $eco_com_procedure->lagging_end_date = Util::verifyBarDate($request->lagging_end_date) ? Util::parseBarDate($request->lagging_end_date) : $request->lagging_end_date;
-            $eco_com_procedure->indicator = $request->indicator;
             $eco_com_procedure->save();
         } else {
             return response()->json(['errors' => ['No existe.']], 422);
