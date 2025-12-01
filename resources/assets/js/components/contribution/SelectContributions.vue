@@ -16,13 +16,24 @@
 								Aportes
 							</h3>
 						</div>
+						<div class="col-md-3" v-if="usedContributionsLimit > 0">
+							<div>
+								<div>
+									<span>Limite de Aportes Máximo</span>
+									<small style="float: right;">{{positiveContributions}}/{{usedContributionsLimit}}</small>
+								</div>
+								<div class="progress progress-small">
+									<div :style="{ width: percentagePositiveContributions + '%' }" class="progress-bar" :class="colorBar"></div>
+								</div>
+							</div>
+						</div>
 						<div class="pull-right" style="padding-right:10px">
 							<div class="form-inline">
 								<div class="form-group" :class="{ 'has-error': errors.has('modal_contribution_type_id') }">
 									<label class="label-control">Tipo de contribución</label>
-									<select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'" @change="resetPrintButton()">
+									<select class="form-control" name="modal_contribution_type_id" v-model="modal.contribution_type_id" v-validate="'required'" @change="resetPrintButton()" >
 										<option :value="null"></option>
-										<option v-for="item in types" :value="item.id" :key="item.id"> {{item.name}}</option>
+										<option v-for="item in types" :value="item.id" :key="item.id" v-show="showPositiveType(item)"> {{item.name}}</option>
 									</select>
 								</div>
 								<div class="form-group">
@@ -68,7 +79,7 @@
 										<td class="col-md-4">
 											<select class="form-control" v-model="contribution.contribution_type_id" @change="resetPrintButton()">
 												<option :value="null"></option>
-												<option v-for="(ct, indexCt) in  types" :key="`ct-${indexCt}`" :value="ct.id">{{ct.name}}</option>
+												<option v-for="(ct, indexCt) in  types" :key="`ct-${indexCt}`" :value="ct.id" v-show="showPositiveType(ct)">{{ct.name}}</option>
 											</select>
 										</td>
 									</tr>
@@ -89,11 +100,19 @@
 						</div>
 					</div>
 					<div class="ibox-footer">
-						<button class="btn btn-primary btn-sm" @click="save" :disabled="loadingButton">
-							<i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw"></i>
-							<i v-else class="fa fa-arrow-right"></i>
-							{{ loadingButton ? 'Guardando Clasificaci&oacute;n...' :  'Guardar Clasificaci&oacute;n' }}
-						</button>
+						<div class="col-sm-2">
+							<button class="btn btn-primary btn-sm" @click="save" :disabled="loadingButton">
+								<i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw"></i>
+								<i v-else class="fa fa-arrow-right"></i>
+								{{ loadingButton ? 'Guardando Clasificaci&oacute;n...' :  'Guardar Clasificaci&oacute;n' }}
+							</button>
+						</div>
+						<div class="form-inline col-sm-4" v-if="usedContributionsLimit > 0">
+							<div class="form-group">
+								<label class="label-control" for="limit-contribution">Número Máximo de Aportes</label>
+								<input type="text" class="form-control" id="limit-contribution" :disabled="applyLimit" v-model="usedContributionsLimit">
+							</div>
+						</div>
 						<div class="pull-right">
 							<strong class=" text-info m-r-md"> Clasificados: {{ countTotal()}} </strong>
 							<strong class=" text-danger m-r-md"> Faltantes: {{ count1(null)}} </strong>
@@ -117,7 +136,9 @@ export default {
 	"types",
 	"retfunid",
 	"startDate",
-	"endDate"
+	"endDate",
+	"contributionsLimit",
+	"applyLimit"
   ],
   data() {
 	return {
@@ -128,7 +149,7 @@ export default {
 	  row_higth: 0,
 	  loadingButton: false,
 	  showLoading: true,
-	  contribution_types: [],
+	  usedContributionsLimit: null,
 	};
   },
   created: function() {
@@ -143,6 +164,8 @@ export default {
 	this.$validator.extend('minDate', (value) => {
 		return moment('01/'+value, "DD/MM/YYYY").diff(moment(this.startDate), "months") >= 0;
 	});
+
+	this.usedContributionsLimit = this.contributionsLimit;
   },
   methods: {
 	count1(id) {
@@ -178,12 +201,20 @@ export default {
 	  $("#contenedor").scrollTop(index * 51);
 	},
 	save() {
-	  if (!this.count1(null)) {
+		if (this.count1(null)) {
+			flash("verifique que no existan aportes sin clasificar", "warning");
+			return;
+		}
+		if(this.usedContributionsLimit > 0 && this.positiveContributions > this.usedContributionsLimit) {
+			flash("Los aportes positivos no pueden superar el límite máximo", "warning");
+			return;
+		}
 		this.loadingButton = true;
 		this.showLoading = true;
 		var data = {
 		  ret_fun_id: this.retfunid,
-		  contributions: this.contributions
+		  contributions: this.contributions,
+		  usedContributionsLimit: this.usedContributionsLimit
 		};
 		axios
 		  .post("/ret_fun/savecontributions", data)
@@ -203,66 +234,29 @@ export default {
 			this.loadingButton = false;
 			flash("Error: " + resp.message, "error");
 		  });
-	  } else {
-		flash("verifique que no existan aportes sin clasificar", "warning");
-	  }
-	},
+		},
 	getColor1(contribution_type_id) {
-	  let color;
-	  switch (contribution_type_id) {
-		case 10:
-		  color = "#aeda8a";
-		  break;
-		case 2:
-		  color = "#f7f097fd";
-		  break;
-		case 3:
-		  color = "#f7a197fd";
-		  break;
-		case 1:
-		  color = "#ffffff";
-		  break;
-		case 4:
-		  color = "#a1a7fffd";
-		  break;
-		case 5:
-		  color = "#b1e7faca";
-		  break;
-		case 6:
-		  color = "#e0ad7dfd";
-		  break;
-		case 7:
-		  color = "#80e9bdfd";
-		  break;
-		case 8:
-		  color = "#50c1bdfa";
-		  break;
-		case 9:
-		  color = "#30c1edfb";
-		  break;
-		case 12:
-		  color = "#CDDC39";
-		  break;
-		case 13:
-		  color = "#B2FF59";
-		  break;
-		case 14:
-		  color = "#FF80AB";
-		  break;
-		case 15:
-		  color = "#c6a7fa"
-		  break;
-		case 18:
-		  color = "#545050";
-		  break;
-		case null:
-		  color = "#bbbaadfd";
-		  break;
-		default:
-		  console.log("no se encontro");
-		  break;
-	  }
-	  return color;
+	  const colors = {
+		1: "#ffffff",
+		2: "#f7f097",
+		3: "#f7a197",
+		4: "#a1a7ff",
+		5: "#b1e7fa",
+		6: "#e0ad7d",
+		7: "#80e9bd",
+		8: "#50c1bd",
+		9: "#30c1ed",
+		10: "#aeda8a",
+		12: "#CDDC39",
+		13: "#B2FF59",
+		14: "#FF80AB",
+		15: "#c6a7fa",
+		16: "#c2ac97",
+		17: "#fc9003",
+		18: "#fca503",
+		null: "#bbbaad",
+	  };
+	  return colors[contribution_type_id] || "#bbbaad"; // color por defecto
 	},
 	clear() {
 		this.modal.first_date = null;
@@ -276,18 +270,17 @@ export default {
 			return;
 		}
 		if (this.isValid()) {
-			let fi = moment("01/" + this.modal.first_date, "DD/MM/YYYY").toDate();
-			let ff = moment("01/" + this.modal.last_date, "DD/MM/YYYY").toDate();
+			let fi = moment("01/" + this.modal.first_date, "DD/MM/YYYY");
+			let ff = moment("01/" + this.modal.last_date, "DD/MM/YYYY");
 			let c_type_id = this.modal.contribution_type_id;
-			this.contributions.forEach(item => {
-			let aporte_date = moment(item.month_year, "YYYY-MM-DD").toDate();
-			if (
-				aporte_date.getTime() >= fi.getTime() &&
-				aporte_date.getTime() <= ff.getTime()
-			) {
-				item.contribution_type_id = c_type_id;
-			}
+			
+			let lote = this.contributions.filter(item => {
+				let aporte_date = moment(item.month_year, "YYYY-MM-DD");
+				return aporte_date >= fi && aporte_date <= ff;
 			});
+		
+			lote.forEach(item => item.contribution_type_id = c_type_id);
+
 			this.clear();
 		}
 	},
@@ -334,44 +327,33 @@ export default {
 		  new Date("01/" + this.endDate.month_year).getTime()
 		) {
 		  flash(
-			"Error: la fecha " +
-			  this.modal.last_date +
-			  " no debe ser mayor a " +
-			  this.endDate.month_year,
+			"Error: la fecha " + this.modal.last_date + " no debe ser mayor a " + this.endDate.month_year,
 			"warning"
 		  );
 		  response = false;
-		  console.log(
-			"Error: la fecha " +
-			  this.modal.last_date +
-			  " no debe ser mayor a " +
-			  this.endDate.month_year
-		  );
 		}
 		if (
 		  new Date("01/" + this.modal.first_date).getTime() >
 		  new Date("01/" + this.modal.last_date).getTime()
 		) {
 		  flash(
-			"Error: la fecha " +
-			  this.modal.first_date +
-			  " no debe ser mayor a " +
-			  this.modal.last_date,
+			"Error: la fecha " + this.modal.first_date + " no debe ser mayor a " + this.modal.last_date,
 			"warning"
 		  );
 		  response = false;
-		  console.log(
-			"Error: la fecha " +
-			  this.modal.first_date +
-			  " no debe ser mayor a " +
-			  this.modal.last_date
-		  );
 		}
 	  }
 	  return response;
 	},
 	resetPrintButton() {
 	  this.$store.commit("retFunForm/resetContributionTypes", []);
+	},
+	showPositiveType(contributionType) {
+		if(contributionType.operator === "-") return true;
+		if(this.positiveContributions < this.usedContributionsLimit || this.usedContributionsLimit <= 0) {
+			return true;
+		}
+		return false;
 	}
   },
   computed: {
@@ -381,7 +363,34 @@ export default {
 		}
 		return Object.keys(this.$validator.errors.collect()).length > 0;
 	},
-  }
+	hashTypes() {
+		return this.types.reduce((acc, type) => {
+			acc[type.id] = type;
+			return acc;
+		}, {});
+	},
+	positiveContributions() {
+		let total = 0;
+		this.contributions.forEach(item => {
+			if (item.contribution_type_id && this.hashTypes[item.contribution_type_id].operator === "+") {
+				total++;
+			}
+		});
+	  return total;
+	},
+	percentagePositiveContributions() {
+		return (this.positiveContributions / this.usedContributionsLimit) * 100;
+	},
+	colorBar() {
+		if(this.percentagePositiveContributions < 100) {
+			return "progress-bar-info";
+		} else if(this.percentagePositiveContributions == 100) {
+			return "progress-bar-warning";
+		} else {
+			return "progress-bar-danger";
+		}
+	}
+}
 };
 </script>
 <style>

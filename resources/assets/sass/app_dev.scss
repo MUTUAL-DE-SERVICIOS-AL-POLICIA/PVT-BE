@@ -7,31 +7,14 @@
 // // Bootstrap
 // @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
-//@import "inspinia";
+@import "inspinia";
 //copy of inspinia.scss (except style.css)
 @import '../inspinia/css/bootstrap.css';
 @import '../inspinia/font-awesome/css/font-awesome.css';
 // @import '~datatables.net-bs/css/dataTables.bootstrap.css';
 // @import '~datatables.net-buttons-bs/css/buttons.bootstrap.css';
 // @import '~datatables.net-responsive-bs/css/responsive.bootstrap.css';
-@import '../inspinia/css/animate.css';
 @import '../inspinia/css/style_dev.css';
-@import '../inspinia/css/plugins/iCheck/custom.css';
-@import '../inspinia/css/plugins/chosen/bootstrap-chosen.css';
-@import '../inspinia/css/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css';
-@import '../inspinia/css/plugins/colorpicker/bootstrap-colorpicker.min.css';
-@import '../inspinia/css/plugins/cropper/cropper.min.css';
-@import '../inspinia/css/plugins/switchery/switchery.css';
-@import '../inspinia/css/plugins/jasny/jasny-bootstrap.min.css';
-@import '../inspinia/css/plugins/nouslider/jquery.nouislider.css';
-@import '../inspinia/css/plugins/datapicker/datepicker3.css';
-@import '../inspinia/css/plugins/ionRangeSlider/ion.rangeSlider.css';
-@import '../inspinia/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css';
-@import '../inspinia/css/plugins/clockpicker/clockpicker.css';
-@import '../inspinia/css/plugins/daterangepicker/daterangepicker-bs3.css';
-@import '../inspinia/css/plugins/select2/select2.min.css';
-@import '../inspinia/css/plugins/touchspin/jquery.bootstrap-touchspin.min.css';
-@import '../inspinia/css/plugins/dualListbox/bootstrap-duallistbox.min.css';
 
 @import "custom";
 //@import "~vue-form-wizard/src/assets/wizard"

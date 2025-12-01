@@ -10,6 +10,12 @@ use Carbon\Carbon;
 class RetFunBeneficiary extends Model
 {
     use SoftDeletes;
+
+    protected $casts = [
+        'percentage' => 'float',
+        'amount_ret_fun' => 'float',
+    ];
+
     public function getBirthDateAttribute($value)
     {
         if (!$value) {
@@ -48,6 +54,10 @@ class RetFunBeneficiary extends Model
     public function testimonies()
     {
         return $this->belongsToMany('Muserpol\Models\Testimony')->withTimestamps();
+    }
+    public function ret_fun_refund_amounts()
+    {
+        return $this->hasMany('Muserpol\Models\RetirementFund\RetFunRefundAmount', 'ret_fun_beneficiary_id');
     }
 
     /**

@@ -59,7 +59,7 @@ class HomeController extends Controller
     }
     
     public function retFunSettings(){
-        $ret_fun_procedure = RetFunProcedure::where('is_enabled','true')->first();
+        $ret_fun_procedure = RetFunProcedure::active_procedure();
         
         $data = [
             'ret_fun_procedure' =>  $ret_fun_procedure

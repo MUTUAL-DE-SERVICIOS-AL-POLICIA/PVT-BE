@@ -847,5 +847,113 @@ class EconomicComplement extends Model
                 $this->save();
             }
         }
+    public function requirementsList()
+    {
+        try {
+            $collateDocuments = app()->call(
+                'Muserpol\Gateway\AffiliateController@collateDocument',
+                [
+                    'affiliateId' => $this->affiliate->id,
+                    'procedureModalityId' => $this->eco_com_modality->procedure_modality_id
+                ]
+            );
+        } catch (\Exception $e) {
+            $fullTrace = $e->getTraceAsString();
+            $lines = explode("\n", $fullTrace);
+            $internalLines = array_filter($lines, function ($line) {
+                return strpos($line, '[internal function]') !== false;
+            });
+            $filteredTrace = implode("\n", $internalLines);
+            logger()->error('Error al conectar con los microservicios', [
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $filteredTrace,
+                'controller' => self::class,
+                'method' => __FUNCTION__,
+                'input' => $data ?? null,
+            ]);
+            return ['serviceStatus' => 'error'];
+        }
+        
+        $existingIds = [];
+        foreach ($collateDocuments['requiredDocuments'] as $group) {
+            foreach ($group as $doc) {
+                $existingIds[] = $doc['procedureRequirementId'];
+            }
+        }
+        foreach ($collateDocuments['additionallyDocuments'] as $doc) {
+            $existingIds[] = $doc['procedureRequirementId'];
+        }
+        
+        //selected documents
+        $submitted = EcoComSubmittedDocument::select(
+            'eco_com_submitted_documents.id',
+            'procedure_requirements.number',
+            'eco_com_submitted_documents.procedure_requirement_id',
+            'eco_com_submitted_documents.comment',
+            'eco_com_submitted_documents.is_valid',
+            'eco_com_submitted_documents.is_uploaded',
+            'procedure_documents.name'
+        )
+        ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
+        ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+        ->where('eco_com_submitted_documents.economic_complement_id', $this->id)
+        ->orderBy('procedure_requirements.number', 'ASC')
+        ->get()
+        ->keyBy('procedure_requirement_id');
+
+        $applySubmittedData = function (&$doc, $dbDoc) {
+            $doc['isUploaded'] = (bool) $dbDoc->is_uploaded;
+            $doc['status']     = true;
+            $doc['isValid']    = (bool) $dbDoc->is_valid;
+            $doc['comment']    = $dbDoc->comment;
+            $doc['submittedDocumentId'] = $dbDoc->id;
+        };
+
+        // Actualizar requiredDocuments usando referencias
+        foreach ($collateDocuments['requiredDocuments'] as &$group) {
+            foreach ($group as &$doc) {
+                $reqId = $doc['procedureRequirementId'];
+
+                if ($submitted->has($reqId)) {
+                    $applySubmittedData($doc, $submitted->get($reqId));
+                }
+            }
+        }
+        unset($group, $doc);
+
+        // Actualizar additionallyDocuments usando referencias
+        foreach ($collateDocuments['additionallyDocuments'] as &$doc) {
+            $reqId = $doc['procedureRequirementId'];
+
+            if ($submitted->has($reqId)) {
+                $applySubmittedData($doc, $submitted->get($reqId));
+            }
+        }
+        unset($doc);
+
+        foreach ($submitted as $reqId => $dbDoc) {
+            if (!in_array($reqId, $existingIds)) {
+                 $newDoc = [
+                    "procedureRequirementId" => $dbDoc->procedure_requirement_id,
+                    "number"                 => $dbDoc->number,
+                    "procedureDocumentId"    => null,
+                    "name"                   => $dbDoc->name,
+                    "shortened"              => null,
+                    "isUploaded"             => (bool) $dbDoc->is_uploaded,
+                    "status"                 => true,
+                    "isValid"                => $dbDoc->is_valid,
+                    "comment"                => $dbDoc->comment,
+                ];
+
+                if ($dbDoc->number > 0) {
+                    $collateDocuments['requiredDocuments'][$dbDoc->number][] = $newDoc;
+                } else {
+                    $collateDocuments['additionallyDocuments'][] = $newDoc;
+                }
+            }
+        }
+        return $collateDocuments;
     }
 }
