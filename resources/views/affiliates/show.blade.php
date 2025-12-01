@@ -245,6 +245,10 @@ th.ellipsis-text {
                                                     <th>Renta Dignidad</th>
                                                 @endif
                                                 <th>Total Renta</th>
+                                                <th>Modalidad</th>
+                                                <th>Promedio</th>
+                                                <th>Limite Referencial</th>
+                                                <th>Sueldo Base</th>
                                                 @if($role == 103)
                                                 <th>Acciones</th>
                                                 @endif
@@ -269,6 +273,10 @@ th.ellipsis-text {
                                                         <td>{{ $eco_com_fixed_pension->dignity_pension }}</td>
                                                     @endif
                                                     <td>{{ $eco_com_fixed_pension->total_rent }}</td>
+                                                    <td>{{ optional(optional($eco_com_fixed_pension->eco_com_rent)->procedureModality)->name }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->eco_com_rent)->average }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->eco_com_rent)->referential_limit }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->base_wage)->amount}}</td>
                                                     @if($role == 103)
                                                     <td>
                                                         <button class="btn btn-warning btn-sm" @click='$refs.editModal.openModal(@json($eco_com_fixed_pension))'>Editar</button>
@@ -335,9 +343,11 @@ th.ellipsis-text {
                                                 <td>{{$eco_com->eco_com_state->name }}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->getOnlyTotalEcoCom())}}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->total)}}</td>
+                                                <td>
                                                 @if (isset($eco_com->eco_com_fixed_pension))
-                                                <td>{{ \Carbon\Carbon::parse($eco_com->eco_com_fixed_pension->eco_com_procedure->year)->format('Y')}} - {{$eco_com->eco_com_fixed_pension->eco_com_procedure->semester}}</td>
+                                                    {{ \Carbon\Carbon::parse($eco_com->eco_com_fixed_pension->eco_com_procedure->year)->format('Y')}} - {{$eco_com->eco_com_fixed_pension->eco_com_procedure->semester}}
                                                 @endif
+                                                </td>
                                                 <td style="vertical-align:middle">
                                                 @can('update', new Muserpol\Models\EconomicComplement\EconomicComplement)
                                                     <a href="/eco_com/{{$eco_com->id}}">

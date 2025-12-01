@@ -45,12 +45,32 @@
                   </div>
                   <div class="hr-line-dashed"></div>
                   <div class="row">
-                    <label class="col-sm-4 control-label">Periodo que correponde la renta</label>
+                    <label class="col-sm-6 control-label">Periodo que correponde la renta</label>
                     <select class="col-sm-6" name="Periodo que correponde la renta"
                       v-model="eco_com_fixed_pension.eco_com_procedure_id">
                       <option v-for="p in procedures" :value="p.id" :key="p.id">{{ p.semester + p.year.split('-')[0]
                         + '(' + p.rent_month + ')' }}</option>
                     </select>
+                  </div>
+                  <div class="row">
+                    <label class="col-sm-6 control-label">Periodo de Sueldo Base</label>
+                    <select class="col-sm-6" name="Periodo que correponde la renta"
+                      v-model="eco_com_fixed_pension.base_wage_id">
+                      <option v-for="bw in baseWages" :value="bw.id" :key="'baseWage'+bw.id">{{ bw.month_year | monthYear }} - {{ bw.amount | currency }}</option>
+                    </select>
+                  </div>
+                  <div class="row">
+                    <label class="col-sm-6 control-label">Periodo de Promedio y Limite Referencial ({{ type }})</label>
+                    <select class="col-sm-6" name="Periodo que correponde la renta"
+                      v-model="eco_com_fixed_pension.eco_com_rent_id">
+                      <option v-for="r in ecoComRents" :value="r.id" :key="'baseWage'+r.id">{{ r.year | year }} - {{ r.semester }}</option>
+                    </select>
+                  </div>
+                  <div class="row">
+                    <template v-if="eco_com_fixed_pension.eco_com_rent_id">
+                      <p class="col-sm-6 control-label">Promedio {{ ecoComRents.find(r => r.id == eco_com_fixed_pension.eco_com_rent_id).average | currency}}</p>
+                      <p class="col-sm-6 control-label">Limite Referencial {{ ecoComRents.find(r => r.id == eco_com_fixed_pension.eco_com_rent_id).referential_limit | currency}}</p>
+                    </template>
                   </div>
                 </div>
               </div>
@@ -90,8 +110,9 @@ import {
 export default {
   props: ["affiliate_pension_entity_id", "affiliate_id"],
 
-  mounted() {
-    this.getProcedures();
+  async mounted() {
+    await this.getProcedures();
+    await this.createFixedRent();
   },
   data() {
     return {
@@ -105,9 +126,14 @@ export default {
         sub_total_rent: null,
         reimbursement: null,
         dignity_pension: null,
+        base_wage_id: null,
+        eco_com_rent_id: null,
       },
       loadingButton: false,
-      procedures: []
+      procedures: [],
+      baseWages: [],
+      ecoComRents: [],
+      type: '',
     };
   },
 
@@ -247,6 +273,19 @@ export default {
         .get(`/eco_com_procedures_regulation`)
         .then(response => {
           this.procedures = response.data
+        })
+        .catch(error => {
+          flashErrors("Error al procesar: ", error.response.data.errors);
+        });
+    },
+    async createFixedRent() {
+      await axios
+        .get(`/affiliate/${this.affiliate_id}/eco_com_fixed_pensions/create`)
+        .then(response => {
+          console.log(response.data);
+          this.baseWages = response.data.base_wages;
+          this.ecoComRents = response.data.eco_com_rents;
+          this.type = response.data.type;
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);
