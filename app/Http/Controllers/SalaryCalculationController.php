@@ -246,7 +246,7 @@ class SalaryCalculationController extends Controller
                 foreach ($checksWithDate as $check) {
                     $query->orWhere(function ($q) use ($check) {
                         $q->where('degree_id', $check['codigo_de_grado'])
-                          ->whereDate('month_year', $check['month_year_carbon']); // Use whereDate for comparison
+                          ->whereYear('month_year', (int)$check['año']); // varificación por año
                     });
                 }
             })->get();
