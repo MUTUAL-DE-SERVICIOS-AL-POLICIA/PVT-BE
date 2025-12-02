@@ -181,13 +181,8 @@ class RetirementFundController extends Controller
         try {
         $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::active_procedure();
 
-        $nextcode = RetirementFund::where('affiliate_id', $request->affiliate_id)->where('code', 'LIKE', '%A')->first();
-        if (isset($nextcode->id)) {
-            $code = str_replace("A", "", $nextcode->code);
-        } else {
-            $ret_fun_code = Util::getLastCode(RetirementFund::class);
-            $code = Util::getNextCode($ret_fun_code);
-        }
+        $ret_fun_code = Util::getLastCode(RetirementFund::class);
+        $code = Util::getNextCode($ret_fun_code);
 
         $retirement_fund = new RetirementFund();
         $this->authorize('create', $retirement_fund);
