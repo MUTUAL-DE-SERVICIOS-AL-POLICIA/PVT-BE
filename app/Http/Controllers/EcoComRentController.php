@@ -143,7 +143,7 @@ class EcoComRentController extends Controller
         $imported = 0;
         $line_error = 1;
 
-        while (($data = fgetcsv($file, 1000, ":")) !== false) {
+        while (($data = fgetcsv($file, 1000, ",")) !== false) {
             $line_error++;
             // Campos del CSV
             $degree_id  = trim($data[0]);
@@ -243,7 +243,7 @@ class EcoComRentController extends Controller
                         $prestacion,
                         '', // average
                         ''  // limit
-                    ], ':');
+                    ], ',');
                 }
             }
             fclose($file);
