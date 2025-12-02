@@ -181,16 +181,14 @@ class EconomicComplement extends Model
             ], 422);
         }
         $eco_com_procedure = $this->eco_com_procedure;
-        $eco_com_rent = $this->isInclusion() 
-            ? EcoComRent::where('degree_id', '=', $this->degree_id)
+        $eco_com_rent = $this->eco_com_fixed_pension->eco_com_rent
+            ?? EcoComRent::where('degree_id', '=', $this->degree_id)
             ->where('procedure_modality_id', '=', ($this->isOrphanhood() ? 29 : $this->eco_com_modality->procedure_modality_id))
             ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
-            ->first()
-            : $this->eco_com_fixed_pension->eco_com_rent;
-        $base_wage = $this->isInclusion() 
-            ? BaseWage::where('degree_id', $this->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first()
-            : $this->eco_com_fixed_pension->base_wage;
+            ->first();
+        $base_wage = $this->eco_com_fixed_pension->base_wage
+            ?? BaseWage::where('degree_id', $this->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first();
         
         $complementary_factor = ComplementaryFactor::where('hierarchy_id', '=', $base_wage->degree->hierarchy->id)
             ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
@@ -356,7 +354,9 @@ class EconomicComplement extends Model
             //cambio de estado pagado a en proceso en la tabla contribution_passives
             $payment_contribucion_passive_process = DB::select("SELECT change_state_contribution_process_eco_com($user_id,$this->id)");
         }
-        return ['status' => 'success'];
+        return response()->json([
+                'status' => 'success',
+            ], 200);
     }
     public function isOldAge()
     {
