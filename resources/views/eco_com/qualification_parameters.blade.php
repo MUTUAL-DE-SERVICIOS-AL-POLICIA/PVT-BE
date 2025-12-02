@@ -29,7 +29,7 @@
                 <li class="list-group-item active" data-toggle="tab" href="#tab-base-wage"><a href="#"><i
                             class="fa fa-puzzle-piece"></i> Sueldos</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-salary-calculations"><a href="#"><i 
-                            class="fa fa-calculator"></i> Cargar de Sueldos</a></li>
+                            class="fa fa-calculator"></i> Cargar Sueldos</a></li>
                 <!-- <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
                             class="fa fa-address-card"></i> Promedios</a></li> -->
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-loadaverages"><a href="#"><i
