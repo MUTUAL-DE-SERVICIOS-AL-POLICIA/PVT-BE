@@ -2000,7 +2000,7 @@ class EconomicComplementController extends Controller
             ], 422);
         }
         $data = $eco_com->qualify();
-        if ($data['status'] == "success") {
+        if ($data->getOriginalContent()['status'] == "success") {
             return $this->getEcoCom($request->id);
         } else {
             return $data;
