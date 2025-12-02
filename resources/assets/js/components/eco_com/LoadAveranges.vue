@@ -81,7 +81,7 @@
                 <td class="text-center">{{ row.degree.correlative }}</td>
                 <td class="text-center">{{ row.degree.name }}</td>
                 <td>{{ row.procedure_modality.name }}</td>
-                <td>{{ row.referencial_limit }}</td>
+                <td>{{ row.referential_limit }}</td>
                 <td>{{ row.average }}</td>
               </tr>
             </tbody>

@@ -226,25 +226,6 @@
           :class="{'has-error': errors.has('procedure_additional_start_date') || errors.has('procedure_additional_end_date') }"
         >
         </div>
-        <div class="col-md-12" :class="{'has-error': errors.has('procedure_indicator')}">
-          <div class="col-md-3">
-            <label class="control-label">Indicador</label>
-          </div>
-          <div class="col-md-9">
-            <input
-              type="text"
-              class="form-control m-b"
-              name="procedure_indicator"
-              v-model="form.indicator"
-              v-validate.initial="'required'"
-            >
-            <i v-show="errors.has('procedure_indicator')" class="fa fa-warning text-danger"></i>
-            <span
-              v-show="errors.has('procedure_indicator')"
-              class="text-danger"
-            >{{ errors.first('procedure_indicator') }}</span>
-          </div>
-        </div>
         <div class="col-md-12">
           <div class="text-center m-sm">
             <button class="btn btn-danger" type="button" @click="$modal.hide('procedure-modal')">
