@@ -27,7 +27,7 @@
                 <th>Fin Normal</th>
                 <th>Inicio Rezagados</th>
                 <th>Fin Rezagados</th>
-                <th>Indicator</th>
+                <!-- <th>Indicator</th> -->
                 <!-- <th>Estado</th> -->
                 <th>Opciones</th>
               </tr>
@@ -40,7 +40,7 @@
                 <td>{{ p.normal_end_date }}</td>
                 <td>{{ p.lagging_start_date }}</td>
                 <td>{{ p.lagging_end_date }}</td>
-                <td>{{ p.indicator }}</td>
+                <!-- <td>{{ p.indicator }}</td> -->
                 <!-- <td>
                   <span class="label" :class="getBadge(p.id)">hola </span>
                 </td>-->
