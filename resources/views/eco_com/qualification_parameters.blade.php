@@ -30,8 +30,8 @@
                             class="fa fa-puzzle-piece"></i> Sueldos</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-salary-calculations"><a href="#"><i 
                             class="fa fa-calculator"></i> Cargar Sueldos</a></li>
-                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
-                            class="fa fa-address-card"></i> Promedios</a></li>
+                <!-- <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
+                            class="fa fa-address-card"></i> Promedios</a></li> -->
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-loadaverages"><a href="#"><i
                             class="fa fa-address-card"></i> Cargar promedios</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-complementary-factor"><a href="#"><i
@@ -62,9 +62,9 @@
             <div id="tab-base-wage" class="tab-pane active">
                 <salary-display></salary-display>
             </div>
-            <div id="tab-eco-com-averages" class="tab-pane">
+            <!-- <div id="tab-eco-com-averages" class="tab-pane">
     @include('eco_com.average')
-            </div>
+            </div> -->
             <div id="tab-eco-com-loadaverages" class="tab-pane">
                 <eco-com-loadaverages :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-loadaverages>    
             </div>
