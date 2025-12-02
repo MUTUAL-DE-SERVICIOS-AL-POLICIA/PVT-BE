@@ -76,7 +76,7 @@
                             <thead>
                                 <tr>
                                     <th>Nro</th>
-                                    <th>Codigo de Grado</th>
+                                    <!-- <th>Codigo de Grado</th> -->
                                     <th>Grado</th>
                                     <th>Nombre</th>
                                     <th>Salario</th>
@@ -85,7 +85,7 @@
                             <tbody>
                                 <tr v-for="(salary, index) in salaries" :key="index">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ salary.degree_id }}</td>
+                                    <!-- <td>{{ salary.degree_id }}</td> -->
                                     <td>{{ salary.degree_shortened }}</td>
                                     <td>{{ salary.degree_name }}</td>
                                     <td>{{ (salary.contribution_salary !== null && salary.contribution_salary != 0) ? (salary.contribution_salary | currency) : '-' }}</td>
