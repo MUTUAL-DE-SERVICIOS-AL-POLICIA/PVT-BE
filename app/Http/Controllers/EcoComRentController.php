@@ -232,7 +232,7 @@ class EcoComRentController extends Controller
                 'prestacion_(obligatorio)',
                 'promedio',
                 'limite_referencial'
-            ], ':');
+            ], ',');
 
             // CONTENIDO
             foreach ($degrees as $degree) {
