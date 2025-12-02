@@ -575,7 +575,7 @@
         <div class="row">
           <label class="col-sm-6 control-label">Periodo de Sueldo Base</label>
           <select class="col-sm-6" name="Periodo que correponde la renta" v-model="ecoComModal.base_wage_id">
-            <option v-for="bw in baseWages" :value="bw.id" :key="'baseWage' + bw.id">{{ bw.month_year | monthYear }} - {{
+            <option v-for="bw in baseWages" :value="bw.id" :key="'baseWage' + bw.id">{{ bw.month_year | year }} - {{
               bw.amount | currency }}</option>
           </select>
         </div>
