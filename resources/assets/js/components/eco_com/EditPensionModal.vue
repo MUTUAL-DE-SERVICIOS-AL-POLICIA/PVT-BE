@@ -56,7 +56,7 @@
                     <label class="col-sm-6 control-label">Periodo de Sueldo Base</label>
                     <select class="col-sm-6" name="Periodo que correponde la renta"
                       v-model="eco_com_fixed_pension.base_wage_id">
-                      <option v-for="bw in baseWages" :value="bw.id" :key="'baseWage'+bw.id">{{ bw.month_year | monthYear }} - {{ bw.amount | currency }}</option>
+                      <option v-for="bw in baseWages" :value="bw.id" :key="'baseWage'+bw.id">{{ bw.month_year | year }} - {{ bw.amount | currency }}</option>
                     </select>
                   </div>
                   <div class="row">
