@@ -12,7 +12,6 @@ use Muserpol\Models\RecordType;
 class ContributionObserver
 {
     public function created(Contribution $contribution) {
-        logger("entra aca");
         $message = 'El usuario '.Auth::user()->username.' registro aporte en fecha '.Carbon::now();
         $record_type = RecordType::where('display_name', '=', 'Contribuciones')->first();
         $record = new Record();

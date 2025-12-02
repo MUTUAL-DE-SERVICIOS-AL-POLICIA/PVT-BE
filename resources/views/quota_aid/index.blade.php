@@ -45,12 +45,6 @@
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                         </tr>
                         </tr>
                     </tfoot>
@@ -75,20 +69,14 @@
                             <th>Regional</th>
                             <th>Estado de Bandeja</th>
                             <th>Total</th>
-                            <th># de Archivo</th>
                             <th>Fecha Archivo</th>
-                            <th># de Revision Legal</th>
                             <th>Fecha Revision Legal</th>
-                            <th># de Cuentas individuales</th>
                             <th>Fecha Cuentas individuales</th>
-                            <th># de Calificación</th>
                             <th>Fecha Calificación</th>
-                            <th># de Dictamen</th>
                             <th>Fecha Dictamen</th>
-                            <th># de Jefatura</th>
                             <th>Fecha Jefatura</th>
-                            <th># de Resolución</th>
                             <th>Fecha Resolución</th>
+                            <th>Fecha Liquidación</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -183,24 +171,21 @@
                 { data: 'cell_phone_number', visible: false },
                 { data: 'type' },
                 { data: 'procedure_modality.name' },
-                { data: 'wf_state.first_shortened' },
+                { data: 'wf_state.first_shortened', render: function (data, type, row) {
+                        return data == null ? '' : data;
+                    } 
+                },
                 { data: 'city_start.name' },
                 { data: 'inbox_state' },
-                { data: 'total' },      
-                { data: 'file_code',  visible: false },          
+                { data: 'total' },
                 { data: 'file_date', visible: false },
-                { data: 'review_code', visible: false },
                 { data: 'review_date', visible: false },
-                { data: 'individuals_account_code', visible: false },
                 { data: 'individuals_account_date', visible: false },
-                { data: 'qualification_code', visible: false },
                 { data: 'qualification_date', visible: false },
-                { data: 'dictum_code', visible: false },
                 { data: 'dictum_date', visible: false },
-                { data: 'headship_code', visible: false },
                 { data: 'headship_date', visible: false },
-                { data: 'resolution_code', visible: false },
                 { data: 'resolution_date', visible: false },
+                { data: 'liquidation_date', visible: false },
                 { data: 'action' },
             ],
         });

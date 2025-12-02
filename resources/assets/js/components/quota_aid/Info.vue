@@ -20,9 +20,6 @@ export default {
           }
       }
   },
-  created(){
-    //   console.log(this.read);
-  },
   computed:{
      city_start_name: function(){
           return !!this.city_start? this.city_start.name:'';
@@ -56,6 +53,14 @@ export default {
       print: function () {
         try {
           printJS({printable:'quota_aid/'+this.quota_aid.id+'/print/qualification',modalMessage:
+              "Generando documentos de impresión, por favor espere un momento.", type:'pdf', showModal:true});
+        } catch (error) {
+          console.error('Ocurrió un error al imprimir:', error);
+        }
+      },
+      printLiquidation: function () {
+        try {
+          printJS({printable:'quota_aid/'+this.quota_aid.id+'/print/liquidation',modalMessage:
               "Generando documentos de impresión, por favor espere un momento.", type:'pdf', showModal:true});
         } catch (error) {
           console.error('Ocurrió un error al imprimir:', error);

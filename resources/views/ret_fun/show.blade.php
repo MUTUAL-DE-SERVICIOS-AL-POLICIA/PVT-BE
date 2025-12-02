@@ -95,8 +95,16 @@
         {!!Breadcrumbs::render('show_retirement_fund', $retirement_fund)!!}
     </div>
     <div class="col-md-5 text-center" style="margin-top:12px;">
-            <div class="pull-left">
-                <correlative doc-id="{{ $retirement_fund->id }}" wf-state-id="{{ $retirement_fund->wf_state_current_id }}" type="retFun"></correlative>
+            <div class="pull-left">            
+            @if(Util::getRol()->id == Muserpol\Helpers\ID::roles()->liquidationFR)
+                <ret-fun-certification-button
+                    title="Imprimir Liquidación"
+                    ret-fun-id="{{ $retirement_fund->id }}"
+                    url-print="{{ route('ret_fun_print_liquidation', $retirement_fund->id) }}"
+                >
+                </ret-fun-certification-button>
+            @endif
+
             @if(Util::getRol()->id == 10 || Util::isRegionalRole())
                 <ret-fun-certification-button
                     title="Imprimir recepción"
@@ -296,28 +304,17 @@
                             <div id="tab-beneficiaries" class="tab-pane">
 
                                     @can('view',new Muserpol\Models\RetirementFund\RetFunBeneficiary)
-                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships])
+                                        @include('ret_fun.beneficiaries_list', ['beneficiaries'=>$beneficiaries,'cities'=>$cities,'kinships'=>$kinships,'kinship_beneficiaries'=>$kinship_beneficiaries])
                                     @endcan
 
                             </div>
                             <div id="tab-summited-document" class="tab-pane">
 
-                                @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)
-                                        {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'retirement_fund'=>$retirement_fund,'documents'=>$documents]) --}}                                        
-                                    <ret-fun-step1-requirements-edit :ret_fun="{{ $retirement_fund }}" :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}" inline-template>
-                                        @include('ret_fun.step1_requirements_edit')
+                                @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument)                                     
+                                    <ret-fun-step1-requirements-edit :affiliate="{{ $affiliate }}" :ret_fun="{{ $retirement_fund }}" :requirements='@json($requirements)' :rol="{{Muserpol\Helpers\Util::getRol()->id}}">
                                     </ret-fun-step1-requirements-edit>
                                 @endcan
-
                             </div>
-                            <div id="tab-headship" class="tab-pane">
-                                {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
-                                    {{-- <ret-fun-heaship :ret_fun="{{ $retirement_fund }}" user="{{ $user }}" inline-template>
-                                        @include('ret_fun.headship')
-                                    </ret-fun-heaship> --}}
-                                {{-- @endcan --}}
-                            </div>
-
                             <div id="tab-individual-accounts" class="tab-pane">
                                 @can('view',new Muserpol\Models\Contribution\Contribution)
                                     <ret-fun-qualification
@@ -328,85 +325,17 @@
                                     >
                                         @include('ret_fun.summary_individual_accounts')
                                     </ret-fun-qualification>
-                                    {{-- <summary-select-contributions
-                                        :contributions="{{json_encode($contributions_select)}}"
-                                        :retfunid="{{$retirement_fund->id}}"
-                                        :contype="{{true}}"
-                                        :types="{{json_encode($contribution_types)}}"
-                                        :start-date="{{json_encode($date_entry)}}"
-                                        :end-date="{{json_encode($date_derelict)}}"
-                                        inline-template
-                                        >
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="ibox">
-                                                    <div class="ibox-content forum-container">
-                                                        <div class="forum-title">
-                                                            <h3>Tabla de contribuciones</h3>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-1">
-                                                                <label style="font-size:80%;"> @{{ endDate | monthYear }} </label>
-                                                                <div style="border-style: solid; border-width: 1px; ">
-                                                                    <div v-for="(contribution,index) in contributions" :key="index">
-                                                                        <div :style="{background: getColor1(contribution.contribution_type_id), display: 'block', width: '100%', height: row_higth+'px'}"
-                                                                            @click="selectRow(index)" data-toggle="tooltip" data-placement="left" :title="contribution.month_year | monthYear"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <label style="font-size:80%;"> @{{ startDate | monthYear }} </label>
-                                                            </div>
-                                                            <div class="col-md-9">
-                                                                <table class="table table-fixed">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th class="col-md-2">Fecha </th>
-                                                                            <th class="col-md-2">Total</th>
-                                                                            <th class="col-md-4">Tipo</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody id="contenedor">
-                                                                        <tr v-for="(contribution,index) in contributions" :key="`contribution-${index}`" :style="{'background':getColor1(contribution.contribution_type_id)}">
-                                                                            <td class="col-md-2">@{{ contribution.month_year | monthYear }}</td>
-                                                                            <td class="col-md-2">@{{ contribution.total }}</td>
-                                                                            <td class="col-md-4">
-                                                                                @{{ types.find(i => i.id == contribution.contribution_type_id) ? types.find(i => i.id == contribution.contribution_type_id).name : 'sin clasificar' }}
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <div class="col-md-2" style="padding-left:0px;padding-right: 2px">
-                                                                <h3>Tipos de Aportes</h3>
-                                                                <ul class="list-group">
-                                                                    <transition-group name="custom" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutRight">
-                                                                        <li v-for="(ct, index) in types" :key="`ct-ul-${index}`" v-if="count1(ct.id)" class="list-group-item comando" :style="{background: getColor1(ct.id)}"><span class="badge">@{{ count1(ct.id) }}</span> @{{ ct.name }} </li>
-                                                                    </transition-group>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="ibox-footer">
-                                                        <div class="pull-right">
-                                                            <strong class=" text-info m-r-md"> Clasificados: @{{ countTotal()}} </strong>
-                                                            <strong class=" text-danger m-r-md"> Faltantes: @{{ count1(null)}} </strong>
-                                                            <strong> Cantidad Total: @{{contributions.length}} </strong>
-                                                        </div>
-                                                        <br>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-                                    </summary-select-contributions> --}}
                                 @endcan
-
                             </div>
                             <div id="tab-qualification" class="tab-pane">
-
-                                    {{-- @can('view',new Muserpol\Models\AffiliateFolder) --}}
-                                        @include('ret_fun.summary_qualification', ['retirement_fund'=>$retirement_fund,'affiliate'=>$affiliate])
-                                    {{-- @endcan --}}
-
+                                <ret-fun-qualification
+                                    inline-template
+                                    :retirement-fund-id="{{$retirement_fund->id}}"
+                                    :contributions="{{$all_contributions}}"
+                                    :affiliate="{{$retirement_fund->affiliate}}"
+                                    >
+                                        @include('ret_fun.summary_qualification')
+                                </ret-fun-qualification>
                             </div>
                             <div id="tab-folder" class="tab-pane">
 

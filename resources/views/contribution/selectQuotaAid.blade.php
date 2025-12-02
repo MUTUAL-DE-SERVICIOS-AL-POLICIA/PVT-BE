@@ -12,6 +12,6 @@
         </buttons-print-contributions>
     </div>
 </div>
-<contribution-select-quota-aid :contributions ="{{json_encode($contributions)}}" :retfunid="{{$ret_fun->id}}" :contype="{{true}}" :types="{{json_encode($contribution_types)}}" :start-date="{{json_encode($date_entry)}}"  :end-date="{{json_encode($date_last_contribution)}}" >
+<contribution-select-quota-aid :contributions ="{{json_encode($contributions)}}" :retfunid="{{$ret_fun->id}}" :contype="{{true}}" :types="{{json_encode($contribution_types)}}" :start-date="{{json_encode($date_entry)}}"  :end-date="{{json_encode($date_last_contribution)}}" :retfund_procedure_modality="{{json_encode($ret_fun->procedure_modality)}}" >
 </contribution-select>
 @endsection

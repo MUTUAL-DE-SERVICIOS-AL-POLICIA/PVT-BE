@@ -58,4 +58,9 @@ class QuotaAidAdvisor extends Model
     {
         return Util::fullName($this, $style);
     }
+
+    public function kinship_beneficiaries($beneficiary_id)
+    {
+        return $this->belongsToMany('Muserpol\Models\KinshipBeneficiary', 'quota_aid_advisor_beneficiary', 'quota_aid_advisor_id', 'kinship_beneficiary_id')->wherePivot('quota_aid_beneficiary_id', $beneficiary_id)->limit(1);
+    }
 }

@@ -30,7 +30,6 @@ use Muserpol\Exports\EcoComBankExport;
 use Muserpol\Models\EconomicComplement\EcoComProcedure;
 
 Route::get('/logout', 'Auth\LoginController@logout');
-Route::get('/minor', 'HomeController@minor')->name("minor");
 Auth::routes();
 
 //afiliates
@@ -76,8 +75,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/deleteEnrolled_affiliate/{affiliate}', 'AffiliateController@deleteEnrolled')->name('deleteEnrolled_affiliate');
     Route::get('/CIDevice/{affiliate}/{valor}', 'AffiliateController@CIDevice')->name('CIDevice');
     //SpouseControler
+    Route::post('spouse/{affiliate_id}', 'SpouseController@store')->name('spouse_store');
     Route::patch('/update_spouse/{affiliate_id}', 'SpouseController@update')->name('update_spouse');
-
+    Route::get('/person-data/{identityCard}', 'SpouseController@findSpouseOrAffiliateData');
     Route::get('get_all_affiliates', 'AffiliateController@getAllAffiliates');
 
     //Scanned Documents
@@ -88,23 +88,22 @@ Route::group(['middleware' => ['auth']], function () {
 
     //retirement fund
     //RetirementFundRequirements
-    //Route::resource('ret_fun', 'RetirementFundRequirementController@retFun');
-    Route::get('affiliate/{affiliate}/ret_fun', 'RetirementFundRequirementController@retFun');
     // Route::get('/home', 'HomeController@index')->name('home');
     Route::get('get_all_ret_fun', 'RetirementFundController@getAllRetFun');
     Route::get('ret_fun/reports', 'RetFunReportController@index');
     Route::resource('ret_fun', 'RetirementFundController');
     Route::get('ret_fun/{ret_fun_id}/qualification', 'RetirementFundController@qualification')->name('ret_fun_qualification');
+    Route::get('ret_fun/{ret_fun_id}/qualification/refunds', 'RetirementFundController@getRefundsQualification')->name('get_ret_fun_refunds_qualification');
     Route::get('ret_fun/{ret_fun_id}/get_average_quotable', 'RetirementFundController@getAverageQuotable');
     Route::get('ret_fun/{ret_fun_id}/qualification/certification', 'RetirementFundController@qualificationCertification')->name('qualification_certification');
-    Route::get('ret_fun/{ret_fun_id}/save_average_quotable', 'RetirementFundController@saveAverageQuotable')->name('save_average_quotable');
+    Route::get('ret_fun/{ret_fun_id}/calculate_sub_total', 'RetirementFundController@calculateSubTotal')->name('calculate_sub_total');
     Route::patch('ret_fun/{ret_fun_id}/save_total_ret_fun', 'RetirementFundController@saveTotalRetFun')->name('save_total_ret_fun');
     Route::patch('ret_fun/{ret_fun_id}/save_percentages', 'RetirementFundController@savePercentages')->name('save_percentages');
     Route::patch('ret_fun/{ret_fun_id}/save_percentages_availability', 'RetirementFundController@savePercentagesAvailability')->name('save_percentages_availability');
     Route::patch('ret_fun/{ret_fun_id}/save_total_ret_fun_availability', 'RetirementFundController@saveTotalRetFunAvailability')->name('save_total_ret_fun_availability');
     Route::get('get_data_certification/{ret_fun_id}', 'RetirementFundController@getDataQualificationCertification')->name('get_data_certification');
     Route::get('get_data_availability/{ret_fun_id}', 'RetirementFundController@getDataQualificationAvailability')->name('get_data_availability');
-    Route::get('affiliate/{affiliate}/procedure_create', 'RetirementFundRequirementController@generateProcedure');
+    Route::get('ret_fun/{ret_fun_id}/refund/{refund_id}/contributions', 'RetirementFundController@getDataQualificationRefund')->name('get_data_refund');
     Route::resource('ret_fun_observation', 'RetirementFundObservationController');
     Route::post('retFuneditObservation', 'RetirementFundObservationController@editObservation')->name('retFuneditObservation');
     Route::post('retFundeleteObservation', 'RetirementFundObservationController@destroy')->name('retFundeleteObservation');
@@ -112,7 +111,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('ret_fun/{ret_fun_id}/correlative/{wf_state_id}', 'RetirementFundController@getCorrelative')->name('ret_fun_get_correlative');
     Route::get('ret_fun/{ret_fun_id}/info', 'RetirementFundController@info')->name('ret_fun_info');
 
+    Route::patch('ret_fun_refund/{id}/amounts', 'RetirementFund\RetFunRefundController@storeAmounts');
+
     //Retirement Fund Certification
+    Route::get('ret_fun/{retirement_fund}/print/liquidation', 'RetirementFundCertificationController@printLiquidation')->name('ret_fun_print_liquidation');
     Route::get('ret_fun/{retirement_fund}/print/reception', 'RetirementFundCertificationController@printReception')->name('ret_fun_print_reception');
     Route::get('affiliate/{affiliate}/print/file', 'RetirementFundCertificationController@printFile')->name('ret_fun_print_file');
     Route::get('ret_fun/{retirement_fund}/print/legal_review', 'RetirementFundCertificationController@printLegalReview')->name('ret_fun_print_legal_review');
@@ -132,7 +134,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('ret_fun/{retirement_fund}/save_certification_note', 'RetirementFundController@saveCertificationNote')->name('save_certification_note');
     Route::post('procedure/print/send', 'InboxController@printSend')->name('inbox_send');
     Route::post('procedure/print/send_eco_com', 'InboxController@printSendEcoCom')->name('inbox_send_eco_com');
+    Route::post('ret_fun/{ret_fun}/save_judicial_retention', 'RetirementFundController@createJudicialRetention');
+    Route::get('ret_fun/{ret_fun}/obtain_judicial_retention', 'RetirementFundController@obtainJudicialRetention');
+    Route::patch('ret_fun/{ret_fun}/modify_judicial_retention', 'RetirementFundController@modifyJudicialRetention');
+    Route::delete('ret_fun/{ret_fun}/cancel_judicial_retention', 'RetirementFundController@cancelJudicialRetention');
 
+    // Retirement Fund Procedures
+    Route::get('ret_fun_qualification_parameters', 'RetirementFundController@qualificationParameters')->name('ret_fun.qualification_parameters');
     //Quota Aid Certification
     Route::get('quota_aid/{affiliate}/print/quota_aid_commitment_letter', 'QuotaAidCertificationController@printQuotaAidCommitmentLetter')->name('print_quota_aid_commitment_letter');
     Route::get('quota_aid/{affiliate}/print/quota_aid_voucher/{voucher}', 'QuotaAidCertificationController@printVoucherQuoteAid')->name('quota_aid_print_voucher');
@@ -228,6 +236,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('ret_fun/{retirement_fund}/print/security_certification', 'RetirementFundCertificationController@printCertificationSecurity')->name('ret_fun_print_security_certification');
     Route::get('ret_fun/{retirement_fund}/print/contributions_certification', 'RetirementFundCertificationController@printCertificationContributions')->name('ret_fun_print_contributions_certification');
     Route::get('ret_fun/{retirement_fund}/print/cer_availability_new', 'RetirementFundCertificationController@printCertificationAvailabilityNew')->name('ret_fun_print_certification_availability_new');
+    Route::get('ret_fun/{retirement_fund}/print/cer_devolution', 'RetirementFundCertificationController@printCertificationDevolution')->name('ret_fun_print_certification_devolution');
+    Route::get('ret_fun/{retirement_fund}/print/cer_additional_stay', 'RetirementFundCertificationController@printAdditionalStay')->name('ret_fun_print_additional_stay');
     //AidContributions
     Route::resource('aid_contribution', 'AidContributionController');
     Route::get('affiliate/{affiliate}/aid_contribution/edit', 'AidContributionController@getAffiliateContributions')->name('edit_aid_contribution');
@@ -241,7 +251,6 @@ Route::group(['middleware' => ['auth']], function () {
 
     //Contributions
     Route::resource('contribution', 'ContributionController');
-    Route::get('affiliate/{affiliate}/contribution/create', 'ContributionController@generateContribution')->name('create_contribution');
     Route::get('affiliate/{affiliate}/contribution', 'ContributionController@show')->name('show_contribution');
     Route::get('get_affiliate_contributions/{affiliate}', 'ContributionController@getAffiliateContributionsDatatables')->name('affiliate_contributions');
     Route::get('affiliate/{affiliate_id}/aid/contributions', 'AidContributionController@aidContributions');
@@ -339,72 +348,6 @@ Route::group(['middleware' => ['auth']], function () {
         }
       }
       return $code[0];
-    });
-    Route::get('legal_opinion', function (Request $request) {
-      $ret_fun = RetirementFund::find(4);
-      $affiliate = $ret_fun->affiliate;
-      $args = array(
-        'ret_fun' => $ret_fun,
-        'affiliate' => $affiliate,
-        'has_poder' => true,
-        'poder_number' => '151/2017',
-        'poder_date' => Util::getStringDate('2014-11-06'),
-        'poder_full_name' => "uihsakdas",
-        'poder_ci_ext' => "65284 UI",
-        'file_code' => "15/2018",
-        'file_date' => Util::getStringDate('2018-10-10'),
-        'has_file' => false,
-        'admin_fin_cite' => '5151/21212',
-        'admin_fin_date' => Util::getStringDate('2018-1-10'),
-        'has_admin_file' => true,
-        'admin_fin_amount' => '5,152.58',
-        'legal_code' => '125/505',
-        'legal_date' => Util::getStringDate('2018-1-10'),
-        'aportes_code' => '5121/1055',
-        'aportes_date' => Util::getStringDate('2018-1-10'),
-        'number_contributions' => RetFunProcedure::current()->number_contributions,
-        'availability_code' => '215/5018',
-        'availability_date' => Util::getStringDate('2018-1-10'),
-        'availability_number_contributions' => 15,
-        'qualification_code' => '5121/5018',
-        'qualification_date' => Util::getStringDate('2018-1-10'),
-        'qualification_years' => 34,
-        'qualification_months' => 2,
-        'qualification_amount' => '515.45',
-        'reserva_date' => Util::getStringDate('2018-1-10'),
-        'annual_yield' => RetFunProcedure::current()->annual_yield,
-        'reserva_amount' => 84136.45,
-      );
-      return \PDF::loadView('ret_fun.legal_opinion.ret_fun_jubilacion', $args)
-        ->setPaper('letter')
-        ->setOption('encoding', 'utf-8')
-        ->stream("dictamenLegal.pdf");
-
-
-      foreach (RetFunTemplate::all() as $value) {
-        $generated = \Blade::compileString($value->template);
-
-        ob_start() and extract($args, EXTR_SKIP);
-        try {
-          eval('?>' . $generated);
-        } catch (\Exception $e) {
-          ob_get_clean();
-          throw $e;
-        }
-        $content = ob_get_clean();
-
-        $view = View::make('ret_fun.legal_opinion.header', ['title' => 'Arjun']);
-        $header = $view->render();
-        $view = View::make('ret_fun.legal_opinion.footer', ['title' => 'Arjun']);
-        $footer = $view->render();
-        $content = $header . ' ' . $content . ' ' . $footer;
-
-        $pdf = \App::make('snappy.pdf.wrapper');
-        $pdf->loadHTML($content);
-        return $pdf->setPaper('letter')
-          ->setOption('encoding', 'utf-8')
-          ->stream($value->id . ".pdf");
-      }
     });
     Route::get('print/pre-qualification', function () {
       $re = RetirementFund::where('wf_state_current_id', 23)->get();
@@ -654,18 +597,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('test', function () {
       return Util::getNextAreaCode(102);
     });
-    Route::get('get_next_area_code_ret_fun/{ret_fun_id}', function ($retirement_fund_id) {
-      return Util::getNextAreaCode($retirement_fund_id, false);
-    });
-    Route::get('get_next_area_code_quota_aid/{quota_aid_id}', function ($quota_aid_id) {
-      return Util::getNextAreaCodeQuotaAid($quota_aid_id, false);
-    });
-    Route::get('get_next_area_code_contribution_process/{contribution_process_id}', function ($contribution_process_id) {
-      return ContributionProcess::find($contribution_process_id);
-    });
-    Route::get('get_next_area_code_eco_com/{eco_com_id}', function ($economic_complement_id) {
-      return EconomicComplement::find($economic_complement_id);
-    });
     Route::get('/treasury/select_report', 'TreasuryController@selectReport');
     Route::get('/treasury/report', 'TreasuryController@report');
 
@@ -675,6 +606,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('/update_affiliate_police_eco_com', 'EconomicComplementController@updateAffiliatePoliceEcoCom');
 
     Route::get('eco_com/{eco_com_id}', 'EconomicComplementController@show')->name('eco_com_show');
+    Route::patch('eco_com/{id}/qualify', 'EconomicComplementController@qualify')->name('eco_com_qualify');
     Route::get('eco_com', 'EconomicComplementController@index')->name('eco_com');
     Route::get('get_all_eco_com', 'EconomicComplementController@getAllEcoCom');
     Route::post('eco_com/{eco_com}/edit_requirements', 'EconomicComplementController@editRequirements')->name('eco_com_edit_requirements');
@@ -685,6 +617,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('get_eco_com_rents_first_semester', 'EconomicComplementController@getRentsFirstSemester');
     Route::delete('eco_com/{eco_com_id}', 'EconomicComplementController@destroy');
     Route::patch('eco_com_update_rents', 'EconomicComplementController@updateRents');
+    Route::patch('eco_com_change_rent_type', 'EconomicComplementController@changeRentType');
     Route::get('get_eco_com/{id}', 'EconomicComplementController@getEcoCom');
     Route::patch('eco_com_save_amortization', 'EconomicComplementController@saveAmortization');
     Route::patch('eco_com_save_deposito', 'EconomicComplementController@saveDeposito');
@@ -703,6 +636,11 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('eco_com/{eco_com_id}/print/paid_cetificate', 'EconomicComplementController@paidCertificate');
     Route::patch('eco_com_recalificacion', 'EconomicComplementController@recalificacion');
+
+    //fixed
+    Route::post('/eco_com_fixed_pensions', 'EcoComFixedPensionController@store');
+    Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
+    Route::get('/affiliate/{affiliate_id}/eco_com_fixed_pensions/create', 'EcoComFixedPensionController@create');
 
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');
@@ -733,10 +671,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // base wage
     Route::resource('base_wage', 'BaseWageController');
-    Route::get('get_first_level_base_wage', 'BaseWageController@FirstLevelData')->name('get_first_level_base_wage');
-    Route::get('get_second_level_base_wage', 'BaseWageController@SecondLevelData')->name('get_second_level_base_wage');
-    Route::get('get_third_level_base_wage', 'BaseWageController@ThirdLevelData')->name('get_third_level_base_wage');
-    Route::get('get_fourth_level_base_wage', 'BaseWageController@FourthLevelData')->name('get_fourth_level_base_wage');
+    Route::get('get_grouped_base_wages', 'BaseWageController@getGroupedWages')->name('get_grouped_base_wages');
     Route::post('base_wage_create', 'BaseWageController@base_wage_create');
 
     // Complementary Factor
@@ -750,6 +685,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('print_average', 'EconomicComplementController@printAverage')->name('print_average');
     // Route::get('export_average/{year}/{semester}', 'EconomicComplementReportController@export_average')->name('export_average');
 
+    // eco com_rent
+    Route::post('import_averages', 'EcoComRentController@importAverage');
+    Route::get('exportDegreesWithPrestations', 'EcoComRentController@exportDegreesWithPrestations');
+    Route::resource('ecocomrents', 'EcoComRentController');
+    
     // observations
     Route::get('eco_com_get_observations/{eco_com_id}', 'EcoComObservationController@getObservations');
     Route::get('eco_com_get_delete_observations/{eco_com_id}', 'EcoComObservationController@getDeleteObservations');
@@ -787,7 +727,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('affiliate_record/{id}', 'AffiliateController@getRecord');
     Route::get('affiliate_notes/{id}', 'AffiliateController@getNote');
     Route::get('affiliate_record_print/{affiliate_id}', 'AffiliateReportController@printRecordAffiliate')->name('affiliate_print_record');
-
+    // Spouse records
+    Route::get('spouse_record/{id}', 'SpouseController@getRecord');
+    
     // affiliate notes
     Route::post('affiliate_note_create', 'AffiliateNoteController@create');
     Route::patch('affiliate_note_update', 'AffiliateNoteController@update');
@@ -812,13 +754,25 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Cargar promedios
     Route::post('eco_com_load_promedio', 'EconomicComplementController@loadPromedio');
+    // eco_com_regulations
     // Cargar promedio segun la regulación actual
     Route::post('eco_com_load_average_with_regulation','EconomicComplementController@loadAverageWithRegulation');
-
+    Route::get('eco_com_procedures_regulation','EconomicComplementController@getProceduresRegulation');
 
     // certificado de revision
     Route::get('review_show/{eco_com_id}', 'EcoComReviewProcedureController@show')->name('show');
     Route::post('eco_com/review_edit', 'EconomicComplementController@editReviewProcedures')->name('eco_com_review_edit');
     Route::get('eco_com/{eco_com_id}/print/revision_certificate', 'EcoComCertificationController@printRevisionCertificate')->name('eco_com_print_revision_certificate');
+Route::post('eco_com_replicate', 'EconomicComplementReplicationController@prepareReplication')->name('eco_com_replicate');
+    Route::post('eco_com_replicate/execute', 'EconomicComplementReplicationController@executeReplication')->name('eco_com_replicate.execute');
+    Route::get('eco_com_replicate/history', 'EconomicComplementReplicationController@getReplicationHistory')->name('eco_com_replicate.history');
+    Route::get('eco_com_replicate/status', 'EconomicComplementReplicationController@canCreateReplication')->name('eco_com_replicate.status');
+    // Salary Calculation
+    Route::get('get_calculation_years', 'SalaryCalculationController@getYears')->name('get_calculation_years');
+    Route::get('get_comparative_salaries', 'SalaryCalculationController@calculateComparativeSalaries')->name('get_comparative_salaries');
+    Route::post('execute_update_base_wage', 'SalaryCalculationController@executeUpdateBaseWage')->name('execute_update_base_wage');
+    Route::get('salary_calculation/export', 'SalaryCalculationController@exportExcel')->name('salary_calculation.export');
+    Route::get('salary_calculation/download_template', 'SalaryCalculationController@downloadSalaryTemplate')->name('salary_calculation.download_template');
+    Route::post('salary_calculation/import', 'SalaryCalculationController@importSalaries')->name('salary_calculation.import');
   });
 });

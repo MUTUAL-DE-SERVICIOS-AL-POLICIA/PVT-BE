@@ -2,14 +2,14 @@
 
 namespace Muserpol\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
 use DB;
 
-class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
+class EcoComReports implements FromQuery, WithHeadings, ShouldAutoSize
 {
     protected $eco_com_procedure_id;
     protected $report_type_id;
@@ -25,13 +25,14 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function collection()
+    public function query()
     {
-        $data = null;
+
         $columns = ",". EconomicComplement::basic_info_discount();
         switch ($this->report_type_id) {
             case 1:
                 $columns_add = ",eco_com_states.name as Estado_de_tramite,
+                eco_com_origin_channel.name as modalidad_de_recepcion,
                 CASE WHEN  affiliate_devices.enrolled = true then 'Enrolado' ELSE 'No Enrolado' END as enrolled,
                 CASE WHEN  affiliate_devices.verified = true then 'Validado' ELSE 'Sin Validar' END as verified,
                 (CASE WHEN  (affiliate_tokens.api_token is not null and affiliate_tokens.firebase_token is not null) then 'Habilitado' ELSE 'No Habilitado' END) as notification,
@@ -50,8 +51,14 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                 eco_com_updated_pensions.aps_disability as AM_pension_de_invalidez,
                 eco_com_updated_pensions.aps_total_death as AM_pension_por_muerte,
                 eco_com_updated_pensions.total_rent as AM_total_renta_AM";
-                $data = EconomicComplement::where("economic_complements.eco_com_procedure_id",$this->eco_com_procedure_id)
-                    ->groupBy("economic_complements.affiliate_id",
+                return EconomicComplement::where("economic_complements.eco_com_procedure_id",$this->eco_com_procedure_id)
+                    ->groupBy("economic_complements.id",
+                    "creator.username",
+                    "eco_com_origin_channel.name",
+                    "economic_complements.affiliate_id",
+                    "creator.username",
+                    "eco_com_origin_channel.name",
+                    "economic_complements.affiliate_id",
                     "economic_complements.code",
                     "economic_complements.reception_date",
                     "beneficiary.identity_card",
@@ -103,8 +110,8 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     "wf_states.first_shortened",
                     "eco_com_modalities.name",
                     "workflows.name",
-                    "eco_com_user.id",
                     "eco_com_states.name",
+                    "eco_com_origin_channel.name",
                     "affiliate_devices.enrolled",
                     "affiliate_devices.verified",
                     "affiliate_tokens.api_token",
@@ -126,12 +133,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->wfrecords()
                     ->updatedpension()
                     // ->order()
-                    ->select(DB::raw(EconomicComplement::basic_info_colums().$columns.$columns_add))
-                    ->get();
-                break;
+                    ->select(DB::raw(EconomicComplement::basic_info_colums().$columns.$columns_add));
             case 2:
                 $columns = ',economic_complements.aps_disability as monto_invalidez,economic_complements.aps_total_death as monto_muerte';
-                $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
@@ -142,12 +147,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                         $query->where('aps_disability', '>', 0)
                               ->orWhere('aps_total_death', '>', 0);
                     })
-                    ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
-                    ->get();
-                break;
+                    ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids);
             case 3:
                 $columns = '';
-                $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
@@ -156,14 +159,12 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     // ->order()
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
                     ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_legal_guardian() . $columns))
-                    ->has('eco_com_legal_guardian')
-                    ->get();
-                break;
+                    ->has('eco_com_legal_guardian');
             case 4:
                 //! TODO VERIFICAR SI TIENE @ OBSERVACIONES
                 // $columns = ', observation_types.name as observaciones';
                 $columns = '';
-                $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
@@ -174,12 +175,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     ->whereHas('observations', function ($query) {
                         $query->whereIn('observation_type_id', $this->observation_type_ids);
                     })
-                    ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
-                    ->get();
-                break;
+                    ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids);
             case 5:
                     $columns = '';
-                    $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                    return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                         ->info()
                         ->beneficiary()
                         ->affiliateInfo()
@@ -187,14 +186,11 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                         ->spouseInfo()
                         // ->order()
                         ->select(DB::raw(EconomicComplement::basic_info_colums() . "," . EconomicComplement::basic_info_spouse() . $columns))
-                        ->where('economic_complements.is_paid',true)
+                        ->where('economic_complements.is_paid',true);
                         //->has('eco_com_legal_guardian')
-                        ->get();
-                        
-                break;
             case 6:
                 $columns = ",wf_states.name as ubicacion, CASE WHEN economic_complements.inbox_state = true then 'Validado' ELSE 'Sin Validar' END as estado";
-                $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
@@ -202,12 +198,10 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
-                    ->where('economic_complements.inbox_state', false)
-                    ->get();
-                break;
+                    ->where('economic_complements.inbox_state', false);
             case 7:
                 $columns = ",wf_states.name as ubicacion, CASE WHEN economic_complements.inbox_state = true then 'Validado' ELSE 'Sin Validar' END as estado";
-                $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->info()
                     ->beneficiary()
                     ->affiliateInfo()
@@ -215,26 +209,21 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
                     // ->order()
                     ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
                     ->whereIn('economic_complements.wf_current_state_id', $this->wf_states_ids)
-                    ->where('economic_complements.inbox_state', true)
-                    ->get();
-                break;
+                    ->where('economic_complements.inbox_state', true);
             case 8:
                 $recordableType = (new EconomicComplement())->getMorphClass();
                 $columns = ", economic_complements.deleted_at";
-                $data = EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
+                return EconomicComplement::ecoComProcedure($this->eco_com_procedure_id)
                     ->infoDelete()
                     ->beneficiary()
                     ->affiliateInfo()
                     ->wfstates()
                     ->select(DB::raw(EconomicComplement::basic_info_colums() . $columns))
-                    ->onlyTrashed()
-                    ->get();
-                break;
+                    ->onlyTrashed();
             default:
                 # code...
                 break;
         }
-        return $data;
     }
     public function headings(): array
     {
@@ -315,6 +304,7 @@ class EcoComReports implements FromCollection, WithHeadings, ShouldAutoSize
             "Nro Tramite",
             "fecha_de_recepcion",
             "usuario",
+            "Origen",
             "CI Beneficiario",
             "Primer Nombre Beneficiario",
             "Segundo Nombre Beneficiario",

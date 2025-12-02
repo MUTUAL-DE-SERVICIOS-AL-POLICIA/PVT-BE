@@ -11,10 +11,7 @@
                         CERTIFICACIÓN DE REVISIÓN
                     </div>
                 </div>
-                <div class="text-center">
-                    {{ $correlative->code }}
-                    @php  $i = 1 @endphp
-                </div>
+                @php  $i = 1 @endphp
             </div>
             <br>
             {{-- <div style="border-top: 1px solid #22292f;"></div> --}}
@@ -86,6 +83,10 @@
                             </tr>
                         </thead>
                         <tbody class="table-striped">
+                            <tr class="text-sm">
+                                <td class="w-40 text-left px-10 py-3 uppercase">nup</td>
+                                <td class="text-left uppercase font-bold px-5 py-3"> {{ $affiliate->id }} </td>
+                            </tr>
                             <tr class="text-sm">
                                 <td class="w-40 text-left px-10 py-3 uppercase">grado</td>
                                 <td class="text-left uppercase font-bold px-5 py-3"> {{ $affiliate->degree->name }} </td>

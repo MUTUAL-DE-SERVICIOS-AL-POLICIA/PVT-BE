@@ -36,19 +36,18 @@
                             @on-loading="setLoading"
                             >
                         <ret-fun-create-info></ret-fun-create-info> 
-                            <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
-                                <ret-fun-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :show-requirements-error="showRequirementsError"
-                                        inline-template>
-                                    @include('ret_fun.step1_requirements')
+                            <tab-content title="Modalidad y Requisitos" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
+                                <ret-fun-step1-requirements ref="uno" :modalities="{{ $modalities }}" :user="{{ $user }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :affiliate="{{ $affiliate }}"
+                                >
                                 </ret-fun-step1-requirements>
                             </tab-content>
-                            <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep">
-                                <ret-fun-step2-applicant :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" inline-template>
+                            <tab-content title="Datos del Solicitante" ref="dos" icon="mdi mdi-account-edit" :before-change="validateSecondStep" >
+                                <ret-fun-step2-applicant v-if="showSecondStep" :cities="{{ $cities }}" :kinships="{{ $kinships }}" :affiliate="{{ $affiliate }}" :spouse="{{ $spouse }}" :has_ret_fun="{{ $has_ret_fun }}" inline-template>
                                     @include('ret_fun.step2_applicant')
                                 </ret-fun-step2-applicant>
                             </tab-content>
                             <tab-content title="Datos de los Derechohabientes" icon="mdi mdi-account-multiple-plus">
-                                <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" inline-template>
+                                <ret-fun-step3-beneficiaries :items="{{ $ret }}" :kinhsips="{{ $kinships }}" :kinship_beneficiaries="{{ $kinship_beneficiaries }}" inline-template>
                                     @include('ret_fun.step3_beneficiaries')
                                 </ret-fun-step3-beneficiaries>
                             </tab-content>

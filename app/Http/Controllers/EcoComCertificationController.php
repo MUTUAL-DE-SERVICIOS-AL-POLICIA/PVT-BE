@@ -33,11 +33,11 @@ class EcoComCertificationController extends Controller
    
         $eco_com_submitted_documents = ProcedureRequirement::whereIn('procedure_requirements.id', $submitted_document_ids)
         ->leftJoin('eco_com_submitted_documents', 'procedure_requirements.id', '=', 'eco_com_submitted_documents.procedure_requirement_id')
-        ->select('procedure_requirements.*', 'eco_com_submitted_documents.comment')
+        ->select('procedure_requirements.*', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_uploaded')
         ->where('eco_com_submitted_documents.economic_complement_id','=',$eco_com->id)
         ->orderBy('number')
         ->get();
-
+        
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
         $unit = "UNIDAD DE OTORGACIÓN DEL BENEFICIO DEL COMPLEMENTO ECONÓMICO";
@@ -47,7 +47,7 @@ class EcoComCertificationController extends Controller
         $subtitle = $eco_com->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
         $text = "";
         $habitual = false;
-        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual || $eco_com->eco_com_reception_type_id == ID::ecoCom()->rehabilitacion)
+        if($eco_com->eco_com_reception_type_id == ID::ecoCom()->habitual)
         {
             $text = "La presente solicitud es generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
             $habitual = true;
@@ -72,7 +72,7 @@ class EcoComCertificationController extends Controller
 
         //$bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
         $bar_code = \DNS2D::getBarcodePNG($this->get_module_eco_com($eco_com->id), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer_reception', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
@@ -263,7 +263,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
@@ -419,7 +419,7 @@ class EcoComCertificationController extends Controller
         $title = "HOJA DE CALCULO DEL COMPLEMENTO ECONÓMICO";
         $subtitle = $eco_com_procedure->semester . " SEMESTRE " . $eco_com_procedure->getYear();
         $code = $eco_com->code;
-        $area = $eco_com->wf_state->first_shortened;
+        $area = Util::getRol()->display_name;;
         $user = $eco_com->user;
         // $date = Util::getDateFormat($eco_com->reception_date);
         $date = Util::getTextDate(now());
@@ -427,7 +427,7 @@ class EcoComCertificationController extends Controller
         $number = $code;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,
@@ -477,7 +477,7 @@ class EcoComCertificationController extends Controller
         $type = $eco_com->getType();
         $type_modality = $eco_com->eco_com_modality->procedure_modality->name;
         $user = auth()->user();
-        $area = Util::getRol()->wf_states->first()->first_shortened;
+        $area = Util::getRol()->display_name;
         $date = Util::getTextDate();
 
         $eco_coms_query = EconomicComplement::leftJoin('eco_com_procedures', 'economic_complements.eco_com_procedure_id', '=', 'eco_com_procedures.id')
@@ -495,7 +495,7 @@ class EcoComCertificationController extends Controller
         $eco_coms=$eco_coms_query->get();
 
         $bar_code = \DNS2D::getBarcodePNG($affiliate->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
         $data = [
             'direction' => $direction,
             'institution' => $institution,
@@ -553,7 +553,7 @@ class EcoComCertificationController extends Controller
 
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
-        $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user])->render();
+        $footerHtml = view()->make('eco_com.print.footer_reception', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
 
         $data = [
             'direction' => $direction,

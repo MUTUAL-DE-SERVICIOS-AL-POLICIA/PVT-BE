@@ -114,8 +114,23 @@
                     <div class="col-md-4">{!! Form::text('date_last_contribution', null, ['v-month-year','class' => 'form-control' , 'v-model'
                         => 'form.date_last_contribution' ,':disabled' => '!editing || !((editing && '.$role .' == 12) || (editing && '.$role.' == 39))' ]) !!}</div>
                 </div>
-
                 <br>
+                    <div class="pull-left"> <legend > Datos de reincorporación</legend></div>
+                <br>
+                <div class="hr-line-dashed"></div>
+                <div class="row">
+                    <div class="col-md-2"><strong>Fecha de Ingreso a la Institucional Policial (reincorporación):</strong></div>
+                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_entry_reinstatement" v-month-year :disabled="!editing || !(editing && ({{ intval($module == 3) }} || {{ intval($module == 4) }} || {{ intval($role == 5) }} ) )"></div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-2"><strong>Fecha de Desvinculaci&oacute;n (reincorporación):</strong></div>
+                    <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_derelict_reinstatement" v-month-year :disabled="!editing"></div>
+                    <div class="col-md-2"><strong>Último periodo según listas de revista (reincorporación):  </strong></div><!--aqui -->
+                    <!-- <div class="col-md-4"><input type="text" class="form-control" v-model="form.date_last_contribution" v-month-year :disabled="!editing" ></div> -->
+                    <div class="col-md-4">{!! Form::text('date_last_contribution_reinstatement', null, ['v-month-year','class' => 'form-control' , 'v-model'
+                        => 'form.date_last_contribution_reinstatement' ,':disabled' => '!editing || !((editing && '.$role .' == 12) || (editing && '.$role.' == 39))' ]) !!}</div>
+                </div>
                 <div class="row">
                     <div class="text-center" v-if="editing">
                         <button class="btn btn-danger" type="button" @click="toggle_editing()"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span class="bold">Cancelar</span></button>

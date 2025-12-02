@@ -29,6 +29,11 @@ class EconomicComplement extends Model
     {
         return $this->belongsTo('Muserpol\User');
     }
+
+    public function origin_channel()
+    {
+        return $this->belongsTo(EcoComOriginChannel::class, 'eco_com_origin_channel_id');
+    }
     public function affiliate()
     {
         return $this->belongsTo('Muserpol\Models\Affiliate');
@@ -87,6 +92,10 @@ class EconomicComplement extends Model
     public function eco_com_updated_pension()
     {
         return $this->hasOne('Muserpol\Models\EconomicComplement\EcoComUpdatedPension');
+    }
+    public function eco_com_rent()
+    {
+        return $this->belongsTo(EcoComRent::class);
     }
     public function encode()
     {
@@ -149,9 +158,13 @@ class EconomicComplement extends Model
     {
         return $this->complementary_factor;
     }
-    public function getTotalSemester()
+    public function getTotalSemester($months_of_payment)
     {
-        return $this->difference * 6;
+        $months_of_payment = (int) $months_of_payment;
+        if($months_of_payment == 0) //null
+            $months_of_payment =  6;
+            
+        return $this->difference * $months_of_payment;
     }
     public function getOnlyTotalEcoCom()
     {
@@ -168,35 +181,44 @@ class EconomicComplement extends Model
             ], 422);
         }
         $eco_com_procedure = $this->eco_com_procedure;
-        $eco_com_rent = EcoComRent::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
+        $eco_com_rent = $this->isInclusion() 
+            ? EcoComRent::where('degree_id', '=', $this->degree_id)
+            ->where('procedure_modality_id', '=', ($this->isOrphanhood() ? 29 : $this->eco_com_modality->procedure_modality_id))
+            ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
-            ->get();
-        $base_wage = BaseWage::whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->get();
-        $complementary_factor = ComplementaryFactor::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
+            ->first()
+            : $this->eco_com_fixed_pension->eco_com_rent;
+        $base_wage = $this->isInclusion() 
+            ? BaseWage::where('degree_id', $this->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first()
+            : $this->eco_com_fixed_pension->base_wage;
+        
+        $complementary_factor = ComplementaryFactor::where('hierarchy_id', '=', $base_wage->degree->hierarchy->id)
+            ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
-            ->get();
-        if ($eco_com_rent->count() == 0) {
+            ->first();
+        if (!$eco_com_rent) {
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',
                 'errors' => ['Verifique que existan los promedio para la gestion ' . $eco_com_procedure->fullName()],
             ], 422);
         }
-        if ($base_wage->count() == 0) {
+        if (!$base_wage) {
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',
                 'errors' => ['Verifique que si existen los sueldos para la gestion ' . $eco_com_procedure->fullName()],
             ], 422);
         }
-        if ($complementary_factor->count() == 0) {
+        if (!$complementary_factor) {
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',
                 'errors' => ['Verifique los datos de los factores de complementación de la gestion ' . $eco_com_procedure->fullName()],
             ], 422);
         }
-        $indicator = $eco_com_procedure->indicator;
+        $indicator = $eco_com_rent->referential_limit;
+        
         /**
          ** updating modality with components
          */
@@ -214,62 +236,40 @@ class EconomicComplement extends Model
             }
             //vejez
             if ($this->isOldAge()) {
-                if ($component == 1 && $this->total_rent >= $indicator) {
-                    $this->eco_com_modality_id = 4;
-                } elseif ($component == 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 6;
-                } elseif ($component > 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 8;
+                if ($component == 1) {
+                    $this->eco_com_modality_id = $this->total_rent >= $indicator ? 4 : 6;
                 } else {
-                    $this->eco_com_modality_id = 1;
+                    $this->eco_com_modality_id = $this->total_rent < $indicator ? 8 : 1;
                 }
             }
             //Viudedad
             if ($this->isWidowhood()) {
-                if ($component == 1 && $this->total_rent >= $indicator) {
-                    $this->eco_com_modality_id = 5;
-                } elseif ($component == 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 7;
-                } elseif ($component > 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 9;
+                if ($component == 1) {
+                    $this->eco_com_modality_id = $this->total_rent >= $indicator ? 5 : 7;
                 } else {
-                    $this->eco_com_modality_id = 2;
+                    $this->eco_com_modality_id = $this->total_rent < $indicator ? 9 : 2;
                 }
             }
+
             //orfandad
             if ($this->isOrphanhood()) {
-                if ($component == 1 && $this->total_rent >= $indicator) {
-                    $this->eco_com_modality_id = 10;
-                } elseif ($component == 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 11;
-                } elseif ($component > 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 12;
+                if ($component == 1) {
+                    $this->eco_com_modality_id = $this->total_rent >= $indicator ? 10 : 11;
                 } else {
-                    $this->eco_com_modality_id = 3;
+                    $this->eco_com_modality_id = $this->total_rent < $indicator ? 12 : 3;
                 }
             }
+
         } else {
             //Senasir
-            if ($this->isOldAge() && $this->total_rent < $indicator) {
-                //vejez
-                $this->eco_com_modality_id = 8;
-            } elseif ($this->isWidowhood() && $this->total_rent < $indicator) {
-                //Viudedad
-                $this->eco_com_modality_id = 9;
-            } elseif ($this->isOrphanhood() && $this->total_rent < $indicator) {
-                //Orfandad
-                $this->eco_com_modality_id = 12;
-            } else {
-                if ($this->isOldAge()) {
-                    $this->eco_com_modality_id = 1;
-                }
-                if ($this->isWidowhood()) {
-                    $this->eco_com_modality_id = 2;
-                }
-                if ($this->isOrphanhood()) {
-                    $this->eco_com_modality_id = 3;
-                }
+            if ($this->isOldAge()) {
+                $this->eco_com_modality_id = $this->total_rent < $indicator ? 8 : 1;
+            } elseif ($this->isWidowhood()) {
+                $this->eco_com_modality_id = $this->total_rent < $indicator ? 9 : 2;
+            } elseif ($this->isOrphanhood()) {
+                $this->eco_com_modality_id = $this->total_rent < $indicator ? 12 : 3;
             }
+            
         }
         $this->save();
         /**
@@ -282,16 +282,11 @@ class EconomicComplement extends Model
          ** actualizacion de las rentas netas
          */
 
-        if (array_search($this->eco_com_modality_id,  [4, 5, 6, 7, 8, 9, 10, 11, 12]) !== false) {
+        if (in_array($this->eco_com_modality_id, [4, 5, 6, 7, 8, 9, 10, 11, 12])) {
             // solo se esta tomando las modalidades de vejez y viudedad
-            $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
-                ->where('procedure_modality_id', '=', ($this->isOrphanhood() ? 29 : $this->eco_com_modality->procedure_modality_id))
-                ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
-                ->where('semester', '=', $eco_com_procedure->semester)
-                ->first();
-            if (array_search($this->eco_com_modality_id,  [6, 7, 8, 9, 11, 12]) !== false) {
+            if (in_array($this->eco_com_modality_id,  [6, 7, 8, 9, 11, 12])) {
                 $this->total_rent_calc = $eco_com_rent->average;
-            } else if ($this->total_rent < $eco_com_rent->average && array_search($this->eco_com_modality_id,  [4, 5, 10]) !== false) {
+            } else if ($this->total_rent < $eco_com_rent->average && in_array($this->eco_com_modality_id,  [4, 5, 10])) {
                 $this->total_rent_calc = $eco_com_rent->average;
             }
         }
@@ -300,18 +295,11 @@ class EconomicComplement extends Model
          ** /averages
          */
 
-        $base_wage = BaseWage::where('degree_id', $this->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first();
-
         //para el caso de las viudas 80%
-        if ($this->isWidowhood()) {
-            $base_wage_amount = $base_wage->amount * (80 / 100);
-            $salary_reference = $base_wage_amount;
-            $seniority = $this->category->percentage * $base_wage_amount;
-        } else {
-            $salary_reference = $base_wage->amount;
-            $seniority = $this->category->percentage * $base_wage->amount;
-        }
-
+        $salary_reference = $this->isWidowhood()
+            ? $base_wage->amount * (80 / 100)
+            : $base_wage->amount;
+        $seniority = $this->category->percentage * $base_wage->amount;
         $this->seniority = $seniority;
         $salary_quotable = $salary_reference + $seniority;
         $this->salary_quotable = $salary_quotable;
@@ -326,73 +314,39 @@ class EconomicComplement extends Model
 
         $total_amount_semester = $difference * $months_of_payment;
         $this->total_amount_semester = $total_amount_semester;
-        $complementary_factor = ComplementaryFactor::where('hierarchy_id', '=', $base_wage->degree->hierarchy->id)
-            ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
-            ->where('semester', '=', $eco_com_procedure->semester)
-            ->first();
+        
         $this->complementary_factor_id = $complementary_factor->id;
-        if ($this->isWidowhood()) {
-            //viudedad
-            $complementary_factor = $complementary_factor->widowhood;
-        } else {
-            //vejez
-            $complementary_factor = $complementary_factor->old_age;
-        }
+        $complementary_factor = $this->isWidowhood() 
+            ? $complementary_factor->widowhood
+            : $complementary_factor->old_age;
         $this->complementary_factor = $complementary_factor;
         $total = $total_amount_semester * round(floatval($complementary_factor) / 100, 3);
 
         //RESTANDO PRESTAMOS, CONTABILIDAD Y REPOSICION AL TOTAL PORCONCEPTO DE DEUDA
         $total  = $total - $this->discount_types()->sum('amount');
-        // }
-        // if ($this->amount_loan > 0) {
-        // }
-        // if ($this->amount_accounting > 0) {
-        //     $total  = $total - $this->amount_accounting;
-        // }
-        // if ($this->amount_replacement > 0) {
-        //     $total  = $total - $this->amount_replacement;
-        // }
-        // if ($this->amount_credit > 0) {
-        //     $total  = $total - $this->amount_credit;
-        // }
+        
         $this->total = $total;
-        $this->base_wage_id = $base_wage->id;
         $this->salary_reference = $salary_reference;
-        // if ($this->old_eco_com) {
-        //     $old_total = json_decode($this->old_eco_com)->total;
-        //     $this->total_repay =  floatval($total) - (floatval($old_total) + (floatval(json_decode($this->old_eco_com)->amount_loan) + floatval(json_decode($this->old_eco_com)->amount_replacement) + floatval(json_decode($this->old_eco_com)->amount_accounting) + floatval(json_decode($this->old_eco_com)->amount_credit)));
-        //     $this->user_id = Auth::user()->id;
-        //     $this->state = 'Edited';
-        //     if (WorkflowState::where('role_id', '=', Util::getRol()->id)->first()) {
-        //         $this->wf_current_state_id = WorkflowState::where('role_id', '=', Util::getRol()->id)->first()->id;
-        //     } else {
-        //         return redirect('economic_complement/' . $this->id)
-        //             ->withErrors('Ocurrió un error verifique que los datos estén correctos.')
-        //             ->withInput();
-        //     }
-        // }
+        $this->base_wage()->associate($base_wage);
+        $this->eco_com_rent()->associate($eco_com_rent);
         $this->save();
-        if ($this->total_rent > $this->salary_quotable) {
-            //$this->eco_com_state_id = 12; // Se quito el estado automatico Exclusion
-        } else {
-            if ($this->eco_com_state_id == 12) {
-                $this->eco_com_state_id = 16;
-            }
+        if ($this->total_rent <= $this->salary_quotable && $this->eco_com_state_id == 12) {
+            $this->eco_com_state_id = 16;
         }
         $change_state = false;
         $change_state_process = false;
         $user_id = Auth::user()->id;
-        if ($this->discount_types->count() > 0) {
-            if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
-                $this->eco_com_state_id = 18;
-                $change_state = true;
-            }else{
-                if ($this->eco_com_state_id == 18) {
-                    $this->eco_com_state_id = 16;
-                    $change_state_process = true;
-                }
-            }
-        }
+        // if ($this->discount_types->count() > 0) {
+        //     if (round($this->total_amount_semester * round(floatval($this->complementary_factor) / 100, 3),2) ==  $this->discount_types()->sum('amount')) {
+        //         $this->eco_com_state_id = 32;
+        //         $change_state = true;
+        //     }else{
+        //         if ($this->eco_com_state_id == 32) {
+        //             $this->eco_com_state_id = 16;
+        //             $change_state_process = true;
+        //         }
+        //     }
+        // }
         $this->save();
         if($change_state){
             //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
@@ -402,10 +356,7 @@ class EconomicComplement extends Model
             //cambio de estado pagado a en proceso en la tabla contribution_passives
             $payment_contribucion_passive_process = DB::select("SELECT change_state_contribution_process_eco_com($user_id,$this->id)");
         }
-
-        return response()->json([
-            'status' => 'success',
-        ], 200);
+        return ['status' => 'success'];
     }
     public function isOldAge()
     {
@@ -418,6 +369,10 @@ class EconomicComplement extends Model
     public function isOrphanhood()
     {
         return $this->eco_com_modality->procedure_modality_id == 31;
+    }
+    public function isInclusion()
+    {
+        return $this->eco_com_reception_type_id == ID::ecoCom()->inclusion;
     }
     public function hasLegalGuardian()
     {
@@ -566,19 +521,35 @@ class EconomicComplement extends Model
     // }
     public function scopeInfo($query)
     {
-        return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
+        $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
             ->leftJoin('degrees as eco_com_degree', 'economic_complements.degree_id', '=', 'eco_com_degree.id')
             ->leftJoin('categories as eco_com_category', 'economic_complements.category_id', '=', 'eco_com_category.id')
             ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
             ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
+            ->leftJoin('eco_com_origin_channel', 'economic_complements.eco_com_origin_channel_id', '=', 'eco_com_origin_channel.id')
             ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
-            ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
-            ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
-            ->where( function($query) {
-                $query->where('eco_com_user.message','like','%creó el trámite%')->orWhereNull('eco_com_user.id');
-            });
-    }
+            ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id');
+        
+        //juntamos los records que hay en procedure_records
+        $query->leftJoin('procedure_records as pr', function ($join) {
+            $join->on('pr.recordable_id', '=', 'economic_complements.id')
+                ->where('pr.recordable_type', '=', 'economic_complements')
+                ->where(function ($q) {
+                    $q->where('pr.message', 'like', '%creó el trámite%')
+                      ->orWhere('pr.message', 'like', 'Se creó el trámite mediante aplicación móvil.');
+                });
+        });
+        //unimos los records que hay en wf_records
+        $query->leftJoin('wf_records as wr', function ($join) {
+            $join->on('wr.recordable_id', '=', 'economic_complements.id')
+                ->where('wr.recordable_type', '=', 'economic_complements')
+                ->where('wr.message', 'like', '%Trámite creado mediante%');
+        });
+        $query->leftJoin('users as creator', 'creator.id', '=', DB::raw('COALESCE(pr.user_id, wr.user_id)'));
+
+        return $query;
+        }
     public function scopeInfoBasic($query)
     {
         return $query->leftJoin('cities as eco_com_city', 'eco_com_city.id', '=', 'economic_complements.city_id')
@@ -599,9 +570,11 @@ class EconomicComplement extends Model
             ->leftJoin('eco_com_modalities', 'economic_complements.eco_com_modality_id', '=', 'eco_com_modalities.id')
             ->leftJoin('procedure_modalities', 'eco_com_modalities.procedure_modality_id', '=', 'procedure_modalities.id')
             ->leftJoin('eco_com_reception_types', 'economic_complements.eco_com_reception_type_id', '=', 'eco_com_reception_types.id')
+            ->leftJoin('eco_com_origin_channel', 'economic_complements.eco_com_origin_channel_id', '=', 'eco_com_origin_channel.id')
             ->leftJoin('discount_type_economic_complement as ecocomdiscount','ecocomdiscount.economic_complement_id','=','economic_complements.id')
             ->leftJoin('discount_types as discount','discount.id','=','ecocomdiscount.discount_type_id')
             ->leftJoin('procedure_records as eco_com_user','eco_com_user.recordable_id','=','economic_complements.id')
+            ->leftJoin('users as creator', 'creator.id', '=', 'eco_com_user.user_id')
             ->where( function($query) {
                 $query->where('eco_com_user.message','like','%eliminó%')
                 ->orWhereNull('eco_com_user.id');
@@ -658,7 +631,8 @@ class EconomicComplement extends Model
         economic_complements.affiliate_id as NUP,
         economic_complements.code as eco_com_code,
         economic_complements.reception_date as fecha_recepcion,
-        eco_com_user.message as usuario," .
+        CASE WHEN economic_complements.eco_com_origin_channel_id IN (2, 3) THEN '' ELSE creator.username END as usuario,
+        eco_com_origin_channel.name as modalidad_de_recepcion," .
             EconomicComplement::basic_info_beneficiary() . "," .
             EconomicComplement::basic_info_affiliates() . ",
         eco_com_city.name as regional,
@@ -857,5 +831,144 @@ class EconomicComplement extends Model
         }else{
             return true;
         } 
+    }
+
+    public function updateEcoComWithFixedPension($fixed_pension_id = null)
+    {
+        if (!($this->eco_com_reception_type_id == ID::ecoCom()->inclusion)) {
+            $fixed_pension = $fixed_pension_id 
+                ? EcoComFixedPension::find($fixed_pension_id) 
+                : EcoComFixedPension::where('affiliate_id', $this->affiliate_id)
+                    ->latest('eco_com_procedure_id')
+                    ->first();
+            if (!!$fixed_pension) {
+                $this->eco_com_fixed_pension_id = $fixed_pension->id;
+                $this->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
+                $this->aps_total_cc = $fixed_pension->aps_total_cc;      //APS
+                $this->aps_total_fs = $fixed_pension->aps_total_fs;      //APS
+                $this->aps_total_death = $fixed_pension->aps_total_death; //APS
+                $this->aps_disability = $fixed_pension->aps_disability;  //APS //SENASIR
+
+                $this->sub_total_rent = $fixed_pension->sub_total_rent;  //SENASIR
+                $this->reimbursement = $fixed_pension->reimbursement;    //SENASIR
+                $this->dignity_pension = $fixed_pension->dignity_pension; //SENASIR
+                $this->total_rent = $fixed_pension->total_rent;          //SENASIR total_rent=sub_total_rent-descuentos planilla
+                $this->rent_type = 'Automatico';
+
+                $this->base_wage_id = $fixed_pension->base_wage_id;
+                $this->eco_com_rent_id = $fixed_pension->eco_com_rent_id;
+
+                $this->save();
+            }
+        }
+    }
+    public function requirementsList()
+    {
+        try {
+            $collateDocuments = app()->call(
+                'Muserpol\Gateway\AffiliateController@collateDocument',
+                [
+                    'affiliateId' => $this->affiliate->id,
+                    'procedureModalityId' => $this->eco_com_modality->procedure_modality_id
+                ]
+            );
+        } catch (\Exception $e) {
+            $fullTrace = $e->getTraceAsString();
+            $lines = explode("\n", $fullTrace);
+            $internalLines = array_filter($lines, function ($line) {
+                return strpos($line, '[internal function]') !== false;
+            });
+            $filteredTrace = implode("\n", $internalLines);
+            logger()->error('Error al conectar con los microservicios', [
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $filteredTrace,
+                'controller' => self::class,
+                'method' => __FUNCTION__,
+                'input' => $data ?? null,
+            ]);
+            return ['serviceStatus' => 'error'];
+        }
+        
+        $existingIds = [];
+        foreach ($collateDocuments['requiredDocuments'] as $group) {
+            foreach ($group as $doc) {
+                $existingIds[] = $doc['procedureRequirementId'];
+            }
+        }
+        foreach ($collateDocuments['additionallyDocuments'] as $doc) {
+            $existingIds[] = $doc['procedureRequirementId'];
+        }
+        
+        //selected documents
+        $submitted = EcoComSubmittedDocument::select(
+            'eco_com_submitted_documents.id',
+            'procedure_requirements.number',
+            'eco_com_submitted_documents.procedure_requirement_id',
+            'eco_com_submitted_documents.comment',
+            'eco_com_submitted_documents.is_valid',
+            'eco_com_submitted_documents.is_uploaded',
+            'procedure_documents.name'
+        )
+        ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
+        ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
+        ->where('eco_com_submitted_documents.economic_complement_id', $this->id)
+        ->orderBy('procedure_requirements.number', 'ASC')
+        ->get()
+        ->keyBy('procedure_requirement_id');
+
+        $applySubmittedData = function (&$doc, $dbDoc) {
+            $doc['isUploaded'] = (bool) $dbDoc->is_uploaded;
+            $doc['status']     = true;
+            $doc['isValid']    = (bool) $dbDoc->is_valid;
+            $doc['comment']    = $dbDoc->comment;
+            $doc['submittedDocumentId'] = $dbDoc->id;
+        };
+
+        // Actualizar requiredDocuments usando referencias
+        foreach ($collateDocuments['requiredDocuments'] as &$group) {
+            foreach ($group as &$doc) {
+                $reqId = $doc['procedureRequirementId'];
+
+                if ($submitted->has($reqId)) {
+                    $applySubmittedData($doc, $submitted->get($reqId));
+                }
+            }
+        }
+        unset($group, $doc);
+
+        // Actualizar additionallyDocuments usando referencias
+        foreach ($collateDocuments['additionallyDocuments'] as &$doc) {
+            $reqId = $doc['procedureRequirementId'];
+
+            if ($submitted->has($reqId)) {
+                $applySubmittedData($doc, $submitted->get($reqId));
+            }
+        }
+        unset($doc);
+
+        foreach ($submitted as $reqId => $dbDoc) {
+            if (!in_array($reqId, $existingIds)) {
+                 $newDoc = [
+                    "procedureRequirementId" => $dbDoc->procedure_requirement_id,
+                    "number"                 => $dbDoc->number,
+                    "procedureDocumentId"    => null,
+                    "name"                   => $dbDoc->name,
+                    "shortened"              => null,
+                    "isUploaded"             => (bool) $dbDoc->is_uploaded,
+                    "status"                 => true,
+                    "isValid"                => $dbDoc->is_valid,
+                    "comment"                => $dbDoc->comment,
+                ];
+
+                if ($dbDoc->number > 0) {
+                    $collateDocuments['requiredDocuments'][$dbDoc->number][] = $newDoc;
+                } else {
+                    $collateDocuments['additionallyDocuments'][] = $newDoc;
+                }
+            }
+        }
+        return $collateDocuments;
     }
 }

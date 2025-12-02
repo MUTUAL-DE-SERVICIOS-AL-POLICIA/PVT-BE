@@ -251,19 +251,19 @@ class AffiliateController extends Controller
                     }
             }
 
-        $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->where('code', 'not like', '%A%')->first();
+        $retirement_funds = RetirementFund::where('affiliate_id', $affiliate->id)->where('code', 'not like', '%A%')->get();
         $states = RetFunState::get();
         $nextcode = RetirementFund::where('affiliate_id', $affiliate->id)->where('code','LIKE','%A')->first();
         if(isset($nextcode))
             $nextcode = $nextcode->code;
         else
             $nextcode = "";
-        $active_ret_fun = RetirementFund::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->first();
-        $active_quota = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        $count_ret_fun = RetirementFund::where('affiliate_id',$affiliate->id)->where('code','NOT LIKE','%A')->count();
+        $count_quota = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
                         ->where('affiliate_id',$affiliate->id)
                         ->where('procedure_modalities.procedure_type_id',3)
                         ->where('code','NOT LIKE','%A')->count();
-        $active_auxilio = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
+        $count_auxilio = QuotaAidMortuary::join('procedure_modalities','quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
                         ->where('affiliate_id',$affiliate->id)
                         ->where('procedure_modalities.procedure_type_id',4)
                         ->where('code','NOT LIKE','%A')->count();
@@ -283,7 +283,7 @@ class AffiliateController extends Controller
         $affiliate->phone_number = explode(',', $affiliate->phone_number);
         $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
 
-        $spouse = $affiliate->spouse->first();
+        $spouse = $affiliate->spouse()->latest('updated_at')->first();
         if (!$spouse) {
             $spouse = new Spouse();
         }else{
@@ -294,8 +294,32 @@ class AffiliateController extends Controller
         }
 
         //GETTIN CONTRIBUTIONS
-        $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $contributions =  collect(Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year', 'desc')->pluck('total','month_year'));
         $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+
+        $date_entry = Carbon::hasFormat($affiliate->date_entry, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_entry)->startOfMonth() : null;
+        $date_last_contribution = Carbon::hasFormat($affiliate->date_last_contribution, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution)->startOfMonth() : null;
+        $date_entry_reinstatement = Carbon::hasFormat($affiliate->date_entry_reinstatement, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_entry_reinstatement)->startOfMonth() : null;
+        $date_last_contribution_reinstatement = Carbon::hasFormat($affiliate->date_last_contribution_reinstatement, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution_reinstatement)->startOfMonth() : null;
+
+        $contributions = $contributions->map(function ($value, $key) use (
+            $date_entry,
+            $date_last_contribution,
+            $date_entry_reinstatement,
+            $date_last_contribution_reinstatement
+        ) {
+            $fecha = Carbon::createFromFormat('Y-m-d', $key)->startOfMonth();
+            if ($date_entry_reinstatement != null && $date_last_contribution_reinstatement != null) {
+                if ($fecha->between($date_entry_reinstatement, $date_last_contribution_reinstatement)) $item['fr_procedure'] = '2';
+            } 
+            if ($date_entry != null && $date_last_contribution != null) {
+                if ($fecha->between($date_entry, $date_last_contribution)) $item['fr_procedure'] = '1';
+            } else {
+                $item['fr_procedure'] = '0';
+            }
+            $item['value'] = $value;
+            return $item;
+        });
 
         if($affiliate->date_entry)
             $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));
@@ -303,9 +327,8 @@ class AffiliateController extends Controller
             $end = explode('-', '1976-05-01');
         $month_end = $end[1];
         $year_end = $end[0];
-
-        if($affiliate->date_last_contribution)
-            $start = explode('-', Util::parseMonthYearDate($affiliate->date_last_contribution));
+        if($contributions->keys()->first())
+            $start = explode('-', $contributions->keys()->first());
         else
             $start = explode('-', date('Y-m-d'));
         $month_start = $start[1];
@@ -329,19 +352,9 @@ class AffiliateController extends Controller
         {
             $is_editable = "0";
         } */
-        $quota_aid = $affiliate->quota_aid_mortuaries->last();
+        $quota_aids = $affiliate->quota_aid_mortuaries()->with('workflow:id,name')->get();
         $pension_entities = PensionEntity::all()->pluck('name', 'id');
                 
-        $payment_types = PaymentType::get();
-        $voucher_types = VoucherType::get();
-        $voucher_type_ids = $voucher_types->pluck('id');
-        
-        //TODO modificar el listado voucher
-        //$vouchers = Voucher::where('affiliate_id',$affiliate->id)->whereIn('voucher_type_id',$voucher_type_ids)->with(['type'])->get();   
-        $vouchers = Voucher::whereIn('voucher_type_id',$voucher_type_ids)->with(['type'])->get();        
-        //return $vouchers;
-
-
         /**
          ** for observations
          */
@@ -355,7 +368,7 @@ class AffiliateController extends Controller
         /**
          ** eco coms
          */
-        $eco_coms = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->reverse();
+        $eco_coms = $affiliate->economic_complements()->with('eco_com_fixed_pension')->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->reverse();
         $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get();
         foreach ($eco_com_procedures as $e) {
             $e->full_name = $e->fullName();
@@ -433,10 +446,14 @@ class AffiliateController extends Controller
                 $file = "1";
             }
         }
+        /**
+         * Renta fija CE
+         */
 
+        $eco_com_fixed_pensions = $affiliate->eco_com_fixed_pensions()->with(['base_wage','eco_com_rent.procedureModality'])->orderBy('eco_com_procedure_id', 'desc')->get();
         $data = array(
-            'quota_aid'=>$quota_aid,
-            'retirement_fund'=>$retirement_fund,
+            'quota_aids'=>$quota_aids,
+            'retirement_funds'=>$retirement_funds,
             'affiliate'=>$affiliate,
             'spouse'=>$spouse,
             'cities'=>$cities,
@@ -451,9 +468,9 @@ class AffiliateController extends Controller
             'affiliate_records'=>$affiliate_records,
             'affiliate_police_records'=>$affiliate_police_records,
             'nextcode'  =>  $nextcode,
-            'has_ret_fun'   =>  isset($active_ret_fun->id)?true:false,
-            'active_quota'   =>  $active_quota,
-            'active_auxilio'   =>  $active_auxilio,
+            'count_ret_fun'   =>  $count_ret_fun,
+            'count_quota'   =>  $count_quota,
+            'count_auxilio'   =>  $count_auxilio,
             'contributions' =>  $contributions,
             'aid_contributions' =>  $aid_contributions,
             'month_end' =>  $month_end,
@@ -468,9 +485,6 @@ class AffiliateController extends Controller
             'pension_entities' => $pension_entities,
             'has_direct_contribution' => isset($direct_contribution)?true:false,
             'direct_contribution'   =>  $direct_contribution,
-            'payment_types' =>  $payment_types,
-            'voucher_types' =>  $voucher_types,
-            'vouchers'  =>  $vouchers,
             'categories_1'  =>  Category::all(),
             //'records_message'=>$records_message
 
@@ -478,6 +492,7 @@ class AffiliateController extends Controller
             'permissions'  =>  $permissions,
             'eco_coms'  =>  $eco_coms,
             'eco_com_procedures'  =>  $eco_com_procedures,
+            'eco_com_fixed_pensions' => $eco_com_fixed_pensions,
             'financial_entities' =>  $financial_entities,
 
             'fotofrente' =>  $fotoFrente,
@@ -501,7 +516,7 @@ class AffiliateController extends Controller
             'affiliatetoken' => $affiliateToken,
             'affiliatedevice' =>  $affiliateDevice,
             'file' => $file,
-        );
+        );        
         //dd($data);
         return view('affiliates.show')->with($data);
         //return view('affiliates.show',compact('affiliate','affiliate_states', 'cities', 'categories', 'degrees','degrees_all', 'pension_entities','retirement_fund'));
@@ -654,7 +669,8 @@ class AffiliateController extends Controller
         $this->authorize('update', $affiliate);
         $affiliate->affiliate_state_id = $request->affiliate_state_id;
         $affiliate->type = $request->type;
-        $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;;
+        $affiliate->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
+        $affiliate->date_entry_reinstatement = Util::verifyMonthYearDate($request->date_entry_reinstatement) ? Util::parseMonthYearDate($request->date_entry_reinstatement) : $request->date_entry_reinstatement;
         // $affiliate->category_id = $request->category_id;
         $service_year = $request->service_years;
         $service_month = $request->service_months;
@@ -678,7 +694,9 @@ class AffiliateController extends Controller
         $affiliate->degree_id = $request->degree_id;
         $affiliate->pension_entity_id = $request->pension_entity_id;
         $affiliate->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
+        $affiliate->date_derelict_reinstatement = Util::verifyMonthYearDate($request->date_derelict_reinstatement) ? Util::parseMonthYearDate($request->date_derelict_reinstatement) : $request->date_derelict_reinstatement;
         $affiliate->date_last_contribution =Util::verifyMonthYearDate($request->date_last_contribution) ? Util::parseMonthYearDate($request->date_last_contribution) : $request->date_last_contribution;
+        $affiliate->date_last_contribution_reinstatement =Util::verifyMonthYearDate($request->date_last_contribution_reinstatement) ? Util::parseMonthYearDate($request->date_last_contribution_reinstatement) : $request->date_last_contribution_reinstatement;
         $affiliate->save();
 
         $datos = array('affiliate'=>$affiliate,'state'=>$affiliate->affiliate_state,'category'=>$affiliate->category,'degree'=>$affiliate->degree,'pension_entity'=>$affiliate->pension_entity);

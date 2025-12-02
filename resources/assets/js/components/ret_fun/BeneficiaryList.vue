@@ -3,6 +3,7 @@
         <ret-fun-beneficiary :beneficiary="retFun.applicant"
                  :cities="cities"
                  :kinships="kinships"
+                 :kinship_beneficiaries="kinship_beneficiaries"
                  :editable="false"
                  :solicitante="true"
                  >
@@ -12,6 +13,7 @@
                              :key='index'
                              :cities="cities"
                              :kinships="kinships"
+                             :kinship_beneficiaries="kinship_beneficiaries"
                              :editable="true"
                              :index="index"
                              v-on:remove="removeBeneficiary(index)">
@@ -27,14 +29,15 @@
 </template>
 
 <script>
-import {scroller} from 'vue-scrollto/src/scrollTo'
-import RetFunBeneficiary from './Beneficiary.vue'
-import {mapGetters} from 'vuex';
+import { scroller } from 'vue-scrollto/src/scrollTo';
+import { mapGetters } from 'vuex';
+import RetFunBeneficiary from './Beneficiary.vue';
 export default {
   props:[
       'items',
       'cities',
       'kinships',
+      'kinship_beneficiaries'
   ],
   data(){
       return{

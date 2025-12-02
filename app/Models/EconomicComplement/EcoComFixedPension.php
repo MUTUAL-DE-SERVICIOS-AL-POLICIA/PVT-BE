@@ -3,9 +3,24 @@
 namespace Muserpol\Models\EconomicComplement;
 
 use Illuminate\Database\Eloquent\Model;
+use Muserpol\Models\BaseWage;
 
 class EcoComFixedPension extends Model
 {
+    protected $filliable= [
+        'user_id',
+        'eco_com_procedure_id',
+        'rent_type',
+        'aps_total_cc',
+        'aps_total_fsa',
+        'aps_total_fs',
+        'aps_disability',
+        'aps_total_death',
+        'sub_total_rent',
+        'reimbursement',
+        'dignity_pension',
+        'total_rent',
+    ];
     public function user()
     {
         return $this->belongsTo('Muserpol\User');
@@ -25,6 +40,14 @@ class EcoComFixedPension extends Model
     public function economic_complements()
     {
         return $this->hasMany('Muserpol\Models\EconomicComplement\EconomicComplement');
+    }
+    public function eco_com_rent()
+    {
+        return $this->belongsTo(EcoComRent::class);
+    }
+    public function base_wage()
+    {
+        return $this->belongsTo(BaseWage::class);
     }
     public function calculateTotalRentAps()
     {

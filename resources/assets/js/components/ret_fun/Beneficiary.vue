@@ -229,7 +229,7 @@
             <br>
             <div class="row" v-if="beneficiary.legal_representative === 1" key="tutor">
                 <div class="col-md-12">
-                    <legend>Informacion del Tutor(a)</legend>
+                    <legend>Información del Tutor(a)</legend>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -246,6 +246,21 @@
                                 </div>
                                 <i v-show="errors.has('beneficiary_advisor_identity_card[]')" class="fa fa-warning text-danger"></i>
                                 <span v-show="errors.has('beneficiary_advisor_identity_card[]')" class="text-danger">{{ errors.first('beneficiary_advisor_identity_card[]') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <label class="control-label">Parentesco</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control" name="kinship_beneficiary[]" v-model.trim="beneficiary.kinship_beneficiary_id" v-validate.initial="'required'" :disabled="!editable">
+                                    <option :value="null"></option>
+                                    <option v-for="kinship_beneficiary in kinship_beneficiaries" :key="beneficiary.id + ''+kinship_beneficiary.id " :value="kinship_beneficiary.id">{{kinship_beneficiary.name}}</option>
+                                </select>
+                                <i v-show="errors.has('kinship_beneficiary[]')" class="fa fa-warning text-danger"></i>
+                                <span v-show="errors.has('kinship_beneficiary[]')" class="text-danger">{{ errors.first('kinship_beneficiary[]') }}</span>
                             </div>
                         </div>
                     </div>
@@ -394,7 +409,7 @@
                     </div>
                     <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_advisor_resolution_number[]')}">
                         <div class="col-md-4">
-                            <label class="control-label">Nro de Resolucion</label>
+                            <label class="control-label">Nro de Resolución</label>
                         </div>
                         <div class="col-md-8">
                             <input type="text" name="beneficiary_advisor_resolution_number[]" v-model.trim="beneficiary.advisor_resolution_number" class="form-control" v-validate.initial="'required'" :disabled="!editable">
@@ -407,7 +422,7 @@
                 <div class="row">
                     <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_advisor_resolution_date[]')}">
                         <div class="col-md-4">
-                            <label class="control-label">Fecha de Resolucion</label>
+                            <label class="control-label">Fecha de Resolución</label>
                         </div>
                         <div class="col-md-8">
                             <input type="text" v-date name="beneficiary_advisor_resolution_date[]" v-model.trim="beneficiary.advisor_resolution_date" class="form-control" v-validate.initial="'required|date_format:dd/MM/yyyy|max_current_date'" :disabled="!editable">
@@ -427,7 +442,7 @@
             </div>
             <div class="row" v-if="beneficiary.legal_representative === 2" key="apoderado">
                 <div class="col-md-12">
-                    <legend>Informacion del Apoderado(a)</legend>
+                    <legend>Información del Apoderado(a)</legend>
                 </div>
                 <div class="row">
                     <div class="col-md-6" :class="{'has-error': errors.has('beneficiary_legal_guardian_identity_card[]') }">
@@ -563,9 +578,9 @@
 
 </template>
 <script>
-import { getGender } from '../../helper.js'
+import { getGender } from '../../helper.js';
 export default {
-  props: ["kinships", "cities", "beneficiary", "editable", "removable","solicitante", "index"],
+  props: ["kinships", "cities", "beneficiary", "editable", "removable","solicitante", "index", "kinship_beneficiaries"],
   data() {
     return {
         // removable_beneficiary: true
@@ -654,9 +669,11 @@ export default {
         return getGender(value);
     },
     setAdvisorData(data){
+        // Solo se usa un $set para que vue detecte el cambio y active la reactividad
+        this.$set(this.beneficiary, 'advisor_first_name', data.first_name);
+
         this.beneficiary.advisor_identity_card = data.identity_card;
         this.beneficiary.advisor_city_identity_card_id = data.city_identity_card_id;
-        this.beneficiary.advisor_first_name = data.first_name;
         this.beneficiary.advisor_second_name = data.second_name;
         this.beneficiary.advisor_last_name = data.last_name;
         this.beneficiary.advisor_mothers_last_name = data.mothers_last_name;
@@ -670,9 +687,10 @@ export default {
         this.beneficiary.advisor_resolution_date = data.resolution_date;
     },
     setLegalGuardianData(data){
+        // Solo se usa un $set para que vue detecte el cambio y active la reactividad
+        this.$set(this.beneficiary, 'legal_guardian_first_name', data.first_name);
         this.beneficiary.legal_guardian_identity_card = data.identity_card;
         this.beneficiary.legal_guardian_city_identity_card_id = data.city_identity_card_id;
-        this.beneficiary.legal_guardian_first_name = data.first_name;
         this.beneficiary.legal_guardian_second_name = data.second_name;
         this.beneficiary.legal_guardian_last_name = data.last_name;
         this.beneficiary.legal_guardian_mothers_last_name = data.mothers_last_name;
@@ -707,19 +725,17 @@ export default {
         })
         .then(response => {
             let data = response.data;
-            setTimeout(() => {
-                switch (type) {
-                    case 1:
-                        this.setAdvisorData(data);
-                        break;
-                    case 2:
-                        this.setLegalGuardianData(data);
-                        break;
-                    default:
-                        alert('error al guardar datos legal representative');
-                        break;
-                }
-            }, 300);
+            switch (type) {
+                case 1:
+                    this.setAdvisorData(data);
+                    break;
+                case 2:
+                    this.setLegalGuardianData(data);
+                    break;
+                default:
+                    alert('error al guardar datos legal representative');
+                    break;
+            }
         })
         .catch(function(error) {
             console.log("Error searching legal guardian");

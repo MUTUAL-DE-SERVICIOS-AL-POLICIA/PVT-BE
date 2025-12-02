@@ -4,7 +4,7 @@
     <select v-model="form.reportTypeId" :disabled="loadingButton">
       <option v-for="r in reportsType" :value="r.id" :key="r.id">{{r.name}}</option>
     </select>
-    <div v-if="form.reportTypeId != 9 && form.reportTypeId != 21 && form.reportTypeId != 22 && form.reportTypeId != 29 && form.reportTypeId != 30">
+    <div v-if="form.reportTypeId != 9 && form.reportTypeId != 21 && form.reportTypeId != 22 && form.reportTypeId != 29 && form.reportTypeId != 30 && form.reportTypeId != 31">
       <label>Gestion</label>
       <select v-model="form.ecoComProcedureId" :disabled="loadingButton" @change="cargarplanilla()">
         <option v-for="r in ecoComProcedures" :value="r.id" :key="r.id">{{r.full_name}}</option>
@@ -86,7 +86,7 @@
           </select>
     </div>
     <div class="col-md-12">
-      <div class="text-left m-sm" v-if="(form.reportTypeId == 26 || form.reportTypeId == 27) && rol.id == 5">
+      <div class="text-left m-sm" v-if="(form.reportTypeId == 26 || form.reportTypeId == 27) && [5, 103].includes(rol.id)">
         <button class="btn btn-primary" type="button" @click="CambiarEstado()">
           <i v-if="loadingButton" class="fa fa-spinner fa-spin fa-fw" style="font-size:16px"></i>
           <i v-else class="fa fa-check-circle"></i>
@@ -265,7 +265,15 @@ export default {
         {
           id: 30,
           name: "Afiliados con doble percepción del ultimo periodo"
+        },
+        {
+          id: 32,
+          name: "Afiliados fallecidos por semestre"
         }
+        // {
+          // id: 31,
+          // name: "Gestión Documental 2017-2024"
+        // }
       ],
       form: {
         ecoComProcedureId:

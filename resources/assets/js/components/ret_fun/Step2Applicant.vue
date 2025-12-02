@@ -6,6 +6,7 @@ export default {
     'kinships',
     'spouse',
     'affiliate',
+    'has_ret_fun'
   ],
   data(){
     return{
@@ -51,6 +52,8 @@ export default {
       applicant_types:[{name:'Beneficiario', id:1}, {name:'Tutor', id:2}, {name:'Apoderado', id:3}],
       date_entry: this.affiliate.date_entry,
       date_derelict: this.affiliate.date_derelict,
+      date_entry_reinstatement: this.affiliate.date_entry_reinstatement,
+      date_derelict_reinstatement: this.affiliate.date_derelict_reinstatement,
       date_death: this.affiliate.date_death,
       reason_death: this.affiliate.reason_death,
       beneficiary_city_address_id: null,
@@ -172,7 +175,13 @@ export default {
       this.applicant_birth_date = data.birth_date;
       this.applicant_phone_numbers = data.phone_number;
       this.applicant_cell_phone_numbers = data.cell_phone_number;
-      console.log(this.applicant_birth_date+"<<<<this");
+
+      if(data.address) {
+        this.beneficiary_city_address_id = data.address.city_address_id;
+        this.beneficiary_zone = data.address.zone;
+        this.beneficiary_street = data.address.street;
+        this.beneficiary_number_address = data.address.number_address;
+      }
     },
     setDataLegalGuardian(data){
       this.legal_guardian_first_name = data.first_name;

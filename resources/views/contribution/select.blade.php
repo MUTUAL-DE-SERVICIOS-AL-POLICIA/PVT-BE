@@ -12,6 +12,6 @@
         </buttons-print-contributions>
     </div>
 </div>
-<contribution-select :contributions ="{{json_encode($contributions)}}" :retfunid="{{$ret_fun->id}}" :contype="{{true}}" :types="{{json_encode($contribution_types)}}" :start-date="{{json_encode($date_entry)}}"  :end-date="{{json_encode($date_last_contribution)}}" >
+<contribution-select :contributions ="{{json_encode($contributions)}}" :retfunid="{{$ret_fun->id}}" :contype="{{true}}" :types="{{json_encode($contribution_types)}}" :start-date="{{json_encode($date_entry)}}"  :end-date="{{json_encode($date_last_contribution)}}" :contributions-limit="{{ $contributionsLimit }}" :apply-limit='@json($applyLimit)'>
 </contribution-select>
 @endsection

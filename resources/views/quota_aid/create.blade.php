@@ -2,7 +2,7 @@
 @section('title', 'Cuota y Auxilio Mortuorio')
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
+    <div class="col-lg-9" id="quota-aid-form-header">
         {{ Breadcrumbs::render('create_quota_aid', $affiliate) }}
     </div>
 </div>
@@ -36,10 +36,8 @@
                             @on-loading="setLoading"
                         >
                             <quota-aid-create-info :affiliate="{{ $affiliate }}" :hierarchy="{{ $hierarchy }}"></quota-aid-create-info>
-                            <tab-content title="Modalidad y Requisitos" ref="one" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
-                                <quota-aid-step1-requirements :modalities="{{ $modalities }}" :requirements="{{ $requirements }}" :user="{{ Auth::user() }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :show-requirements-error="showRequirementsError"
-                                        inline-template>
-                                    @include('quota_aid.step1_requirements')
+                            <tab-content title="Modalidad y Requisitos" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep">
+                                <quota-aid-step1-requirements ref="uno" :modalities="{{ $modalities }}" :user="{{ Auth::user() }}" :cities="{{ $cities }}" :procedure-types="{{$procedure_types}}" :affiliate="{{ $affiliate }}">
                                 </quota-aid-step1-requirements>
                             </tab-content>
                             <tab-content title="Datos del Solicitante" ref="two" icon="mdi mdi-account-edit" :before-change="validateSecondStep">

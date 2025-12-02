@@ -1,3 +1,4 @@
+<div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
@@ -34,6 +35,18 @@
                                 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
                             </div>
                         </div>
+                        @if ($retirement_fund->procedure_modality->procedure_type_id == 2)
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-sm-6">
+                                    <label class="control-label">Salario Promedio Cotizable Limitado</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    Bs {{ Util::formatMoney($retirement_fund->used_limit_average) }}
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -167,25 +180,8 @@
                         <td>{{ Util::formatMoney($retirement_fund->subtotal_availability) }} <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button></td>
                     </tr>
                     <tr>
-                        <td>Aportes en disponibilidad con rendimiento</td>
-                        <td>{{ Util::formatMoney($retirement_fund->total_availability) }}</td>
-                    </tr>
-                    <tr>
                         <td>Reconocimiento de Aportes en Disponibilidad</td>
                         <td>{{ Util::formatMoney($retirement_fund->total_availability) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"></td>
-                    </tr>
-                    @foreach ($array_discounts_availability as $item)
-                        <tr>
-                            <td>{{$item['name']}} </td>
-                            <td>Bs {{ Util::formatMoney($item['amount'])}}</td>
-                        </tr>
-                    @endforeach
-                    <tr class="success">
-                        <td>{{end($array_discounts_availability)['name']}}</td>
-                        <td>Bs {{Util::formatMoney(end($array_discounts_availability)['amount'])}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -195,7 +191,7 @@
 <div class="col-lg-12">
     <div class="ibox">
         <div class="ibox-title">
-            <h5>cuotas partes para los derechohabientes (DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD)</h5>
+            <h5>Cuotas partes para los derechohabientes (DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD)</h5>
         </div>
         <div class="ibox-content">
             <table class="table table-bordered">
@@ -211,8 +207,6 @@
                     <tr>
                         <th></th>
                         <th></th>
-                        {{--
-                        <th class="text-info">100.00 %</th> --}}
                         <th class="text-info">Bs {{ Util::formatMoney($retirement_fund->total_availability) }}</th>
                         <th></th>
                     </tr>
@@ -231,10 +225,52 @@
         </div>
     </div>
 </div>
+@endif
+@foreach ($retirement_fund->ret_fun_refunds as $refund)
 <div class="col-lg-12">
     <div class="ibox">
         <div class="ibox-title">
-            <h5>cuotas partes para los derechohabientes (FONDO DE RETIRO + RECONOCIMIENTO DE APORTES EN DISPONIBILIDAD)</h5>
+            <h5>DEVOLUCIÓN DE APORTES - {{$refund->ret_fun_refund_type->contribution_type->name}}</h5>
+        </div>
+        <div class="ibox-content">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SubTotal</td>
+                        <td>{{ Util::formatMoney($refund->subtotal) }} <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal2" style="margin-left:15px;" 
+                                                    @click="showRefundTable(
+                                                        retirementFundId, {{$refund->id}},
+                                                        'Devolución de Aportes - '+'{{$refund->ret_fun_refund_type->contribution_type->name}}',
+                                                        '{{$refund->ret_fun_refund_type->contribution_type->name}}'+'-'+retirementFundId
+                                                        )">
+                                                        <i class="fa fa-calculator"></i> ver completo
+                                                    </button></td>
+                    </tr>
+                    @if($refund->yield > 0)
+                    <tr>
+                        <td>Rendimiento del {{$refund->ret_fun_refund_type->annual_percentage_yield}}%</td>
+                        <td>{{ Util::formatMoney($refund->yield) }}</td>
+                    </tr>
+                    @endif
+                    <tr>
+                        <td>Total</td>
+                        <td>{{ Util::formatMoney($refund->total) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>Cuotas partes para los derechohabientes</h5>
         </div>
         <div class="ibox-content">
             <table class="table table-bordered">
@@ -250,19 +286,17 @@
                     <tr>
                         <th></th>
                         <th></th>
-                        {{--
-                        <th class="text-info">100.00 %</th> --}}
-                        <th class="text-info">Bs {{ Util::formatMoney($retirement_fund->total) }}</th>
+                        <th class="text-info">Bs {{ Util::formatMoney($refund->total) }}</th>
                         <th></th>
                     </tr>
                 </tfoot>
                 <tbody>
-                    @foreach ($retirement_fund->ret_fun_beneficiaries as $beneficary)
+                    @foreach ($refund->ret_fun_refund_amounts as $amounts)
                     <tr>
-                        <td>{{ $beneficary->fullName() }}</td>
-                        <td>{{ $beneficary->percentage }}</td>
-                        <td>{{ Util::formatMoney($beneficary->amount_total) }}</td>
-                        <td>{{ $beneficary->kinship->name ?? 'SIN PARENTESCO' }}</td>
+                        <td>{{ $amounts->ret_fun_beneficiary->fullName() }}</td>
+                        <td>{{ $amounts->percentage }}</td>
+                        <td>{{ Util::formatMoney($amounts->amount) }}</td>
+                        <td>{{ $amounts->ret_fun_beneficiary->kinship->name ?? 'SIN PARENTESCO' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -270,8 +304,7 @@
         </div>
     </div>
 </div>
-@endif
-
+@endforeach
 <div class="modal inmodal" id="averageSalaryQuotable" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content animated bounceInRight">
@@ -331,10 +364,11 @@
         </div>
     </div>
 </div>
+<contributions-table :data-url="contributionTableDataUrl" :title="contributionTableTitle" :file-name="contributionTableFileName"/>
 
-
+</div>
 @section('scripts')
-<script src="{{ asset('/js/datatables.js')}}"></script>
+{{-- <script src="{{ asset('/js/datatables.js')}}"></script> --}}
 <script>
     $(document).ready(function () {
         var datatable_contri = $('#datatables-certification').DataTable({

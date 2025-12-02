@@ -38,13 +38,15 @@ class LivenessController extends Controller
                 'successful' => false,
                 'message' => 'Mire de frente con la boca cerrada',
                 'translation' => 'Frente'
-            ], [
+            ],
+            [
                 'gaze' => 'left',
                 'emotion' => 'any',
                 'successful' => false,
                 'message' => 'Gire ligeramente su rostro hacia la izquierda',
                 'translation' => 'Izquierda'
-            ], [
+            ],
+            [
                 'gaze' => 'right',
                 'emotion' => 'any',
                 'successful' => false,
@@ -70,14 +72,13 @@ class LivenessController extends Controller
 
     public function index(Request $request)
     {
-        $update_device_id = isset($request->device_id) ? $request->device_id : null;
-        
+
         $device = $request->affiliate->affiliate_token->affiliate_device;
         $available_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
 
-        if ($device->enrolled && Storage::exists('liveness/faces/'.$request->affiliate->id) && ($available_procedures->count() > 0) && is_null($update_device_id)) {
-            
-            
+        if ($device->enrolled && Storage::exists('liveness/faces/' . $request->affiliate->id) && ($available_procedures->count() > 0)) {
+
+
             if ($device->eco_com_procedure_id != null) {
                 if ($device->eco_com_procedure_id == $available_procedures->first()->id) {
                     return response()->json([
@@ -97,7 +98,7 @@ class LivenessController extends Controller
 
             return response()->json([
                 'error' => false,
-                'message' => '1/'.count($device->liveness_actions).'. Siga las instrucciones',
+                'message' => '1/' . count($device->liveness_actions) . '. Siga las instrucciones',
                 'data' => [
                     'completed' => false,
                     'type' => 'liveness',
@@ -110,40 +111,16 @@ class LivenessController extends Controller
                     'total_actions' => count($device->liveness_actions)
                 ]
             ], 200);
-        } elseif($device->enrolled && Storage::exists('liveness/faces/'.$request->affiliate->id) && !is_null($update_device_id)) {
-            if(Storage::exists('liveness/faces/'.$request->affiliate->id) && $device->verified) {
-                $device->liveness_actions = $this->random_actions(false);
-                $device->save();
-                $affiliate = $request->affiliate->id;
-                return response()->json([
-                    'error' => false,
-                    'message' => 'Siga la instrucción',
-                    'data' => [
-                        'completed' => false,
-                        'type' => 'liveness',
-                        'dialog' => [
-                            'title' => 'RECONOCIMIENTO FACIAL PARA NUEVO DISPOSITIVO',
-                            'content' => 'Para el acceso a la Aplicación Móvil con un nuevo dispositivo, usted debe realizar el proceso de reconocimiento facial mediante una fotografía de su rostro y el nuevo dispositivo será registrado.',
-                        ],
-                        'action' => $device->liveness_actions[0],
-                        'current_action' => 1,
-                        'total_actions' => 1
-                    ]
-                ], 200);
-            } else {
-                logger("else");
+        } elseif (!$device->enrolled) {
+            if (Storage::exists('liveness/faces/' . $request->affiliate->id)) {
+                Storage::deleteDirectory('liveness/faces/' . $request->affiliate->id);
             }
-        }
-        elseif (!$device->enrolled) {
-            if (Storage::exists('liveness/faces/'.$request->affiliate->id)) {
-                Storage::deleteDirectory('liveness/faces/'.$request->affiliate->id);
-            }
-            Storage::makeDirectory('liveness/faces/'.$request->affiliate->id, 0775, true);
+            Storage::makeDirectory('liveness/faces/' . $request->affiliate->id, 0775, true);
             $device->liveness_actions = $this->random_actions(true);
             $device->save();
             return response()->json([
                 'error' => false,
-                'message' => '1/'.count($device->liveness_actions).'. Siga las instrucciones',
+                'message' => '1/' . count($device->liveness_actions) . '. Siga las instrucciones',
                 'data' => [
                     'completed' => false,
                     'type' => 'enroll',
@@ -168,16 +145,15 @@ class LivenessController extends Controller
     public function store(LivenessForm $request)
     {
         $device = $request->affiliate->affiliate_token->affiliate_device;
-        $new_device_id = $request->device_id ?? null;
         $continue = true;
         if (str_contains($request->image, ';base64,')) {
             $image = explode(";base64,", $request->image)[1];
         } else {
             $image = $request->image;
         }
-        $path = 'liveness/faces/'.$request->affiliate->id.'/';
+        $path = 'liveness/faces/' . $request->affiliate->id . '/';
         $random_string = str_random(12);
-        $file_name = $random_string.'.jpg';
+        $file_name = $random_string . '.jpg';
 
         $liveness_actions = collect($device->liveness_actions);
         $total_actions = $liveness_actions->count();
@@ -185,13 +161,21 @@ class LivenessController extends Controller
         $current_action = $liveness_actions->where('successful', false)->first();
         $current_action_index = $total_actions - $remaining_actions;
 
-        if($request->device_id){
-            $remaining_actions = 1;
+        if ((env('USER_TEST_DEVICE') == $request->affiliate['identity_card']) && env('TEST_APP')) {
+            return response()->json([
+                'error' => false,
+                'message' => ($device->enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado exitosamente.',
+                'data' => [
+                    'completed' => true,
+                    'type' => $device->enrolled ? 'liveness' : 'enroll',
+                    'verified' => $device->verified
+                ]
+            ], 200);
         }
 
         if ($remaining_actions > 0) {
-            Storage::put($path.$file_name, base64_decode($image), 'public');
-            $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/crop', [
+            Storage::put($path . $file_name, base64_decode($image), 'public');
+            $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT') . '/crop', [
                 'body' => json_encode([
                     'id' => $request->affiliate->id,
                     'image' => $file_name
@@ -202,11 +186,11 @@ class LivenessController extends Controller
             if ($res->getStatusCode() != 200) $continue = false;
             if ($continue) {
                 $files = Storage::files($path);
-                if (count(array_filter($files, function($item) {
+                if (count(array_filter($files, function ($item) {
                     return strpos($item, '.npy') !== false;
                 })) > 1) {
-                    $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/verify', [
-                        
+                    $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT') . '/verify', [
+
                         'body' => json_encode([
                             'id' => $request->affiliate->id,
                             'image' => $file_name
@@ -222,7 +206,7 @@ class LivenessController extends Controller
                     }
                 }
                 if ($continue) {
-                    $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/analyze', [
+                    $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT') . '/analyze', [
                         'body' => json_encode([
                             'is_base64' => false,
                             'id' => $request->affiliate->id,
@@ -243,7 +227,7 @@ class LivenessController extends Controller
                                 $device->update([
                                     'liveness_actions' => $liveness_actions
                                 ]);
-                                $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT').'/build', [
+                                $res = $this->api_client->post(env('LIVENESS_API_ENDPOINT') . '/build', [
                                     'body' => json_encode([
                                         'id' => $request->affiliate->id,
                                         'image' => $file_name
@@ -252,15 +236,15 @@ class LivenessController extends Controller
                                 ]);
                                 if ($res->getStatusCode() == 200) {
                                     foreach (['.jpg', '.npy'] as $extension) {
-                                        $file = $path.$current_action['translation'].$extension;
+                                        $file = $path . $current_action['translation'] . $extension;
                                         if (Storage::exists($file)) Storage::delete($file);
-                                        if (Storage::exists($path.$random_string.$extension)) Storage::move($path.$random_string.$extension, $file);
+                                        if (Storage::exists($path . $random_string . $extension)) Storage::move($path . $random_string . $extension, $file);
                                     }
                                     $current_action_index += 1;
                                     if ($current_action_index < $total_actions) {
                                         return response()->json([
                                             'error' => false,
-                                            'message' => ($current_action_index + 1).'/'.$total_actions.'. Siga las instrucciones',
+                                            'message' => ($current_action_index + 1) . '/' . $total_actions . '. Siga las instrucciones',
                                             'data' => [
                                                 'completed' => false,
                                                 'type' => $device->enrolled ? 'liveness' : 'enroll',
@@ -277,43 +261,15 @@ class LivenessController extends Controller
                                                 'enrolled' => true,
                                                 'liveness_actions' => null
                                             ]);
-                                        } else { // para control de vivencia
+                                        } else { 
                                             $current_procedure = EcoComProcedure::affiliate_available_procedures($request->affiliate->id)->first();
-                                            if ($current_procedure && is_null($new_device_id)) {
+                                            if ($current_procedure) {
                                                 $device->update([
                                                     'eco_com_procedure_id' => $current_procedure->id,
                                                     'liveness_actions' => null
                                                 ]);
-                                            } elseif ($new_device_id) {
-                                                $affiliate_token = $request->affiliate->affiliate_token;
-                                                $affiliate_token->firebase_token = $request->firebase_token;
-                                                $affiliate_token->update();
-                                                $device->device_id = $new_device_id;
-                                                $device->update();
-                                                return response()->json([
-                                                    'error' => false,
-                                                    'message' => 'Reconocimiento facila realizado exitosamente',
-                                                    'data' => [
-                                                        'completed' => true,
-                                                        'type' => 'Face recognition',
-                                                        'verified' => $device->verified
-                                                    ]
-                                                ], 200);
-                                            } else {
-                                                return response()->json([
-                                                    'error' => true,
-                                                    'message' => 'Ocurrió un error inesperado, comuniquese con el personal de MUSERPOL.',
-                                                    'data' => []
-                                                ], 500);
                                             }
-                                        } // para enrolamiento
-                                        if(!is_null($new_device_id)) {
-                                            $affiliate_token = $request->affiliate->affiliate_token;
-                                            $affiliate_token->firebase_token = $request->firebase_token;
-                                            $affiliate_token->update();
-                                            $device->device_id = $new_device_id;
-                                            $device->update();
-                                        }
+                                        } 
                                         return response()->json([
                                             'error' => false,
                                             'message' => ($enrolled ? 'Control de vivencia' : 'Enrolamiento') . ' realizado exitosamente.',
@@ -330,7 +286,7 @@ class LivenessController extends Controller
                     }
                 }
             }
-            Storage::delete($path.$file_name);
+            Storage::delete($path . $file_name);
             return response()->json([
                 'error' => true,
                 'message' => 'Intente nuevamente.',
@@ -358,7 +314,7 @@ class LivenessController extends Controller
 
     public function show(Request $request, $affiliate)
     {
-        $last_procedure = $request->affiliate->economic_complements()->has('eco_com_beneficiary')->orderBy('reception_date', 'desc')->whereHas('eco_com_beneficiary', function($query) {
+        $last_procedure = $request->affiliate->economic_complements()->has('eco_com_beneficiary')->orderBy('reception_date', 'desc')->whereHas('eco_com_beneficiary', function ($query) {
             return $query->where('cell_phone_number', '!=', '')->where('cell_phone_number', '!=', null);
         })->first();
         $current_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
@@ -368,7 +324,7 @@ class LivenessController extends Controller
             } else {
                 $phones = [];
             }
-            if ($request->affiliate->affiliate_token->affiliate_device->eco_com_procedure_id == $current_procedures->first()->id ) {
+            if ($request->affiliate->affiliate_token->affiliate_device->eco_com_procedure_id == $current_procedures->first()->id) {
                 $month = $request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->rent_month ? $request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->rent_month : '';
                 return response()->json([
                     'error' => false,
@@ -378,7 +334,7 @@ class LivenessController extends Controller
                         'validate' => $request->affiliate->affiliate_token->affiliate_device->verified,
                         'liveness_success' => true,
                         'cell_phone_number' => $phones,
-                        'month' => $month != '' ? $month.'/'.strval(Carbon::parse($request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->year)->year) : '',
+                        'month' => $month != '' ? $month . '/' . strval(Carbon::parse($request->affiliate->affiliate_token->affiliate_device->eco_com_procedure->year)->year) : '',
                     ],
                 ]);
             } else {
@@ -391,7 +347,7 @@ class LivenessController extends Controller
                         'validate' => $request->affiliate->affiliate_token->affiliate_device->verified,
                         'liveness_success' => false,
                         'cell_phone_number' => $phones,
-                        'month' => $month != '' ? $month.'/'.strval(Carbon::parse($current_procedures->first()->year)->year) : '',
+                        'month' => $month != '' ? $month . '/' . strval(Carbon::parse($current_procedures->first()->year)->year) : '',
                     ],
                 ]);
             }
@@ -400,6 +356,6 @@ class LivenessController extends Controller
             'error' => true,
             'message' => 'No es posible crear trámites',
             'data' => [],
-        ], 400);
+        ], 200);
     }
 }
