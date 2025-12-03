@@ -297,7 +297,7 @@ class EconomicComplement extends Model
         $salary_reference = $this->isWidowhood()
             ? $base_wage->amount * (80 / 100)
             : $base_wage->amount;
-        $seniority = $this->category->percentage * $base_wage->amount;
+        $seniority = $this->category->percentage * $salary_reference;
         $this->seniority = $seniority;
         $salary_quotable = $salary_reference + $seniority;
         $this->salary_quotable = $salary_quotable;
