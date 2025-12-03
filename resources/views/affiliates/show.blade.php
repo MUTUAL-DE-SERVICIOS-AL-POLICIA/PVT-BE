@@ -221,7 +221,7 @@ th.ellipsis-text {
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Renta/Pensión para la Calificación</h2>
-                                @if($role == 103)
+                                @if($role == 103 && count($eco_com_fixed_pensions ?? []) > 0)
                                 <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal()">Crear</button>
                                 @endif
                             </div>
