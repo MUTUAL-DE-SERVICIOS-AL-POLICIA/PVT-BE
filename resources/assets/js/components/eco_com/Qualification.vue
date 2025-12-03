@@ -96,17 +96,15 @@
                   <td>{{ ecoCom.base_wage.month_year | monthYear}}</td>
                   <td style="text-align: right;">{{ ecoCom.base_wage.amount | currency }}</td>
                 </tr>
-                <template v-if="showAverage">
-                  <tr>
-                    <td>Limite Referencial</td>
-                    <td rowspan="2" style="vertical-align: middle;">{{ecoCom.eco_com_rent.semester}}/{{ecoCom.eco_com_rent.year | year}}</td>
-                    <td style="text-align: right;">{{ecoCom.eco_com_rent.referential_limit | currency}}</td>
-                  </tr>
-                  <tr>
-                    <td>Promedio</td>
-                    <td style="text-align: right;">{{ecoCom.eco_com_rent.average | currency}}</td>
-                  </tr>
-                </template>
+                <tr>
+                  <td>Limite Referencial</td>
+                  <td rowspan="2" style="vertical-align: middle;">{{ecoCom.eco_com_rent.semester}}/{{ecoCom.eco_com_rent.year | year}}</td>
+                  <td style="text-align: right;">{{ecoCom.eco_com_rent.referential_limit | currency}}</td>
+                </tr>
+                <tr v-if="showAverage">
+                  <td>Promedio</td>
+                  <td style="text-align: right;">{{ecoCom.eco_com_rent.average | currency}}</td>
+                </tr>
               </tbody>
             </table>
             <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación ({{ ecoCom.eco_com_fixed_pension ? ecoCom.eco_com_fixed_pension.period : "" }})</strong></p>
