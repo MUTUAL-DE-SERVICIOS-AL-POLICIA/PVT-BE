@@ -114,7 +114,7 @@
                             {!! Form::label('year', 'Año', ['class' => 'col-md-5 control-label']) !!}
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" class="form-control datepicker" name="year"
+                                    <input type="text" class="form-control" name="year"
                                         value="{!! $year !!}">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
