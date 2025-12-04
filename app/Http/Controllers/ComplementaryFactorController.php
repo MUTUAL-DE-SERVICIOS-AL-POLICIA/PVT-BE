@@ -215,7 +215,7 @@ class ComplementaryFactorController extends Controller
     {
         $rules = [
 
-            'year' => 'required',
+            'year' => 'required|digits:4|integer|min:1900|max:2100',
             'semester' => 'required',
             'cf1_old_age' => 'required|numeric|between:1,100',
             'cf1_widowhood' => 'required|numeric|between:1,100',
@@ -231,6 +231,11 @@ class ComplementaryFactorController extends Controller
         ];
 
         $messages = [
+            'year.required' => 'El campo Año no puede ser vacío',
+            'year.digits' => 'El campo Año debe tener 4 dígitos',
+            'year.integer' => 'El campo Año sólo se aceptan números enteros',
+            'year.min' => 'El campo Año debe ser mayor o igual a 1900',
+            'year.max' => 'El campo Año debe ser menor o igual a 2100',
 
             'cf1_old_age.required' => 'El campo Generales no puede ser vacío',
             'cf1_old_age.numeric' => 'El campo Generales sólo se aceptan números',
@@ -277,7 +282,7 @@ class ComplementaryFactorController extends Controller
 
         if ($validator->fails()) {
 
-            return redirect('complementary_factor')
+            return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         } else {
