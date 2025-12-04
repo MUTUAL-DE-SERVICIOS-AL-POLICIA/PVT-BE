@@ -1,5 +1,15 @@
 <div class="row">
     <div class="col-md-12">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <h3>Se encontraron los siguientes errores. ({{ count($errors->all()) }})</h3>
+                <ol class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ol>
+            </div>
+        @endif
         <div class="ibox ibox-e-margings">
             <div class="ibox-title">
                 <div class="pull-left">
