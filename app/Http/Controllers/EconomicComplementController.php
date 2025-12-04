@@ -340,11 +340,7 @@ class EconomicComplementController extends Controller
         $economic_complement->uuid = Uuid::uuid1()->toString();
         $economic_complement->save();
 
-        //Desactivar Observers
-        EconomicComplement::FlushEventListeners(); 
         $economic_complement->updateEcoComWithFixedPension();    
-        //Activar Observers
-        EconomicComplement::Boot();
 
         $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
         /**
