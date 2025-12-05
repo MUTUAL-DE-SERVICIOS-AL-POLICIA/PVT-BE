@@ -1,5 +1,15 @@
 <div class="row">
     <div class="col-md-12">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <h3>Se encontraron los siguientes errores. ({{ count($errors->all()) }})</h3>
+                <ol class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ol>
+            </div>
+        @endif
         <div class="ibox ibox-e-margings">
             <div class="ibox-title">
                 <div class="pull-left">
@@ -114,7 +124,7 @@
                             {!! Form::label('year', 'Año', ['class' => 'col-md-5 control-label']) !!}
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text" class="form-control datepicker" name="year"
+                                    <input type="text" class="form-control" name="year"
                                         value="{!! $year !!}">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>

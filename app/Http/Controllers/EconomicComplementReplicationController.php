@@ -166,8 +166,6 @@ class EconomicComplementReplicationController extends Controller
                 ->chunk(200, function ($candidates) use ($request, &$total_replicated_count, &$last_code_number, $code_semester_char, $code_year) {
                     foreach ($candidates as $candidate) {
 
-                        EconomicComplement::observe(EconomicComplementObserver::class);
-
                         $last_code_number++;
                         $replicated = new EconomicComplement;
                         $replicated->affiliate_id = $candidate->affiliate_id;
@@ -188,8 +186,7 @@ class EconomicComplementReplicationController extends Controller
                         $replicated->eco_com_reception_type_id = 1; // ID para "Habitual"
                         $replicated->save();
 
-                        EconomicComplement::FlushEventListeners();
-                        $this->updateEcoComWithFixedPension($replicated->id);
+                        $replicated->updateEcoComWithFixedPension();
 
                         $original_beneficiary = $candidate->eco_com_beneficiary;
                         if ($original_beneficiary) {
@@ -231,33 +228,5 @@ class EconomicComplementReplicationController extends Controller
             ->get();
 
         return response()->json($history);
-    }
-
-    private function updateEcoComWithFixedPension($economic_complement_id)
-    {
-        $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
-        if(!!$economic_complement){
-            if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
-                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)
-                ->orderBy('created_at','desc')
-                ->first();
-                if(!!$fixed_pension){
-                    $economic_complement->eco_com_fixed_pension_id = $fixed_pension->id; 
-                    $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
-                    $economic_complement->aps_total_cc = $fixed_pension->aps_total_cc;      //APS
-                    $economic_complement->aps_total_fs = $fixed_pension->aps_total_fs;      //APS
-                    $economic_complement->aps_total_death = $fixed_pension->aps_total_death;//APS
-                    $economic_complement->aps_disability = $fixed_pension->aps_disability;  //APS //SENASIR
-
-                    $economic_complement->sub_total_rent = $fixed_pension->sub_total_rent;  //SENASIR
-                    $economic_complement->reimbursement = $fixed_pension->reimbursement;    //SENASIR
-                    $economic_complement->dignity_pension = $fixed_pension->dignity_pension;//SENASIR
-                    $economic_complement->total_rent = $fixed_pension->total_rent;          //SENASIR total_rent=sub_total_rent-descuentos planilla
-
-                    $economic_complement->rent_type = 'Automatico';
-                    $economic_complement->save();
-                }
-            }
-        }
     }
 }

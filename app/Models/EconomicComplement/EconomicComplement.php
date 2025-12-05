@@ -93,6 +93,10 @@ class EconomicComplement extends Model
     {
         return $this->hasOne('Muserpol\Models\EconomicComplement\EcoComUpdatedPension');
     }
+    public function eco_com_rent()
+    {
+        return $this->belongsTo(EcoComRent::class);
+    }
     public function encode()
     {
         $hashids = new Hashids('economic_complements', 10);
@@ -177,35 +181,42 @@ class EconomicComplement extends Model
             ], 422);
         }
         $eco_com_procedure = $this->eco_com_procedure;
-        $eco_com_rent = EcoComRent::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
+        $eco_com_rent = $this->eco_com_fixed_pension->eco_com_rent
+            ?? EcoComRent::where('degree_id', '=', $this->degree_id)
+            ->where('procedure_modality_id', '=', ($this->isOrphanhood() ? 29 : $this->eco_com_modality->procedure_modality_id))
+            ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
-            ->get();
-        $base_wage = BaseWage::whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->get();
-        $complementary_factor = ComplementaryFactor::whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
+            ->first();
+        $base_wage = $this->eco_com_fixed_pension->base_wage
+            ?? BaseWage::where('degree_id', $this->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first();
+        
+        $complementary_factor = ComplementaryFactor::where('hierarchy_id', '=', $base_wage->degree->hierarchy->id)
+            ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
             ->where('semester', '=', $eco_com_procedure->semester)
-            ->get();
-        if ($eco_com_rent->count() == 0) {
+            ->first();
+        if (!$eco_com_rent) {
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',
                 'errors' => ['Verifique que existan los promedio para la gestion ' . $eco_com_procedure->fullName()],
             ], 422);
         }
-        if ($base_wage->count() == 0) {
+        if (!$base_wage) {
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',
                 'errors' => ['Verifique que si existen los sueldos para la gestion ' . $eco_com_procedure->fullName()],
             ], 422);
         }
-        if ($complementary_factor->count() == 0) {
+        if (!$complementary_factor) {
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',
                 'errors' => ['Verifique los datos de los factores de complementación de la gestion ' . $eco_com_procedure->fullName()],
             ], 422);
         }
-        $indicator = $eco_com_procedure->indicator;
+        $indicator = $eco_com_rent->referential_limit;
+        
         /**
          ** updating modality with components
          */
@@ -223,62 +234,40 @@ class EconomicComplement extends Model
             }
             //vejez
             if ($this->isOldAge()) {
-                if ($component == 1 && $this->total_rent >= $indicator) {
-                    $this->eco_com_modality_id = 4;
-                } elseif ($component == 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 6;
-                } elseif ($component > 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 8;
+                if ($component == 1) {
+                    $this->eco_com_modality_id = $this->total_rent >= $indicator ? 4 : 6;
                 } else {
-                    $this->eco_com_modality_id = 1;
+                    $this->eco_com_modality_id = $this->total_rent < $indicator ? 8 : 1;
                 }
             }
             //Viudedad
             if ($this->isWidowhood()) {
-                if ($component == 1 && $this->total_rent >= $indicator) {
-                    $this->eco_com_modality_id = 5;
-                } elseif ($component == 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 7;
-                } elseif ($component > 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 9;
+                if ($component == 1) {
+                    $this->eco_com_modality_id = $this->total_rent >= $indicator ? 5 : 7;
                 } else {
-                    $this->eco_com_modality_id = 2;
+                    $this->eco_com_modality_id = $this->total_rent < $indicator ? 9 : 2;
                 }
             }
+
             //orfandad
             if ($this->isOrphanhood()) {
-                if ($component == 1 && $this->total_rent >= $indicator) {
-                    $this->eco_com_modality_id = 10;
-                } elseif ($component == 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 11;
-                } elseif ($component > 1 && $this->total_rent < $indicator) {
-                    $this->eco_com_modality_id = 12;
+                if ($component == 1) {
+                    $this->eco_com_modality_id = $this->total_rent >= $indicator ? 10 : 11;
                 } else {
-                    $this->eco_com_modality_id = 3;
+                    $this->eco_com_modality_id = $this->total_rent < $indicator ? 12 : 3;
                 }
             }
+
         } else {
             //Senasir
-            if ($this->isOldAge() && $this->total_rent < $indicator) {
-                //vejez
-                $this->eco_com_modality_id = 8;
-            } elseif ($this->isWidowhood() && $this->total_rent < $indicator) {
-                //Viudedad
-                $this->eco_com_modality_id = 9;
-            } elseif ($this->isOrphanhood() && $this->total_rent < $indicator) {
-                //Orfandad
-                $this->eco_com_modality_id = 12;
-            } else {
-                if ($this->isOldAge()) {
-                    $this->eco_com_modality_id = 1;
-                }
-                if ($this->isWidowhood()) {
-                    $this->eco_com_modality_id = 2;
-                }
-                if ($this->isOrphanhood()) {
-                    $this->eco_com_modality_id = 3;
-                }
+            if ($this->isOldAge()) {
+                $this->eco_com_modality_id = $this->total_rent < $indicator ? 8 : 1;
+            } elseif ($this->isWidowhood()) {
+                $this->eco_com_modality_id = $this->total_rent < $indicator ? 9 : 2;
+            } elseif ($this->isOrphanhood()) {
+                $this->eco_com_modality_id = $this->total_rent < $indicator ? 12 : 3;
             }
+            
         }
         $this->save();
         /**
@@ -291,16 +280,11 @@ class EconomicComplement extends Model
          ** actualizacion de las rentas netas
          */
 
-        if (array_search($this->eco_com_modality_id,  [4, 5, 6, 7, 8, 9, 10, 11, 12]) !== false) {
+        if (in_array($this->eco_com_modality_id, [4, 5, 6, 7, 8, 9, 10, 11, 12])) {
             // solo se esta tomando las modalidades de vejez y viudedad
-            $eco_com_rent = EcoComRent::where('degree_id', '=', $this->degree_id)
-                ->where('procedure_modality_id', '=', ($this->isOrphanhood() ? 29 : $this->eco_com_modality->procedure_modality_id))
-                ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
-                ->where('semester', '=', $eco_com_procedure->semester)
-                ->first();
-            if (array_search($this->eco_com_modality_id,  [6, 7, 8, 9, 11, 12]) !== false) {
+            if (in_array($this->eco_com_modality_id,  [6, 7, 8, 9, 11, 12])) {
                 $this->total_rent_calc = $eco_com_rent->average;
-            } else if ($this->total_rent < $eco_com_rent->average && array_search($this->eco_com_modality_id,  [4, 5, 10]) !== false) {
+            } else if ($this->total_rent < $eco_com_rent->average && in_array($this->eco_com_modality_id,  [4, 5, 10])) {
                 $this->total_rent_calc = $eco_com_rent->average;
             }
         }
@@ -309,18 +293,11 @@ class EconomicComplement extends Model
          ** /averages
          */
 
-        $base_wage = BaseWage::where('degree_id', $this->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first();
-
         //para el caso de las viudas 80%
-        if ($this->isWidowhood()) {
-            $base_wage_amount = $base_wage->amount * (80 / 100);
-            $salary_reference = $base_wage_amount;
-            $seniority = $this->category->percentage * $base_wage_amount;
-        } else {
-            $salary_reference = $base_wage->amount;
-            $seniority = $this->category->percentage * $base_wage->amount;
-        }
-
+        $salary_reference = $this->isWidowhood()
+            ? $base_wage->amount * (80 / 100)
+            : $base_wage->amount;
+        $seniority = $this->category->percentage * $salary_reference;
         $this->seniority = $seniority;
         $salary_quotable = $salary_reference + $seniority;
         $this->salary_quotable = $salary_quotable;
@@ -335,58 +312,24 @@ class EconomicComplement extends Model
 
         $total_amount_semester = $difference * $months_of_payment;
         $this->total_amount_semester = $total_amount_semester;
-        $complementary_factor = ComplementaryFactor::where('hierarchy_id', '=', $base_wage->degree->hierarchy->id)
-            ->whereYear('year', '=', Carbon::parse($eco_com_procedure->year)->year)
-            ->where('semester', '=', $eco_com_procedure->semester)
-            ->first();
+        
         $this->complementary_factor_id = $complementary_factor->id;
-        if ($this->isWidowhood()) {
-            //viudedad
-            $complementary_factor = $complementary_factor->widowhood;
-        } else {
-            //vejez
-            $complementary_factor = $complementary_factor->old_age;
-        }
+        $complementary_factor = $this->isWidowhood() 
+            ? $complementary_factor->widowhood
+            : $complementary_factor->old_age;
         $this->complementary_factor = $complementary_factor;
         $total = $total_amount_semester * round(floatval($complementary_factor) / 100, 3);
 
         //RESTANDO PRESTAMOS, CONTABILIDAD Y REPOSICION AL TOTAL PORCONCEPTO DE DEUDA
         $total  = $total - $this->discount_types()->sum('amount');
-        // }
-        // if ($this->amount_loan > 0) {
-        // }
-        // if ($this->amount_accounting > 0) {
-        //     $total  = $total - $this->amount_accounting;
-        // }
-        // if ($this->amount_replacement > 0) {
-        //     $total  = $total - $this->amount_replacement;
-        // }
-        // if ($this->amount_credit > 0) {
-        //     $total  = $total - $this->amount_credit;
-        // }
+        
         $this->total = $total;
-        $this->base_wage_id = $base_wage->id;
         $this->salary_reference = $salary_reference;
-        // if ($this->old_eco_com) {
-        //     $old_total = json_decode($this->old_eco_com)->total;
-        //     $this->total_repay =  floatval($total) - (floatval($old_total) + (floatval(json_decode($this->old_eco_com)->amount_loan) + floatval(json_decode($this->old_eco_com)->amount_replacement) + floatval(json_decode($this->old_eco_com)->amount_accounting) + floatval(json_decode($this->old_eco_com)->amount_credit)));
-        //     $this->user_id = Auth::user()->id;
-        //     $this->state = 'Edited';
-        //     if (WorkflowState::where('role_id', '=', Util::getRol()->id)->first()) {
-        //         $this->wf_current_state_id = WorkflowState::where('role_id', '=', Util::getRol()->id)->first()->id;
-        //     } else {
-        //         return redirect('economic_complement/' . $this->id)
-        //             ->withErrors('Ocurrió un error verifique que los datos estén correctos.')
-        //             ->withInput();
-        //     }
-        // }
+        $this->base_wage()->associate($base_wage);
+        $this->eco_com_rent()->associate($eco_com_rent);
         $this->save();
-        if ($this->total_rent > $this->salary_quotable) {
-            //$this->eco_com_state_id = 12; // Se quito el estado automatico Exclusion
-        } else {
-            if ($this->eco_com_state_id == 12) {
-                $this->eco_com_state_id = 16;
-            }
+        if ($this->total_rent <= $this->salary_quotable && $this->eco_com_state_id == 12) {
+            $this->eco_com_state_id = 16;
         }
         $change_state = false;
         $change_state_process = false;
@@ -411,10 +354,9 @@ class EconomicComplement extends Model
             //cambio de estado pagado a en proceso en la tabla contribution_passives
             $payment_contribucion_passive_process = DB::select("SELECT change_state_contribution_process_eco_com($user_id,$this->id)");
         }
-
         return response()->json([
-            'status' => 'success',
-        ], 200);
+                'status' => 'success',
+            ], 200);
     }
     public function isOldAge()
     {
@@ -427,6 +369,10 @@ class EconomicComplement extends Model
     public function isOrphanhood()
     {
         return $this->eco_com_modality->procedure_modality_id == 31;
+    }
+    public function isInclusion()
+    {
+        return $this->eco_com_reception_type_id == ID::ecoCom()->inclusion;
     }
     public function hasLegalGuardian()
     {
@@ -885,5 +831,35 @@ class EconomicComplement extends Model
         }else{
             return true;
         } 
+    }
+
+    public function updateEcoComWithFixedPension($fixed_pension_id = null)
+    {
+        if (!($this->eco_com_reception_type_id == ID::ecoCom()->inclusion)) {
+            $fixed_pension = $fixed_pension_id 
+                ? EcoComFixedPension::find($fixed_pension_id) 
+                : EcoComFixedPension::where('affiliate_id', $this->affiliate_id)
+                    ->latest('eco_com_procedure_id')
+                    ->first();
+            if (!!$fixed_pension) {
+                $this->eco_com_fixed_pension_id = $fixed_pension->id;
+                $this->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
+                $this->aps_total_cc = $fixed_pension->aps_total_cc;      //APS
+                $this->aps_total_fs = $fixed_pension->aps_total_fs;      //APS
+                $this->aps_total_death = $fixed_pension->aps_total_death; //APS
+                $this->aps_disability = $fixed_pension->aps_disability;  //APS //SENASIR
+
+                $this->sub_total_rent = $fixed_pension->sub_total_rent;  //SENASIR
+                $this->reimbursement = $fixed_pension->reimbursement;    //SENASIR
+                $this->dignity_pension = $fixed_pension->dignity_pension; //SENASIR
+                $this->total_rent = $fixed_pension->total_rent;          //SENASIR total_rent=sub_total_rent-descuentos planilla
+                $this->rent_type = 'Automatico';
+
+                $this->base_wage_id = $fixed_pension->base_wage_id;
+                $this->eco_com_rent_id = $fixed_pension->eco_com_rent_id;
+
+                $this->save();
+            }
+        }
     }
 }

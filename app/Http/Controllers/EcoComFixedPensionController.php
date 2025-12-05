@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Muserpol\Models\EconomicComplement\EcoComFixedPension;
 use Muserpol\Models\EconomicComplement\EcoComRegulation;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Muserpol\Models\Affiliate;
+use Muserpol\Models\BaseWage;
+use Muserpol\Models\EconomicComplement\EcoComRent;
 
 class EcoComFixedPensionController extends Controller
 {
@@ -26,6 +29,8 @@ class EcoComFixedPensionController extends Controller
             'reimbursement' => 'nullable|numeric',
             'dignity_pension' => 'nullable|numeric',
             'total_rent' => 'nullable|numeric',
+            'eco_com_rent_id' => 'required|numeric',
+            'base_wage_id' => 'required|numeric',
         ]);
 
         // Crear un nuevo registro
@@ -47,6 +52,10 @@ class EcoComFixedPensionController extends Controller
         $fixed->dignity_pension = $request->dignity_pension;
 
         $fixed->rent_type = 'Manual';
+
+        $fixed->eco_com_rent_id = $request->eco_com_rent_id;
+        $fixed->base_wage_id = $request->base_wage_id;
+
         $fixed->save();
         return $fixed;
     }
@@ -115,5 +124,23 @@ class EcoComFixedPensionController extends Controller
         $fixed->rent_type = 'Manual';
         $fixed->save();
         return $fixed;
+    }
+
+    public function create($affiliate_id) {
+        $affiliate = Affiliate::find($affiliate_id);
+        $base_wages = BaseWage::where('degree_id', $affiliate->degree_id)->latest('month_year')->get();
+
+        $last_eco_com = $affiliate->economic_complements()->orderByDesc('id')->get()->first();
+        if ($last_eco_com) {
+            $procedure_modality_id = $last_eco_com->eco_com_modality->procedure_modality_id;
+        }
+        $eco_com_rents = EcoComRent::where('degree_id', $affiliate->degree_id)
+            ->where('procedure_modality_id', $procedure_modality_id)->latest('year')->latest('semester')->get();
+
+        return response()->json([
+                'base_wages' => $base_wages,
+                'eco_com_rents' => $eco_com_rents,
+                'type' => $last_eco_com->eco_com_modality->procedure_modality->name,
+            ], 200);
     }
 }

@@ -44,6 +44,16 @@ switch (app) {
     mix
     .sass("resources/assets/sass/app_test.scss", "public/css/app.css")
     .version()
+    .purgeCss({
+      enabled: true,
+
+      globs: [
+        path.join(__dirname, "resources/views/**/*.blade.php"),
+        path.join(__dirname, "resources/assets/js/**/*.vue")
+      ],
+      extensions: ["html", "js", "php", "vue"],
+      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/]
+    });
    break;
   case 'dev':
     mix

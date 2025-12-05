@@ -332,53 +332,15 @@ class EconomicComplementController extends Controller
         $economic_complement->city_id = $request->city_id;
         $economic_complement->degree_id = $affiliate->degree->id;
         $economic_complement->category_id = $affiliate->category->id;
-        // $economic_complement->year = Carbon::parse($eco_com_procedure->year)->year . '-01-01'; // !! TODO Borrar columna
-        // $economic_complement->semester = $eco_com_procedure->semester; // !! TODO Borrar columna
         $economic_complement->code = Util::getLastCodeEconomicComplement($request->eco_com_procedure_id);
         $economic_complement->reception_date = now();
         $economic_complement->eco_com_origin_channel_id = 1; // 1 = Ventanilla
         $economic_complement->inbox_state = true;
-        // $economic_complement->state = 'Received'; // !! TODO Borrar columna
         $economic_complement->eco_com_reception_type_id = $request->reception_type;
         $economic_complement->uuid = Uuid::uuid1()->toString();
-        /*
-        if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
-            $economic_complement->sub_total_rent = Util::parseMoney($request->sub_total_rent);
-            $economic_complement->reimbursement = Util::parseMoney($request->reimbursement);
-            $economic_complement->dignity_pension = Util::parseMoney($request->dignity_pension);
-            $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
-            $economic_complement->aps_total_fsa = null;
-            $economic_complement->aps_total_cc = null;
-            $economic_complement->aps_total_fs = null;
-        } else {
-            $economic_complement->aps_total_fsa = Util::parseMoney($request->aps_total_fsa);
-            $economic_complement->aps_total_cc = Util::parseMoney($request->aps_total_cc);
-            $economic_complement->aps_total_fs = Util::parseMoney($request->aps_total_fs);
-            $economic_complement->aps_disability = Util::parseMoney($request->aps_disability);
-            $economic_complement->sub_total_rent = null;
-            $economic_complement->reimbursement = null;
-            $economic_complement->dignity_pension = null;
-        }
-        if ($request->pension_entity_id == ID::pensionEntity()->senasir) {
-            $economic_complement->total_rent =
-            $economic_complement->sub_total_rent -
-            $economic_complement->reimbursement -
-            $economic_complement->dignity_pension +
-            $economic_complement->aps_disability;
-        }else{
-            $economic_complement->total_rent =
-            $economic_complement->aps_total_fsa +
-            $economic_complement->aps_total_cc +
-            $economic_complement->aps_total_fs +
-            $economic_complement->aps_disability;
-        }*/
         $economic_complement->save();
 
-        //Desactivar Observers
-        EconomicComplement::FlushEventListeners(); 
-        $this->updateEcoComWithFixedPension($economic_complement->id);    
-        //Activar Observers
-        EconomicComplement::Boot();
+        $economic_complement->updateEcoComWithFixedPension();    
 
         $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
         /**
@@ -395,11 +357,6 @@ class EconomicComplementController extends Controller
                 'message' => $o->pivot->message,
                 'enabled' => $enabled
             ]);
-            // $record = new EconomicComplementRecord();
-            // $record->user_id = Auth::user()->id;
-            // $record->economic_complement_id = $economic_complement->id;
-            // $record->message = "El usuario " . User::find($o->user_id)->username  . " creó la observación " . $o->name . ".";
-            // $record->save();
         }
         /**
          ** Save legal guardian
@@ -1339,7 +1296,7 @@ class EconomicComplementController extends Controller
                 $discount_type_id = 6 || $discount_type_id = 8;
                 break;
         }
-        $eco_com = EconomicComplement::with(['discount_types', 'eco_com_state:id,name,eco_com_state_type_id', 'degree','category','eco_com_modality', 'eco_com_fixed_pension', 'eco_com_updated_pension'])->findOrFail($id);
+        $eco_com = EconomicComplement::with(['discount_types', 'eco_com_state:id,name,eco_com_state_type_id', 'degree','category','eco_com_modality', 'eco_com_fixed_pension', 'eco_com_updated_pension', 'base_wage:id,amount,month_year', 'eco_com_rent'])->findOrFail($id);
         $eco_com->discount_amount = optional(optional($eco_com->discount_types()->where('discount_type_id', $discount_type_id)->first())->pivot)->amount;
         if($eco_com->eco_com_fixed_pension) {
             $eco_com->eco_com_fixed_pension->period = $eco_com->eco_com_fixed_pension->eco_com_procedure->semester . ' ' . $eco_com->eco_com_fixed_pension->eco_com_procedure->getYear();
@@ -1380,24 +1337,10 @@ class EconomicComplementController extends Controller
         // Si el tipo es "ce"
         if ($request->type == "ce" && $economic_complement->rent_type == "Automatico") {
 
-            $newFixed = EcoComFixedPension::findOrFail($request->new_fixed_id);
-            if($newFixed->id != $economic_complement->eco_com_fixed_pension_id){
-                $economic_complement->eco_com_fixed_pension()->associate($newFixed);
-            }
             $economic_complement->user_id = Auth::user()->id;
 
-            $economic_complement->sub_total_rent = $economic_complement->eco_com_fixed_pension->sub_total_rent;
-            $economic_complement->reimbursement = $economic_complement->eco_com_fixed_pension->reimbursement;
-            $economic_complement->dignity_pension = $economic_complement->eco_com_fixed_pension->dignity_pension;
-
-            $economic_complement->aps_total_fsa = $economic_complement->eco_com_fixed_pension->aps_total_fsa;
-            $economic_complement->aps_total_cc = $economic_complement->eco_com_fixed_pension->aps_total_cc;
-            $economic_complement->aps_total_fs =  $economic_complement->eco_com_fixed_pension->aps_total_fs;
-            $economic_complement->aps_total_death = $economic_complement->eco_com_fixed_pension->aps_total_death;
-            $economic_complement->aps_disability = $economic_complement->eco_com_fixed_pension->aps_disability;
-            $economic_complement->total_rent = $economic_complement->eco_com_fixed_pension->total_rent;
+            $economic_complement->updateEcoComWithFixedPension($request->new_fixed_id);
             //Limpia los campos si ya se hubiese calificado
-            $economic_complement->base_wage_id = null;
             $economic_complement->complementary_factor_id = null;
             $economic_complement->total_rent_calc = null;
             $economic_complement->salary_reference = null;
@@ -1468,9 +1411,13 @@ class EconomicComplementController extends Controller
             $fixed->eco_com_regulation_id = $regulation->id;
             $fixed->eco_com_procedure_id = $economic_complement->eco_com_procedure_id;
             $fixed->rent_type = 'Manual';
+            $fixed->base_wage_id = $request->base_wage_id;
+            $fixed->eco_com_rent_id = $request->eco_com_rent_id;
             $fixed->save();
 
             $economic_complement->eco_com_fixed_pension_id = $fixed->id;
+            $economic_complement->base_wage_id = $request->base_wage_id;
+            $economic_complement->eco_com_rent_id = $request->eco_com_rent_id;
             $economic_complement->save();
             $economic_complement = EconomicComplement::with('discount_types')->with('eco_com_fixed_pension')
                 ->with('eco_com_updated_pension')->find($request->id);
@@ -1536,6 +1483,11 @@ class EconomicComplementController extends Controller
             if($request->type == "ce" && $economic_complement->rent_type != "Automatico"){
                 $economic_complement->rent_type = "Manual";
                 $economic_complement->eco_com_fixed_pension->rent_type = "Manual";
+
+                $economic_complement->eco_com_rent_id = $request->eco_com_rent_id;
+                $economic_complement->base_wage_id = $request->base_wage_id;
+                $economic_complement->eco_com_fixed_pension->eco_com_rent_id = $request->eco_com_rent_id;
+                $economic_complement->eco_com_fixed_pension->base_wage_id = $request->base_wage_id;
             } else if ($request->type == "am") {
                 $economic_complement->eco_com_updated_pension->rent_type = "Manual";
             }
@@ -2043,8 +1995,12 @@ class EconomicComplementController extends Controller
                 'errors' => ['No se puede realizar la calificación porque el trámite ' . $eco_com->code . ' se encuentra en estado de ' . $eco_com_state->name],
             ], 422);
         }
-        $eco_com->qualify();
-        return $eco_com;
+        $data = $eco_com->qualify();
+        if ($data->getOriginalContent()['status'] == "success") {
+            return $this->getEcoCom($request->id);
+        } else {
+            return $data;
+        }
     }
     public function recalificacion(Request $request)
     {
@@ -2451,33 +2407,6 @@ class EconomicComplementController extends Controller
         }
     }
     //Metodos para el complemento del quinquenio
-    public function updateEcoComWithFixedPension($economic_complement_id)
-    {
-        $economic_complement = EconomicComplement::where('id',$economic_complement_id)->first();
-        if(!!$economic_complement){
-            if(!($economic_complement->eco_com_reception_type_id == ID::ecoCom()->inclusion)){
-                $fixed_pension = EcoComFixedPension::where('affiliate_id', $economic_complement->affiliate_id)
-                ->orderBy('created_at','desc')
-                ->first();
-                if(!!$fixed_pension){ 
-                    $economic_complement->eco_com_fixed_pension_id = $fixed_pension->id; 
-                    $economic_complement->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          
-                    $economic_complement->aps_total_cc = $fixed_pension->aps_total_cc;      //APS
-                    $economic_complement->aps_total_fs = $fixed_pension->aps_total_fs;      //APS
-                    $economic_complement->aps_total_death = $fixed_pension->aps_total_death;//APS
-                    $economic_complement->aps_disability = $fixed_pension->aps_disability;  //APS //SENASIR
-
-                    $economic_complement->sub_total_rent = $fixed_pension->sub_total_rent;  //SENASIR
-                    $economic_complement->reimbursement = $fixed_pension->reimbursement;    //SENASIR
-                    $economic_complement->dignity_pension = $fixed_pension->dignity_pension;//SENASIR
-                    $economic_complement->total_rent = $fixed_pension->total_rent;          //SENASIR total_rent=sub_total_rent-descuentos planilla
-
-                    $economic_complement->rent_type = 'Automatico';
-                    $economic_complement->save();             
-                }
-            }
-        }
-    }
     public function loadAverageWithRegulation(Request $request)
     {
         $eco_com_procedure_id = $request->ecoComProcedureId;
@@ -2553,5 +2482,6 @@ class EconomicComplementController extends Controller
 
         return response()->json($eco_com_procedures);
     }
+
 
 }

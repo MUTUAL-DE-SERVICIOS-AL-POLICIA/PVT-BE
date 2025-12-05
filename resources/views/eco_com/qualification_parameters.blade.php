@@ -28,8 +28,10 @@
             <ul class="list-group elements-list">
                 <li class="list-group-item active" data-toggle="tab" href="#tab-base-wage"><a href="#"><i
                             class="fa fa-puzzle-piece"></i> Sueldos</a></li>
-                <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
-                            class="fa fa-address-card"></i> Promedios</a></li>
+                <li class="list-group-item" data-toggle="tab" href="#tab-salary-calculations"><a href="#"><i 
+                            class="fa fa-calculator"></i> Cargar Sueldos</a></li>
+                <!-- <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-averages"><a href="#"><i
+                            class="fa fa-address-card"></i> Promedios</a></li> -->
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-loadaverages"><a href="#"><i
                             class="fa fa-address-card"></i> Cargar promedios</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-complementary-factor"><a href="#"><i
@@ -46,7 +48,7 @@
                             class="fa fa-users"></i> Calcular Pago a Futuro</a></li>
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-estado-pagado"><a href="#"><i
                             class="fa fa-users"></i> Cambiar a estado pagado</a></li>
-                            
+
                 <!-- <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-update-paid-bank"><a href="#"><i
                             class="fa fa-users"></i> Actualizar Pagados en Banco</a></li> -->
                 <li class="list-group-item" data-toggle="tab" href="#tab-eco-com-automatic-qualification"><a href="#"><i
@@ -58,11 +60,11 @@
     <div class="col-md-9" style="padding-left: 6px">
         <div class="tab-content">
             <div id="tab-base-wage" class="tab-pane active">
-    @include('base_wages.index')
+                <salary-display></salary-display>
             </div>
-            <div id="tab-eco-com-averages" class="tab-pane">
+            <!-- <div id="tab-eco-com-averages" class="tab-pane">
     @include('eco_com.average')
-            </div>
+            </div> -->
             <div id="tab-eco-com-loadaverages" class="tab-pane">
                 <eco-com-loadaverages :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-loadaverages>    
             </div>
@@ -93,6 +95,9 @@
             <div id="tab-eco-com-automatic-qualification" class="tab-pane">
             <eco-com-automatic-qualification :permissions="{{ $permissions }}" :eco-com-procedures="{{$eco_com_procedures}}"></eco-com-automatic-qualification>
             </div>
+            <div id="tab-salary-calculations" class="tab-pane">
+                <salary-calculations></salary-calculations>
+            </div>
         </div>
     </div>
 </div>
@@ -102,7 +107,6 @@
 <link rel="stylesheet" href="{{asset('/css/datatable.css')}}">
 @endsection
 @section('scripts')
-<script src="{{ asset('/js/datatables.js')}}"></script>
 <script src="{{ asset('/js/datatables.js')}}"></script>
 <script type="text/javascript">
     $('.datepicker').datepicker({
@@ -114,92 +118,6 @@
             autoclose: true
         });
     $(document).ready(function(){
-
-            $('#first_level_base_wage-table').DataTable({
-                "dom": '<"top">t<"bottom"p>',
-                "order": [[ 0, "desc" ]],
-                processing: true,
-                serverSide: true,
-                pageLength: 10,
-                autoWidth: false,
-                ajax: '{!! route('get_first_level_base_wage') !!}',
-                columns: [
-                    { data: 'month_year', sClass: "text-center" },
-                    { data: 'c1', sClass: "text-right", bSortable: false },
-                    // { data: 'c2', sClass: "text-right", bSortable: false }, inactivo
-                    { data: 'c3', sClass: "text-right", bSortable: false },
-                    { data: 'c4', sClass: "text-right", bSortable: false },
-                    { data: 'c5', sClass: "text-right", bSortable: false },
-                    { data: 'c6', sClass: "text-right", bSortable: false },
-                    { data: 'c7', sClass: "text-right", bSortable: false },
-                    { data: 'c8', sClass: "text-right", bSortable: false },
-                    { data: 'c9', sClass: "text-right", bSortable: false },
-                    { data: 'c10', sClass: "text-right", bSortable: false },
-                    { data: 'c11', sClass: "text-right", bSortable: false },
-                    { data: 'c12', sClass: "text-right", bSortable: false }
-                ]
-            });
-
-            $('#second_level_base_wage-table').DataTable({
-                "dom": '<"top">t<"bottom"p>',
-                "order": [[ 0, "desc" ]],
-                processing: true,
-                serverSide: true,
-                pageLength: 10,
-                autoWidth: false,
-                ajax: '{!! route('get_second_level_base_wage') !!}',
-                columns: [
-                    { data: 'month_year', sClass: "text-center" },
-                    { data: 'c13', sClass: "text-right", bSortable: false },
-                    { data: 'c14', sClass: "text-right", bSortable: false },
-                    { data: 'c15', sClass: "text-right", bSortable: false },
-                    { data: 'c16', sClass: "text-right", bSortable: false },
-                    { data: 'c17', sClass: "text-right", bSortable: false },
-                    { data: 'c18', sClass: "text-right", bSortable: false }
-                ]
-            });
-
-            $('#third_level_base_wage-table').DataTable({
-                "dom": '<"top">t<"bottom"p>',
-                "order": [[ 0, "desc" ]],
-                processing: true,
-                serverSide: true,
-                pageLength: 10,
-                autoWidth: false,
-                ajax: '{!! route('get_third_level_base_wage') !!}',
-                columns: [
-                    { data: 'month_year', sClass: "text-center" },
-                    { data: 'c19', sClass: "text-right", bSortable: false },
-                    { data: 'c20', sClass: "text-right", bSortable: false },
-                    { data: 'c21', sClass: "text-right", bSortable: false },
-                    { data: 'c22', sClass: "text-right", bSortable: false },
-                    { data: 'c23', sClass: "text-right", bSortable: false },
-                    { data: 'c24', sClass: "text-right", bSortable: false },
-                    { data: 'c25', sClass: "text-right", bSortable: false },
-                    { data: 'c26', sClass: "text-right", bSortable: false }
-                ]
-            });
-
-            $('#fourth_level_base_wage-table').DataTable({
-                "dom": '<"top">t<"bottom"p>',
-                "order": [[ 0, "desc" ]],
-                processing: true,
-                serverSide: true,
-                pageLength: 10,
-                autoWidth: false,
-                ajax: '{!! route('get_fourth_level_base_wage') !!}',
-                columns: [
-                    { data: 'month_year', sClass: "text-center" },
-                    { data: 'c27', sClass: "text-right", bSortable: false },
-                    { data: 'c28', sClass: "text-right", bSortable: false },
-                    { data: 'c29', sClass: "text-right", bSortable: false },
-                    { data: 'c30', sClass: "text-right", bSortable: false },
-                    { data: 'c31', sClass: "text-right", bSortable: false },
-                    { data: 'c32', sClass: "text-right", bSortable: false },
-                    { data: 'c33', sClass: "text-right", bSortable: false },
-                    { data: 'c34', sClass: "text-right", bSortable: false }
-                ]
-            });
 
         //averages
         var oTable = $('#average_table').DataTable({

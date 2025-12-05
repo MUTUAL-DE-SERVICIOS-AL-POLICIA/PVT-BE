@@ -704,6 +704,7 @@ Route::group(['middleware' => ['auth']], function () {
     //fixed
     Route::post('/eco_com_fixed_pensions', 'EcoComFixedPensionController@store');
     Route::patch('/eco_com_fixed_pensions/{id}', 'EcoComFixedPensionController@updateFixed');
+    Route::get('/affiliate/{affiliate_id}/eco_com_fixed_pensions/create', 'EcoComFixedPensionController@create');
 
     // Eco com Beneficiary
     Route::get('get_eco_com_beneficiary/{eco_com_id}', 'EcoComBeneficiaryController@getEcoComBeneficiary');
@@ -734,10 +735,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // base wage
     Route::resource('base_wage', 'BaseWageController');
-    Route::get('get_first_level_base_wage', 'BaseWageController@FirstLevelData')->name('get_first_level_base_wage');
-    Route::get('get_second_level_base_wage', 'BaseWageController@SecondLevelData')->name('get_second_level_base_wage');
-    Route::get('get_third_level_base_wage', 'BaseWageController@ThirdLevelData')->name('get_third_level_base_wage');
-    Route::get('get_fourth_level_base_wage', 'BaseWageController@FourthLevelData')->name('get_fourth_level_base_wage');
+    Route::get('get_grouped_base_wages', 'BaseWageController@getGroupedWages')->name('get_grouped_base_wages');
     Route::post('base_wage_create', 'BaseWageController@base_wage_create');
 
     // Complementary Factor
@@ -751,6 +749,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('print_average', 'EconomicComplementController@printAverage')->name('print_average');
     // Route::get('export_average/{year}/{semester}', 'EconomicComplementReportController@export_average')->name('export_average');
 
+    // eco com_rent
+    Route::post('import_averages', 'EcoComRentController@importAverage');
+    Route::get('exportDegreesWithPrestations', 'EcoComRentController@exportDegreesWithPrestations');
+    Route::resource('ecocomrents', 'EcoComRentController');
+    
     // observations
     Route::get('eco_com_get_observations/{eco_com_id}', 'EcoComObservationController@getObservations');
     Route::get('eco_com_get_delete_observations/{eco_com_id}', 'EcoComObservationController@getDeleteObservations');
@@ -824,9 +827,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('review_show/{eco_com_id}', 'EcoComReviewProcedureController@show')->name('show');
     Route::post('eco_com/review_edit', 'EconomicComplementController@editReviewProcedures')->name('eco_com_review_edit');
     Route::get('eco_com/{eco_com_id}/print/revision_certificate', 'EcoComCertificationController@printRevisionCertificate')->name('eco_com_print_revision_certificate');
-    Route::post('eco_com_replicate', 'EconomicComplementReplicationController@prepareReplication')->name('eco_com_replicate');
+Route::post('eco_com_replicate', 'EconomicComplementReplicationController@prepareReplication')->name('eco_com_replicate');
     Route::post('eco_com_replicate/execute', 'EconomicComplementReplicationController@executeReplication')->name('eco_com_replicate.execute');
     Route::get('eco_com_replicate/history', 'EconomicComplementReplicationController@getReplicationHistory')->name('eco_com_replicate.history');
     Route::get('eco_com_replicate/status', 'EconomicComplementReplicationController@canCreateReplication')->name('eco_com_replicate.status');
+    // Salary Calculation
+    Route::get('get_calculation_years', 'SalaryCalculationController@getYears')->name('get_calculation_years');
+    Route::get('get_comparative_salaries', 'SalaryCalculationController@calculateComparativeSalaries')->name('get_comparative_salaries');
+    Route::post('execute_update_base_wage', 'SalaryCalculationController@executeUpdateBaseWage')->name('execute_update_base_wage');
+    Route::get('salary_calculation/export', 'SalaryCalculationController@exportExcel')->name('salary_calculation.export');
+    Route::get('salary_calculation/download_template', 'SalaryCalculationController@downloadSalaryTemplate')->name('salary_calculation.download_template');
+    Route::post('salary_calculation/import', 'SalaryCalculationController@importSalaries')->name('salary_calculation.import');
   });
 });

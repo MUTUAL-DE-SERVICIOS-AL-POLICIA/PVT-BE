@@ -250,7 +250,7 @@ let moneyInputMask = {
   groupSeparator: ",",
   autoGroup: true,
   digits: 2,
-  digitsOptional: false,
+  //digitsOptional: false,
   prefix: "Bs ",
   max:1000000000,
   min:0,
@@ -453,6 +453,8 @@ Vue.component('eco-com-update-paid-bank', require('./components/eco_com/UpdatePa
 Vue.component('eco-com-automatic-qualification', require('./components/eco_com/AutomaticQualification.vue'));
 
 Vue.component('eco-com-estado-pagado', require('./components/eco_com/EstadoPagado.vue'));
+Vue.component('salary-display', require('./components/eco_com/Salary.vue'));
+Vue.component('salary-calculations', require('./components/eco_com/SalaryCalculations.vue'));
 
 Vue.component('edit-pension-modal', require('./components/eco_com/EditPensionModal.vue'));
 // utils
