@@ -58,7 +58,6 @@ class RetFunEma2026 extends Seeder
             foreach ($newContributionTypes as $value) {
                 ContributionType::create($value);
             }
-            ContributionType::where('name', 'Disponibilidad')->delete();
 
             // Nuevas submodalidades
             $newModalities = [
