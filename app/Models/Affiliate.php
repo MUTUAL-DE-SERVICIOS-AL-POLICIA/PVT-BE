@@ -727,8 +727,10 @@ class Affiliate extends Model
           return $q->limit($retirement_fund->used_contributions_limit);
       })
       ->get();
-
-    $last_contributions = $cont->slice($used_contributions_limit - $number_contributions)->values();
+      
+    //$last_contributions = $cont->slice($used_contributions_limit - $number_contributions)->values();
+    $totalContributions = $cont->count();
+    $last_contributions = $cont->slice(max(0, $totalContributions - $number_contributions))->values();
 
     $contributions_with_reimbursements = Contribution::sumReimbursement($last_contributions, $sumColumns);
 
