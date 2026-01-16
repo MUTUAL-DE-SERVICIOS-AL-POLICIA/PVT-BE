@@ -340,11 +340,7 @@ class EconomicComplementController extends Controller
         $economic_complement->uuid = Uuid::uuid1()->toString();
         $economic_complement->save();
 
-        //Desactivar Observers
-        EconomicComplement::FlushEventListeners(); 
         $economic_complement->updateEcoComWithFixedPension();    
-        //Activar Observers
-        EconomicComplement::Boot();
 
         $this->create_review($economic_complement->id, $economic_complement->eco_com_reception_type->id);
         /**
@@ -1977,7 +1973,7 @@ class EconomicComplementController extends Controller
             ], 422);
         }
         $data = $eco_com->qualify();
-        if ($data['status'] == "success") {
+        if ($data->getOriginalContent()['status'] == "success") {
             return $this->getEcoCom($request->id);
         } else {
             return $data;

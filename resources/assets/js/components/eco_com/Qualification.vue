@@ -96,13 +96,13 @@
                   <td>{{ ecoCom.base_wage.month_year | monthYear}}</td>
                   <td style="text-align: right;">{{ ecoCom.base_wage.amount | currency }}</td>
                 </tr>
-                <template v-if="showAverage">
+                <template v-if="ecoCom.eco_com_rent">
                   <tr>
                     <td>Limite Referencial</td>
                     <td rowspan="2" style="vertical-align: middle;">{{ecoCom.eco_com_rent.semester}}/{{ecoCom.eco_com_rent.year | year}}</td>
                     <td style="text-align: right;">{{ecoCom.eco_com_rent.referential_limit | currency}}</td>
                   </tr>
-                  <tr>
+                  <tr v-if="showAverage">
                     <td>Promedio</td>
                     <td style="text-align: right;">{{ecoCom.eco_com_rent.average | currency}}</td>
                   </tr>
@@ -575,7 +575,7 @@
         <div class="row">
           <label class="col-sm-6 control-label">Periodo de Sueldo Base</label>
           <select class="col-sm-6" name="Periodo que correponde la renta" v-model="ecoComModal.base_wage_id">
-            <option v-for="bw in baseWages" :value="bw.id" :key="'baseWage' + bw.id">{{ bw.month_year | monthYear }} - {{
+            <option v-for="bw in baseWages" :value="bw.id" :key="'baseWage' + bw.id">{{ bw.month_year | year }} - {{
               bw.amount | currency }}</option>
           </select>
         </div>

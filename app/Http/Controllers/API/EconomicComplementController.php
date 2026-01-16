@@ -224,11 +224,7 @@ class EconomicComplementController extends Controller
              ** Save eco com beneficiary
             */
 
-            //Desactivar Observers
-            EconomicComplement::FlushEventListeners(); 
             $economic_complement->updateEcoComWithFixedPension();    
-            //Activar Observers
-            EconomicComplement::Boot();
 
             $eco_com_beneficiary = new EcoComBeneficiary();
             $eco_com_beneficiary->economic_complement_id = $economic_complement->id;
@@ -354,11 +350,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->uuid = Uuid::uuid1()->toString();
                     $economic_complement->save();
 
-                    //Desactivar Observers
-                    EconomicComplement::FlushEventListeners(); 
                     $economic_complement->updateEcoComWithFixedPension();    
-                    //Activar Observers
-                    EconomicComplement::Boot();
                     
                     /**
                      ** Save eco com beneficiary
@@ -482,11 +474,7 @@ class EconomicComplementController extends Controller
              ** Save eco com beneficiary
             */
 
-            //Desactivar Observers
-            EconomicComplement::FlushEventListeners(); 
             $economic_complement->updateEcoComWithFixedPension();    
-            //Activar Observers
-            EconomicComplement::Boot();
 
             $eco_com_beneficiary = new EcoComBeneficiary();
             $eco_com_beneficiary->economic_complement_id = $economic_complement->id;
@@ -597,11 +585,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->uuid = Uuid::uuid1()->toString();
                     $economic_complement->save();
 
-                    //Desactivar Observers
-                    EconomicComplement::FlushEventListeners(); 
                     $economic_complement->updateEcoComWithFixedPension();    
-                    //Activar Observers
-                    EconomicComplement::Boot();
                     
                     /**
                      ** Save eco com beneficiary
@@ -1118,11 +1102,7 @@ class EconomicComplementController extends Controller
         ]);
         $economic_complement->save();
 
-        //Desactivar Observers
-        EconomicComplement::FlushEventListeners(); 
         $economic_complement->updateEcoComWithFixedPension();    
-        //Activar Observers
-        EconomicComplement::Boot();
 
         return $economic_complement;
     }

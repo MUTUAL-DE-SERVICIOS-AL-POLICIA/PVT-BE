@@ -166,8 +166,6 @@ class EconomicComplementReplicationController extends Controller
                 ->chunk(200, function ($candidates) use ($request, &$total_replicated_count, &$last_code_number, $code_semester_char, $code_year) {
                     foreach ($candidates as $candidate) {
 
-                        EconomicComplement::observe(EconomicComplementObserver::class);
-
                         $last_code_number++;
                         $replicated = new EconomicComplement;
                         $replicated->affiliate_id = $candidate->affiliate_id;
@@ -188,7 +186,6 @@ class EconomicComplementReplicationController extends Controller
                         $replicated->eco_com_reception_type_id = 1; // ID para "Habitual"
                         $replicated->save();
 
-                        EconomicComplement::FlushEventListeners();
                         $replicated->updateEcoComWithFixedPension();
 
                         $original_beneficiary = $candidate->eco_com_beneficiary;
