@@ -588,7 +588,7 @@
           </select>
         </div>
         <div class="row">
-          <template v-if="ecoComModal.eco_com_rent_id">
+          <template v-if="ecoComModal.eco_com_rent_id && $eco_com_helper.isInclusion(ecoCom)">
             <p class="col-sm-6 control-label">Promedio {{ecoComRents.find(r => r.id ==
               ecoComModal.eco_com_rent_id).average | currency}}</p>
             <p class="col-sm-6 control-label">Limite Referencial {{ecoComRents.find(r => r.id ==
