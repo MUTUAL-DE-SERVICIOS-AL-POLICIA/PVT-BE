@@ -2,7 +2,7 @@
 @section('content')
 <br>
 <div>
-    El suscrito Encargado de  Cuentas Individuales en base a una revisión de la Base de Datos del Sistema Informático de MUSERPOL de aportes realizados, del señor: 
+    El suscrito Encargado de Cuentas Individuales en base a una revisión de la Base de Datos del Sistema Informático de MUSERPOL de aportes realizados, del señor: 
 </div>
 <div class="my-10">
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
@@ -45,6 +45,19 @@
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->seniority_bonus) }}</td>                        
                     <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($contribution->total) }}</td>
                 </tr> 
+                @foreach($reimbursements as $reimbursement)
+                    @if($contribution->month_year == $reimbursement->month_year)       
+                        <tr class="text-sm">
+                            <td class="text-center uppercase font-bold px-5 py-3"></td>
+                            <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>                            
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->gain) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->base_wage) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->seniority_bonus) }}</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ Util::formatMoney($reimbursement->total) }}</td>                            
+                        </tr>
+                    @endif        
+                @endforeach
         @endforeach    
     </tbody>
 </table>
@@ -53,14 +66,14 @@
     Es cuanto se certifica para fines consiguientes
 </div>
 <br>
-{{-- @if($retirement_fund->contribution_types()->where('contribution_type_id', 1)->first())
+@if($message)
     <div>
         <strong>Nota:</strong>
         <div class="text-justify">
-            {{ $retirement_fund->contribution_types()->where('contribution_type_id', 1)->first()->pivot->message }}
+            {{ $message }}
         </div>
     </div>
-@endif --}}
+@endif 
 @include('ret_fun.print.signature_footer',['user'=>$user])
 Cc: Arch
 @endsection

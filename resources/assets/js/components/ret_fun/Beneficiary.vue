@@ -669,9 +669,11 @@ export default {
         return getGender(value);
     },
     setAdvisorData(data){
+        // Solo se usa un $set para que vue detecte el cambio y active la reactividad
+        this.$set(this.beneficiary, 'advisor_first_name', data.first_name);
+
         this.beneficiary.advisor_identity_card = data.identity_card;
         this.beneficiary.advisor_city_identity_card_id = data.city_identity_card_id;
-        this.beneficiary.advisor_first_name = data.first_name;
         this.beneficiary.advisor_second_name = data.second_name;
         this.beneficiary.advisor_last_name = data.last_name;
         this.beneficiary.advisor_mothers_last_name = data.mothers_last_name;
@@ -685,9 +687,10 @@ export default {
         this.beneficiary.advisor_resolution_date = data.resolution_date;
     },
     setLegalGuardianData(data){
+        // Solo se usa un $set para que vue detecte el cambio y active la reactividad
+        this.$set(this.beneficiary, 'legal_guardian_first_name', data.first_name);
         this.beneficiary.legal_guardian_identity_card = data.identity_card;
         this.beneficiary.legal_guardian_city_identity_card_id = data.city_identity_card_id;
-        this.beneficiary.legal_guardian_first_name = data.first_name;
         this.beneficiary.legal_guardian_second_name = data.second_name;
         this.beneficiary.legal_guardian_last_name = data.last_name;
         this.beneficiary.legal_guardian_mothers_last_name = data.mothers_last_name;
@@ -722,19 +725,17 @@ export default {
         })
         .then(response => {
             let data = response.data;
-            setTimeout(() => {
-                switch (type) {
-                    case 1:
-                        this.setAdvisorData(data);
-                        break;
-                    case 2:
-                        this.setLegalGuardianData(data);
-                        break;
-                    default:
-                        alert('error al guardar datos legal representative');
-                        break;
-                }
-            }, 300);
+            switch (type) {
+                case 1:
+                    this.setAdvisorData(data);
+                    break;
+                case 2:
+                    this.setLegalGuardianData(data);
+                    break;
+                default:
+                    alert('error al guardar datos legal representative');
+                    break;
+            }
         })
         .catch(function(error) {
             console.log("Error searching legal guardian");

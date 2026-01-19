@@ -4,6 +4,10 @@ namespace Muserpol\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Muserpol\Models\RetirementFund\RetFunProcedure;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Muserpol\Models\Hierarchy;
+use Muserpol\Models\ProcedureModality;
 
 class RetFunProcedureController extends Controller
 {
@@ -35,7 +39,52 @@ class RetFunProcedureController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'start_date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                function ($attribute, $value, $fail) {
+                    $year = Carbon::parse($value)->year;
+                    $exists = RetFunProcedure::whereYear('start_date', $year)->exists();
+                    if ($exists) {
+                        $fail('Ya existe un registro para el año ' . $year . '.');
+                    }
+                },
+            ],
+            'contributions_limit' => 'required|numeric|min:0',
+        ]);
+
+        $actualProcedure = RetFunProcedure::active_procedure();
+
+        $hierarchies_sync_data = [];
+        foreach ($request->hierarchies as $hierarchiesKey => $hierarchiesValue) {
+            $hierarchies_sync_data[$hierarchiesKey] = [
+                'apply_contributions_limit' => $hierarchiesValue['apply_contributions_limit'],
+                'average_salary_limit' => $hierarchiesValue['average_salary_limit']
+            ];
+        }
+        
+        $modalities_sync_data = [];
+        foreach ($request->procedureType as $procedureTypeKey => $procedureTypeValues) {
+            foreach ($procedureTypeValues['modalitiesIds'] as $modalityId) {
+                $modalities_sync_data[$modalityId] = [
+                    'annual_percentage_yield' => $procedureTypeValues['percentageYield'],
+                ];
+            }
+        }
+
+        DB::transaction(function () use ($request, $actualProcedure, $hierarchies_sync_data, $modalities_sync_data) {
+            // Todos los datos se duplican menos start_date y limit_average
+            $procedure = $actualProcedure->replicate();
+            $procedure->start_date = $request->start_date;
+            $procedure->contributions_limit = $request->contributions_limit;
+            $procedure->save();
+            $procedure->hierarchies()->sync($hierarchies_sync_data);
+            $procedure->procedure_modalities()->sync($modalities_sync_data);
+        });
+
+        return response()->json(['message' => 'Creado correctamente.'], 201);
     }
 
     /**
@@ -69,18 +118,53 @@ class RetFunProcedureController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $ret_fun_procedure = RetFunProcedure::where('is_enabled','true')->first();
-        $ret_fun_procedure->is_enabled = false;
-        $ret_fun_procedure->save();
-        
-        $procedure = new RetFunProcedure();
-        $procedure->annual_yield = $request->annual_yield;
-        $procedure->administrative_expenses = $request->administrative_expenses;
-        $procedure->contributions_number = $request->contributions_number;
-        $procedure->contribution_regulate_days = $request->contribution_regulate_days;
-        $procedure->is_enabled = true;
-        $procedure->save();
-        return json_encode($procedure);
+        $procedure = RetFunProcedure::findOrFail($id);
+
+        $request->validate([
+            'start_date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                function ($attribute, $value, $fail) use ($procedure) {
+                    $newYear = Carbon::parse($value)->year;
+                    $originalYear = Carbon::parse($procedure->start_date)->year;
+                    if ($newYear !== $originalYear) {
+                        $fail('No se puede cambiar el año del registro. Debe permanecer en el año ' . $originalYear . '.');
+                    }
+                },
+            ],
+            'contributions_limit' => 'required|numeric|min:0',
+        ]);
+
+        $hierarchies_sync_data = [];
+        foreach ($request->hierarchies as $hierarchiesKey => $hierarchiesValue) {
+            $hierarchies_sync_data[$hierarchiesKey] = [
+                'apply_contributions_limit' => $hierarchiesValue['apply_contributions_limit'],
+                'average_salary_limit' => $hierarchiesValue['average_salary_limit']
+            ];
+        }
+
+        $modalities_sync_data = [];
+        foreach ($request->procedureType as $procedureTypeKey => $procedureTypeValues) {
+            $db_modalities_ids =  ProcedureModality::where('procedure_type_id', $procedureTypeKey)->pluck('id')->toArray();
+            foreach ($db_modalities_ids as $modalityId) {
+                $modalities_sync_data[$modalityId] = [
+                    'annual_percentage_yield' => $procedureTypeValues['percentageYield'],
+                ];
+            }
+        }
+
+        DB::transaction(function () use ($request, $procedure, $hierarchies_sync_data, $modalities_sync_data) {
+            $procedure->update([
+                'start_date' => $request->start_date,
+                'contributions_limit' => $request->contributions_limit,
+            ]);
+
+            $procedure->hierarchies()->sync($hierarchies_sync_data);
+            $procedure->procedure_modalities()->sync($modalities_sync_data);
+        });
+
+        return response()->json(['message' => 'Editado correctamente.'], 200);
     }
 
     /**
