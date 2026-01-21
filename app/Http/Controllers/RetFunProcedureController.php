@@ -119,17 +119,24 @@ class RetFunProcedureController extends Controller
     public function update(Request $request, $id)
     {
         $procedure = RetFunProcedure::findOrFail($id);
+        
+        $retFundsCount = $procedure->retirement_funds()->count();
+        if ($retFundsCount > 0) {
+            return response()->json(['message' => 'No se puede editar la gestión porque ya tiene trámites asociados.'], 400);
+        }
 
         $request->validate([
             'start_date' => [
                 'required',
                 'date',
-                'after_or_equal:today',
                 function ($attribute, $value, $fail) use ($procedure) {
-                    $newYear = Carbon::parse($value)->year;
-                    $originalYear = Carbon::parse($procedure->start_date)->year;
-                    if ($newYear !== $originalYear) {
-                        $fail('No se puede cambiar el año del registro. Debe permanecer en el año ' . $originalYear . '.');
+                    $newDate = Carbon::parse($value);
+                    $originalDate = Carbon::parse($procedure->start_date);
+                    if ($newDate->year !== $originalDate->year) {
+                        $fail('No se puede cambiar el año del registro. Debe permanecer en el año ' . $originalDate->year . '.');
+                    }
+                    if($newDate->isBefore($originalDate)) {
+                        $fail('La fecha de inicio no puede ser anterior a la fecha original.');
                     }
                 },
             ],
