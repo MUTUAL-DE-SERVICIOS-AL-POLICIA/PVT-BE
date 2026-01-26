@@ -127,12 +127,20 @@ class EcoComObservationController extends Controller
         $observation = ObservationType::find($request->editObservationTypeId);
         if ($eco_com->observations->contains($observation->id)) {
             $old_observation = $eco_com->observations()->find($observation->id);
-            $eco_com->observations()->updateExistingPivot($observation->id, [
+            DB::table('observables')
+            ->where('observation_type_id', $observation->id)
+            ->where('observable_type', 'economic_complements')
+            ->where('observable_id', $eco_com->id)
+            ->where('date', $request->date)
+            ->whereNull('deleted_at')
+            ->limit(1)
+            ->update([
                 'user_id' => Auth::user()->id,
                 'date' => Carbon::now(),
                 'message' => $request->message,
-                'enabled' => $request->enabled
-            ]);
+                'enabled' => $request->enabled,
+                'updated_at' => Carbon::now()
+             ]);
             $message = "El usuario " . Auth::user()->username  . " modifico la observación ". $observation->name.": ";
             if($old_observation->pivot->message != $request->message)
             {
@@ -181,8 +189,16 @@ class EcoComObservationController extends Controller
             if($observation->id == 31){//pago a futuro;
                 $eco_com_process = DB::table('discount_type_economic_complement')->select('discount_type_economic_complement.economic_complement_id')->join('economic_complements','discount_type_economic_complement.economic_complement_id','economic_complements.id')->where('discount_type_id',7)->where('economic_complements.id', $eco_com->id)->whereNull('economic_complements.deleted_at')->get();
                 if($eco_com_process->count() == 0){
-                    $eco_com->observations()->updateExistingPivot($observation->id, [
-                        'deleted_at' => Carbon::now(),
+                     $res=DB::table('observables')
+                    ->where('observation_type_id', $observation->id)
+                    ->where('observable_type', 'economic_complements')
+                    ->where('observable_id', $eco_com->id)
+                    ->where('message', $request->message)
+                    //->where('date', $request->date)
+                    ->whereNull('deleted_at')
+                    ->limit(1)
+                    ->update([
+                        'deleted_at' => now(),
                     ]);
                     $eco_com->procedure_records()->create([
                         'user_id' => Auth::user()->id,
@@ -195,8 +211,16 @@ class EcoComObservationController extends Controller
                     return response()->json(['errors' => ['Para eliminar la observación debe eliminar el Aporte para el Auxilio Mortuorio']], 422);
                 }
             }else{
-            $eco_com->observations()->updateExistingPivot($observation->id, [
-                'deleted_at' => Carbon::now(),
+             DB::table('observables')
+            ->where('observation_type_id', $observation->id)
+            ->where('observable_type', 'economic_complements')
+            ->where('observable_id', $request->ecoComId)
+            ->where('message', $request->message)
+            ->where('date', $request->date)
+            ->whereNull('deleted_at')
+            ->limit(1)
+            ->update([
+                'deleted_at' => now(),
             ]);
             $eco_com->procedure_records()->create([
                 'user_id' => Auth::user()->id,

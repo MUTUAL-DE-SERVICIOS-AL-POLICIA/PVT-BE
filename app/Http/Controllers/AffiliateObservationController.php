@@ -109,12 +109,20 @@ class AffiliateObservationController extends Controller
         $observation = ObservationType::find($request->editObservationTypeId);
         if ($affiliate->observations->contains($observation->id)) {
             $old_observation = $affiliate->observations()->find($observation->id);
-            $affiliate->observations()->updateExistingPivot($observation->id, [
+            DB::table('observables')
+            ->where('observation_type_id', $observation->id)
+            ->where('observable_type', 'affiliates')
+            ->where('observable_id', $affiliate->id)
+            ->where('date', $request->date)
+            ->whereNull('deleted_at')
+            ->limit(1)
+            ->update([
                 'user_id' => Auth::user()->id,
                 'date' => Carbon::now(),
                 'message' => $request->message,
-                'enabled' => $request->enabled
-            ]);
+                'enabled' => $request->enabled,
+                'updated_at' => Carbon::now()
+             ]);
             $record = new AffiliateRecord();
             $record->user_id = Auth::user()->id;
             $record->affiliate_id = $affiliate->id;
@@ -158,26 +166,44 @@ class AffiliateObservationController extends Controller
             if($observation->id == 31){//pago a futuro
                 $eco_com_process = DB::table('observables')->select('observables.observable_id')->join('economic_complements','observables.observable_id','economic_complements.id')->where('observable_type', 'economic_complements')->where('economic_complements.affiliate_id', $affiliate->id)->where('economic_complements.eco_com_state_id',16)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('observables.observation_type_id','=',31)->distinct()->get();
                 if($eco_com_process->count() == 0){
-                     $affiliate->observations()->updateExistingPivot($observation->id, [
-                         'deleted_at' => Carbon::now(),
-                     ]);
+                     DB::table('observables')
+                    ->where('observation_type_id', $observation->id)
+                    ->where('observable_type', 'affiliates')
+                    ->where('observable_id', $affiliate->id)
+                    ->where('message', $request->message)
+                    ->where('date', $request->date)
+                    ->whereNull('deleted_at')
+                    ->limit(1)
+                    ->update([
+                        'deleted_at' => now(),
+                    ]);
                      $record = new AffiliateRecord();
                      $record->user_id = Auth::user()->id;
                      $record->affiliate_id = $affiliate->id;
                      $record->message = "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . ".";
                      $record->save();
+                     return $record;
                 } else {
                       return response()->json(['errors' => ['Para eliminar la observación, primero debe eliminar la observación del tramite en proceso']], 422);
                 }
             }else{
-                $affiliate->observations()->updateExistingPivot($observation->id, [
-                    'deleted_at' => Carbon::now(),
+                DB::table('observables')
+                ->where('observation_type_id', $observation->id)
+                ->where('observable_type', 'affiliates')
+                ->where('observable_id', $affiliate->id)
+                ->where('message', $request->message)
+                ->where('date', $request->date)
+                ->whereNull('deleted_at')
+                ->limit(1)
+                ->update([
+                    'deleted_at' => Carbon::now()
                 ]);
                 $record = new AffiliateRecord();
                 $record->user_id = Auth::user()->id;
                 $record->affiliate_id = $affiliate->id;
                 $record->message = "El usuario " . Auth::user()->username  . " eliminó la observación " . $observation->name . ".";
                 $record->save();
+                return $record;
             }
         } else {
             return response()->json(['errors' => ['El Trámite no tiene esa observación']], 422);
