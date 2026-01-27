@@ -263,12 +263,12 @@ class RetirementFundController extends Controller
                 $submit->save();
             }
         }
-        if ($request->additional_requirements) {
-            $additional_requirements = [];
-            foreach ($request->additional_requirements as $adr) {
-                $additional_requirements[] = json_decode($adr);
+        if ($request->aditional_requirements) {
+            $aditional_requirements = [];
+            foreach ($request->aditional_requirements as $adr) {
+                $aditional_requirements[] = json_decode($adr);
             }
-            foreach ($additional_requirements  as  $requirement) {
+            foreach ($aditional_requirements  as  $requirement) {
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_fund->id;
                 $submit->procedure_requirement_id = $requirement->procedureRequirementId;
@@ -2000,7 +2000,7 @@ class RetirementFundController extends Controller
                     return $r['status'];
                 });
 
-            $additionalRequirements = collect($request->additional_requirements);
+            $additionalRequirements = collect($request->aditional_requirements);
 
             // Unimos ambos arreglos por procedure_requirement_id
             $incoming = $newRequirements->concat($additionalRequirements)
