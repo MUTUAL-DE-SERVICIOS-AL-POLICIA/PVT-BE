@@ -522,7 +522,7 @@ class QuotaAidMortuaryController extends Controller
     DB::transaction(function () use ($request) {
       foreach ($request->submit_documents as $document_array) {
         foreach ($document_array as $document) {
-          $submit_document = QuotaAidSubmittedDocument::find($document['id']);
+          $submit_document = QuotaAidSubmittedDocument::find($document['submittedDocumentId']);
           $submit_document->is_valid = $document['status'];
           $submit_document->comment = $document['comment'];
           $submit_document->save();
@@ -622,8 +622,9 @@ class QuotaAidMortuaryController extends Controller
     $procedures_modalities = ProcedureModality::whereIn('procedure_type_id', $procedures_modalities_ids)->get();
     $file_modalities = ProcedureModality::get();
 
-
-    $documents = QuotaAidSubmittedDocument::where('quota_aid_mortuary_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
+    // requirement tab 
+    $requirements = $quota_aid->requirementsList();
+    // requirement tab end
     $cities = City::get();
     $kinships = Kinship::get();
     $kinship_beneficiaries = KinshipBeneficiary::get();
@@ -641,37 +642,10 @@ class QuotaAidMortuaryController extends Controller
     ///proof
     $user = User::find(Auth::user()->id);
     $procedure_types = ProcedureType::where('module_id', 4)->get();
-    $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
-      ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-      ->where('procedure_modality_id', $quota_aid->procedure_modality_id)
-      ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-      ->orderBy('procedure_requirements.number', 'ASC')
-      ->get();
-
     $modalities = ProcedureModality::where('procedure_type_id', '<=', '2')->select('id', 'name', 'procedure_type_id')->get();
 
     $observation_types = ObservationType::where('module_id', 4)->get();
 
-    //selected documents
-    $submitted = QuotaAidSubmittedDocument::select('quota_aid_submitted_documents.id', 'procedure_requirements.number', 'quota_aid_submitted_documents.procedure_requirement_id', 'quota_aid_submitted_documents.comment', 'quota_aid_submitted_documents.is_valid', 'quota_aid_submitted_documents.is_uploaded', 'procedure_documents.name')
-      ->leftJoin('procedure_requirements', 'quota_aid_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
-      ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-      ->orderby('procedure_requirements.number', 'ASC')
-      ->where('quota_aid_submitted_documents.quota_aid_mortuary_id', $id);
-
-    // Sirve para listar documentos que fueron eliminados anteriormente
-    $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
-        return [$item->id => $item];
-    });
-    $restore_procedure_documents = collect();
-    foreach ($submitted->get() as $item) {
-      if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
-        $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
-      }
-    }
-    $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
-
-    // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
     /**for validate doc*/
     $rol = Util::getRol();
     $module = Role::find($rol->id)->module;
@@ -692,19 +666,9 @@ class QuotaAidMortuaryController extends Controller
       $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
     }
 
-
-    // dd($first_wf_state);
-
     $wf_states = WorkflowState::where('module_id', '=', $module->id)->where('sequence_number', '>', ($first_wf_state->sequence_number ?? 1))->orderBy('sequence_number')->get();
 
-    //$correlatives = QuotaAidCorrelative::where('quota_aid_mortuary_id',$quota_aid->id)->get();
-
-    $steps = [];
-    //$data = $retirement_fund->getReceptionSummary();
     $is_editable = 1;
-    //if(isset($quota_aid->id))
-    //$is_editable = ID::getNonEditableId();
-
 
     $wf_sequences_back = DB::table("wf_states")
       ->where("wf_states.module_id", "=", $module->id)
@@ -755,7 +719,7 @@ class QuotaAidMortuaryController extends Controller
       'legal_guardian'    =>  $guardian,
       'procedure_modalities' => $procedures_modalities,
       'file_modalities'   =>  $file_modalities,
-      'documents' => $documents,
+      'requirements' => $requirements,
       'cities'    =>  $cities,
       'kinships'   =>  $kinships,
       'kinship_beneficiaries' => $kinship_beneficiaries,
@@ -764,14 +728,11 @@ class QuotaAidMortuaryController extends Controller
       'financial_entities'    =>  $financial_entities,
       'states'    =>  $states,
       'quota_aid_records' => $quota_aid_records,
-      'requirements'  =>  $procedure_requirements,
       'user'  =>  $user,
       'procedure_types'   =>  $procedure_types,
       'modalities'    =>  $modalities,
       'observation_types' => $observation_types,
       //'observations' => $retirement_fund->ret_fun_observations,
-      'submitted' =>  $submitted->pluck('quota_aid_submitted_documents.procedure_requirement_id', 'procedure_requirements.number'),
-      'submit_documents' => $submitted->get(),
       'can_validate' =>  $can_validate,
       'can_cancel' =>  $can_cancel,
       'workflow_records' =>  $workflow_records,
