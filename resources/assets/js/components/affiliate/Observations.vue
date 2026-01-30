@@ -201,6 +201,8 @@ export default {
       form: {
         message: null,
         observationTypeId: null,
+        observableId: null,
+        date: null,
         enabled: true
       },
       method: "post",
@@ -272,8 +274,10 @@ export default {
         return;
       }
       this.form.observationTypeId = o.id;
+      this.form.observableId = o.pivot.observable_id;
       this.form.editObservationTypeId = o.id;
       this.form.message = o.pivot.message;
+      this.form.date = o.pivot.date;
       this.form.enabled = o.pivot.enabled;
       this.method = "patch";
       this.$modal.show("observation-modal");
@@ -283,6 +287,10 @@ export default {
         return;
       }
       this.form.observationTypeId = o.id;
+      this.form.observableId = o.pivot.observable_id;
+      this.form.message = o.pivot.message;
+      this.form.date = o.pivot.date;
+      this.form.enabled = o.pivot.enabled;
       this.method = "delete";
       await this.$swal({
         title: "¿Está seguro de elimar la observacion?",

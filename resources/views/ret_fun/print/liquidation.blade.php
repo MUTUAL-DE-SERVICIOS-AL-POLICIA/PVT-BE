@@ -290,5 +290,102 @@
             </div>
         @endif
     @endif
+    @if($hasRefund)
+        @foreach ($refunds as $refund)
+            <p> Asimismo, la Comisión de Beneficios Económicos en uso de sus atribuciones, determina la 
+            devolución de los descuentos realizados al Titular para {{$ret_fun->procedure_modality->procedure_type->second_name}} durante su permanencia
+            @if ($refund->ret_fun_refund_type->contribution_type->shortened == "+30 años") antes del @else en el @endif
+            destino de disponibilidad de las letras, en favor de (el) (los)
+            @if($ret_fun->procedure_modality->procedure_type->id == 2 && $ret_fun->procedure_modality->id == 4)
+                derechohabiente
+            @else
+                beneficiario
+            @endif
+            (s):</p>
+            @if($beneficiaries->isNotEmpty() || $beneficiaries_minor->isNotEmpty())
+            <div class="block">
+                <table class="table-info w-100 m-b-10">
+                    <thead class="bg-grey-darker">
+                        <tr class="font-medium text-white text-sm uppercase">
+                            <td colspan='5' class="px-15 text-center">
+                                DETALLE DE PAGO
+                            </td>
+                        </tr>
+                    </thead>
+                    @if($beneficiaries->isNotEmpty())
+                        <thead class="bg-grey-darker">
+                            <tr class="font-medium text-white text-sm uppercase">
+                                <td colspan='8' class="px-15 text-center">
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody class="table-striped">
+                            <tr class="text-xs">
+                                <td class="w-40 text-center font-bold px-10 py-3">NOMBRE DEL DERECHOHABIENTE / BENEFICIARIO</td>
+                                <td class="w-16 text-center font-bold px-10 py-3">C.I.</td>
+                                <td class="w-20 text-center font-bold px-10 py-3">% DE ASIGNACIÓN</td>
+                                <td class="w-20 text-center font-bold px-10 py-3">MONTO</td>
+                                <td class="w-20 text-center font-bold px-10 py-3">PARENTESCO</td>
+                            </tr>
+                            @foreach ($beneficiaries as $beneficiary)
+                                <tr class="text-sm">
+                                    <td class="text-left uppercase px-5 py-3"> {{ $beneficiary->fullName() }} </td>
+                                    <td class="text-center uppercase px-10 py-3"> {{ $beneficiary->identity_card }} </td>
+                                    <td class="text-center uppercase px-5 py-3">
+                                        <div class="w-70 text-right">{{ $beneficiary->percentage }}</div>
+                                    </td>
+                                    <td class="text-center uppercase font-bold px-5 py-3">
+                                        {{Util::formatMoney($beneficiary->ret_fun_refund_amounts->where('ret_fun_refund_id', $refund->id)->first()->amount ?? 0)}}
+                                    </td>
+                                    <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    @endif
+                </table>
+                @if($beneficiaries_minor->isNotEmpty())
+                    <table class="table-info w-100 m-b-10">
+                        <thead class="bg-grey-darker">
+                            <tr class="font-medium text-white text-sm uppercase">
+                                <td colspan='8' class="px-15 text-center">
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody class="table-striped">
+                            <tr class="font-medium text-xs">
+                                <td class="text-center font-bold">NOMBRE DEL DERECHOHABIENTE</td>
+                                <td class="text-center font-bold">C.I.</td>
+                                <td class="text-center font-bold">% DE ASIGNACIÓN</td>
+                                <td class="text-center font-bold">MONTO</td>
+                                <td class="text-center font-bold">PARENTESCO</td>
+                                <td class="text-center font-bold">NOMBRE DEL BENEFICIARIO</td>
+                                <td class="text-center font-bold">C.I.</td>
+                                <td class="text-center font-bold">PARENTESCO</td>
+                            </tr>
+                            @foreach ($beneficiaries_minor as $beneficiary)
+                                @php($advisor = $beneficiary->ret_fun_advisors->first())
+                                @php($advisorKinship = $advisor ? $advisor->kinship_beneficiaries($beneficiary->id)->first() : null)   
+                                <tr class="text-sm">
+                                    <td class="text-left uppercase px-5 py-3"> {{ $beneficiary->fullName() }} </td>
+                                    <td class="text-center uppercase px-10 py-3"> {{ $beneficiary->identity_card }} </td>
+                                    <td class="text-center uppercase px-5 py-3">
+                                        <div class="w-70 text-right">{{ $beneficiary->percentage }}</div>
+                                    </td>
+                                    <td class="text-center uppercase px-5 py-3">
+                                        {{Util::formatMoney($beneficiary->ret_fun_refund_amounts->where('ret_fun_refund_id', $refund->id)->first()->amount ?? 0)}}
+                                    </td>
+                                    <td class="text-center uppercase px-5 py-3">{{ $beneficiary->kinship->name ?? '' }}</td>
+                                    <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->fullName() : ''}}</td>
+                                    <td class="text-center uppercase px-5 py-3">{{$advisor ? $advisor->identity_card : ''}}</td>
+                                    <td class="text-center uppercase px-5 py-3">{{$advisorKinship ? $advisorKinship->name : ''}}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            </div>
+        @endif
+        @endforeach
+    @endif
 </div>
 @endsection

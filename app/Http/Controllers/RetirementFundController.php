@@ -48,7 +48,12 @@ use Muserpol\Models\Testimony;
 use Illuminate\Support\Collection;
 use Muserpol\Models\FinancialEntity;
 use Muserpol\Models\KinshipBeneficiary;
+use Muserpol\Models\Hierarchy;
+use Muserpol\Models\RetirementFund\RetFunRefund;
+use Muserpol\Models\RetirementFund\RetFunRefundAmount;
+use Muserpol\Models\Contribution\Contribution;
 use Ramsey\Uuid\Uuid;
+
 
 class RetirementFundController extends Controller
 {
@@ -125,35 +130,6 @@ class RetirementFundController extends Controller
             'applicant_identity_card'   =>  'required',
         ];
 
-
-        // $requirements = ProcedureRequirement::where('procedure_modality_id', $request->ret_fun_modality)->whereNull('deleted_at')->select('id', 'number')->orderBy('number', 'asc')->get();
-        // $array_requirements = [];
-        // foreach ($requirements as $requirement) {
-        //     $array_requirements[$requirement->number] = 0;
-        // }
-
-        // foreach ($requirements as $requirement) {
-        //     if ($request->input('document' . $requirement->id) == 'checked') {
-        //         $array_requirements[$requirement->number]++;
-        //     }
-        // }
-        //return $array_requirements;
-        // foreach ($array_requirements as $key => $requirement) {
-
-        //     if ($requirement == 0 && $key != 0) {
-        //         $biz_rules = [
-        //             'no_document' . $key   =>  'required'
-        //         ];
-        //     }
-        //     if ($requirement > 1) {
-        //         $biz_rules = [
-        //             'double_document' . $key  =>  'required'
-        //         ];
-        //     }
-        //     $rules = array_merge($rules, $biz_rules);
-        // }
-
-
         $has_lastname = false;
         $legal_has_lastname = false;
         if ($request->applicant_last_name == '' && $request->applicant_mothers_last_name == '')
@@ -173,13 +149,6 @@ class RetirementFundController extends Controller
             'legal_guardian_first_name' => $account_type == ID::applicant()->legal_guardian_id ? 'required' : '',
             'legal_has_lastname' => $legal_has_lastname ? 'required' : '',
             'correct_role' => !$correct_role ? 'required' : '',
-            //'legal_guardian_identity_card'  =>  $account_type==3 ? 'required' : '',
-            //'legal_guardian_number_authority'   => $account_type==3 ? 'required' : '',
-            //'legal_guardian_notary_of_public_faith' => $account_type==3 ? 'required' : '',
-            //'legal_guardian_notary'  => $account_type==3 ? 'required' : '',
-            //'advisor_name_court'    =>  $account_type==2 ? 'required' : '',
-            //'advisor_resolution_number'    =>  $account_type==2 ? 'required' : '',
-            //'advisor_resolution_date'   => $account_type==2 ? 'required' : '',
         ];
 
         $rules = array_merge($rules, $biz_rules);
@@ -205,47 +174,15 @@ class RetirementFundController extends Controller
             return redirect(route('create_ret_fun', $request->affiliate_id))
                 ->withErrors($validator)
                 ->withInput();
-            // return Redirect::back()->withErrors($validator)->withInput();
-            //return response()->json($validator->errors(), 406);
         }
 
         //*********END VALIDATOR************//
+        DB::beginTransaction();
+        try {
+        $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::active_procedure();
 
-
-        $requirements = ProcedureRequirement::select('id')->get();
-
-        $procedure = \Muserpol\Models\RetirementFund\RetFunProcedure::where('is_enabled', true)->select('id')->first();
-
-
-        $validator = Validator::make($request->all(), [
-            //'applicant_first_name' => 'required|max:5',
-        ]);
-        //custom this validator
-        $validator->after(function ($validator) {
-            if (false)
-                $validator->errors()->add('Modalidad', 'el campo modalidad no puede ser tramitada este mes');
-        });
-        if ($validator->fails()) {
-            return $validator->errors();
-        }
-
-        $nextcode = RetirementFund::where('affiliate_id', $request->affiliate_id)->where('code', 'LIKE', '%A')->first();
-        if (isset($nextcode->id)) {
-            $code = str_replace("A", "", $nextcode->code);
-        } else {
-
-            //$ret_fund  = RetirementFund::select('id','code')->orderby('id','desc')->first();
-            $ret_fund = RetirementFund::select('id', 'code')
-                ->limit(10)
-                ->orderBy('id', 'desc')
-                ->get();
-
-            // $ret_fun_code = $this->getLastCode($ret_fund);
-            $ret_fun_code = Util::getLastCode(RetirementFund::class);
-            //  $this->getLastCode($ret_fund);
-            $code = Util::getNextCode($ret_fun_code);
-        }
-
+        $ret_fun_code = Util::getLastCode(RetirementFund::class);
+        $code = Util::getNextCode($ret_fun_code);
 
         $retirement_fund = new RetirementFund();
         $this->authorize('create', $retirement_fund);
@@ -272,9 +209,6 @@ class RetirementFundController extends Controller
         $retirement_fund->save();
         $reception_code = Util::getNextAreaCode($retirement_fund->id);
 
-
-
-
         $af = Affiliate::find($request->affiliate_id);
         $af->date_derelict = Util::verifyMonthYearDate($request->date_derelict) ? Util::parseMonthYearDate($request->date_derelict) : $request->date_derelict;
         $af->date_entry = Util::verifyMonthYearDate($request->date_entry) ? Util::parseMonthYearDate($request->date_entry) : $request->date_entry;
@@ -288,7 +222,6 @@ class RetirementFundController extends Controller
             case 1:
             case 4:
                 $af->affiliate_state_id = ID::affiliateState()->fallecido;
-
                 $af->date_death = Util::verifyBarDate($request->date_death) ? Util::parseBarDate($request->date_death) : $request->date_death;
                 $af->reason_death = $request->reason_death;
                 break;
@@ -300,6 +233,9 @@ class RetirementFundController extends Controller
             case 7:
             case 62:
             case 24:
+            case 101:
+            case 102:
+            case 103:
                 $af->affiliate_state_id = ID::affiliateState()->jubilado;
                 break;
             default:
@@ -308,7 +244,6 @@ class RetirementFundController extends Controller
         }
         $af->save();
 
-        //$cite = RetFunIncrement::getCite(Auth::user()->id,Session::get('rol_id'),$retirement_fund->id);
        //Guarda los requisitos requeridos
         if($request->required_requirements){
             $required_requirements = [];
@@ -329,11 +264,11 @@ class RetirementFundController extends Controller
             }
         }
         if ($request->aditional_requirements) {
-            $additional_requirements = [];
+            $aditional_requirements = [];
             foreach ($request->aditional_requirements as $adr) {
-                $additional_requirements[] = json_decode($adr);
+                $aditional_requirements[] = json_decode($adr);
             }
-            foreach ($additional_requirements  as  $requirement) {
+            foreach ($aditional_requirements  as  $requirement) {
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_fund->id;
                 $submit->procedure_requirement_id = $requirement->procedureRequirementId;
@@ -518,8 +453,13 @@ class RetirementFundController extends Controller
                 }
             }
         }
-        $data = [];
-
+        DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return redirect(route('create_ret_fun', $request->affiliate_id))
+                ->withErrors('Ocurrió un error al registrar el trámite.');
+        }
         return redirect('ret_fun/' . $retirement_fund->id);
     }
     /**
@@ -544,7 +484,7 @@ class RetirementFundController extends Controller
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
 
-        $beneficiaries = RetFunBeneficiary::with('address')->where('retirement_fund_id', $retirement_fund->id)->with(['kinship', 'city_identity_card'])->orderByDesc('type')->orderBy('id')->get();
+        $beneficiaries = RetFunBeneficiary::with(['address', 'kinship', 'city_identity_card'])->where('retirement_fund_id', $retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
             $b->phone_number = explode(',', $b->phone_number);
             $b->cell_phone_number = explode(',', $b->cell_phone_number);
@@ -606,57 +546,29 @@ class RetirementFundController extends Controller
             $guardian = new RetFunLegalGuardian();
 
         $procedures_modalities_ids = ProcedureModality::join('procedure_types', 'procedure_types.id', '=', 'procedure_modalities.procedure_type_id')->where('procedure_types.module_id', '=', 3)->get()->pluck('id'); //3 por el module 3 de fondo de retiro
-        //return $procedures_modalities_ids;
         $procedures_modalities = ProcedureModality::whereIn('procedure_type_id', $procedures_modalities_ids)->get();
         $file_modalities = ProcedureModality::get();
-        $documents = RetFunSubmittedDocument::where('retirement_fund_id', $id)->orderBy('procedure_requirement_id', 'ASC')->get();
         $cities = City::get();
         $kinships = Kinship::get();
         $kinship_beneficiaries = KinshipBeneficiary::get();
 
-        $cities_pluck = City::all()->where('id','<>',10)->pluck('name', 'id');
-        $birth_cities = City::all()->pluck('name', 'id');
+        $cities_pluck = $cities->where('id','<>',10)->pluck('name', 'id');
+        $birth_cities = $cities->pluck('name', 'id');
         $financial_entities = FinancialEntity::all()->pluck('name', 'id');
 
         $states = RetFunState::get();
 
         $ret_fun_records = RetFunRecord::where('ret_fun_id', $id)->orderBy('id', 'desc')->get();
-        //return $retirement_fund->ret_fun_state->name;
-
-        ///proof
         $user = User::find(Auth::user()->id);
         $procedure_types = ProcedureType::where('module_id', 3)->get();
-        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id')
-            ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->where('procedure_modality_id', $retirement_fund->procedure_modality_id)
-            ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-            ->orderBy('procedure_requirements.number', 'ASC')
-            ->get();
         $modalities = ProcedureModality::where('procedure_type_id', '<=', '21')->select('id', 'name', 'procedure_type_id')->get();
-
         $observation_types = ObservationType::where('module_id', 3)->get();
 
-        //selected documents
-        $submitted = RetFunSubmittedDocument::select('ret_fun_submitted_documents.id', 'procedure_requirements.number', 'ret_fun_submitted_documents.procedure_requirement_id', 'ret_fun_submitted_documents.comment', 'ret_fun_submitted_documents.is_valid', 'ret_fun_submitted_documents.is_uploaded', 'procedure_documents.name')
-            ->leftJoin('procedure_requirements', 'ret_fun_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
-            ->join('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->orderby('procedure_requirements.number', 'ASC')
-            ->where('ret_fun_submitted_documents.retirement_fund_id', $id);
+        // submit documents tab
         
-        // Sirve para listar documentos que fueron eliminados anteriormente
-        $hash_procedure_requirements = $procedure_requirements->mapWithKeys(function ($item) {
-            return [$item->id => $item];
-        });
-        $restore_procedure_documents = collect();
-        foreach ($submitted->get() as $item) {
-            if(!isset($hash_procedure_requirements[$item->procedure_requirement_id])){
-                $restore_procedure_documents->push(['id'=>$item->procedure_requirement_id, 'document' =>$item->name, 'number'=>$item->number ]);
-            }
-        }
-        $procedure_requirements = collect($procedure_requirements)->merge($restore_procedure_documents);
+        $requirements = $retirement_fund->requirementsList();
 
-        // return $submitted->get();
-        // ->pluck('ret_fun_submitted_documents.procedure_requirement_id','procedure_requirements.number');
+        // end submit documents tab
         /**for validate doc*/
         $rol = Util::getRol();
         $module = Role::find($rol->id)->module;
@@ -668,28 +580,13 @@ class RetirementFundController extends Controller
         $workflow_records = $retirement_fund->wf_records()->orderBy('date', 'desc')->get();
 
         $first_wf_state = RetFunRecord::whereRaw("message like '%creo el Tr%'")->first();
-        /*if ($first_wf_state) {
-            $re = '/(?<= usuario )(.*)(?= cr.* )/mi';
-            $str = $first_wf_state->message;
-            preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-            $user_name = $matches[0][0];
-            $rol = User::where('username', '=', $user_name)->first()->roles->first();
-            $first_wf_state = WorkflowState::where('role_id', $rol->id)->first();
-        }*/
-
-
-        // dd($first_wf_state);
 
         $wf_states = WorkflowState::where('module_id', '=', $module->id)->where('sequence_number', '>', ($first_wf_state->sequence_number ?? 1))->orderBy('sequence_number')->get();
 
-        $correlatives = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->get();
-        $steps = [];
         $data = $retirement_fund->getReceptionSummary();
         $is_editable = ID::getNonEditableId();
         if (isset($retirement_fund->id) && ($retirement_fund->procedure_modality_id == 4 || $retirement_fund->procedure_modality_id == 2))
             $is_editable = ID::getEditableId();
-
-
 
         $wf_sequences_back = DB::table("wf_states")
             ->where("wf_states.module_id", "=", $module->id)
@@ -717,13 +614,13 @@ class RetirementFundController extends Controller
         }
         //
         //summary individuals account
-        $ret_fun_index = $retirement_fund->procedureIndex();
-        if ($ret_fun_index == 0) {
+        $isReinstatement = $retirement_fund->isReinstatement();
+        if (!$isReinstatement) {
             $fields = [
                 'date_entry' => 'El campo "Fecha de Ingreso a la Institucional Policial" en Información Policial no puede estar vacío',
                 'date_derelict' => 'El campo "Fecha de Desvinculación" en Información Policial no puede estar vacío',
             ];
-        } else if ($ret_fun_index == 1) {
+        } else if ($isReinstatement) {
             $fields = [
                 'date_entry_reinstatement' => 'El campo "Fecha de Ingreso a la Institucional Policial (reincorporación)" en Información Policial no puede estar vacío',
                 'date_derelict_reinstatement' => 'El campo "Fecha de Desvinculación (reincorporación)" en Información Policial no puede estar vacío',
@@ -736,7 +633,7 @@ class RetirementFundController extends Controller
                 return redirect('affiliate/' . $affiliate->id);
             }
         }
-        $dates_global = $affiliate->getDatesGlobal($ret_fun_index == 1);
+        $dates_global = $affiliate->getDatesGlobal($isReinstatement);
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($dates_global);
         $dates = array(
@@ -751,7 +648,7 @@ class RetirementFundController extends Controller
         $group_dates[] = $dates;
         foreach (ContributionType::orderBy('id')->get() as $c) {
             // if($c->id != 1){
-            $contributionsWithType = $affiliate->getContributionsWithType($c->id, $ret_fun_index == 1);
+            $contributionsWithType = $affiliate->getContributionsWithType($c->id, $isReinstatement);
             if (sizeOf($contributionsWithType) > 0) {
                 $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
                 $dates = array(
@@ -786,56 +683,23 @@ class RetirementFundController extends Controller
         $date_entry = $affiliate->date_entry;
         $date_derelict = $affiliate->date_derelict;
 
-        $ret_fun_index = $retirement_fund->procedureIndex();
+        $isReinstatement = $retirement_fund->isReinstatement();
         // summary qualification
-        $last_base_wage = $affiliate->getLastBaseWage($ret_fun_index == 1);
-        $total_average_salary_quotable = $affiliate->selectedContributions() > 0 ? 0 : $affiliate->getTotalAverageSalaryQuotable(true, $ret_fun_index == 1)['total_average_salary_quotable'];
+        $last_base_wage = $affiliate->getLastBaseWage($isReinstatement);
+        $total_average_salary_quotable = $affiliate->selectedContributions() > 0 ? 0 : $affiliate->getTotalAverageSalaryQuotable($isReinstatement)['total_average_salary_quotable'];
 
-        $array_discounts = array();
-        $array = DiscountType::where('module_id', 3)->get()->pluck('id');
-        $results = array(array());
-        foreach ($array as $element) {
-            foreach ($results as $combination) {
-                array_push($results, array_merge(array($element), $combination));
-            }
-        }
-        foreach ($results as $value) {
-            $sw = false;
-            foreach ($value as $id) {
-                //siempre tendra id
-                if ($retirement_fund->discount_types()->find($id)) {
-                    if (($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
-                        $sw = true;
-                    }
-                }
-            }
-            if ($sw) {
-                $temp_total_discount = 0;
-                foreach ($value as $id) {
-                    if ($retirement_fund->discount_types()->find($id)) {
-                        $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
-                    }
-                }
-                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
-                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
+        $discount_types = DiscountType::where('module_id', 3)->get();
+        $array_discounts_availability = [];
+        foreach ($discount_types as $discount_type) {
+            $discount = $retirement_fund->discount_types()->find($discount_type->id);
+            if (optional(optional($discount)->pivot)->amount > 0) {
+                $array_discounts_availability[] = ['name' => ' - ' . $discount->name, 'amount' => $discount->pivot->amount];
             }
         }
         if ($affiliate->hasAvailability()) {
-
-            $availability = ContributionType::find(12);
-            $array_discounts_availability = [];
-            foreach ($array_discounts as $value) {
-                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
-            }
-        } else {
-            $array_discounts_availability = [];
-            foreach ($array_discounts as $value) {
-                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
-            }
+            $availability = $contribution_types->where('id', 12)->first();
+            $array_discounts_availability[] = ['name' => '+ ' . $availability->name, 'amount' => $retirement_fund->total_availability];
         }
-
-
-
 
         $data = [
             'retirement_fund' => $retirement_fund,
@@ -846,7 +710,6 @@ class RetirementFundController extends Controller
             'legal_guardian'    =>  $guardian,
             'procedure_modalities' => $procedures_modalities,
             'file_modalities'   =>  $file_modalities,
-            'documents' => $documents,
             'cities'    =>  $cities,
             'kinships'   =>  $kinships,
             'kinship_beneficiaries' => $kinship_beneficiaries,
@@ -855,14 +718,12 @@ class RetirementFundController extends Controller
             'states'    =>  $states,
             'financial_entities'    =>  $financial_entities,
             'ret_fun_records' => $ret_fun_records,
-            'requirements'  =>  $procedure_requirements,
+            'requirements'  =>  $requirements,
             'user'  =>  $user,
             'procedure_types'   =>  $procedure_types,
             'modalities'    =>  $modalities,
             'observation_types' => $observation_types,
             'observations' => $retirement_fund->ret_fun_observations,
-            'submitted' =>  $submitted->pluck('ret_fun_submitted_documents.procedure_requirement_id', 'procedure_requirements.number'),
-            'submit_documents' => $submitted->get(),
             'can_validate' =>  $can_validate,
             'can_cancel' =>  $can_cancel,
             'workflow_records' =>  $workflow_records,
@@ -929,6 +790,23 @@ class RetirementFundController extends Controller
         }
         return $ret_fun;
     }
+
+    public function qualificationParameters() {
+        $procedures = RetFunProcedure::with(['hierarchies','procedure_modalities'])->orderby('id', 'desc')->get();
+        $hierarchies = Hierarchy::with('degrees')->orderBy('id')->get();
+        $procedure_types = ProcedureType::with(['procedure_modalities' => function($query) {
+                $query->where('is_valid', true);
+            }])
+            ->whereIn('id',[ProcedureType::RET_FUN_PG, ProcedureType::RET_FUN_DA])
+            ->get();
+        $data = [
+            'procedures' => $procedures,
+            'hierarchies' => $hierarchies,
+            'procedure_types' => $procedure_types
+        ];
+        return view('ret_fun.qualification_parameters', $data);
+    }
+
     public function getAllRetFun(DataTables $datatables)
     {
         $retirement_funds = RetirementFund::with([
@@ -1016,12 +894,6 @@ class RetirementFundController extends Controller
             ->find($affiliate->id);
         # 3 id of ret_fun
         $procedure_types = ProcedureType::where('module_id', 3)->get();
-        $procedure_requirements = ProcedureRequirement::select('procedure_requirements.id', 'procedure_documents.name as document', 'number', 'procedure_modality_id as modality_id','procedure_requirements.deleted_at')
-            ->leftJoin('procedure_documents', 'procedure_requirements.procedure_document_id', '=', 'procedure_documents.id')
-            ->whereNull('procedure_requirements.deleted_at')
-            ->orderBy('procedure_requirements.procedure_modality_id', 'ASC')
-            ->orderBy('procedure_requirements.number', 'ASC')
-            ->get();
 
         $spouse = Spouse::where('affiliate_id', $affiliate->id)->first();
         if (!isset($spouse->id))
@@ -1039,7 +911,6 @@ class RetirementFundController extends Controller
 
         $data = [
             'user' => $user,
-            //'requirements' => $procedure_requirements,
             'procedure_types'    => $procedure_types,
             'modalities'    => $modalities,
             'affiliate'  => $affiliate,
@@ -1063,7 +934,7 @@ class RetirementFundController extends Controller
             foreach ($request->submit_documents as $document_array) {
 
                 foreach ($document_array as $document) {
-                    $submit_document = RetFunSubmittedDocument::find($document['id']);
+                    $submit_document = RetFunSubmittedDocument::find($document['submittedDocumentId']);
                     $submit_document->is_valid = $document['status'];
                     $submit_document->comment = $document['comment'];
                     $submit_document->save();
@@ -1463,15 +1334,14 @@ class RetirementFundController extends Controller
         // $this->authorize('qualify', $retirement_fund);
         $affiliate = $retirement_fund->affiliate;
 
-        $current_procedure = RetFunProcedure::where('is_enabled', '=', true)->first();
+        $current_procedure = $retirement_fund->ret_fun_procedure;
         if (!$current_procedure) {
             return "error: Verifique si existen procedures activos";
         }
 
-        $ret_fun_index = $retirement_fund->procedureIndex();
-        $dates_global = $affiliate->getDatesGlobal($ret_fun_index == 1);
+        $isReinstatement = $retirement_fund->isReinstatement();
+        $dates_global = $affiliate->getDatesGlobal($isReinstatement);
         /*  qualification*/
-        // $c=ContributionType::find(1);
         $group_dates = [];
         $total_dates = Util::sumTotalContributions($dates_global);
         $dates = array(
@@ -1484,26 +1354,29 @@ class RetirementFundController extends Controller
             'months' => $total_dates % 12,
         );
         $group_dates[] = $dates;
-        foreach (ContributionType::orderBy('id')->get() as $c) {
-            // if($c->id != 1){
-            $contributionsWithType = $affiliate->getContributionsWithType($c->id, $ret_fun_index == 1);
-            if (sizeOf($contributionsWithType) > 0) {
-                $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
-                $dates = array(
-                    'id' => $c->id,
-                    'dates' => $contributionsWithType,
-                    'name' => $c->name,
-                    'operator' => $c->operator,
-                    'description' => $c->description,
-                    'years' => intval($sub_total_dates / 12),
-                    'months' => $sub_total_dates % 12,
-                );
-                if ($c->operator == '-') {
-                    eval('$total_dates = ' . $total_dates . $c->operator . $sub_total_dates . ';');
-                }
-                $group_dates[] = $dates;
+        $contributions_types = ContributionType::orderBy('id')->get();
+        
+        $contributionsWithType = $affiliate->getContributionsWithTypeArray($contributions_types->pluck('id')->toArray(), $isReinstatement);
+
+
+        foreach ($contributionsWithType as $key => $c) {
+            
+            $contributionsWithType = $c;
+            $type = $contributions_types->where('id', $key)->first();
+            $sub_total_dates = Util::sumTotalContributions($contributionsWithType);
+            $dates = array(
+                'id' => $type->id,
+                'dates' => $contributionsWithType,
+                'name' => $type->name,
+                'operator' => $type->operator,
+                'description' => $type->description,
+                'years' => intval($sub_total_dates / 12),
+                'months' => $sub_total_dates % 12,
+            );
+            if ($type->operator == '-') {
+                eval('$total_dates = ' . $total_dates . $type->operator . $sub_total_dates . ';');
             }
-            // }
+            $group_dates[] = $dates;
         }
         $contributions = array(
             'contribution_types' => $group_dates,
@@ -1511,27 +1384,40 @@ class RetirementFundController extends Controller
             'months' => $total_dates % 12
         );
 
-        $total_availability_aporte = null;
-        $total_availability_aporte_frps = null;
-        if ($affiliate->hasAvailability()) {
-            $availability = $affiliate->getContributionsAvailability();
-            $total_availability_aporte = array_sum(array_column($availability, 'total'));
-            $total_availability_aporte_frps = array_sum(array_column($availability, 'retirement_fund'));
-        }
-
-
+        $is_holder = !in_array($retirement_fund->procedure_modality->id, [1,4,63]);
         $data = [
             'retirement_fund' => $retirement_fund,
             'affiliate' => $affiliate,
             'current_procedure' => $current_procedure,
             'all_contributions' => json_encode($contributions),
-            'total_availability_aporte' => $total_availability_aporte,
-            'total_availability_aporte_frps' => $total_availability_aporte_frps,
+            'is_holder' => $is_holder,
         ];
-        $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable(true, $ret_fun_index == 1));
+        $data = array_merge($data, $affiliate->getTotalAverageSalaryQuotable($isReinstatement));
         return view('ret_fun.qualification', $data);
     }
-    //--**OBTIENE LOS DATOS DE DATOS ECONOMICOS **--//
+    /**
+     * Guarda años y meses de servicio del Afiliado y muestra información de el monto correspondiente de pago mas rendimiento.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *         Debe incluir:
+     *         - service_years (int, 0–100)
+     *         - service_months (int, 0–12)
+     * @param  int  $id  ID del RetirementFund
+     *
+     * @return array Respuesta con los siguientes valores:
+     *         - global_pay (bool): Verdarero si es diferente a modalidad Fondo de Retiro.
+     *         - total_quotes (int): Número total de aportes del afiliado.
+     *         - lastBaseWage (float): Último haber básico registrado.
+     *         - total_salary_quotable (array): Información del promedio salarial cotizable.
+     *         - validate_limit_average (bool): Indica si el promedio supera el límite permitido.
+     *         - total_aporte (float, opcional): Total de aportes acumulados (si aplica pago global).
+     *         - yield (float, opcional): Rendimiento calculado sobre los aportes.
+     *         - percentageYield (int, opcional): Porcentaje de rendimiento aplicado.
+     *         - total (float, opcional): Aportes más rendimiento (si aplica).
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     *         Cuando la validación de los datos de entrada falla.
+     */
     public function getAverageQuotable(Request $request, $id)
     {
         $rules = [
@@ -1549,82 +1435,89 @@ class RetirementFundController extends Controller
                 'errors' => $exception->errors(),
             ], 403);
         }
-        $current_procedure = Util::getRetFunCurrentProcedure();
-        $retirement_fund = RetirementFund::find($id);
-        $isReinstatement = $retirement_fund->procedureIndex() == 1;
+        $retirement_fund = RetirementFund::with('affiliate')->find($id);
+        $retFunProcedure = $retirement_fund->ret_fun_procedure;
+        $isReinstatement = $retirement_fund->isReinstatement();
 
         $affiliate = $retirement_fund->affiliate;
         $affiliate->service_years = $request->service_years;
         $affiliate->service_months = $request->service_months;
         $affiliate->save();
+
         $lastBaseWage = $affiliate->getLastBaseWage($isReinstatement);
         $total_quotes = $affiliate->getTotalQuotes($isReinstatement);
-        $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable(true, $isReinstatement);
-        $procedure_type_id =$retirement_fund->procedure_modality->procedure_type->id;
+        $total_salary_quotable = $affiliate->getTotalAverageSalaryQuotable($isReinstatement);
+        $procedure_type_id = $retirement_fund->procedure_modality->procedure_type->id;
         $global_pay = false;
+        $percentageYield = $retFunProcedure->getAnnualPercentageYieldForModality($retirement_fund->procedure_modality_id);
+        $averageSalaryLimit = $retFunProcedure->getSalaryLimitForAffiliate($affiliate);
+
         $temp = [];
-        $validate_limit_average = false;
-        if($total_salary_quotable['total_average_salary_quotable']>$current_procedure->limit_average){
-            $validate_limit_average = true;
-        }
-        if($procedure_type_id == 21){//DA
-            $data = [
-                'total_aporte' => $total_salary_quotable['total_retirement_fund'],
-                'global_pay' => true,
-                'total_quotes' => $total_quotes,
-                'lastBaseWage' => $lastBaseWage,
-                'total_salary_quotable' => $total_salary_quotable,
-                'validate_limit_average' => false,
-            ];
-        }else{
-            if ($total_quotes >= $current_procedure->contributions_number && $procedure_type_id == 2) { } else {
-                $global_pay = true;
-                $total_aporte = $total_salary_quotable['total_retirement_fund'];
-                $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
-                //$yield = Util::compoundInterest($total_salary_quotable['contributions'], $affiliate);
-                $administrative_expenses = 0;
-                $less_administrative_expenses = $yield;
-                $temp = [
-                    'total_aporte' => $total_aporte,
-                    'yield' => $yield,
-                    'administrative_expenses' => $administrative_expenses,
-                    'less_administrative_expenses' => $less_administrative_expenses,
-                ];
-            }
-            $data = [
-                'global_pay' => $global_pay,
-                'total_quotes' => $total_quotes,
-                'lastBaseWage' => $lastBaseWage,
-                'total_salary_quotable' => $total_salary_quotable,
-                'validate_limit_average' => $validate_limit_average,
+
+        if ($total_quotes < $retFunProcedure->contributions_number || $procedure_type_id != ProcedureType::RET_FUN) {
+            $global_pay = true;
+            $total_aporte = $total_salary_quotable['total_retirement_fund'];
+            $yield = round(($total_aporte * $percentageYield) / 100, 2);
+            $temp = [
+                'total_aporte' => $total_aporte,
+                'yield' => $yield,
+                'percentageYield' => (int) $percentageYield,
+                'total' => $total_aporte + $yield,
             ];
         }
+        $data = [
+            'global_pay' => $global_pay,
+            'total_quotes' => $total_quotes,
+            'lastBaseWage' => $lastBaseWage,
+            'total_salary_quotable' => $total_salary_quotable,
+            'averageSalaryLimit' => $averageSalaryLimit,
+        ];
+
         $data =  array_merge($data, $temp);
         return $data;
-    }
-    private function compoundInterest($contributions, Affiliate $affiliate)
-    {
-        $total = 0;
-        $date_entry = Carbon::createFromFormat('m/Y', $affiliate->date_entry);
-        $date_last_contribution = Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution);
-        $months_entry = ($date_entry->format('Y') * 12) + $date_entry->format('m');
-        $months_dereliect = ($date_last_contribution->format('Y') * 12) + $date_last_contribution->format('m');
-        $frecuency = 0;
-        $interest_rate = 1.05; //replace by procedure interest rate
-        foreach ($contributions as $contribution) {
-            $subtotal = round($contribution->total * pow($interest_rate, (($months_dereliect - ($months_entry + $frecuency))) / 12), 2);
-            $frecuency++;
-            $total = round($total + $subtotal, 2);
-        }
-        return $total;
     }
     public function getDataQualificationCertification(DataTables $datatables, $retirement_fund_id)
     {
         $retirement_fund = RetirementFund::find($retirement_fund_id);
-        $ret_fund_index = $retirement_fund->procedureIndex();
+        $isReinstatement = $retirement_fund->isReinstatement();
         $affiliate = $retirement_fund->affiliate;
-        $contributions = $affiliate->getContributionsPlus(true, $ret_fund_index == 1);
+        $contributions = $affiliate->getContributionsPlus($isReinstatement);
         return $datatables->of($contributions)
+            ->editColumn('month_year', function ($contribution) {
+                return Util::getDateFormat($contribution->month_year);
+            })
+            ->editColumn('base_wage', function ($contribution) {
+                return $contribution->base_wage;
+            })
+            ->editColumn('seniority_bonus', function ($contribution) {
+                return $contribution->seniority_bonus;
+            })
+            ->editColumn('total', function ($contribution) {
+                return $contribution->total;
+            })
+            ->editColumn('retirement_fund', function ($contribution) {
+                return $contribution->retirement_fund;
+            })
+            ->editColumn('quotable_salary', function ($contribution) {
+                $quotable_salary = $contribution->seniority_bonus + $contribution->base_wage;
+                return $quotable_salary;
+            })
+            ->addIndexColumn()
+            ->make(true);
+    }
+    public function getDataQualificationRefund(Datatables $datatables, int $retirement_fund_id, $refund_id){
+        $retirement_fund = RetirementFund::find($retirement_fund_id);
+        $isReinstatement = $retirement_fund->isReinstatement();
+        $affiliate = $retirement_fund->affiliate;
+        $refund = RetFunRefund::with('ret_fun_refund_type')->find($refund_id);
+        $sumColumns = ['base_wage', 'seniority_bonus', 'total', 'retirement_fund'];
+        $contributions = $affiliate->contributionsInRange($isReinstatement)
+        ->select(array_merge(['affiliate_id', 'month_year'], $sumColumns))
+        ->where('contribution_type_id', $refund->ret_fun_refund_type->contribution_type_id)
+        ->orderBy('month_year', 'asc')
+        ->get();
+        $contributions_with_reimbursements = Contribution::sumReimbursement($contributions, $sumColumns);
+        return $datatables->of($contributions_with_reimbursements)
             ->editColumn('month_year', function ($contribution) {
                 return Util::getDateFormat($contribution->month_year);
             })
@@ -1693,49 +1586,43 @@ class RetirementFundController extends Controller
         }
     }
     //--**METODO PARA GUARDAR LOS DATOS ECONOMICOS***--//
-    public function saveAverageQuotable(Request $request, $id)
+    public function calculateSubTotal(Request $request, $id)
     {
-        
+        // models
         $retirement_fund = RetirementFund::find($id);
         $affiliate = $retirement_fund->affiliate;
-        $ret_fund_index = $retirement_fund->procedureIndex();
-        $total_quotes = $affiliate->getTotalQuotes($ret_fund_index == 1);
-        $getTotalAverageSalaryQuotable=$affiliate->getTotalAverageSalaryQuotable(true, $ret_fund_index == 1);
-        $current_procedure = Util::getRetFunCurrentProcedure();
-        $number_contributions = $current_procedure->contributions_number;
-        
-        //DEVOLUCIÓN DE APORTES
-        if($retirement_fund->procedure_modality->procedure_type->id == 21){
-            $total_aporte = $getTotalAverageSalaryQuotable['total_retirement_fund'];
-            $total_average_salary_quotable = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
-            $retirement_fund->average_quotable = $total_average_salary_quotable;
-            $retirement_fund->used_limit_average = $total_average_salary_quotable;
-            $sub_total_ret_fun =  $total_aporte;
-            $total_ret_fun = $total_aporte;
-        }
-        //PAGO DE FONDO DE RETIRO
-        if ($total_quotes >= $number_contributions && $retirement_fund->procedure_modality->procedure_type->id == 2) {
-            if($getTotalAverageSalaryQuotable['total_average_salary_quotable']>$current_procedure->limit_average){
-                $total_average_salary_quotable = $current_procedure->limit_average;
-                $retirement_fund->used_limit_average = $current_procedure->limit_average;
-            }else{
-                $total_average_salary_quotable = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
-                $retirement_fund->used_limit_average = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
+        $ret_fun_procedure = $retirement_fund->ret_fun_procedure;
+
+        // variables
+        $is_reinstatement = $retirement_fund->isReinstatement();
+        $total_quotes = $affiliate->getTotalQuotes($is_reinstatement);
+        $get_total_average_salary_quotable = $affiliate->getTotalAverageSalaryQuotable($is_reinstatement);
+        $affiliate_quotable_limit = $ret_fun_procedure->getSalaryLimitForAffiliate($affiliate);
+        $percentage_yield = $ret_fun_procedure->getAnnualPercentageYieldForModality($retirement_fund->procedure_modality_id);
+
+        if ($retirement_fund->procedure_modality->procedure_type->id == ProcedureType::RET_FUN) {
+            if ($get_total_average_salary_quotable['total_average_salary_quotable'] > $affiliate_quotable_limit) {
+                $total_average_salary_quotable = $affiliate_quotable_limit;
+                $retirement_fund->used_limit_average = $affiliate_quotable_limit;
+            } else {
+                $total_average_salary_quotable = $get_total_average_salary_quotable['total_average_salary_quotable'];
+                $retirement_fund->used_limit_average = $get_total_average_salary_quotable['total_average_salary_quotable'];
             }
-            $retirement_fund->average_quotable = $getTotalAverageSalaryQuotable['total_average_salary_quotable'];
             $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
-            $total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
-        }
-        //PAGO GLOBAL DE APORTES
-        if($retirement_fund->procedure_modality->procedure_type->id == 1){
-            $total_aporte = $getTotalAverageSalaryQuotable['total_retirement_fund'];
-            $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
-            $administrative_expenses = 0;
-            $less_administrative_expenses = $yield - $administrative_expenses;
-            $sub_total_ret_fun = $less_administrative_expenses;
-            $total_ret_fun = $less_administrative_expenses;
-            $retirement_fund->average_quotable = $total_aporte;
-            $retirement_fund->used_limit_average = $total_aporte;
+
+            $retirement_fund->average_quotable = $get_total_average_salary_quotable['total_average_salary_quotable'];
+            $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
+        } else {
+            // Pago Global o Devolución Aportes
+            $total_aporte = $get_total_average_salary_quotable['total_retirement_fund'];
+            $yield = round(($total_aporte * $percentage_yield) / 100, 2);
+            $total_with_yield = $total_aporte + $yield;
+
+            $sub_total_ret_fun = $total_with_yield;
+
+            $retirement_fund->sum_contributions = $total_aporte;
+            $retirement_fund->yield = $yield;
+            $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
         }
 
         $retirement_fund->save();
@@ -1750,50 +1637,23 @@ class RetirementFundController extends Controller
             'guarantors' => $guarantors,
             'discounts' => $discounts,
             'sub_total_ret_fun' => $sub_total_ret_fun,
-            'total_ret_fun' => $total_ret_fun,
+            'total_ret_fun' => $sub_total_ret_fun,
         ];
         return $data;
     }
     //--**METODO PARA ALMACENAR EL TOTAL**//
     public function saveTotalRetFun(Request $request, $id)
     {
+        // models
         $retirement_fund = RetirementFund::find($id);
-        $ret_fund_index = $retirement_fund->procedureIndex();
         $affiliate = $retirement_fund->affiliate;
-        $isReinstatement = $ret_fund_index == 1;
-        $total_quotes = $affiliate->getTotalQuotes($isReinstatement);
-        $current_procedure = Util::getRetFunCurrentProcedure();
-        $totalAverageSalaryQuotable = $affiliate->getTotalAverageSalaryQuotable(true, $isReinstatement);
-        $number_contributions = $current_procedure->contributions_number;
-        if($retirement_fund->procedure_modality->procedure_type->id == 21){
-            $total_aporte= $totalAverageSalaryQuotable['total_retirement_fund'];
-            $sub_total_ret_fun = $total_aporte;
-        }else{
-            if ($total_quotes >= $number_contributions && $retirement_fund->procedure_modality->procedure_type->id == 2 ) {
-                $total_average_salary_quotable = $totalAverageSalaryQuotable['total_average_salary_quotable'];
-                $sub_total_ret_fun = ($total_quotes / 12) * $total_average_salary_quotable;
-            } else {//PGA
-                $total_aporte = $totalAverageSalaryQuotable['total_retirement_fund'];
-                // $yield = Util::compoundInterest($affiliate->getContributionsPlus(), $affiliate);
-                $yield = $total_aporte + (($total_aporte * $current_procedure->annual_yield) / 100);
-                $administrative_expenses = 0;
-                $less_administrative_expenses = $yield;
-                $sub_total_ret_fun = $less_administrative_expenses;
-            }
-        }
+        $sub_total_ret_fun = $retirement_fund->subtotal_ret_fun;
 
+        //variables
         $advance_payment = $request->advancePayment ?? 0;
         $retention_loan_payment = $request->retentionLoanPayment ?? 0;
         $retention_guarantor = $request->retentionGuarantor ?? 0;
         $retention_judicial = $request->judicialRetentionAmount ?? 0;
-
-        $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor - $retention_judicial;
-
-        $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
-        $retirement_fund->total_ret_fun = $total_ret_fun;
-        if (!$affiliate->hasAvailability()) {
-            $retirement_fund->total = $total_ret_fun;
-        }
 
         //mejorar
         $discount_type = DiscountType::where('shortened', 'anticipo')->first();
@@ -1867,10 +1727,10 @@ class RetirementFundController extends Controller
 
         $total_ret_fun = $sub_total_ret_fun - $advance_payment - $retention_loan_payment - $retention_guarantor - $retention_judicial;
 
-        $retirement_fund->subtotal_ret_fun = $sub_total_ret_fun;
         $retirement_fund->total_ret_fun = $total_ret_fun;
-
+        $retirement_fund->total = $total_ret_fun; // Se utiliza la misma variable porque desde 2022 no se suman los montos de disponibilidad
         $retirement_fund->save();
+
         $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
         //create function search spouse
         $spouse_id = ID::kinship()->conyuge;
@@ -1880,12 +1740,11 @@ class RetirementFundController extends Controller
         if (sizeOf($spouse) > 0) {
             $has_spouse = true;
             $total_spouse = $total_ret_fun / 2;
-            $total_spouse_percentage = 100 / 2;
+            $total_spouse_percentage = 50;
             $total_derechohabientes_percentage = round($total_spouse_percentage / sizeOf($beneficiaries), 2);
             $total_spouse_percentage = round($total_spouse_percentage + $total_derechohabientes_percentage, 2);
-            $total_spouse = $total_ret_fun / 2;
-            $total_derechohabientes = round(($total_spouse / sizeOf($beneficiaries)), 2);
-            $total_spouse = round(($total_spouse + $total_derechohabientes), 2);
+            $total_spouse = round($total_ret_fun * $total_spouse_percentage  / 100, 2);
+            $total_derechohabientes = round(($total_ret_fun * $total_derechohabientes_percentage / 100), 2);
         } else {
             $has_spouse = false;
             $total_derechohabientes = round($total_ret_fun / sizeOf($beneficiaries), 2);
@@ -1898,11 +1757,11 @@ class RetirementFundController extends Controller
                 if ($one_spouse <= 1) {
                     // recalculate
                     if ($request->reload) {
-                        $beneficiary->temp_percentage = $total_spouse_percentage;
-                        $beneficiary->temp_amount = $total_spouse;
+                        $beneficiary->percentage = $total_spouse_percentage;
+                        $beneficiary->amount = $total_spouse;
                     } else {
-                        $beneficiary->temp_percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_spouse_percentage;
-                        $beneficiary->temp_amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_spouse;
+                        $beneficiary->percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_spouse_percentage;
+                        $beneficiary->amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_spouse;
                     }
                 } else {
                     return response('error', 500);
@@ -1911,11 +1770,11 @@ class RetirementFundController extends Controller
             } else {
                 //recalculate
                 if ($request->reload) {
-                    $beneficiary->temp_percentage = $total_derechohabientes_percentage;
-                    $beneficiary->temp_amount = $total_derechohabientes;
+                    $beneficiary->percentage = $total_derechohabientes_percentage;
+                    $beneficiary->amount = $total_derechohabientes;
                 } else {
-                    $beneficiary->temp_percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_derechohabientes_percentage;
-                    $beneficiary->temp_amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_derechohabientes;
+                    $beneficiary->percentage = $beneficiary->percentage ? $beneficiary->percentage : $total_derechohabientes_percentage;
+                    $beneficiary->amount = $beneficiary->amount_ret_fun ? $beneficiary->amount_ret_fun : $total_derechohabientes;
                 }
             }
         }
@@ -1936,108 +1795,109 @@ class RetirementFundController extends Controller
             if (!$new_beneficiary) {
                 return response("error al buscar al beneficiario", 500);
             }
-            $new_beneficiary->percentage = $beneficiary['temp_percentage'];
-            $new_beneficiary->amount_ret_fun = $beneficiary['temp_amount'];
+            $new_beneficiary->percentage = $beneficiary['percentage'];
+            $new_beneficiary->amount_ret_fun = $beneficiary['amount'];
             if (!$affiliate->hasAvailability()) {
-                $new_beneficiary->amount_total = $beneficiary['temp_amount'];
+                $new_beneficiary->amount_total = $beneficiary['amount'];
             }
             $new_beneficiary->save();
         }
-        $availability = $affiliate->getContributionsWithType(12);
-        $has_availability = sizeOf($availability) > 0;
+
         $total = (float)$retirement_fund->total_ret_fun;
-        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->with('kinship')->get();
 
-        $array_discounts = array();
-
-        $array = DiscountType::where('module_id', 3)->get()->pluck('id');
-        $results = array(array());
-        foreach ($array as $element) {
-            foreach ($results as $combination) {
-                array_push($results, array_merge(array($element), $combination));
-            }
-        }
-        foreach ($results as $value) {
-            $sw = true;
-            foreach ($value as $id) {
-                //siempre tendra id
-                // if (!$retirement_fund->discount_types()->find($id)) {
-                if (!($retirement_fund->discount_types()->find($id)->pivot->amount > 0)) {
-                    $sw = false;
-                }
-            }
-            if ($sw) {
-                $temp_total_discount = 0;
-                foreach ($value as $id) {
-                    $temp_total_discount = $temp_total_discount + $retirement_fund->discount_types()->find($id)->pivot->amount;
-                }
-                $name = join(' - ', DiscountType::whereIn('id', $value)->orderBy('id', 'asc')->get()->pluck('name')->toArray());
-                array_push($array_discounts, array('name' => $name, 'amount' => $temp_total_discount));
-            }
-        }
-        if ($has_availability) {
-            $availability = ContributionType::find(12);
-            $subtotal_availability = ($retirement_fund->subtotal_availability);
-            // $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield) / 100;
-            $total_annual_yield = 0;
-            $total_availability = round(($subtotal_availability + $total_annual_yield), 2);
-            //$total = (float)$total;
-
-            $spouse_id = ID::kinship()->conyuge;
-            $spouse = $beneficiaries->filter(function ($item) use ($spouse_id) {
-                return $item->kinship->id == $spouse_id;
-            });
-            if (sizeOf($spouse) > 0) {
-                $total_spouse = $total_availability / 2;
-                $total_derechohabientes = round(($total_spouse / sizeOf($beneficiaries)), 2);
-                $total_spouse = round(($total_spouse + ($total_spouse / sizeOf($beneficiaries))), 2);
-            } else {
-                $total_derechohabientes = round($total_availability / sizeOf($beneficiaries), 2);
-            }
-            $one_spouse = 1;
-            foreach ($beneficiaries as $beneficiary) {
-                $beneficiary->full_name = $beneficiary->fullName();
-                if ($beneficiary->kinship->id == $spouse_id) {
-                    if ($one_spouse <= 1) {
-                        if ($request->reload) {
-                            $beneficiary->temp_amount_availability = $total_spouse;
-                        } else {
-                            $beneficiary->temp_amount_availability = $beneficiary->amount_availability ? $beneficiary->amount_availability : $total_spouse;
-                        }
-                    } else {
-                        return response('error', 500);
-                    }
-                    $one_spouse++;
-                } else {
-                    if ($request->reload) {
-                        $beneficiary->temp_amount_availability = $total_derechohabientes;
-                    } else {
-                        $beneficiary->temp_amount_availability = $beneficiary->amount_availability ? $beneficiary->amount_availability : $total_derechohabientes;
-                    }
-                }
-            }
-
-            /* added availability */
-            $array_discounts_availability = [];
-            foreach ($array_discounts as $value) {
-                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
-            }
-        } else {
-            $array_discounts_availability = [];
-            foreach ($array_discounts as $value) {
-                array_push($array_discounts_availability, array('name' => ('Fondo de Retiro ' . ($value['name'] ? ' - ' . $value['name'] : '')), 'amount' => ($retirement_fund->subtotal_ret_fun - $value['amount'])));
-            }
-        }
         $data = [
-            'has_availability' => $has_availability,
-            'subtotal_availability' => $subtotal_availability ?? 0,
-            'total_annual_yield' => $total_annual_yield ?? 0,
-            'total_availability' => $total_availability ?? 0,
             'total' => $total ?? 0,
-            'beneficiaries' => $beneficiaries,
-            'array_discounts' => $array_discounts_availability,
         ];
         return $data;
+    }
+    public function getRefundsQualification($id)
+    {
+        $retirement_fund = RetirementFund::with(['ret_fun_refunds.ret_fun_refund_type.contribution_type'])->find($id);
+        if (!$retirement_fund) {
+            return response()->json(['error' => 'Fondo de retiro no encontrado.'], 404);
+        }
+
+        $refunds = $retirement_fund->ret_fun_refunds()->get();
+        $hasRefund = sizeOf($refunds) > 0;
+
+        // Validaciones
+        if (!$hasRefund) {
+            return response()->json([
+                'message' => 'No existen devoluciones registradas para este Fondo de Retiro.'
+            ], 204);
+        }
+
+        $beneficiaries = $retirement_fund->ret_fun_beneficiaries()->orderByDesc('type')->orderBy('id')->with(['kinship' => function ($query) {
+            $query->select('id', 'name');
+        }])->get();
+        $spouse_id = ID::kinship()->conyuge;
+        $spouses = $beneficiaries->where('kinship.id', $spouse_id);
+        if ($spouses->count() > 1) {
+            return response()->json([
+                'error' => 'El beneficiario tiene más de una esposa(o) como beneficiaria(o).'
+            ], 409);
+        }
+
+        // Cálculo de montos a repartir
+        $spousePercentage = 50;
+        $beneficiaryPercentage = $spouses->count() > 0 ? round(50 / $beneficiaries->count(), 2) : round(100 / $beneficiaries->count(), 2);
+        $dataRefunds = $refunds->map(function ($refund) use ($beneficiaries, $spouse_id, $spousePercentage, $beneficiaryPercentage) {
+            $beneficiariesData = $beneficiaries->map(function ($beneficiary) use ($refund, $spouse_id, $spousePercentage, $beneficiaryPercentage) {
+                $isSpouse = $beneficiary->kinship->id == $spouse_id;
+                $percentage = $isSpouse ? $spousePercentage + $beneficiaryPercentage : $beneficiaryPercentage;
+                return [
+                    'id' => $beneficiary->id,
+                    'full_name' => $beneficiary->fullName(),
+                    'percentage' => $percentage,
+                    'amount' => round(($refund->total * $percentage) / 100, 2),
+                    'kinship' => $beneficiary->kinship,
+                ];
+            });
+
+            return [
+                'id' => $refund->id,
+                'name' => $refund->ret_fun_refund_type->contribution_type->name,
+                'subtotal' => $refund->subtotal,
+                'yield' => $refund->yield,
+                'total' => $refund->total,
+                'beneficiaries' => $beneficiariesData,
+                'show' => false // Controla la visibilidad en el frontend
+            ];
+        });
+
+        return response()->json(['refunds' => $dataRefunds], 200);
+    }
+    public function saveRefundPercentages(Request $request)
+    {
+        $validated = $request->validate([
+            'ret_fun_beneficiary_id' => 'required|integer|exists:ret_fun_beneficiaries,id',
+            'ret_fun_refund_id' => 'required|integer|exists:ret_fun_refunds,id',
+            'percentage' => 'required|numeric|min:0',
+            'amount' => 'required|numeric|min:0',
+        ]);
+        
+        DB::beginTransaction();
+
+        try {
+            RetFunRefundAmount::create([
+                'ret_fun_beneficiary_id' => $validated['ret_fun_beneficiary_id'],
+                'ret_fun_refund_id' => $validated['ret_fun_refund_id'],
+                'percentage' => $validated['percentage'],
+                'amount' => $validated['amount'],
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Montos guardados correctamente'], 200);
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'error' => 'Error al guardar los montos',
+                'details' => $e->getMessage(),
+            ], 500);
+        }
     }
     //--**METODO PARA GUARDAR LOS PORCENTAJES DE DIPONIBILIDAD DE LOS BENEFICIARIOS**---
     public function savePercentagesAvailability(Request $request, $id)
@@ -2050,7 +1910,6 @@ class RetirementFundController extends Controller
         $total_annual_yield = ($subtotal_availability * Util::getRetFunCurrentProcedure()->annual_yield) / 100;
         $total_availability = $subtotal_availability;
         $retirement_fund->total_availability =  $total_availability;
-        $retirement_fund->total = ($retirement_fund->total_ret_fun ?? 0);
         $retirement_fund->save();
         /**added function calculate sub_total_availability */
         foreach ($request->beneficiaries as $beneficiary) {

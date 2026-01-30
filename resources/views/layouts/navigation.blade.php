@@ -96,7 +96,14 @@
             <li data-toggle="tooltip" data-placement="right"
                 title="Paramentros para la calificacion del Complemento Economico">
                 <a href="{{ url('/eco_com_qualification_parameters') }}"><i
-                        class="fa fa-pencil"></i> <span class="nav-label">Paramentros para la Calificacion</span></a>
+                        class="fa fa-pencil"></i> <span class="nav-label">Paramentros para la Calificación</span></a>
+            </li>
+            @endif
+            @if(Util::getRol()->id == 28) {{-- Jefatura fondo de retiro --}}
+            <li data-toggle="tooltip" data-placement="right"
+                title="Paramentros para la calificacion de Fondo de Retiro">
+                <a href="{{ url('/ret_fun_qualification_parameters') }}"><i
+                        class="fa fa-pencil"></i> <span class="nav-label">Paramentros para la Calificación</span></a>
             </li>
             @endif
         </ul>

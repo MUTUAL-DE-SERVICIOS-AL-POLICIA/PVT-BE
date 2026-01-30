@@ -558,27 +558,42 @@ class Util
   }
   public static function getRetFunCurrentProcedure()
   {
-    $procedure_active = RetFunProcedure::where('is_enabled', 'true')->first();
+    $procedure_active = RetFunProcedure::active_procedure();
     if (!$procedure_active) {
       abort(500);
     }
     return $procedure_active;
   }
-  public static function sumTotalContributions($array, $fromView = false)
+  /**
+   * Cuenta el total de meses de aportes a partir de un rango de fechas.
+   *
+   * Este método recibe un arreglo (o colección) de objetos con dos propiedades: 
+   * - start (string|Carbon): fecha de inicio en formato 'Y-m-d'
+   * - end   (string|Carbon): fecha de fin en formato 'Y-m-d'
+   *
+   * Ejemplo de entrada:
+   * [
+   *     (object) ['start' => '1990-01-01', 'end' => '1990-03-01'], // 3 meses
+   *     (object) ['start' => '1991-01-01', 'end' => '1991-01-01']  // 1 mes
+   * ]
+   *
+   * @param  array<object{start: string, end: string}>  $dates
+   * @return int  Número total de meses de contribuciones.
+   *
+   * @throws \Exception Si algún rango es inválido (end < start).
+   */
+  public static function sumTotalContributions($dates)
   {
     $total = 0;
-    if (sizeof($array) > 0) {
-      foreach ($array as $key => $value) {
-        if ($fromView) {
-          // $value = json_encode($value);
-          $diff = Carbon::parse($value['start'])->diffInMonths(Carbon::parse($value['end'])) + 1;
-        } else {
-          $diff = (Carbon::parse($value->end)->diffInMonths(Carbon::parse($value->start)) + 1);
-        }
+    if (sizeof($dates) > 0) {
+      foreach ($dates as $range) {
+        $start = Carbon::parse($range->start);
+        $end   = Carbon::parse($range->end);
+        $diff = $end->diffInMonths($start) + 1; // +1 para incluir el mes inicial
         if ($diff < 0) {
-          dd("error");
+          throw new \InvalidArgumentException("El rango de fechas es inválido: {$range->start} - {$range->end}");
         }
-        $total = $total + $diff;
+        $total += $diff;
       }
     }
     return $total;

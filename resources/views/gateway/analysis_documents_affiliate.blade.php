@@ -134,7 +134,7 @@
         <tbody>
           <tr>
             <td class="sub_description">Archivos EXISTENTES para ACTUALIZAR</td>
-            @if($data['dataValidRealExist'])
+            @if(!empty($data['dataValidRealExist'] ?? []))
               <td>
                   @php($affiliate_id = null)
                   @foreach($data['dataValidRealExist'] as $dataValidRealExist)
@@ -156,7 +156,7 @@
           </tr>
           <tr>
             <td class="sub_description">Archivos NUEVOS para IMPORTAR</td>
-            @if($data['dataValidRealNotExist'])
+            @if(!empty($data['dataValidRealNotExist'] ?? []))
             <td>
                 @php($affiliate_id = null)
                 @foreach($data['dataValidRealNotExist'] as $dataValidRealNotExist)
