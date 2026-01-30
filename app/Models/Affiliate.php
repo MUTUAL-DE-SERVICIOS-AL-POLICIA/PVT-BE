@@ -161,11 +161,12 @@ class Affiliate extends Model
       return $this->contributions();
     }
 
-    $date_start = Carbon::createFromFormat('m/Y', $dateEntry)->startOfMonth();
+    // '!' resetea los campos no especificados día, hora para evitar overflow de fechas ej. febrero → marzo
+    $date_start = Carbon::createFromFormat('!m/Y', $dateEntry)->startOfMonth();
     if (empty($dateLastContribution)) {
       $date_end = Carbon::now()->startOfMonth();
     } else {
-      $date_end = Carbon::createFromFormat('m/Y', $dateLastContribution)->startOfMonth();
+      $date_end = Carbon::createFromFormat('!m/Y', $dateLastContribution)->startOfMonth();
     }
 
     return $this->contributions()->whereBetween('month_year', [$date_start, $date_end]);
