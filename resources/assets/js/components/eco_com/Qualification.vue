@@ -109,7 +109,7 @@
                 </template>
               </tbody>
             </table>
-            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación ({{ ecoCom.eco_com_fixed_pension ? ecoCom.eco_com_fixed_pension.period : "" }})</strong></p>
+            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación.</strong></p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
