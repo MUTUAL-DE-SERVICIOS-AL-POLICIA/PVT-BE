@@ -35,11 +35,7 @@
                         <td class="w-15  text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
                     <tr class="text-sm">
-                        @if($retirement_fund->average_quotable>$retirement_fund->used_limit_average)
-                            <td class="text-left px-10 py-3">SALARIO PROMEDIO COTIZABLE LIMITADO</td>
-                        @else
-                            <td class="text-left px-10 py-3">SALARIO PROMEDIO COTIZABLE</td>
-                        @endif
+                        <td class="text-left px-10 py-3">SALARIO PROMEDIO COTIZABLE</td>
                         <td class="text-right uppercase font-bold px-5 py-3"> {{ Util::formatMoney($retirement_fund->used_limit_average) }} </td>
                         <td class="text-center uppercase font-bold px-5 py-3"> Bs. </td>
                     </tr>
