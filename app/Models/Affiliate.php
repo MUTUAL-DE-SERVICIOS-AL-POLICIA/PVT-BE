@@ -824,13 +824,13 @@ class Affiliate extends Model
     }
 
     $contributions = self::getContributionsPlus($reinstatement);
-    $total_base_wage = $contributions->sum('base_wage');
-    $total_seniority_bonus = $contributions->sum('seniority_bonus');
-    $total_aporte = $contributions->sum('total');
-    $total_retirement_fund = $contributions->sum('retirement_fund');
 
-    $sub_total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus);
-    $total_average_salary_quotable = ($total_base_wage + $total_seniority_bonus) / $number_contributions;
+    $total_base_wage       = optional($contributions)->sum('base_wage') ?? 0;
+    $total_seniority_bonus = optional($contributions)->sum('seniority_bonus') ?? 0;
+    $total_aporte          = optional($contributions)->sum('total') ?? 0;
+    $total_retirement_fund = optional($contributions)->sum('retirement_fund') ?? 0;
+    $sub_total_average_salary_quotable = $total_base_wage + $total_seniority_bonus;
+    $total_average_salary_quotable = $number_contributions > 0 ? $sub_total_average_salary_quotable / $number_contributions : 0;
     
     $data = [
       'contributions' => $contributions,
