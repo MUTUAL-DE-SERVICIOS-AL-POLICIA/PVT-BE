@@ -82,6 +82,8 @@ class EcoComFixedPensionController extends Controller
             'reimbursement' => 'nullable|numeric',
             'dignity_pension' => 'nullable|numeric',
             'total_rent' => 'nullable|numeric',
+            'eco_com_rent_id' => 'required|numeric',
+            'base_wage_id' => 'required|numeric',
         ]);
         
         //Valida si existen tramites del afiliado con estado pagado que esten utilizando el id de la tabla fija
@@ -111,17 +113,23 @@ class EcoComFixedPensionController extends Controller
         // Actualizar los valores
         $fixed->user_id = Auth::user()->id;
         $fixed->eco_com_procedure_id = $request->eco_com_procedure_id;
+
         $fixed->aps_total_fsa = $request->aps_total_fsa;
         $fixed->aps_total_cc = $request->aps_total_cc;
         $fixed->aps_total_fs = $request->aps_total_fs;
         $fixed->aps_disability = $request->aps_disability;
         $fixed->aps_total_death = $request->aps_total_death;
-        $fixed->sub_total_rent = $request->sub_total_rent;
 
+        $fixed->sub_total_rent = $request->sub_total_rent;
         $fixed->total_rent = $request->total_rent;
         $fixed->reimbursement = $request->reimbursement;
         $fixed->dignity_pension = $request->dignity_pension;
+
         $fixed->rent_type = 'Manual';
+
+        $fixed->eco_com_rent_id = $request->eco_com_rent_id;
+        $fixed->base_wage_id = $request->base_wage_id;
+
         $fixed->save();
         return $fixed;
     }
