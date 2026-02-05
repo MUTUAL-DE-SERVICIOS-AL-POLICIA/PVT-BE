@@ -793,7 +793,7 @@ class ContributionController extends Controller
                             $contribution->seniority_bonus = strip_tags($request->seniority_bonus[$key]) ?? 0;
                       
                         //obtener categoria
-                        if ((isset($request->base_wage[$key]) || isset($request->seniority_bonus[$key])) && $affiliate->unit_id != 21) {
+                        if (isset($request->base_wage[$key]) && $request->base_wage[$key] > 0 && isset($request->seniority_bonus[$key]) && $affiliate->unit_id != 21) {
                             $categoryId = $this->assignCategoryToContribution($contribution);
 
                             if ($categoryId) {
