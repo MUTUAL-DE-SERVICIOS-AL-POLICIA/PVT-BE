@@ -15,7 +15,20 @@ class EcoComFixedPensionController extends Controller
 {
     public function store(Request $request)
     {
-        // Validar los datos de entrada
+        $regulation = EcoComRegulation::where('is_enable', true)->first();
+
+        $exists = EcoComFixedPension::where('affiliate_id', $request->affiliate_id)
+            ->where('eco_com_regulation_id', $regulation->id)
+            ->where('eco_com_procedure_id', $request->eco_com_procedure_id)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'errors' => ['Ya existe un registro con ese periodo de renta.']
+            ], 422);
+        }    
+
+    // Validar los datos de entrada
         $request->validate([
             'eco_com_procedure_id' => 'required|numeric',
             'affiliate_id' => 'required|numeric',
