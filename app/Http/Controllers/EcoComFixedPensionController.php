@@ -155,6 +155,11 @@ class EcoComFixedPensionController extends Controller
         if ($last_eco_com) {
             $procedure_modality_id = $last_eco_com->eco_com_modality->procedure_modality_id;
         }
+        //si mes orfandad debe utilizar parametro de vejez
+        if($procedure_modality_id == 31){
+            $procedure_modality_id = 29;            
+        }
+
         $eco_com_rents = EcoComRent::where('degree_id', $affiliate->degree_id)
             ->where('procedure_modality_id', $procedure_modality_id)->latest('year')->latest('semester')->get();
 
