@@ -244,6 +244,12 @@
     </div>
 
 @endif
+
+@if($error_message)
+    <div class="alert alert-warning">
+        {{ $error_message }}
+    </div>
+@endif
 <!---Alerta de pago garantes----->
 <ret-fun-alert
         :affiliate-id="{{$affiliate->id}}"

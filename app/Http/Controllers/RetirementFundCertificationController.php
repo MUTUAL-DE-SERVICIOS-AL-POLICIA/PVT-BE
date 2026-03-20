@@ -1451,7 +1451,7 @@ class RetirementFundCertificationController extends Controller
     $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-    $title = "CERTIFICACIÓN DE DEVOLUCIÓN DE DEPÓSITOS";
+    $title = "CERTIFICACIÓN DE DEVOLUCIÓN";
 
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
     $code = $retirement_fund->code;

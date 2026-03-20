@@ -276,6 +276,7 @@ export default {
                         })
                         .catch(error => {
                             console.log("Error al procesar: ", error.response.data);
+                            flash(error.response.data.message, "error");
                             const serverErrors = error.response.data.errors;
                             if (serverErrors) {
                                 Object.keys(serverErrors).forEach(field => {

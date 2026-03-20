@@ -231,7 +231,7 @@ th.ellipsis-text {
                                         <thead>
                                             <tr class="success">
                                                 <th>Periódo vigente</th>
-                                                <th>Periodo renta/pensión</th>
+                                                <th>Periodo</th>
                                                 <th>Tipo de registro</th>
                                                 @if($affiliate->pension_entity->id != 5)
                                                     <th>Fracción de Saldo Acumulado</th>

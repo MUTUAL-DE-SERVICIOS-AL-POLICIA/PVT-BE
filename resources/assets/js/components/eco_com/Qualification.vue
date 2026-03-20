@@ -109,7 +109,7 @@
                 </template>
               </tbody>
             </table>
-            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación ({{ ecoCom.eco_com_fixed_pension ? ecoCom.eco_com_fixed_pension.period : "" }})</strong></p>
+            <p>Datos de la boleta de Renta o Pensi&oacute;n de Jubilaci&oacute;n <strong>para la calificación.</strong></p>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -588,7 +588,7 @@
           </select>
         </div>
         <div class="row">
-          <template v-if="ecoComModal.eco_com_rent_id">
+          <template v-if="ecoComModal.eco_com_rent_id && $eco_com_helper.isInclusion(ecoCom)">
             <p class="col-sm-6 control-label">Promedio {{ecoComRents.find(r => r.id ==
               ecoComModal.eco_com_rent_id).average | currency}}</p>
             <p class="col-sm-6 control-label">Limite Referencial {{ecoComRents.find(r => r.id ==

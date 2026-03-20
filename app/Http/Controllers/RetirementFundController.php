@@ -263,12 +263,12 @@ class RetirementFundController extends Controller
                 $submit->save();
             }
         }
-        if ($request->additional_requirements) {
-            $additional_requirements = [];
-            foreach ($request->additional_requirements as $adr) {
-                $additional_requirements[] = json_decode($adr);
+        if ($request->aditional_requirements) {
+            $aditional_requirements = [];
+            foreach ($request->aditional_requirements as $adr) {
+                $aditional_requirements[] = json_decode($adr);
             }
-            foreach ($additional_requirements  as  $requirement) {
+            foreach ($aditional_requirements  as  $requirement) {
                 $submit = new RetFunSubmittedDocument();
                 $submit->retirement_fund_id = $retirement_fund->id;
                 $submit->procedure_requirement_id = $requirement->procedureRequirementId;
@@ -620,17 +620,19 @@ class RetirementFundController extends Controller
                 'date_entry' => 'El campo "Fecha de Ingreso a la Institucional Policial" en Información Policial no puede estar vacío',
                 'date_derelict' => 'El campo "Fecha de Desvinculación" en Información Policial no puede estar vacío',
             ];
-        } else if ($isReinstatement) {
+        } else{
             $fields = [
                 'date_entry_reinstatement' => 'El campo "Fecha de Ingreso a la Institucional Policial (reincorporación)" en Información Policial no puede estar vacío',
                 'date_derelict_reinstatement' => 'El campo "Fecha de Desvinculación (reincorporación)" en Información Policial no puede estar vacío',
             ];
         }
 
+        $error_message = null;
+
         foreach ($fields as $field => $message) {
-            if (!$affiliate->$field) {
-                Session::flash('message', $message);
-                return redirect('affiliate/' . $affiliate->id);
+            if (blank($affiliate->$field)) {
+                $error_message = $message;
+                break;
             }
         }
         $dates_global = $affiliate->getDatesGlobal($isReinstatement);
@@ -739,6 +741,7 @@ class RetirementFundController extends Controller
             'last_base_wage' => $last_base_wage,
             'total_average_salary_quotable' => $total_average_salary_quotable,
             'array_discounts_availability' => $array_discounts_availability,
+            'error_message' => $error_message,
         ];
         return view('ret_fun.show', $data);
     }
@@ -2000,7 +2003,7 @@ class RetirementFundController extends Controller
                     return $r['status'];
                 });
 
-            $additionalRequirements = collect($request->additional_requirements);
+            $additionalRequirements = collect($request->aditional_requirements);
 
             // Unimos ambos arreglos por procedure_requirement_id
             $incoming = $newRequirements->concat($additionalRequirements)
