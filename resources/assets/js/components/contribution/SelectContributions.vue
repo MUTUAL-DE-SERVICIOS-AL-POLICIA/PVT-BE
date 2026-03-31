@@ -66,6 +66,7 @@
 								<thead>
 									<tr>
 										<th class="col-md-2">Fecha </th>
+										<th class="col-md-2">DTR</th>
 										<th class="col-md-2">F.R.P.S.</th>
 										<th class="col-md-2">Total</th>
 										<th class="col-md-4">Tipo</th>
@@ -74,6 +75,7 @@
 								<tbody id="contenedor">
 									<tr v-for="(contribution,index) in contributions" :key="`contribution-${index}`" :style="{'background':getColor1(contribution.contribution_type_id)}" >
 										<td class="col-md-2">{{ contribution.month_year | monthYear }}</td>
+										<td class="col-md-2" :style="{ color: contribution.days_worked < 30 ? 'red' : 'black' }">{{ contribution.days_worked }}</td>
 										<td class="col-md-2">{{ contribution.retirement_fund }}</td>
 										<td class="col-md-2">{{ contribution.total }}</td>
 										<td class="col-md-4">

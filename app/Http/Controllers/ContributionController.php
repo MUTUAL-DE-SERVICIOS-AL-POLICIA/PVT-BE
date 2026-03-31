@@ -656,6 +656,7 @@ class ContributionController extends Controller
                         'total.'.$key =>  'required|numeric|min:1',
                         'retirement_fund.'.$key =>  'numeric|min:0',
                         'mortuary_quota.'.$key =>  'numeric|min:0',
+                        'days_worked.'.$key =>  'numeric|min:1|max:31',
                     ];
                     $rules=array_merge($rules,$array_rules);
                     $array_messages = [
@@ -767,6 +768,11 @@ class ContributionController extends Controller
                     if(isset($request->unit_id[$key]))
                     $contribution->unit_id = is_numeric($request->unit_id[$key]) ? $request->unit_id[$key]: null;
 
+                    if(isset($request->days_worked[$key]) && $request->days_worked[$key] != "")
+                        $contribution->days_worked = strip_tags($request->days_worked[$key]) ?? $contribution->days_worked;
+                    else
+                        $contribution->days_worked = $contribution->days_worked;
+
                     $contribution->user_id = Auth::user()->id;
                     $contribution->save();
                     array_push($contributions, $contribution);
@@ -877,6 +883,11 @@ class ContributionController extends Controller
                         else
                             $contribution->unit_id = strip_tags($request->unit_id[$key]) ?? null;
 
+                        if(!isset($request->days_worked[$key]))
+                            $contribution->days_worked = 0;
+                        else
+                            $contribution->days_worked = strip_tags($request->days_worked[$key]) ?? 0;   
+
                         $contribution->type = 'Planilla';
                         $contribution->save();
                         array_push($contributions, $contribution);
@@ -948,7 +959,7 @@ class ContributionController extends Controller
             $end_date = $date_last_contribution_reinstatement;
         }
 
-        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->whereBetween('month_year', [$start_date, $end_date])->orderby('month_year')->get();
+        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id','days_worked')->whereBetween('month_year', [$start_date, $end_date])->orderby('month_year')->get();
 
         $first_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->first()->month_year)->format('m/Y'));
         $last_contribution = Util::parseMonthYearDate(Carbon::parse($contributions->last()->month_year)->format('m/Y'));
@@ -976,6 +987,7 @@ class ContributionController extends Controller
                     'total' => 0,
                     'contribution_type_id' => null,
                     'category_id' => 1,
+                    'days_worked' => 0,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                     ]
@@ -1019,6 +1031,7 @@ class ContributionController extends Controller
                     'total' => 0,
                     'contribution_type_id' => null,
                     'category_id' => 1,
+                    'days_worked' => 0,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                     ]
@@ -1062,6 +1075,7 @@ class ContributionController extends Controller
                         'total' => 0,
                         'contribution_type_id' => null,
                         'category_id' => 1,
+                        'days_worked' => 0,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
                         ]
@@ -1072,7 +1086,7 @@ class ContributionController extends Controller
         }
 
         // Obtener los aportes dependiento de cuantos trámites de fondo de retiro tiene
-        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id')->whereBetween('month_year', [$start_date, $end_date])->orderbyDesc('month_year')->get();
+        $contributions = $affiliate->contributions()->select('id', 'month_year','retirement_fund', 'total', 'breakdown_id', 'contribution_type_id', 'days_worked')->whereBetween('month_year', [$start_date, $end_date])->orderbyDesc('month_year')->get();
 
         foreach ($contributions as $c) {
             $c->contribution_type_id = Util::classificationContribution($c->contribution_type_id, $c->breakdown_id, $c->total);

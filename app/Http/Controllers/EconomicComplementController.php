@@ -2045,7 +2045,16 @@ class EconomicComplementController extends Controller
             }
         }
         
-        $base_wage = BaseWage::where('degree_id', $eco_com->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first();
+        //$base_wage = BaseWage::where('degree_id', $eco_com->degree_id)->whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->first();
+        if ($eco_com->base_wage_id) {
+        $base_wage = BaseWage::find($eco_com->base_wage_id);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Error',
+                'errors' => ['no tiene registrado un sueldo base, por favor registrelo para poder realizar la recalificación del trámite ' . $eco_com->code],
+            ], 422);
+        }
 
         //para el caso de las viudas 80%
         if ($eco_com->isWidowhood()) {
