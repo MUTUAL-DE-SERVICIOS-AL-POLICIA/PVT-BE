@@ -292,10 +292,26 @@
     @endif
     @if($hasRefund)
         @foreach ($refunds as $refund)
-            <p> Asimismo, la Comisión de Beneficios Económicos en uso de sus atribuciones, determina la 
-            devolución de los descuentos realizados al Titular para {{$ret_fun->procedure_modality->procedure_type->second_name}} durante su permanencia
-            @if ($refund->ret_fun_refund_type->contribution_type->shortened == "+30 años") antes del @else en el @endif
-            destino de disponibilidad de las letras, en favor de (el) (los)
+            <p> Asimismo, la Comisión de Beneficios Económicos en uso de sus atribuciones, determina la
+
+            {{-- Periodo posterior a 30 años de servicios activo --}}
+            @if($refund->ret_fun_refund_type_id == 1)
+                devolución de los descuentos realizados al Titular para {{$ret_fun->procedure_modality->procedure_type->second_name}}
+                durante su permanencia antes del destino de disponibilidad de las letras,
+            @endif
+
+            {{-- Disponibilidad Con Aporte --}}
+            @if($refund->ret_fun_refund_type_id == 2)
+                devolución de los descuentos realizados al Titular para {{$ret_fun->procedure_modality->procedure_type->second_name}}
+                durante su permanencia en el destino de disponibilidad de las letras,
+            @endif
+
+            {{-- Devolución --}}
+            @if($refund->ret_fun_refund_type_id == 3)
+                Devolución de Aportes realizados para {{$ret_fun->procedure_modality->procedure_type->second_name}},
+            @endif
+
+            en favor de (el) (los)
             @if($ret_fun->procedure_modality->procedure_type->id == 2 && $ret_fun->procedure_modality->id == 4)
                 derechohabiente
             @else

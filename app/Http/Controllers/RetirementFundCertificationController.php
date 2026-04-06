@@ -2829,9 +2829,9 @@ class RetirementFundCertificationController extends Controller
       'beneficiaries' => $beneficiaries,
       'beneficiaries_minor' => $beneficiaries_minor,
       'refunds' => $refunds,
-      'hasRefund' => $refunds->count() > 0,
+      'hasRefund' => $refunds->isNotEmpty(),
     ];
-    logger()->info($data['beneficiaries']);
+
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {
       $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();

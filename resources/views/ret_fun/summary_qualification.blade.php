@@ -226,11 +226,22 @@
     </div>
 </div>
 @endif
+
+
+<div class="col-lg-12">
+    <div class="ibox">
+        <div class="ibox-title text-center bg-primary">
+            <h2><b>DEVOLUCIÓN DE APORTES</b></h2>
+        </div>
+    </div>
+</div>
+
+
 @foreach ($retirement_fund->ret_fun_refunds as $refund)
 <div class="col-lg-12">
     <div class="ibox">
         <div class="ibox-title">
-            <h5>DEVOLUCIÓN DE APORTES - {{$refund->ret_fun_refund_type->contribution_type->name}}</h5>
+            <h5><b>Clasificación:</b> {{$refund->ret_fun_refund_type->contribution_type->name}}</h5>
         </div>
         <div class="ibox-content">
             <table class="table table-bordered">
