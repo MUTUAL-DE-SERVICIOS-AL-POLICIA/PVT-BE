@@ -169,4 +169,36 @@ class EcoComFixedPensionController extends Controller
                 'type' => $last_eco_com->eco_com_modality->procedure_modality->name,
             ], 200);
     }
+    
+    public function destroy($id)
+    {
+        $record = EcoComFixedPension::findOrFail($id);
+
+        $count = EconomicComplement::select('economic_complements.id')
+            ->leftJoin('eco_com_states', 'eco_com_states.id', '=', 'economic_complements.eco_com_state_id')
+            ->leftJoin('eco_com_state_types', 'eco_com_state_types.id', '=', 'eco_com_states.eco_com_state_type_id')
+            ->where('economic_complements.affiliate_id', $record->affiliate_id)
+            ->where('economic_complements.eco_com_fixed_pension_id', $record->id)
+            ->whereIn('eco_com_states.eco_com_state_type_id', [1, 6])
+            ->where('economic_complements.eco_com_procedure_id', '>=',
+                EcoComRegulation::where('is_enable', true)
+                    ->orderBy('id', 'desc')
+                    ->first()->replica_eco_com_procedure_id
+            )
+            ->count();
+
+        if ($count > 0) {
+            return response()->json([
+                'message' => 'No se puede eliminar la RENTA FIJA porque existen trámites PAGADOS o HABILITADOS PARA PAGO.'
+            ], 422);
+        }
+
+        $data = $record->toArray();
+        $record->delete();
+        return response()->json([
+            'message' => 'Registro eliminado correctamente',
+            'deleted' => $data
+        ]);
+
+    }
 }

@@ -579,9 +579,12 @@
               bw.amount | currency }}</option>
           </select>
         </div>
+        <div>{{ !($eco_com_helper.isInclusion(ecoCom) && $eco_com_helper.isJefatura(roleId)) }} {{ !$eco_com_helper.isRehabilitation(ecoCom) }}</div>
         <div class="row">
           <label class="col-sm-6 control-label">Periodo de Promedio y Limite Referencial ({{ typeRent }})</label>
-          <select class="col-sm-6" disabled name="Periodo que correponde la renta"
+          <select class="col-sm-6" 
+            :disabled = "!$eco_com_helper.isRehabilitation(ecoCom) && !($eco_com_helper.isInclusion(ecoCom) && $eco_com_helper.isJefatura(roleId))" 
+            name="Periodo que correponde la renta"
             v-model="ecoComModal.eco_com_rent_id">
             <option v-for="r in ecoComRents" :value="r.id" :key="'baseWage' + r.id">{{ r.year | year }} - {{ r.semester }}
             </option>
