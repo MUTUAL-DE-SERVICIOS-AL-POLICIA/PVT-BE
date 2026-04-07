@@ -342,6 +342,7 @@ class ContributionController extends Controller
             null,
             null,
             base_wage,
+            days_worked,
             seniority_bonus,
             null,
             study_bonus,
@@ -362,6 +363,7 @@ class ContributionController extends Controller
             concat(extract(month from month_year), ' - ', extract(year from month_year)) as month_year_concat,
             degree_id,
             unit_id,
+            days_worked,
             base_wage,
             seniority_bonus,
             category_id,
@@ -394,6 +396,9 @@ class ContributionController extends Controller
             })
             ->editColumn('unit_id', function ($contribution) {
                 return $contribution->unit_id ? $contribution->unit->code : null;
+            })
+            ->editColumn('days_worked', function ($contribution) {
+                return $contribution->days_worked ? $contribution->days_worked : null;
             })
             ->editColumn('base_wage', function ($contribution) {
                 return Util::formatMoney($contribution->base_wage);
