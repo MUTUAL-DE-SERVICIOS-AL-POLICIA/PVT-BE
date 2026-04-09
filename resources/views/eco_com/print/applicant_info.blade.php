@@ -18,7 +18,7 @@
             </td>
             @if ($applicant->surname_husband)
             <td class="px-15 py text-center">
-                APELLIDO CASADA
+                APELLIDO CASADO(A)
             </td>
             @endif
         </tr>
