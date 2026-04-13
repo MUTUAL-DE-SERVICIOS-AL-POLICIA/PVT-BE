@@ -249,7 +249,7 @@ th.ellipsis-text {
                                                 <th>Promedio</th>
                                                 <th>Limite Referencial</th>
                                                 <th>Sueldo Base</th>
-                                                @if($role == 103)
+                                                @if($role == 103 || $role == 5)
                                                 <th>Acciones</th>
                                                 @endif
                                             </tr>
@@ -280,6 +280,14 @@ th.ellipsis-text {
                                                     @if($role == 103)
                                                     <td>
                                                         <button class="btn btn-warning btn-sm" @click='$refs.editModal.openModal(@json($eco_com_fixed_pension))'>Editar</button>
+                                                    </td>
+                                                                                                        @endif
+                                                    @if($role == 5)
+                                                    <td>
+                                                        <button onclick="deleteFixedPension({{ $eco_com_fixed_pension->id }})"
+                                                                class="btn btn-danger btn-sm">
+                                                            Eliminar
+                                                        </button>
                                                     </td>
                                                     @endif
                                                 </tr>
@@ -519,4 +527,71 @@ $(document).ready(function() {
             });
         });
     });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function deleteFixedPension(id) {
+
+    Swal.fire({
+        title: '¿Está seguro?',
+        text: "Este registro será eliminado",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6'
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        fetch(`/eco_com_fixed_pension/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        })
+        .then(async response => {
+
+            let data = await response.json();
+
+            if (!response.ok) {
+                throw data;
+            }
+
+            if (typeof flash === 'function') {
+                flash(data.message, 'success');
+            } else {
+                Swal.fire('Eliminado', data.message, 'success');
+            }
+
+            // refrescar
+            setTimeout(() => location.reload(), 800);
+        })
+        .catch(error => {
+
+            let mensajes = [];
+
+            if (error.errors) {
+                mensajes = error.errors;
+            } else if (error.message) {
+                mensajes = [error.message];
+            } else {
+                mensajes = ['Error desconocido'];
+            }
+
+            if (typeof flashErrors === 'function') {
+                flashErrors("Error: ", mensajes);
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    html: mensajes.join('<br>'),
+                    icon: 'error'
+                });
+            }
+        });
+
+    });
+}
 </script>

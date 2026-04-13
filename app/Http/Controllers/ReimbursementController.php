@@ -47,7 +47,8 @@ class ReimbursementController extends Controller
         $rules = [                       
             'reim_salary' =>  'numeric|min:2000',
             'reim_gain' =>  'numeric|min:1',
-            'reim_amount' =>  'numeric|min:1'
+            'reim_amount' =>  'numeric|min:1',
+            'reim_days_worked' =>  'numeric|min:1|max:31',
             ];
             //return $rules;
        /*  $messages = [
@@ -88,7 +89,8 @@ class ReimbursementController extends Controller
         $reim->payable_liquid = 0;
         $reim->quotable = $request->quotable ?? 0;
         $reim->retirement_fund = $request->retirement_fund ?? 0;
-        $reim->mortuary_quota = $request->mortuary_quota ?? 0;        
+        $reim->mortuary_quota = $request->mortuary_quota ?? 0;
+        $reim->days_worked = $request->days_worked ?? 30;       
         $reim->total = $request->total ?? 0;
         $reim->subtotal = 0;        
         $reim->save();        

@@ -152,6 +152,9 @@
                                             <tr>
                                                 <td>Unidad</td>
                                             </tr>
+                                            <tr>
+                                                <td>Días trabajados</td>
+                                            </tr>
                                         </table>
                                     </td>
                                     @for($i=1;$i<13;$i++)
@@ -254,7 +257,7 @@
                                                                 <div contenteditable="{{intval($period > '1999-01-01') ? 'true' : 'false'}}"  class="editcontent numberformat">{{$contributions[$period]->mortuary_quota ?? '-'}} </div>
                                                                 <input type="hidden" disabled name="mortuary_quota[{{$period}}]" value="{{$contributions[$period]->mortuary_quota ??'-'}}">
                                                             </td>
-                                                        </tr>
+                                                        </tr>                                                                                                                <tr>
                                                         <tr>
                                                             <td>
                                                                 <select class="editcontent-select" >
@@ -268,6 +271,12 @@
                                                                 </select>
 
                                                                 <input type="hidden" disabled name="unit_id[{{$period}}]" value="{{ $contributions[$period]->unit_id ?? '' }}">
+                                                            </td>
+                                                        </tr>
+                                                                                                                <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">{{$contributions[$period]->days_worked ?? '-'}} </div>
+                                                                <input type="hidden" disabled name="days_worked[{{$period}}]" value="{{$contributions[$period]->days_worked??'-'}}">
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -381,6 +390,11 @@
                                                                 @endforeach
                                                             </select>
                                                             </td>
+                                                        </tr>                                                                                                                <tr>
+                                                            <td>
+                                                                <div contenteditable="true" class="editcontent numberformat">0</div>
+                                                                <input type="hidden" disabled name="days_worked[{{$period}}]" value="0">
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </td>
@@ -450,6 +464,8 @@
                     <input id="reim_retirement_fund" name="reim_retirement_fund" type="text" placeholder="Fondo de Retiro" class="form-control numberformat">
                     <label>Cuota Mortuoria</label>
                     <input id="reim_mortuary_quota" name="reim_mortuary_quota" type="text" placeholder="Cuota Mortuoria" class="form-control numberformat">
+                    <label>Días Trabajados</label>
+                    <input id="reim_days_worked" name="reim_days_worked" type="text" placeholder="Días Trabajados" class="form-control numberformat">
                 </div>
             </div>
             <div class="modal-footer">
@@ -493,6 +509,11 @@
     $('#reim_retirement_fund').keydown(function (e) {
         if (e.which == 13 ) {
             $('#reim_mortuary_quota').focus();
+        }
+    });
+    $('#reim_mortuary_quota').keydown(function (e) {
+        if (e.which == 13 ) {
+            $('#reim_days_worked').focus();
         }
     });
     $('.numberformat').each(function(i, obj) {
@@ -584,6 +605,7 @@ function clearModal(){
     seniority_bonus = $('#reim_seniority_bonus').val('');
     retirement_fund =  $('#reim_retirement_fund').val('');
     mortuary_quota =  $('#reim_mortuary_quota').val('');
+    days_worked =  $('#reim_days_worked').val('');
 }
 function storeReimbursement(){
     year = this.actual_year;
@@ -606,11 +628,15 @@ function storeReimbursement(){
     mortuary_quota =  $('#reim_mortuary_quota').val();
     mortuary_quota = mortuary_quota.replace(/,/g, "");
 
+    days_worked =  $('#reim_days_worked').val();
+    days_worked = days_worked.replace(/,/g, "");
+    days_worked = parseInt(days_worked, 10);
+
     affiliate_id = $("#affiliate_id").val();
     $.ajax({
         url: "{{asset('reimbursement')}}",
         method: "POST",
-        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total,retirement_fund:retirement_fund,mortuary_quota:mortuary_quota},
+        data: {affiliate_id:affiliate_id,year:year,month:month,salary:salary,seniority_bonus:seniority_bonus,gain:gain,total:total,retirement_fund:retirement_fund,mortuary_quota:mortuary_quota,days_worked:days_worked},
         beforeSend: function (xhr, settings) {
             if (settings.url.indexOf(document.domain) >= 0) {
                 xhr.setRequestHeader("X-CSRF-Token", "{{csrf_token()}}");
