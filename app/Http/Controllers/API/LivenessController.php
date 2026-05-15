@@ -72,71 +72,82 @@ class LivenessController extends Controller
 
     public function index(Request $request)
     {
+        try {
+            $device = $request->affiliate->affiliate_token->affiliate_device;
+            $available_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
 
-        $device = $request->affiliate->affiliate_token->affiliate_device;
-        $available_procedures = EcoComProcedure::affiliate_available_procedures($request->affiliate->id);
-
-        if ($device->enrolled && Storage::exists('liveness/faces/' . $request->affiliate->id) && ($available_procedures->count() > 0)) {
+            if ($device->enrolled && Storage::exists('liveness/faces/' . $request->affiliate->id) && ($available_procedures->count() > 0)) {
 
 
-            if ($device->eco_com_procedure_id != null) {
-                if ($device->eco_com_procedure_id == $available_procedures->first()->id) {
-                    return response()->json([
-                        'error' => false,
-                        'message' => 'Proceso terminado',
-                        'data' => [
-                            'completed' => true,
-                            'type' => 'liveness',
-                            'verified' => $device->verified
-                        ]
-                    ], 200);
+                if ($device->eco_com_procedure_id != null) {
+                    if ($device->eco_com_procedure_id == $available_procedures->first()->id) {
+                        return response()->json([
+                            'error' => false,
+                            'message' => 'Proceso terminado',
+                            'data' => [
+                                'completed' => true,
+                                'type' => 'liveness',
+                                'verified' => $device->verified
+                            ]
+                        ], 200);
+                    }
                 }
-            }
 
-            $device->liveness_actions = $this->random_actions(false);
-            $device->save();
+                $device->liveness_actions = $this->random_actions(false);
+                $device->save();
 
-            return response()->json([
-                'error' => false,
-                'message' => '1/' . count($device->liveness_actions) . '. Siga las instrucciones',
-                'data' => [
-                    'completed' => false,
-                    'type' => 'liveness',
-                    'dialog' => [
-                        'title' => 'CONTROL DE VIVENCIA',
-                        'content' => 'Para crear su trámite de Complemento Económico debe realizar el proceso de reconocimiento facial mediante una fotografía de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
-                    ],
-                    'action' => $device->liveness_actions[0],
-                    'current_action' => 1,
-                    'total_actions' => count($device->liveness_actions)
-                ]
-            ], 200);
-        } elseif (!$device->enrolled) {
-            if (Storage::exists('liveness/faces/' . $request->affiliate->id)) {
-                Storage::deleteDirectory('liveness/faces/' . $request->affiliate->id);
+                return response()->json([
+                    'error' => false,
+                    'message' => '1/' . count($device->liveness_actions) . '. Siga las instrucciones',
+                    'data' => [
+                        'completed' => false,
+                        'type' => 'liveness',
+                        'dialog' => [
+                            'title' => 'CONTROL DE VIVENCIA',
+                            'content' => 'Para crear su trámite de Complemento Económico debe realizar el proceso de reconocimiento facial mediante una fotografía de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
+                        ],
+                        'action' => $device->liveness_actions[0],
+                        'current_action' => 1,
+                        'total_actions' => count($device->liveness_actions)
+                    ]
+                ], 200);
+            } elseif (!$device->enrolled || !Storage::exists('liveness/faces/' . $request->affiliate->id)) {
+                if ($device->enrolled) {
+                    $device->update(['enrolled' => false]);
+                }
+                if (Storage::exists('liveness/faces/' . $request->affiliate->id)) {
+                    Storage::deleteDirectory('liveness/faces/' . $request->affiliate->id);
+                }
+                Storage::makeDirectory('liveness/faces/' . $request->affiliate->id, 0775, true);
+                $device->liveness_actions = $this->random_actions(true);
+                $device->save();
+                return response()->json([
+                    'error' => false,
+                    'message' => '1/' . count($device->liveness_actions) . '. Siga las instrucciones',
+                    'data' => [
+                        'completed' => false,
+                        'type' => 'enroll',
+                        'dialog' => [
+                            'title' => 'PROCESO DE ENROLAMIENTO',
+                            'content' => 'Para el acceso a la Aplicación Móvil debe realizar el proceso de enrolamiento por única vez mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
+                        ],
+                        'action' => $device->liveness_actions[0],
+                        'current_action' => 1,
+                        'total_actions' => count($device->liveness_actions)
+                    ]
+                ], 200);
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'No existen trámites disponibles para realizar el control de vivencia.',
+                    'data' => []
+                ], 404);
             }
-            Storage::makeDirectory('liveness/faces/' . $request->affiliate->id, 0775, true);
-            $device->liveness_actions = $this->random_actions(true);
-            $device->save();
-            return response()->json([
-                'error' => false,
-                'message' => '1/' . count($device->liveness_actions) . '. Siga las instrucciones',
-                'data' => [
-                    'completed' => false,
-                    'type' => 'enroll',
-                    'dialog' => [
-                        'title' => 'PROCESO DE ENROLAMIENTO',
-                        'content' => 'Para el acceso a la Aplicación Móvil debe realizar el proceso de enrolamiento por única vez mediante fotografías de su rostro. Debe quitarse anteojos, sombrero y barbijo para realizar el proceso correctamente.',
-                    ],
-                    'action' => $device->liveness_actions[0],
-                    'current_action' => 1,
-                    'total_actions' => count($device->liveness_actions)
-                ]
-            ], 200);
-        } else {
+        } catch (\Exception $e) {
+            Log::error('Liveness index error: ' . $e->getMessage());
             return response()->json([
                 'error' => true,
-                'message' => 'Ocurrió un error inesperado, comuniquese con el personal de MUSERPOL.',
+                'message' => 'Ocurrió un error inesperado al procesar su solicitud.',
                 'data' => []
             ], 500);
         }

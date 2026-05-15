@@ -148,13 +148,13 @@ class Util
 
   public static function getPDFName($title, $affi)
   {
-    $date =  Util::getStringDate(date('Y-m-d'));
+    $date = Util::getStringDate(date('Y-m-d'));
     return ($title . " - " . $affi->fullName() . " - " . $date . ".pdf");
   }
 
   public static function getNextCode($actual, $default = '675')
   {
-    $year =  date('Y');
+    $year = date('Y');
     if ($actual == "")
       return $default . "/" . $year;
     $data = explode('/', $actual);
@@ -184,7 +184,7 @@ class Util
     if (isset($reprint->id)) {
       return $reprint;
     }
-    $year =  date('Y');
+    $year = date('Y');
     $role = Role::find($wf_state->role_id);
 
     $year = date('Y');
@@ -248,7 +248,7 @@ class Util
     //                         ->first();
     if (isset($reprint->id))
       return $reprint;
-    $year =  date('Y');
+    $year = date('Y');
     $model = QuotaAidCorrelative::where('procedure_type_id', $quota_aid->procedure_modality->procedure_type_id)
       ->where('wf_state_id', $wf_state->id)
       ->where('code', 'NOT LIKE', '%A')
@@ -385,7 +385,7 @@ class Util
       // $valor_convertido = $converted . strtoupper($moneda);
       $valor_convertido = $converted . '00/100';
     } else {
-      $valor_convertido = $converted . strtoupper($moneda)  . ($div_decimales[1]) . '/100';
+      $valor_convertido = $converted . strtoupper($moneda) . ($div_decimales[1]) . '/100';
       // $valor_convertido = $converted . strtoupper($moneda) . ' CON ' . $decimales . ' ' . strtoupper($centimos);
     }
     return $valor_convertido;
@@ -481,7 +481,7 @@ class Util
   }
   public static function calculateAge($birth_date, $death_date)
   {
-    $birth_date =  Carbon::createFromFormat('d/m/Y', $birth_date);
+    $birth_date = Carbon::createFromFormat('d/m/Y', $birth_date);
     if ($death_date) {
       $death_date = Carbon::createFromFormat('d/m/Y', $death_date);
       $age = $birth_date->diff($death_date)->format('%y años %m meses');
@@ -588,7 +588,7 @@ class Util
     if (sizeof($dates) > 0) {
       foreach ($dates as $range) {
         $start = Carbon::parse($range->start);
-        $end   = Carbon::parse($range->end);
+        $end = Carbon::parse($range->end);
         $diff = $end->diffInMonths($start) + 1; // +1 para incluir el mes inicial
         if ($diff < 0) {
           throw new \InvalidArgumentException("El rango de fechas es inválido: {$range->start} - {$range->end}");
@@ -675,7 +675,7 @@ class Util
     $affiliate->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
     $affiliate->phone_number = $object->phone_number;
     $affiliate->cell_phone_number = $object->cell_phone_number;
-    $affiliate->city_birth_id = $object->city_birth_id?$object->city_birth_id:$affiliate->city_birth_id;
+    $affiliate->city_birth_id = $object->city_birth_id ? $object->city_birth_id : $affiliate->city_birth_id;
     $affiliate->city_identity_card_id = $object->city_identity_card_id;
     $affiliate->save();
   }
@@ -696,9 +696,10 @@ class Util
     $spouse->surname_husband = $object->surname_husband;
     $spouse->civil_status = $object->civil_status;
     $spouse->birth_date = Util::verifyBarDate($object->birth_date) ? Util::parseBarDate($object->birth_date) : $object->birth_date;
-    $spouse->city_birth_id = $object->city_birth_id?$object->city_birth_id:$spouse->city_birth_id;;
+    $spouse->city_birth_id = $object->city_birth_id ? $object->city_birth_id : $spouse->city_birth_id;
+    ;
     $spouse->city_identity_card_id = $object->city_identity_card_id;
-    $spouse->date_death = $object->date_death ? Util::verifyBarDate($object->date_death) ? Util::parseBarDate($object->date_death) : $object->date_death  : null;
+    $spouse->date_death = $object->date_death ? Util::verifyBarDate($object->date_death) ? Util::parseBarDate($object->date_death) : $object->date_death : null;
     $spouse->reason_death = $object->reason_death ?? null;
     $spouse->death_certificate_number = $object->death_certificate_number ?? null;
     $spouse->official = $object->official;
@@ -740,7 +741,7 @@ class Util
       $month_first_digit = substr($month, 0, 1);
       $month_second_digit = substr($month, 1, 1);
 
-      if ($last_name  != '') {
+      if ($last_name != '') {
         $last_name_code = mb_substr($last_name, 0, 1);
       } else {
         $last_name_code = '';
@@ -909,14 +910,14 @@ class Util
   {
     return optional(
       QuotaAidMortuary::select('quota_aid_mortuaries.code')
-      ->join('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id','=','procedure_modalities.id')
-      ->orderBy(DB::raw("regexp_replace(split_part(quota_aid_mortuaries.code, '/',2),'\D','','g')::integer"))
-      ->orderBy(DB::raw("split_part(quota_aid_mortuaries.code, '/',1)::integer"))
-      ->where('code', 'not like', '%A')
-      ->where('procedure_modalities.procedure_type_id', 3)
-      ->get()
-      ->last()
-      )->code;
+        ->join('procedure_modalities', 'quota_aid_mortuaries.procedure_modality_id', '=', 'procedure_modalities.id')
+        ->orderBy(DB::raw("regexp_replace(split_part(quota_aid_mortuaries.code, '/',2),'\D','','g')::integer"))
+        ->orderBy(DB::raw("split_part(quota_aid_mortuaries.code, '/',1)::integer"))
+        ->where('code', 'not like', '%A')
+        ->where('procedure_modalities.procedure_type_id', 3)
+        ->get()
+        ->last()
+    )->code;
   }
   public static function getLastCodeAM($model)
   {
@@ -1061,7 +1062,7 @@ class Util
     foreach ($models as $model) {
       foreach ($operations as $o) {
         $class = explode('\\', $model);
-        $permissions[] =  array('operation' => Str::snake($o . $class[sizeof($class) - 1]), 'value' => Gate::allows($o, new $model()));
+        $permissions[] = array('operation' => Str::snake($o . $class[sizeof($class) - 1]), 'value' => Gate::allows($o, new $model()));
       }
     }
     return collect($permissions);
@@ -1129,7 +1130,7 @@ class Util
           }
         }
         if ($sw) {
-          foreach ($e->observations->where('description','Subsanable') as $o) {
+          foreach ($e->observations->where('description', 'Subsanable') as $o) {
             if ($o->pivot->enabled == false) {
               $sw = false;
               break;
@@ -1162,8 +1163,8 @@ class Util
         //   $type = 'CIE';
         // }
       }
-      $descuento=$e->getOnlyTotalEcoCom()-$e->total;
-      
+      $descuento = $e->getOnlyTotalEcoCom() - $e->total;
+
       // 'TipoDoc', // CI -> numero sin extension, //CIE -> con extension, // PE -> si en naturalizado
       $result->push([
         $index, // correlativo
@@ -1181,10 +1182,10 @@ class Util
         now()->month,
         $e->affiliate_id,
         2307,
-        $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name . " - " . "TOTAL DESCUENTO: "  . $descuento,
+        $e->eco_com_modality->shortened . " - " . $e->degree->shortened . " - " . $e->category->name . " - " . "TOTAL DESCUENTO: " . $descuento,
 
-        
-      ]); 
+
+      ]);
       $index++;
       // if ($change_state === true && self::getRol()->id == 5) {
       //   $e->eco_com_state_id = 24;
@@ -1241,10 +1242,11 @@ class Util
         break;
     }
   }
-  public static function determineRelationshipSex($gender, $kinkship) {
+  public static function determineRelationshipSex($gender, $kinkship)
+  {
     $kinkship_name = "";
-    if($gender == 'F') {
-      switch($kinkship->id) {
+    if ($gender == 'F') {
+      switch ($kinkship->id) {
         case 2:
           $kinkship_name = 'Viuda';
           break;
@@ -1267,7 +1269,7 @@ class Util
           $kinkship_name = $kinkship->name;
       }
     } else {
-      switch($kinkship->id) {
+      switch ($kinkship->id) {
         case 2:
           $kinkship_name = 'Viudo';
           break;

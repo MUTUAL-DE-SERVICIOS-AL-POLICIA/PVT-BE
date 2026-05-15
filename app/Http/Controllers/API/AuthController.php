@@ -90,8 +90,31 @@ class AuthController extends Controller
                     $q->orderBy('year')->orderBy('normal_start_date');
                 })->latest()->first();
 
-                if (mb_strtoupper($last_eco_com->eco_com_beneficiary->identity_card) == $identity_card && Carbon::createFromFormat('d/m/Y', $last_eco_com->eco_com_beneficiary->birth_date)->format('Y-m-d') == $birth_date) {
-                    $economic_beneficiary = $last_eco_com->eco_com_beneficiary; //Datos del Último beneficiario registrado
+                // Check if last_eco_com exists and validate beneficiary data
+                if ($last_eco_com && $last_eco_com->eco_com_beneficiary) {
+                    $last_beneficiary_ci = mb_strtoupper($last_eco_com->eco_com_beneficiary->identity_card);
+                    
+                    // Try to parse birth_date, handle different formats
+                    try {
+                        $last_beneficiary_birth_date = Carbon::createFromFormat('d/m/Y', $last_eco_com->eco_com_beneficiary->birth_date)->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        // If d/m/Y fails, try Y-m-d format
+                        try {
+                            $last_beneficiary_birth_date = Carbon::createFromFormat('Y-m-d', $last_eco_com->eco_com_beneficiary->birth_date)->format('Y-m-d');
+                        } catch (\Exception $e2) {
+                            // If both fail, use the raw value
+                            $last_beneficiary_birth_date = $last_eco_com->eco_com_beneficiary->birth_date;
+                        }
+                    }
+                    
+                    $beneficiary_matches = ($last_beneficiary_ci == $identity_card && $last_beneficiary_birth_date == $birth_date);
+                } else {
+                    // If no last_eco_com, use the current eco_com_beneficiary
+                    $beneficiary_matches = true;
+                }
+
+                if ($beneficiary_matches) {
+                    $economic_beneficiary = $last_eco_com ? $last_eco_com->eco_com_beneficiary : $eco_com_beneficiary; //Datos del Último beneficiario registrado
                     $economic_complement = EconomicComplement::find($economic_beneficiary->economic_complement_id);
                     $eco_com_modality_id = $economic_complement->eco_com_modality_id;
                     $modality_id = EcoComModality::find($eco_com_modality_id);

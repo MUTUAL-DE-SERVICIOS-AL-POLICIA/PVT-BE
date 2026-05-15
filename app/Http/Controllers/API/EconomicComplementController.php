@@ -165,19 +165,20 @@ class EconomicComplementController extends Controller
      */
     public function store(Request $request)
     {
-        $eco_com_procedure_id = $request->eco_com_procedure_id;
-        $cell_phone_number = $request->cell_phone_number;        
-        $affiliate = $request->affiliate;
-        $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
-        $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
-        $now = Carbon::now()->toDateString();
-        $verified = $affiliate->affiliate_token->affiliate_device->verified;
-        $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
-        if (!$has_economic_complement) {
-            /**
-             ** Create Economic Complement 
-            */
-            $economic_complement = new EconomicComplement();
+        try {
+            $eco_com_procedure_id = $request->eco_com_procedure_id;
+            $cell_phone_number = $request->cell_phone_number;        
+            $affiliate = $request->affiliate;
+            $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
+            $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
+            $now = Carbon::now()->toDateString();
+            $verified = $affiliate->affiliate_token->affiliate_device->verified;
+            $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
+            if (!$has_economic_complement) {
+                /**
+                 ** Create Economic Complement 
+                */
+                $economic_complement = new EconomicComplement();
             $economic_complement->user_id = 171;
             $economic_complement->affiliate_id = $affiliate->id;
             $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
@@ -194,6 +195,7 @@ class EconomicComplementController extends Controller
             $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
             $economic_complement->uuid = Uuid::uuid1()->toString();
             $economic_complement->eco_com_origin_channel_id = 2; // Canal Aplicación Móvil
+            $economic_complement->user_id = 171; // Usuario de la app móvil
             /*
             if ($affiliate->pension_entity_id == ID::pensionEntity()->senasir) {
                 $economic_complement->sub_total_rent = Util::parseMoney($last_eco_com->sub_total_rent);
@@ -224,7 +226,19 @@ class EconomicComplementController extends Controller
              ** Save eco com beneficiary
             */
 
-            $economic_complement->updateEcoComWithFixedPension();    
+            \Log::info('Before updateEcoComWithFixedPension', [
+                'economic_complement_id' => $economic_complement->id,
+                'affiliate_id' => $economic_complement->affiliate_id
+            ]);
+            
+            $economic_complement->updateEcoComWithFixedPension();
+            
+            \Log::info('After updateEcoComWithFixedPension', [
+                'economic_complement_id' => $economic_complement->id,
+                'eco_com_fixed_pension_id' => $economic_complement->eco_com_fixed_pension_id,
+                'base_wage_id' => $economic_complement->base_wage_id,
+                'total_rent' => $economic_complement->total_rent
+            ]);    
 
             $eco_com_beneficiary = new EcoComBeneficiary();
             $eco_com_beneficiary->economic_complement_id = $economic_complement->id;
@@ -267,7 +281,7 @@ class EconomicComplementController extends Controller
                 $beneficiary_years = intval(explode(' ', Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
                 if ($beneficiary_years > 25) {
                     $economic_complement->observations()->save(ObservationType::find(36), [
-                        'user_id' => auth()->id(),
+                        'user_id' => 171,
                         'date' => now(),
                         'message' => 'Excluido - Huerfano(a) cumplio 25 años. (Observación adicionada automáticamente)',
                         'enabled' => false
@@ -348,6 +362,8 @@ class EconomicComplementController extends Controller
                     $economic_complement->inbox_state = false;
                     $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
                     $economic_complement->uuid = Uuid::uuid1()->toString();
+                    $economic_complement->eco_com_origin_channel_id = 2; // Canal Aplicación Móvil
+                    $economic_complement->user_id = 171; // Usuario de la app móvil
                     $economic_complement->save();
 
                     $economic_complement->updateEcoComWithFixedPension();    
@@ -423,7 +439,6 @@ class EconomicComplementController extends Controller
                             }
                         }
                     }
-
                 }
             }
 
@@ -435,16 +450,26 @@ class EconomicComplementController extends Controller
                 'data' => (object)[],
             ], 403);
         }
-
+    } catch (\Exception $e) {
+        \Log::error('Error al crear el trámite: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        return response()->json([
+            'error' => true,
+            'serviceStatus' => false,
+            'message' => 'Error al crear el trámite: ' . $e->getMessage(),
+            'data' => []
+        ], 500);
     }
+}
 
         public function store_v2(Request $request)
     {
-        $eco_com_procedure_id = $request->eco_com_procedure_id;
-        $cell_phone_number = $request->cell_phone_number;        
-        $affiliate = $request->affiliate;
-        $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
-        $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
+        try {
+            $eco_com_procedure_id = $request->eco_com_procedure_id;
+            $cell_phone_number = $request->cell_phone_number;        
+            $affiliate = $request->affiliate;
+            $last_eco_com = $request->affiliate->economic_complements()->whereHas('eco_com_procedure', function($q) { $q->orderBy('year')->orderBy('normal_start_date'); })->latest()->first();
+            $last_eco_com_beneficiary = $last_eco_com->eco_com_beneficiary()->first();
         $now = Carbon::now()->toDateString();
         $verified = $affiliate->affiliate_token->affiliate_device->verified;
         $has_economic_complement = $affiliate->hasEconomicComplementWithProcedure($request->eco_com_procedure_id);
@@ -458,7 +483,8 @@ class EconomicComplementController extends Controller
             $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
             $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
-            $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
+            $eco_com_procedure = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first();
+            $economic_complement->workflow_id = $eco_com_procedure ? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
             $economic_complement->wf_current_state_id = $verified ? 1 : 60;
             $economic_complement->city_id = $last_eco_com->city_id;
             $economic_complement->degree_id = $affiliate->degree->id;
@@ -468,6 +494,8 @@ class EconomicComplementController extends Controller
             $economic_complement->inbox_state = false;
             $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
             $economic_complement->uuid = Uuid::uuid1()->toString();
+            $economic_complement->eco_com_origin_channel_id = 2; // Canal Aplicación Móvil
+            $economic_complement->user_id = 171; // Usuario de la app móvil
 
             $economic_complement->save();
             /**
@@ -517,7 +545,7 @@ class EconomicComplementController extends Controller
                 $beneficiary_years = intval(explode(' ', Util::calculateAge($eco_com_beneficiary->birth_date, null)[0]));
                 if ($beneficiary_years > 25) {
                     $economic_complement->observations()->save(ObservationType::find(36), [
-                        'user_id' => auth()->id(),
+                        'user_id' => 171,
                         'date' => now(),
                         'message' => 'Excluido - Huerfano(a) cumplio 25 años. (Observación adicionada automáticamente)',
                         'enabled' => false
@@ -549,13 +577,6 @@ class EconomicComplementController extends Controller
                 }
             }   
 
-            $economic_complement->procedure_records()->create([
-                'user_id' => 171,
-                'record_type_id' => 7,
-                'wf_state_id' =>  $verified? 1 : 60,
-                'date' => Carbon::now(),
-                'message' => 'Se creó el trámite mediante aplicación móvil.'
-            ]);
             /*creación de doble percepción*/
             if (Util::isDoblePerceptionEcoCom($last_eco_com_beneficiary->identity_card)) {
                 $eco_com_beneficiary = EcoComBeneficiary::leftJoin('economic_complements', 'eco_com_applicants.economic_complement_id', '=', 'economic_complements.id')->whereIdentityCard($last_eco_com_beneficiary->identity_card)->whereIn('eco_com_modality_id',[2,5,9,7])->first();
@@ -573,7 +594,8 @@ class EconomicComplementController extends Controller
                     $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
                     $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
                     $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
-                    $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
+                    $eco_com_procedure = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first();
+                    $economic_complement->workflow_id = $eco_com_procedure ? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
                     $economic_complement->wf_current_state_id = $verified? 1 : 60;
                     $economic_complement->city_id = $last_eco_com->city_id;
                     $economic_complement->degree_id = $affiliate->degree->id;
@@ -583,6 +605,8 @@ class EconomicComplementController extends Controller
                     $economic_complement->inbox_state = false;
                     $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
                     $economic_complement->uuid = Uuid::uuid1()->toString();
+                    $economic_complement->eco_com_origin_channel_id = 2; // Canal Aplicación Móvil
+                    $economic_complement->user_id = 171; // Usuario de la app móvil
                     $economic_complement->save();
 
                     $economic_complement->updateEcoComWithFixedPension();    
@@ -658,14 +682,6 @@ class EconomicComplementController extends Controller
                             }
                         }
                     }
-
-                    $economic_complement->procedure_records()->create([
-                        'user_id' => 171,
-                        'record_type_id' => 7,
-                        'wf_state_id' => $verified ? 1 : 60,
-                        'date' => Carbon::now(),
-                        'message' => 'Se creó el trámite mediante aplicación móvil.'
-                    ]);
                 }
             }
 
@@ -677,7 +693,16 @@ class EconomicComplementController extends Controller
                 'data' => (object)[],
             ], 200);
         }
-
+        } catch (\Exception $e) {
+            \Log::error('Error al crear el trámite: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'error' => true,
+                'serviceStatus' => false,
+                'message' => 'Error al crear el trámite: ' . $e->getMessage(),
+                'data' => []
+            ], 500);
+        }
     }
 
     private function print_pdf(EconomicComplement $economic_complement)
@@ -700,8 +725,9 @@ class EconomicComplementController extends Controller
         $code = $economic_complement->code;
         // $area = $economic_complement->wf_state->first_shortened;
         // $user = $economic_complement->user;
-        $area = $economic_complement->wf_records->sortBy('id')->first()->wf_state->first_shortened;
-        $user = $economic_complement->wf_records->sortBy('id')->first()->user;
+        $wf_record = $economic_complement->wf_records->sortBy('id')->first();
+        $area = $wf_record ? $wf_record->wf_state->first_shortened : 'Recepción';
+        $user = $wf_record ? $wf_record->user : null;
         $date = Util::getDateFormat($economic_complement->reception_date);
         $number = $code;
         if($economic_complement->eco_com_modality->procedure_modality->name != 'Vejez')
@@ -769,8 +795,9 @@ class EconomicComplementController extends Controller
         $code = $economic_complement->code;
         // $area = $economic_complement->wf_state->first_shortened;
         // $user = $economic_complement->user;
-        $area = $economic_complement->wf_records->sortBy('id')->first()->wf_state->first_shortened;
-        $user = $economic_complement->wf_records->sortBy('id')->first()->user;
+        $wf_record = $economic_complement->wf_records->sortBy('id')->first();
+        $area = $wf_record ? $wf_record->wf_state->first_shortened : 'Recepción';
+        $user = $wf_record ? $wf_record->user : null;
         $date = Util::getDateFormat($economic_complement->reception_date);
         $number = $code;
         if($economic_complement->eco_com_modality->procedure_modality->name != 'Vejez')
@@ -820,22 +847,22 @@ class EconomicComplementController extends Controller
                 'content' => base64_encode($pdf->output()),
             ],
         ];
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages[0])
+            ->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '23mm')
+            ->setOption('footer-html', $footerHtml);
+
+        return response()->json([
+            'error' => false,
+            'message' => 'PDF generado correctamente',
+            'data' => [
+                'filename' => 'economic_complement_' . $economic_complement->id . '.pdf',
+                'content' => base64_encode($pdf->output()),
+            ],
+        ], 200);
     }
-    //funcion para agregar uuid a los registros que tienen null
-    public static function add_uuid(){//aqui
-        $eco_coms=EconomicComplement::withTrashed()->get();
-        foreach ($eco_coms as $eco_com) {
-            $eco_com->uuid=Uuid::uuid1()->toString();
-            $eco_com->save();
-       }
-       return $eco_com;
-    }
-    // Por migrar a microservicio
-    private function checkObservations($affiliate)
-    {
-        $observation = $affiliate->observations()->where('enabled', false)->whereNull('deleted_at')->whereIn('id', ObservationType::where('description', 'like', 'Denegado')->where('type', 'like', 'A')->get()->pluck('id'))->get();
-        return $observation;
-    }
+
     public function checkAvailability(Request $request)
     {
         $affiliates = [];
@@ -1210,18 +1237,24 @@ class EconomicComplementController extends Controller
             ->latest()
             ->first();
 
-        if (mb_strtoupper($last_eco_com->eco_com_beneficiary->identity_card) !== $identity_card) {
-            return response()->json([
-                'error' => true,
-                'message' => 'Datos de beneficiario incorrectos.',
-                'data' => [
-                    'isDoblePerception' => $is_doble_perception,
-                    'isEconomicComplement' => false,
-                ]
-            ]);
+        // Check if last_eco_com exists before accessing its properties
+        if ($last_eco_com && $last_eco_com->eco_com_beneficiary) {
+            if (mb_strtoupper($last_eco_com->eco_com_beneficiary->identity_card) !== $identity_card) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Datos de beneficiario incorrectos.',
+                    'data' => [
+                        'isDoblePerception' => $is_doble_perception,
+                        'isEconomicComplement' => false,
+                    ]
+                ]);
+            }
+            $economic_beneficiary = $last_eco_com->eco_com_beneficiary;
+        } else {
+            // If no last_eco_com, use the current eco_com_beneficiary
+            $economic_beneficiary = $eco_com_beneficiary;
         }
 
-        $economic_beneficiary = $last_eco_com->eco_com_beneficiary;
         $economic_complement = EconomicComplement::find($economic_beneficiary->economic_complement_id);
         $modality = EcoComModality::find($economic_complement->eco_com_modality_id);
 

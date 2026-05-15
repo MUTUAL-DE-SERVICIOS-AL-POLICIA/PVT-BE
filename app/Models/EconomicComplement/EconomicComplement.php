@@ -831,12 +831,26 @@ class EconomicComplement extends Model
 
     public function updateEcoComWithFixedPension($fixed_pension_id = null)
     {
+        \Log::info('updateEcoComWithFixedPension called', [
+            'economic_complement_id' => $this->id,
+            'affiliate_id' => $this->affiliate_id,
+            'eco_com_reception_type_id' => $this->eco_com_reception_type_id,
+            'fixed_pension_id_param' => $fixed_pension_id
+        ]);
+        
         if (!($this->eco_com_reception_type_id == ID::ecoCom()->inclusion)) {
             $fixed_pension = $fixed_pension_id 
                 ? EcoComFixedPension::find($fixed_pension_id) 
                 : EcoComFixedPension::where('affiliate_id', $this->affiliate_id)
                     ->latest('eco_com_procedure_id')
                     ->first();
+                    
+            \Log::info('Fixed pension search result', [
+                'found' => !!$fixed_pension,
+                'fixed_pension_id' => $fixed_pension ? $fixed_pension->id : null,
+                'procedure_id' => $fixed_pension ? $fixed_pension->eco_com_procedure_id : null
+            ]);
+            
             if (!!$fixed_pension) {
                 $this->eco_com_fixed_pension_id = $fixed_pension->id;
                 $this->aps_total_fsa = $fixed_pension->aps_total_fsa;    //APS          

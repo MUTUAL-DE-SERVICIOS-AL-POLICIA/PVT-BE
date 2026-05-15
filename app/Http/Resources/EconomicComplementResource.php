@@ -21,6 +21,23 @@ class EconomicComplementResource extends Resource
         $discounts = $this->discount_types->map(function($e) {
             return $e['shortened'].': '.Util::formatMoney($e['pivot']['amount'], true);
         });
+        
+        // Check if eco_com_beneficiary exists
+        if (!$this->eco_com_beneficiary) {
+            return [
+                'id' => $this->id,
+                'title' => 'Complemento Económico',
+                'subtitle' => 'Sin beneficiario',
+                'printable' => false,
+                'display' => [
+                    [
+                        'key' => 'Error',
+                        'value' => 'Este complemento económico no tiene un beneficiario asociado.',
+                    ]
+                ]
+            ];
+        }
+        
         $data = [
             [
                 'key' => 'Beneficiario',
