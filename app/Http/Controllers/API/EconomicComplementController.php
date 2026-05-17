@@ -193,7 +193,7 @@ class EconomicComplementController extends Controller
             $economic_complement->inbox_state = false;
             $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
             $economic_complement->uuid = Uuid::uuid1()->toString();
-            $economic_complement->eco_com_origin_channel_id = 2; // Canal Aplicación Móvil
+            $economic_complement->eco_com_origin_channel_id = 3; // Canal Punto Digital
             /*
             if ($affiliate->pension_entity_id == ID::pensionEntity()->senasir) {
                 $economic_complement->sub_total_rent = Util::parseMoney($last_eco_com->sub_total_rent);
@@ -348,6 +348,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->inbox_state = false;
                     $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
                     $economic_complement->uuid = Uuid::uuid1()->toString();
+                    $economic_complement->eco_com_origin_channel_id = 3;
                     $economic_complement->save();
 
                     $economic_complement->updateEcoComWithFixedPension();    
@@ -458,7 +459,7 @@ class EconomicComplementController extends Controller
             $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
             $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
             $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
-            $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
+            $economic_complement->workflow_id = EcoComProcedure::whereDate('lagging_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
             $economic_complement->wf_current_state_id = $verified ? 1 : 60;
             $economic_complement->city_id = $last_eco_com->city_id;
             $economic_complement->degree_id = $affiliate->degree->id;
@@ -468,6 +469,7 @@ class EconomicComplementController extends Controller
             $economic_complement->inbox_state = false;
             $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
             $economic_complement->uuid = Uuid::uuid1()->toString();
+            $economic_complement->eco_com_origin_channel_id = 2; // Aplicación Móvil
 
             $economic_complement->save();
             /**
@@ -573,7 +575,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->eco_com_modality_id = EcoComModality::where('procedure_modality_id','=',$last_eco_com->eco_com_modality->procedure_modality_id)->where('name', 'like', '%normal%')->first()->id;
                     $economic_complement->eco_com_state_id = ID::ecoComState()->in_process;
                     $economic_complement->eco_com_procedure_id = $eco_com_procedure_id;
-                    $economic_complement->workflow_id = EcoComProcedure::whereDate('additional_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
+                    $economic_complement->workflow_id = EcoComProcedure::whereDate('lagging_end_date', '>=', $now)->first()->id? ID::workflow()->eco_com_normal : ID::workflow()->eco_com_additional;
                     $economic_complement->wf_current_state_id = $verified? 1 : 60;
                     $economic_complement->city_id = $last_eco_com->city_id;
                     $economic_complement->degree_id = $affiliate->degree->id;
@@ -583,6 +585,7 @@ class EconomicComplementController extends Controller
                     $economic_complement->inbox_state = false;
                     $economic_complement->eco_com_reception_type_id = ID::ecoCom()->habitual;
                     $economic_complement->uuid = Uuid::uuid1()->toString();
+                    $economic_complement->eco_com_origin_channel_id = 2;
                     $economic_complement->save();
 
                     $economic_complement->updateEcoComWithFixedPension();    
@@ -753,7 +756,6 @@ class EconomicComplementController extends Controller
     {
         $affiliate = $economic_complement->affiliate;
         $eco_com_beneficiary = $economic_complement->eco_com_beneficiary;
-        $eco_com_submitted_documents = $economic_complement->submitted_documents;
         $submitted_document_ids = $economic_complement->submitted_documents->pluck('procedure_requirement_id');
         $eco_com_submitted_documents = ProcedureRequirement::whereIn('id', $submitted_document_ids)->get();
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
@@ -764,17 +766,23 @@ class EconomicComplementController extends Controller
         $size_down = 200;
         $text = "La presente solicitud es generada bajo mi consentimiento a través de la Plataforma Virtual de Tramites – PVT, sin necesidad de firma expresa, para efectos de orden legal.";
 
-        $subtitle = $economic_complement->eco_com_procedure->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name);
+        $subtitle = optional($economic_complement->eco_com_procedure)->getTextName() . " - " . mb_strtoupper(optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name ?? '');
 
         $code = $economic_complement->code;
-        // $area = $economic_complement->wf_state->first_shortened;
-        // $user = $economic_complement->user;
-        $area = $economic_complement->wf_records->sortBy('id')->first()->wf_state->first_shortened;
-        $user = $economic_complement->wf_records->sortBy('id')->first()->user;
+        $wfRecord = $economic_complement->wf_records->sortBy('id')->first();
+        if (!$wfRecord) {
+            $area = '';
+            $user = null;
+        } else {
+            $area = optional($wfRecord->wf_state)->first_shortened ?? '';
+            $user = $wfRecord->user;
+        }
         $date = Util::getDateFormat($economic_complement->reception_date);
         $number = $code;
-        if($economic_complement->eco_com_modality->procedure_modality->name != 'Vejez')
-            $size = 780;
+        $procedureModalityName = optional(optional($economic_complement->eco_com_modality)->procedure_modality)->name;
+        if ($procedureModalityName != 'Vejez')
+            {$size = 780;}
+
         if ($economic_complement->eco_com_legal_guardian != null){
             $size = 700;
             $size_down = 80;
