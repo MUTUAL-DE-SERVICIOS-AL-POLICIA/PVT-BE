@@ -418,14 +418,18 @@ class Util
 
   public static function getRol()
   {
-    // return "hola ";
-    $roles = Auth::user()->roles;
+    $user = Auth::user();
+
+    if (!$user) {
+        return null;
+    }
+
+    $roles = $user->roles;
 
     $rol = Session::get('rol_id');
 
     $rol_object = null;
     foreach ($roles as $r) {
-      # code...
       if ($rol == $r->id) {
         $rol_object = $r;
       }
