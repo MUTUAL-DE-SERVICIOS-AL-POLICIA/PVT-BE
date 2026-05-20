@@ -19,29 +19,29 @@ class EconomicComplementObserver
         $user = Auth::user();
         $user_id = $user ? $user->id : 171;
         $username = $user ? $user->username : 'system';
-        $rol = Util::getRol();
-        $wfStateId = null;
-        if ($rol && $rol->wf_states && $rol->wf_states->first()) {
-            $wfStateId = $rol->wf_states->first()->id;
-        }
+        // $rol = Util::getRol();
+        // $wfStateId = null;
+        // if ($rol && $rol->wf_states && $rol->wf_states->first()) {
+        //     $wfStateId = $rol->wf_states->first()->id;
+        // }
         $message = 'Trámite creado mediante ' . optional($eco_com->origin_channel)->shortened
         . (optional($eco_com->origin_channel)->has_responsible_user? ' por el usuario ' . $username . '.': '.');
 
-        if ($wfStateId) {
+        // if ($wfStateId) {
         $eco_com->wf_records()->create([
-                'user_id' => $user_id,
-                'record_type_id' => 7,
-                'wf_state_id' => $eco_com->wf_current_state_id,
-                'date' => Carbon::now(),
-                'message' => $message
-            ]);
-        } else {
-            Log::warning('No se pudo registrar procedure_record: wfStateId null', [
-                'eco_com_id' => $eco_com->id,
-                'user_id' => $user_id,
-                'username' => $username
-            ]);
-        }
+            'user_id' => $user_id,
+            'record_type_id' => 7,
+            'wf_state_id' => $eco_com->wf_current_state_id,
+            'date' => Carbon::now(),
+            'message' => $message
+        ]);
+        // } else {
+        //     Log::warning('No se pudo registrar procedure_record: wfStateId null', [
+        //         'eco_com_id' => $eco_com->id,
+        //         'user_id' => $user_id,
+        //         'username' => $username
+        //     ]);
+        // }
     }
 
     private function defaultValuesWfRecord($wf_current_state_id = null, $record_type_id = null,$message = null, $old_wf_state_id = null, $old_user_id = null)
