@@ -240,7 +240,7 @@
         <div class="row">
           <div class="col-md-4"> <label for="is_paid">PAGO POR UNICA VEZ</label> </div>
             <div class="col-md-2">
-              <input class ="mediumCheckbox" type="checkbox" id="is_paid" v-model="form.is_paid" :disabled="!editing || (roleId != 4)">
+              <input class ="mediumCheckbox" type="checkbox" id="is_paid" v-model="form.is_paid" :disabled="!editing || ![4, 5].includes(roleId)">
             </div>
         </div>
         <br>
@@ -441,7 +441,7 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='16'
-          :disabled="!editing || (roleId != 4)" >
+          :disabled="!editing || ![4, 5].includes(roleId)" >
           </div>
         </div>
          <br>
@@ -455,7 +455,7 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='29'
-          :disabled="!editing || (roleId != 4)" >
+          :disabled="!editing || ![4, 5, 103].includes(roleId)" >
           </div>
         </div>
         <div class="row">
@@ -468,8 +468,36 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='28'
-          :disabled="!editing || (roleId != 4)" >
+          :disabled="!editing || ![4, 5, 103].includes(roleId)" >
           </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+          <label for="eco_com_state_id">HABILITADO TOTAL AMORTIZADO</label>
+          </div>
+          <div class="col-md-2">
+          <input class ="mediumCheckbox"
+          type="radio" 
+          id="eco_com_state_id" 
+          v-model="form.eco_com_state_id" 
+          value='32'
+          :disabled="!editing || ![4, 5, 103].includes(roleId)" >
+          </div>
+        </div>
+        <div v-if="roleId == 5">
+            <div class="row">
+              <div class="col-md-4">
+              <label for="eco_com_state_id">EJECUTADO TOTAL AMORTIZADO</label>
+              </div>
+              <div class="col-md-2">
+              <input class ="mediumCheckbox"
+              type="radio" 
+              id="eco_com_state_id" 
+              v-model="form.eco_com_state_id" 
+              value='18'
+              :disabled="!editing" >
+              </div>
+            </div>
         </div>
         <div class="row">
           <div class="col-md-4">
@@ -481,7 +509,7 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='23'
-          :disabled="!editing || (roleId != 4)" >
+          :disabled="!editing || ![4, 5].includes(roleId)" >
           </div>
         </div>
         <div class="row">
@@ -494,7 +522,7 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='12'
-          :disabled="!editing || (roleId != 4)" >
+          :disabled="!editing || ![4, 5].includes(roleId)" >
           </div>
         </div>
         <div class="row">
@@ -507,7 +535,7 @@
           id="eco_com_state_id" 
           v-model="form.eco_com_state_id" 
           value='27'
-          :disabled="!editing || (roleId != 4)" >
+          :disabled="!editing || ![4, 5].includes(roleId)" >
           </div>
         </div>
         <div class="row">
@@ -520,7 +548,7 @@
           id="eco_com_state_id"
           v-model="form.eco_com_state_id"
           value='30'
-          :disabled="!editing || (roleId != 4)" >
+          :disabled="!editing || ![4, 5].includes(roleId)" >
           </div>
         </div>
         <div class="row">
@@ -533,7 +561,7 @@
           id="eco_com_state_id"
           v-model="form.eco_com_state_id"
           value='31'
-          :disabled="!editing || (roleId != 4)" >
+          :disabled="!editing || ![4, 5].includes(roleId)" >
           </div>
         </div>
         <br>
@@ -706,20 +734,21 @@ export default {
       }
       let uri = `/economic_complement_update_information`;
       this.show_spinner = true;
-      await axios
-        .patch(uri, this.form)
-        .then(response => {
-          this.editing = false;
-          this.show_spinner = false;
-          this.form = response.data;
-          flash("Información del Trámite Actualizada");
-        })
-        location.reload()
-        .catch(response => {
-          flashErrors("Error al procesar: ", error.response.data.errors);
-          this.show_spinner = false;
-        });
-        
+      try {
+        const response = await axios.patch(uri, this.form);
+        this.editing = false;
+        this.show_spinner = false;
+        this.form = response.data;
+        flash("Información del Trámite Actualizada");
+        location.reload();
+      } catch (error) {
+        this.show_spinner = false;
+        if (error.response && error.response.data && error.response.data.errors) {
+          flash(error.response.data.errors[0], 'error', { timeout: 10000 });
+        } else {
+          flash("Ocurrió un error inesperado al procesar la solicitud.", 'error');
+        }
+      }
     },
     async deleteEcoCom() {
       if (!this.can("delete_economic_complement", this.permissions)) {

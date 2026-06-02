@@ -27,9 +27,7 @@
                 <th>Fin Normal</th>
                 <th>Inicio Rezagados</th>
                 <th>Fin Rezagados</th>
-                <th>Inicio Adicionales</th>
-                <th>Fin Adicionales</th>
-                <th>Indicator</th>
+                <!-- <th>Indicator</th> -->
                 <!-- <th>Estado</th> -->
                 <th>Opciones</th>
               </tr>
@@ -42,9 +40,7 @@
                 <td>{{ p.normal_end_date }}</td>
                 <td>{{ p.lagging_start_date }}</td>
                 <td>{{ p.lagging_end_date }}</td>
-                <td>{{ p.additional_start_date }}</td>
-                <td>{{ p.additional_end_date }}</td>
-                <td>{{ p.indicator }}</td>
+                <!-- <td>{{ p.indicator }}</td> -->
                 <!-- <td>
                   <span class="label" :class="getBadge(p.id)">hola </span>
                 </td>-->
@@ -229,56 +225,6 @@
           class="col-md-12"
           :class="{'has-error': errors.has('procedure_additional_start_date') || errors.has('procedure_additional_end_date') }"
         >
-          <div class="col-md-3">
-            <label class="control-label">Adicionales</label>
-          </div>
-          <div class="col-md-9">
-            <div class="col-md-6">
-              <input
-                v-date
-                name="procedure_additional_start_date"
-                v-model="form.additional_start_date"
-                class="form-control"
-                v-validate.initial="'required'"
-              >
-              <div v-show="errors.has('procedure_additional_start_date')">
-                <i class="fa fa-warning text-danger"></i>
-                <span class="text-danger">{{ errors.first('procedure_additional_start_date') }}</span>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <input
-                v-date
-                name="procedure_additional_end_date"
-                v-model="form.additional_end_date"
-                class="form-control"
-                v-validate.initial="'required'"
-              >
-              <div v-show="errors.has('procedure_additional_end_date')">
-                <i class="fa fa-warning text-danger"></i>
-                <span class="text-danger">{{ errors.first('procedure_additional_end_date') }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12" :class="{'has-error': errors.has('procedure_indicator')}">
-          <div class="col-md-3">
-            <label class="control-label">Indicador</label>
-          </div>
-          <div class="col-md-9">
-            <input
-              type="text"
-              class="form-control m-b"
-              name="procedure_indicator"
-              v-model="form.indicator"
-              v-validate.initial="'required'"
-            >
-            <i v-show="errors.has('procedure_indicator')" class="fa fa-warning text-danger"></i>
-            <span
-              v-show="errors.has('procedure_indicator')"
-              class="text-danger"
-            >{{ errors.first('procedure_indicator') }}</span>
-          </div>
         </div>
         <div class="col-md-12">
           <div class="text-center m-sm">
@@ -449,8 +395,12 @@ export default {
       }
       await axios[this.method](`/eco_com_procedure_${option}`, this.form)
         .then(response => {
-          console.log(response);
           this.$modal.hide("procedure-modal");
+          if (response.data.status === 'success') {
+            flash(response.data.message, 'success');
+          } else {
+            console.log(response);
+          }
         })
         .catch(error => {
           flashErrors("Error al procesar: ", error.response.data.errors);

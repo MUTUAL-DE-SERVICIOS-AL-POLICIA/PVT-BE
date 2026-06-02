@@ -26,6 +26,8 @@
                 <td class="text-center uppercase px-5 py-3"><div class="w-70 text-right">{!! $beneficiary->percentage !!}</div> </td>
                 @if($type == 'availability')
                     <td class="text-center uppercase font-bold px-5 py-3">{!! Util::formatMoney($beneficiary->amount_availability) !!}</td>
+                @elseif($type == 'refund')
+                    <td class="text-center uppercase font-bold px-5 py-3">{!! Util::formatMoney($beneficiary->ret_fun_refund_amounts) !!}</td>
                 @else
                     @if($type == 'total')
                         <td class="text-center uppercase font-bold px-5 py-3">{!! Util::formatMoney($beneficiary->amount_total) !!}</td>

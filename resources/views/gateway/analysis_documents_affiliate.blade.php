@@ -2,7 +2,12 @@
 
 @section('title', 'Documentos Analizados')
 
-@php($verification = ($data['nonNumericIds'] || $data['dataErrorReadFolder'] || $data['dataErrorReadFiles']))
+@php($verification = (
+  ($data['nonNumericIds'] ?? false) ||
+  ($data['dataErrorReadFolder'] ?? false) ||
+  ($data['dataErrorReadFiles'] ?? false) ||
+  ($data['duplicateData'] ?? false)
+))
 
 @section('notice1')
   <div class="content2">
@@ -74,7 +79,7 @@
             @endif
           </tr>
           <tr>
-            <td class="sub_description">N° Total de Archivos de Carpetas con NUB VÁLIDO</td>
+            <td class="sub_description">N° Total de Archivos de las carpetas</td>
             <td class="result">{{ $data['filesValidFolder'] }}</td>
           </tr>
           <tr>
@@ -87,6 +92,23 @@
             @if($data['dataErrorReadFiles'])
               <td>
                 @foreach($data['dataErrorReadFiles'] as $id => $files)
+                  &#128193; {{ $id }} <br>
+                  @foreach($files as $file)
+                    &nbsp;&#128196;{{ $file }} <br>
+                  @endforeach
+                  @if (!$loop->last) <br> @endif
+                @endforeach
+              </td>
+            @else
+              <td class="result">0</td>
+            @endif
+          </tr>
+          <tr>
+            <td class="sub_description">Archivos .pdf duplicados</td>
+              
+            @if($data['duplicateData'])
+              <td>
+                @foreach($data['duplicateData'] as $id => $files)
                   &#128193; {{ $id }} <br>
                   @foreach($files as $file)
                     &nbsp;&#128196;{{ $file }} <br>
@@ -112,7 +134,7 @@
         <tbody>
           <tr>
             <td class="sub_description">Archivos EXISTENTES para ACTUALIZAR</td>
-            @if($data['dataValidRealExist'])
+            @if(!empty($data['dataValidRealExist'] ?? []))
               <td>
                   @php($affiliate_id = null)
                   @foreach($data['dataValidRealExist'] as $dataValidRealExist)
@@ -134,7 +156,7 @@
           </tr>
           <tr>
             <td class="sub_description">Archivos NUEVOS para IMPORTAR</td>
-            @if($data['dataValidRealNotExist'])
+            @if(!empty($data['dataValidRealNotExist'] ?? []))
             <td>
                 @php($affiliate_id = null)
                 @foreach($data['dataValidRealNotExist'] as $dataValidRealNotExist)

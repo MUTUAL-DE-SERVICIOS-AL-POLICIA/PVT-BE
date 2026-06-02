@@ -13,7 +13,7 @@ class AffiliateTagsReport implements WithMultipleSheets
     public function sheets(): array
     {
         $sheets = [];
-        $tags = Tag::whereIn('id', [19,20])->get();
+        $tags = Tag::whereIn('id', [23,24])->get();
         $affiliates = Affiliate::with('tags')
             ->select(
                 'affiliates.id',

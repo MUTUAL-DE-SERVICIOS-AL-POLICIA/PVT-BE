@@ -221,6 +221,9 @@ th.ellipsis-text {
                         <div class="ibox">
                             <div class="ibox-title">
                                 <h2 class="pull-left">Renta/Pensión para la Calificación</h2>
+                                @if($role == 103 && count($eco_com_fixed_pensions ?? []) > 0)
+                                <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal()">Crear</button>
+                                @endif
                             </div>
                             <div class="ibox-content">
                                 <div class="table-responsive">
@@ -228,7 +231,7 @@ th.ellipsis-text {
                                         <thead>
                                             <tr class="success">
                                                 <th>Periódo vigente</th>
-                                                <th>Periodo renta/pensión</th>
+                                                <th>Periodo</th>
                                                 <th>Tipo de registro</th>
                                                 @if($affiliate->pension_entity->id != 5)
                                                     <th>Fracción de Saldo Acumulado</th>
@@ -242,14 +245,18 @@ th.ellipsis-text {
                                                     <th>Renta Dignidad</th>
                                                 @endif
                                                 <th>Total Renta</th>
-                                                @if($role == 103)
+                                                <th>Modalidad</th>
+                                                <th>Promedio</th>
+                                                <th>Limite Referencial</th>
+                                                <th>Sueldo Base</th>
+                                                @if($role == 103 || $role == 5)
                                                 <th>Acciones</th>
                                                 @endif
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($eco_com_fixed_pensions as $eco_com_fixed_pension)
-                                                <tr>
+                                                <tr @if($loop->first) style="background-color: #CCE5FF;" @endif>
                                                     <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->start_production_date)->format('Y') }} - 
                                                         {{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_regulation->end_production_date)->format('Y') }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($eco_com_fixed_pension->eco_com_procedure->year)->format('Y') }} - {{ $eco_com_fixed_pension->eco_com_procedure->semester }}</td>
@@ -266,18 +273,37 @@ th.ellipsis-text {
                                                         <td>{{ $eco_com_fixed_pension->dignity_pension }}</td>
                                                     @endif
                                                     <td>{{ $eco_com_fixed_pension->total_rent }}</td>
+                                                    <td>{{ optional(optional($eco_com_fixed_pension->eco_com_rent)->procedureModality)->name }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->eco_com_rent)->average }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->eco_com_rent)->referential_limit }}</td>
+                                                    <td>{{ optional($eco_com_fixed_pension->base_wage)->amount}}</td>
                                                     @if($role == 103)
                                                     <td>
-                                                        <button class="btn btn-warning btn-sm" @click="$refs.editModal.openModal({{ json_encode($eco_com_fixed_pension) }})">Editar</button>
+                                                        <button class="btn btn-warning btn-sm" @click='$refs.editModal.openModal(@json($eco_com_fixed_pension))'>Editar</button>
+                                                    </td>
+                                                                                                        @endif
+                                                    @if($role == 5)
+                                                    <td>
+                                                        <button onclick="deleteFixedPension({{ $eco_com_fixed_pension->id }})"
+                                                                class="btn btn-danger btn-sm">
+                                                            Eliminar
+                                                        </button>
                                                     </td>
                                                     @endif
                                                 </tr>
+                                                @if($loop->first)
+                                                <tr>
+                                                    <td colspan="100%" style="background-color:#CCE5FF; font-style:italic; text-align:center;">
+                                                        Renta que se usará en nuevos trámites
+                                                    </td>
+                                                </tr>
+                                                @endif
                                             @endforeach
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                            <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" ></edit-pension-modal>
+                            <edit-pension-modal ref="editModal" :affiliate_pension_entity_id="{{$affiliate->pension_entity->id}}" :affiliate_id="{{$affiliate->id}}"></edit-pension-modal>
                         </div>
                         @endif
                         <!---End fixed-->
@@ -308,7 +334,8 @@ th.ellipsis-text {
                                             <th>Ubicación</th>
                                             <th>Estado</th>
                                             <th>Complemento Economico</th>
-                                            <th>liquido Pagable</th>
+                                            <th>Liquido Pagable</th>
+                                            <th>Periodo Renta Fija</th>
                                             <th>Opciones</th>
                                             </tr>
                                         </thead>
@@ -324,6 +351,11 @@ th.ellipsis-text {
                                                 <td>{{$eco_com->eco_com_state->name }}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->getOnlyTotalEcoCom())}}</td>
                                                 <td style="text-align:right">{{Util::formatMoney($eco_com->total)}}</td>
+                                                <td>
+                                                @if (isset($eco_com->eco_com_fixed_pension))
+                                                    {{ \Carbon\Carbon::parse($eco_com->eco_com_fixed_pension->eco_com_procedure->year)->format('Y')}} - {{$eco_com->eco_com_fixed_pension->eco_com_procedure->semester}}
+                                                @endif
+                                                </td>
                                                 <td style="vertical-align:middle">
                                                 @can('update', new Muserpol\Models\EconomicComplement\EconomicComplement)
                                                     <a href="/eco_com/{{$eco_com->id}}">
@@ -334,7 +366,7 @@ th.ellipsis-text {
                                                 </tr>
                                                 @if ($eco_com->discount_types->count() > 0)
                                                     <tr class="danger">
-                                                        <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" >
+                                                        <td colspan="3" rowspan="{{ $eco_com->discount_types->count() + 1  }}" >
                                                         </td>
                                                         <td colspan="2" rowspan="{{ $eco_com->discount_types->count() + 1  }}" style="vertical-align:middle">
                                                             <strong>
@@ -495,4 +527,71 @@ $(document).ready(function() {
             });
         });
     });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function deleteFixedPension(id) {
+
+    Swal.fire({
+        title: '¿Está seguro?',
+        text: "Este registro será eliminado",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6'
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        fetch(`/eco_com_fixed_pension/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        })
+        .then(async response => {
+
+            let data = await response.json();
+
+            if (!response.ok) {
+                throw data;
+            }
+
+            if (typeof flash === 'function') {
+                flash(data.message, 'success');
+            } else {
+                Swal.fire('Eliminado', data.message, 'success');
+            }
+
+            // refrescar
+            setTimeout(() => location.reload(), 800);
+        })
+        .catch(error => {
+
+            let mensajes = [];
+
+            if (error.errors) {
+                mensajes = error.errors;
+            } else if (error.message) {
+                mensajes = [error.message];
+            } else {
+                mensajes = ['Error desconocido'];
+            }
+
+            if (typeof flashErrors === 'function') {
+                flashErrors("Error: ", mensajes);
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    html: mensajes.join('<br>'),
+                    icon: 'error'
+                });
+            }
+        });
+
+    });
+}
 </script>

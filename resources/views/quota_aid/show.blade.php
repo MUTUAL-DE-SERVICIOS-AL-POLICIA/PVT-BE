@@ -313,7 +313,7 @@
                                     {{-- @can('view',new Muserpol\Models\RetirementFund\RetFunSubmittedDocument) --}}
                                         {{-- @include('ret_fun.legal_review', ['affiliate'=>$affiliate,'quota_aid'=>$quota_aid,'documents'=>$documents])                                 --}}
                                 <quota-aid-step1-requirements-edit 
-                                    :affiliate="{{ $affiliate }}" :quota_aid="{{ $quota_aid }}" :requirements='@json($requirements)'  :submitted="{{$submit_documents}}" :rol="{{Muserpol\Helpers\Util::getRol()->id}}"
+                                    :affiliate="{{ $affiliate }}" :quota_aid="{{ $quota_aid }}" :requirements='@json($requirements)' :rol="{{Muserpol\Helpers\Util::getRol()->id}}"
                                 >
                                 </quota-aid-step1-requirements-edit>
                                     {{-- @endcan --}}

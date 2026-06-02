@@ -368,7 +368,7 @@ class AffiliateController extends Controller
         /**
          ** eco coms
          */
-        $eco_coms = $affiliate->economic_complements()->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->reverse();
+        $eco_coms = $affiliate->economic_complements()->with('eco_com_fixed_pension')->orderBy(DB::raw("regexp_replace(split_part(code, '/',3),'\D','','g')::integer"))->orderBy(DB::raw("split_part(code, '/',2)"))->orderBy(DB::raw("split_part(code, '/',1)::integer"))->get()->reverse();
         $eco_com_procedures = EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->get();
         foreach ($eco_com_procedures as $e) {
             $e->full_name = $e->fullName();
@@ -450,12 +450,7 @@ class AffiliateController extends Controller
          * Renta fija CE
          */
 
-        $eco_com_fixed_pensions = $affiliate->eco_com_fixed_pensions()->get();
-        foreach ($eco_com_fixed_pensions as $eco_com_fixed_pension){
-            $eco_com_fixed_pension->eco_com_regulation = $eco_com_fixed_pension->eco_com_regulation;
-            $eco_com_fixed_pension->eco_com_procedure = $eco_com_fixed_pension->eco_com_procedure;
-        }
-
+        $eco_com_fixed_pensions = $affiliate->eco_com_fixed_pensions()->with(['base_wage','eco_com_rent.procedureModality'])->orderBy('eco_com_procedure_id', 'desc')->get();
         $data = array(
             'quota_aids'=>$quota_aids,
             'retirement_funds'=>$retirement_funds,

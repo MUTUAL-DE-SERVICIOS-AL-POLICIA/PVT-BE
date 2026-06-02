@@ -91,9 +91,11 @@ export default {
       // perecentageAdvancePayment: 0,
       lastBaseWage: 0,
       totalAverageSalaryQuotable: 0,
-      validateLimitAverageQuotable: false,
+      averageSalaryLimit: 0,
       totalQuotes:0,
       guarantors:[],
+      refundsData: [],
+      refundIndex: 0,
 
       maxPercentage: 100.00,
       serviceYears:this.affiliate.service_years,
@@ -102,8 +104,11 @@ export default {
 
       totalAporte: 0,
       yield: 0,
-      lessAdministrativeExpenses: 0,
+      percentageYield: 0,
 
+      contributionTableDataUrl: "",
+      contributionTableTitle: "",
+      contributionTableFileName: "",
     };
   },
   mounted(){
@@ -168,12 +173,6 @@ export default {
         if (data.type == 'afiliado') {
           this.guarantors[index].full_name = `${data.first_name} ${data.second_name} ${data.last_name} ${data.mothers_last_name} ${data.surname_husband}`;
           this.guarantors[index].id = data.id;
-          // if(data.first_name){
-          //   let lastIndex = this.$refs.guarantoramount.length-1;
-          //   this.$refs.guarantoramount[lastIndex].focus();
-
-          // }
-
         }
       })
       .catch(function (error) {
@@ -223,14 +222,14 @@ export default {
           if (this.globalPay) {
             this.totalAporte = response.data.total_aporte;
             this.yield = response.data.yield;
-            this.lessAdministrativeExpenses = response.data.less_administrative_expenses;
+            this.percentageYield = response.data.percentageYield;
           }
 
           TweenLite.to(this.$data, 0.5, { 
             lastBaseWage: response.data.lastBaseWage,
             totalAverageSalaryQuotable: response.data.total_salary_quotable.total_average_salary_quotable,
             totalQuotes: response.data.total_quotes,
-            validateLimitAverageQuotable: response.data.validate_limit_average
+            averageSalaryLimit: response.data.averageSalaryLimit,
           });
           setTimeout(() => {
             this.$scrollTo('#showEconomicData');
@@ -240,8 +239,8 @@ export default {
           this.showEconomicData = false;
       });
     },
-    saveAverageQuotable(){
-      let uri=`/ret_fun/${this.retirementFundId}/save_average_quotable`;
+    calculateSubTotal(){
+      let uri=`/ret_fun/${this.retirementFundId}/calculate_sub_total`;
       axios.get(uri).then(response => {
         flash("Salario Promedio Cotizable Actualizado")
         this.showEconomicDataTotal = true;
@@ -303,9 +302,9 @@ export default {
         this.showEconomicDataTotal = false
       });
     },
-    saveTotalRetFun(reload){
+    async saveTotalRetFun(reload){
       let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun`;
-      axios.patch(uri,
+      await axios.patch(uri,
         {
           advancePayment: parseMoney(this.advancePayment),
           retentionLoanPayment: parseMoney(this.retentionLoanPayment),
@@ -348,89 +347,105 @@ export default {
           this.showPercentagesRetFun = false;
       });
     },
-    // requalificationTotal(index){
-    //   this.beneficiaries[index].temp_amount = (this.totalRetFun * this.beneficiaries[index].temp_percentage)/100;
-    // },
-    savePercentages(reload){
-      let uri =`/ret_fun/${this.retirementFundId}/save_percentages`;
-      axios.patch(uri,
+    async savePercentages(reload) {
+      let uri = `/ret_fun/${this.retirementFundId}/save_percentages`;
+      await axios.patch(uri,
         {
           beneficiaries: this.beneficiaries,
           reload,
         }
-      ).then(response =>{
+      ).then(response => {
         if (reload) {
           flash("Montos recalculados.");
-        }else{
+        } else {
           flash("Porcentages actualizados a los derechohabientes.");
         }
-          this.hasAvailability = response.data.has_availability;
-          this.subTotalAvailability = response.data.subtotal_availability;
-          this.totalAnnualYield = response.data.total_annual_yield;
-          this.totalAvailability = response.data.total_availability;
-          this.total = response.data.total;
-          this.beneficiariesAvailability = response.data.beneficiaries;
-          this.finishRetFun = true,
-          this.arrayDiscounts = response.data.array_discounts;
-          console.log('Has Availability: '+response.data.has_availability);
-          setTimeout(() => {
-            if (this.hasAvailability) {
-              this.$scrollTo('#hasAvailabilityScroll');
-            }else{
-              this.$scrollTo('#wrapper');
-            }
-          }, 800);
-      }).catch(error =>{
+        this.total = response.data.total;
+        this.finishRetFun = true;
+      }).catch(error => {
         console.log(error);
-          this.finishRetFun = false,
-          flash("Error al guardar los porcentages", "error");
+        this.finishRetFun = false;
+        flash("Error al guardar los porcentages", "error");
       });
+      let uriRefunds = `/ret_fun/${this.retirementFundId}/qualification/refunds`;
+      await axios.get(uriRefunds)
+        .then(response => {
+          if (response.data.refunds && response.data.refunds.length > 0) {
+            this.refundsData = response.data.refunds;
+            this.showNextRefund();
+          } else {
+            setTimeout(() => {
+              this.$scrollTo('#wrapper');
+            }, 800);
+          }
+        })
+        .catch(err => {
+          if (err.response) {
+            let error = err.response.data.message || err.response.data.error || 'Error en la consulta';
+            flashErrors(error);
+            console.error(err.response);
+          } else {
+            flashErrors('No se pudo conectar con el servidor');
+          }
+        })
     },
-    savePercentagesAvailability(reload){
-      let uri =`/ret_fun/${this.retirementFundId}/save_percentages_availability`;
-      axios.patch(uri,
-        {
-          beneficiaries: this.beneficiariesAvailability,
-          reload,
-        }
-      ).then(response =>{
-        if(reload){
-          flash("Montos recalculados.");
-        }else{
-          flash("Montos de Disponibilidad Actualizados.");
-        }
-          this.beneficiariesRetFunAvailability = response.data.beneficiaries;
-          this.showPercentagesRetFunAvailability = true;
-          setTimeout(() => {
-            this.$scrollTo('#showPercentagesRetFunAvailability');
-          }, 800);
-      }).catch(error =>{
-          flash("Error al guardar Montos de Disponibilidad", "error");
-          this.showPercentagesRetFunAvailability = false;
-      });
+    async saveRefundPercentages(refund) {
+      let uri = `/ret_fun_refund/${refund.id}/amounts`;
+      try {
+        await axios.patch(uri, {
+          beneficiaries: refund.beneficiaries
+        });
+        flash('Todos los montos fueron guardados correctamente.');
+        this.showNextRefund();
+      } catch (err) {
+        this.handleAxiosError(err);
+      }
     },
-    saveTotalRetFunAvailability(){
-      let uri =`/ret_fun/${this.retirementFundId}/save_total_ret_fun_availability`;
-      axios.patch(uri,
-        {
-          beneficiaries: this.beneficiariesRetFunAvailability,
-        }
-      ).then(response =>{
-          this.finishAvailability =  true,
-          flash("Montos de Fondo de Retiro + Disponibilidad Actualizados.");
-          setTimeout(() => {
-            this.$scrollTo('#wrapper');
-          }, 800);
-      }).catch(error =>{
-          flash("Error al guardar Montos de Fondo de Retiro + Disponibilidad", "error");
-      });
+    showNextRefund(){      
+      if (this.refundIndex < this.refundsData.length) {                
+        this.refundsData[this.refundIndex].show = true;
+        setTimeout(() => {
+          this.$scrollTo('#refund'+this.refundsData[this.refundIndex].id);
+          this.refundIndex++;
+        }, 800);
+      } else {
+        setTimeout(() => {
+          this.$scrollTo('#wrapper');
+        }, 800);
+      }
     },
-    // requalificationTotalAvailability(index){
-    //   this.beneficiariesAvailability[index].temp_amount_availability = (this.totalAvailability * this.beneficiariesAvailability[index].percentage)/100;
-    // },
-    // requalificationTotalRetFunAvailability(index){
-    //   this.beneficiariesRetFunAvailability[index].temp_amount_total = (this.total * this.beneficiariesAvailability[index].percentage)/100;
-    // },
+    handleAxiosError(err) {     
+      console.log(err.response.data.message);
+       
+      if (err.response) {
+        const error =
+          err.response.data.message ||
+          err.response.data.error ||
+          'Error en la consulta';
+
+        flash(error, "error");
+        console.error(err.response);
+      } else {
+        flash('No se pudo conectar con el servidor', "error");
+        console.error(err);
+      }
+    },
+    openTableModal(uri, title, fileName) {
+      console.log("openTableModal");
+      this.$modal.show('contribution-table');
+      this.contributionTableDataUrl = uri;
+      this.contributionTableTitle = title;
+      this.contributionTableFileName = fileName;
+    },
+    closeTableModal() {
+      this.contributionTableDataUrl = "";
+      this.contributionTableTitle = "";
+      this.contributionTableFileName = "";
+    },
+    showRefundTable(retFunId, refundId, title, fileName){
+      let uriRefunds = `/ret_fun/${retFunId}/refund/${refundId}/contributions`;
+      this.openTableModal(uriRefunds, title, fileName);
+    },
     max(a, b){
       return (parseFloat(a.toFixed(2)) > parseFloat(b.toFixed(2)) || isNaN(a));
     },
@@ -457,7 +472,7 @@ export default {
     async obtainDetailsOfJudicialRetention() {
       try {
         const response = await axios.get(`/ret_fun/${this.retirementFundId}/obtain_judicial_retention`)
-        if(response.data.data) {
+        if(response.data.data[0]) {
           if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
           if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
           if(response.data.data[0].note_code != undefined){
@@ -480,11 +495,6 @@ export default {
     totalAverageSalaryQuotableAnimated: function() {
       return this.totalAverageSalaryQuotable;
     },
-
-    validateLimitAverageQuotableVerified: function() {
-      return this.validateLimitAverageQuotable;
-    },
-
     totalQuotesAnimated: function() {
       return this.totalQuotes;
     },
@@ -503,46 +513,8 @@ export default {
     percentageRetentionGuarantor(){
       return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.retentionGuarantor))/this.subTotalRetFun : 0;
     },
-
     percentageRetentionJudicial(){
       return (this.subTotalRetFun > 0 && this.subTotalRetFun != '') ?  (100 * parseMoney(this.judicialRetentionAmount))/this.subTotalRetFun : 0;
-    },
-
-    totalPercentageRetFun(){
-      const sum = this.beneficiaries.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.temp_percentage);
-       }, 0.0);
-       return sum;
-    },
-    totalAmountRetFun(){
-      const sum = this.beneficiaries.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.temp_amount);
-       }, 0.0);
-       return sum;
-    },
-    totalPercentageAvailability(){
-      const sum = this.beneficiariesAvailability.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.percentage);
-       }, 0.0);
-       return sum;
-    },
-    totalAmountAvailability(){
-      const sum = this.beneficiariesAvailability.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.temp_amount_availability);
-       }, 0.0);
-       return sum;
-    },
-    totalPercentageRetFunAvailability(){
-      const sum = this.beneficiariesRetFunAvailability.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.percentage);
-       }, 0.0);
-       return sum;
-    },
-    totalAmountRetFunAvailability(){
-      const sum = this.beneficiariesRetFunAvailability.reduce((accumulator, current) => {
-        return accumulator + parseFloat(current.temp_amount_total);
-       }, 0.0);
-       return sum;
     },
   },
 };
