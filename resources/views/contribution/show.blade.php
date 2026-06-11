@@ -41,6 +41,7 @@
                                 <th>Gestión-1</th>
                                 <th>Grado</th>
                                 <th>Unidad</th>
+                                <th>Dias trab.</th>
                                 <th>Sueldo</th>
                                 <th>Antigüedad</th>
                                 <th>Categoria</th>
@@ -144,6 +145,7 @@
                 {data: 'month_year', },
                 {data: 'degree_id'},
                 {data: 'unit_id'},
+                {data: 'days_worked'},
                 {data: 'base_wage'},
                 {data: 'seniority_bonus'},
                 {data: 'category_id',},

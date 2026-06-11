@@ -39,7 +39,7 @@
                                 <td class="text-xs">{!! $eco_com->origin_channel->shortened !!}</td>
                             </tr>
                             @endif
-                            @if(isset($user) && $eco_com->origin_channel->has_responsible_user)
+                            @if(optional($eco_com->origin_channel)->has_responsible_user)
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
                                 <td class="text-xs">{!! $user->username !!}</td>

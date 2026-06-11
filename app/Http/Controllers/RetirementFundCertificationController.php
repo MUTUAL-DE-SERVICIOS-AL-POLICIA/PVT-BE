@@ -1451,7 +1451,7 @@ class RetirementFundCertificationController extends Controller
     $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-    $title = "CERTIFICACIÓN DE DEVOLUCIÓN DE DEPÓSITOS";
+    $title = "CERTIFICACIÓN DE DEVOLUCIÓN";
 
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
     $code = $retirement_fund->code;
@@ -2829,9 +2829,9 @@ class RetirementFundCertificationController extends Controller
       'beneficiaries' => $beneficiaries,
       'beneficiaries_minor' => $beneficiaries_minor,
       'refunds' => $refunds,
-      'hasRefund' => $refunds->count() > 0,
+      'hasRefund' => $refunds->isNotEmpty(),
     ];
-    logger()->info($data['beneficiaries']);
+
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {
       $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();

@@ -18,21 +18,37 @@ class EconomicComplementObserver
     {
         $user = Auth::user();
         $user_id = $user ? $user->id : 171;
-        $username = $user ? $user->username : '';
-        $message = 'Trámite creado mediante ' . $eco_com->origin_channel->shortened
-        . (!$eco_com->origin_channel->has_responsible_user ? '.' : ' por el usuario ' . $username . '.');
+        $username = $user ? $user->username : 'system';
+        // $rol = Util::getRol();
+        // $wfStateId = null;
+        // if ($rol && $rol->wf_states && $rol->wf_states->first()) {
+        //     $wfStateId = $rol->wf_states->first()->id;
+        // }
+        $message = 'Trámite creado mediante ' . optional($eco_com->origin_channel)->shortened
+        . (optional($eco_com->origin_channel)->has_responsible_user? ' por el usuario ' . $username . '.': '.');
+
+        // if ($wfStateId) {
         $eco_com->wf_records()->create([
-                'user_id' => $user_id,
-                'record_type_id' => 7,
-                'wf_state_id' => $eco_com->wf_current_state_id,
-                'date' => Carbon::now(),
-                'message' => $message
-            ]);
+            'user_id' => $user_id,
+            'record_type_id' => 7,
+            'wf_state_id' => $eco_com->wf_current_state_id,
+            'date' => Carbon::now(),
+            'message' => $message
+        ]);
+        // } else {
+        //     Log::warning('No se pudo registrar procedure_record: wfStateId null', [
+        //         'eco_com_id' => $eco_com->id,
+        //         'user_id' => $user_id,
+        //         'username' => $username
+        //     ]);
+        // }
     }
-    private function defaultValuesWfRecord($wf_current_state_id = null, $record_type_id = null, $message = null, $old_wf_state_id = null, $old_user_id = null)
+
+    private function defaultValuesWfRecord($wf_current_state_id = null, $record_type_id = null,$message = null, $old_wf_state_id = null, $old_user_id = null)
     {
+        $user = Auth::user();
         $default = [
-            'user_id' => Auth::user()->id,
+            'user_id' => $user ? $user->id : 171,
             'date' => Carbon::now(),
             'wf_state_id' => $wf_current_state_id,
             'record_type_id' => $record_type_id,
@@ -44,10 +60,13 @@ class EconomicComplementObserver
     }
     public function updating(EconomicComplement $eco_com)
     {
+        $user = Auth::user();
+        $userId = $user ? $user->id : 171;
+        $username = $user ? $user->username : 'system';
         $old = EconomicComplement::find($eco_com->id);
         $eco_com->load(['eco_com_state', 'city', 'eco_com_procedure', 'degree', 'category', 'wf_state']);
 
-        $message = 'El usuario ' . Auth::user()->username . ' modifico ';
+        $message = 'El usuario ' . $username . ' modifico ';
         $temp = $message;
         if ($eco_com->city_id != $old->city_id) {
             $message = $message . ' regional de ' . optional($old->city)->name . ' a ' . optional($eco_com->city)->name . ', ';
@@ -93,9 +112,9 @@ class EconomicComplementObserver
             $message = $message . ' Pago por unica vez de ' . ($old->is_paid ? 'activo' : 'no activo')  . ' a ' . ($eco_com->is_paid ? 'activo' : 'no activo'). ', ';
         }
         if ($eco_com->eco_com_state_id != $old->eco_com_state_id) {
-            $message = $message . ' el estado de ' . $old->eco_com_state->name . ' a ' . $eco_com->eco_com_state->name . ', ';
+            $message = $message . ' el estado de ' . optional($old->eco_com_state)->name . ' a ' . optional($eco_com->eco_com_state)->name . ', ';
 
-            if ($old->eco_com_state->eco_com_state_type_id === EcoComStateType::PAGADO) {
+            if (optional($old->eco_com_state)->eco_com_state_type_id === EcoComStateType::PAGADO) {
                 $old_eco_com = Arr::except($old->toArray(), ['old_eco_com']);
                 if (is_null($eco_com->old_eco_com)) {
                     $eco_com->old_eco_com = json_encode($old_eco_com);
@@ -103,42 +122,72 @@ class EconomicComplementObserver
             }
         }
         if($temp !=  $message){
+            $rol = Util::getRol();
+            $wfStateId = null;
+            if ($rol && $rol->wf_states && $rol->wf_states->first()) {
+                $wfStateId = $rol->wf_states->first()->id;
+            }
             $message = $message . ' ';
+            if ($wfStateId) {
             $eco_com->procedure_records()->create([
-                'user_id' => Auth::user()->id,
+                'user_id' => $userId,
                 'record_type_id' => 7,
-                'wf_state_id' => Util::getRol()->wf_states->first()->id,
+                'wf_state_id' => $wfStateId,
                 'date' => Carbon::now(),
                 'message' => $message
             ]);
+        } else {
+                Log::warning('No se pudo registrar procedure_record: wfStateId null', [
+                    'eco_com_id' => $eco_com->id,
+                    'user_id' => $userId,
+                    'username' => $username
+                ]);
+            }
         }
-
-        $wf_state_sequence = WorkflowState::find($eco_com->wf_current_state_id)->sequence_number;
-        $old_wf_state_sequence = WorkflowState::find($old->wf_current_state_id)->sequence_number;
+        $wf_state = WorkflowState::find($eco_com->wf_current_state_id);
+        $old_wf_state = WorkflowState::find($old->wf_current_state_id);
+        $wf_state_sequence = optional($wf_state)->sequence_number ?? 0;
+        $old_wf_state_sequence = optional($old_wf_state)->sequence_number ?? 0;
 
         if ($eco_com->wf_current_state_id != $old->wf_current_state_id && $wf_state_sequence > $old_wf_state_sequence) {
-            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 3, "El usuario " . Auth::user()->username . " Derivó el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $eco_com->wf_state->name , $old->wf_current_state_id, $old->user_id));
+            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 3, "El usuario " . $username . " Derivó el trámite " . $old->code . " de " . optional($old->wf_state)->name . " a " . optional($eco_com->wf_state)->name, $old->wf_current_state_id, $old->user_id));
         }
         if ($eco_com->wf_current_state_id != $old->wf_current_state_id && $wf_state_sequence < $old_wf_state_sequence) {
-            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 4, "El usuario " . Auth::user()->username . " Devolvió el trámite " . $old->code . " de " . $old->wf_state->name . " a " . $eco_com->wf_state->name . " con nota: " . request()->message . ".", $old->wf_current_state_id, $old->user_id));
+            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 4, "El usuario " . $username . " Devolvió el trámite " . $old->code . " de " . optional($old->wf_state)->name . " a " . optional($eco_com->wf_state)->name . " con nota: " . request()->message . ".", $old->wf_current_state_id, $old->user_id));
         }
         if ($old->inbox_state == false && $eco_com->inbox_state == true && $eco_com->wf_current_state_id == $old->wf_current_state_id) {
-            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 1, 'El usuario ' . Auth::user()->username . ' Validó el trámite.'));
+            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 1, 'El usuario ' . $username . ' Validó el trámite.'));
         }
         if ($old->inbox_state == true && $eco_com->inbox_state == false && $eco_com->wf_current_state_id == $old->wf_current_state_id) {
-            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 2, 'El usuario ' . Auth::user()->username . ' Canceló el trámite.'));
+            $eco_com->wf_records()->create($this->defaultValuesWfRecord($eco_com->wf_current_state_id, 2, 'El usuario ' . $username . ' Canceló el trámite.'));
         }
 
     }
 
     public function deleted(EconomicComplement $eco_com) {
-        $message = 'El usuario '. Auth::user()->username . ' eliminó el trámite.';
+        $user = Auth::user();
+        $userId = $user ? $user->id : 171;
+        $username = $user ? $user->username : 'system';
+        $rol = Util::getRol();
+        $wfStateId = null;
+        if ($rol && $rol->wf_states && $rol->wf_states->first()) {
+            $wfStateId = $rol->wf_states->first()->id;
+        }
+        $message = 'El usuario ' . $username . ' eliminó el trámite.';
+        if ($wfStateId) {
         $eco_com->procedure_records()->create([
-            'user_id' => Auth::user()->id,
+            'user_id' => $userId,
             'record_type_id' => 7,
-            'wf_state_id' => Util::getRol()->wf_states->first()->id,
+            'wf_state_id' => $wfStateId,
             'date' => Carbon::now(),
             'message' => $message
         ]);
+        } else {
+            Log::warning('No se pudo registrar procedure_record en deleted(): wfStateId null', [
+                'eco_com_id' => $eco_com->id,
+                'user_id' => $userId,
+                'username' => $username
+            ]);
+        }
     }
 }

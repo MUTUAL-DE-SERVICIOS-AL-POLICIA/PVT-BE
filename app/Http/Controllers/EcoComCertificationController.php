@@ -406,6 +406,7 @@ class EcoComCertificationController extends Controller
             'eco_com_beneficiary',
             'eco_com_procedure',
             'eco_com_modality',
+            'eco_com_once_payment',
             'discount_types',
             'observations',
         ])->find($id);
@@ -425,6 +426,7 @@ class EcoComCertificationController extends Controller
         $date = Util::getTextDate(now());
         $with_padding = true;
         $number = $code;
+        $beneficiary_one_payment = $eco_com->eco_com_once_payment;
 
         $bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
         $footerHtml = view()->make('eco_com.print.footer', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
@@ -440,12 +442,12 @@ class EcoComCertificationController extends Controller
             'user' => $user,
             'date' => $date,
             'number' => $number,
-
             'eco_com' => $eco_com,
             'eco_com_procedure' => $eco_com_procedure,
             'affiliate' => $affiliate,
             'eco_com_beneficiary' => $eco_com_beneficiary,
             'with_padding' => $with_padding,
+            'beneficiary_one_payment' => $beneficiary_one_payment,
         ];
         $pages = [];
         $number_pages = Util::isRegionalRole() ? 3 : 1;
