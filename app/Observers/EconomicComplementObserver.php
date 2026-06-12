@@ -17,7 +17,7 @@ class EconomicComplementObserver
     public function created(EconomicComplement $eco_com)
     {
         $user = Auth::user();
-        $user_id = $user ? $user->id : 171;
+        $user_id = $user ? $user->id : ($eco_com->user_id ?? 171);
         $username = $user ? $user->username : 'system';
         // $rol = Util::getRol();
         // $wfStateId = null;
@@ -166,7 +166,7 @@ class EconomicComplementObserver
 
     public function deleted(EconomicComplement $eco_com) {
         $user = Auth::user();
-        $userId = $user ? $user->id : 171;
+        $userId = $user ? $user->id : ($eco_com->user_id ?? 171);
         $username = $user ? $user->username : 'system';
         $rol = Util::getRol();
         $wfStateId = null;
