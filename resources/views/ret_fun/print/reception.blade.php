@@ -104,10 +104,10 @@
                 </tbody>
             </table>
         @endif
-                <div class="text-justify text-xxs">El pago del beneficio será desembolsado en su cuenta bancaria dentro de un plazo máximo de 30 días hábiles, contados a partir de la fecha de presentación de la solicitud formal.<br>
+        <div class="text-justify text-xs">El pago del beneficio será desembolsado en su cuenta bancaria dentro de un plazo máximo de 30 días hábiles, contados a partir de la fecha de presentación de la solicitud formal.<br>
                 En caso de disconformidad con el monto pagado del beneficio del Fondo de Retiro Policial Solidario, podrá presentar solicitud de revisión de la calificación en un plazo máximo de 10 días hábiles, computados desde el día hábil siguiente de la notificación realizada por mensaje de texto SMS o WhatsApp.<br>
                 Si no se presenta ninguna solicitud de revisión dentro del plazo establecido, el monto calificado quedará firme y definitivo.<br>
-                En mi calidad de solicitante, autorizo de manera expresa a la MUSERPOL a notificarme sobre el desembolso efectivizado del beneficio del Fondo de Retiro Policial Solidario, así como otros actuados administrativos, mediante medios electrónicos (mensaje de texto SMS o WhatsApp) al número de celular consignado en el presente formulario de solicitud.</div>
+                En mi calidad de solicitante, autorizo de manera expresa a la MUSERPOL a notificarme sobre el desembolso efectivizado del beneficio del Fondo de Retiro Policial Solidario, así como otros actuados administrativos, mediante medios electrónicos (mensaje de texto SMS o WhatsApp) al número de celular consignado en el presente formulario de solicitud.<br><br><br><br></div>
         <!-- <div class="text-justify text-xxs">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial
             Solidario procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme al Artículo 49 del Reglamento de Fondo de Retiro Policial Solidario.</div>
         <div class="text-justify text-xxs">{{$legend_ret_fun}}</div>
