@@ -216,7 +216,7 @@ class QuotaAidCertificationController extends Controller
     $modality = $quota_aid->procedure_modality->name;
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $separator = Str::contains($quota_aid->procedure_modality->name, 'riesgo común') ? ' AL ' : ($quota_aid->isAid() ? ' AL ' : ' POR ');
-    $title = "REQUISITOS PARA EL " . $quota_aid->procedure_modality->procedure_type->name . $separator . mb_strtoupper($modality);
+    $title = "FORMULARIO DE SOLICITUD DE " . $quota_aid->procedure_modality->procedure_type->name . $separator . mb_strtoupper($modality);
 
     // $next_area_code = Util::getNextAreaCode($quota_aid->id);
     $next_area_code = Util::getNextAreaCodeQuotaAid($quota_aid->id);
