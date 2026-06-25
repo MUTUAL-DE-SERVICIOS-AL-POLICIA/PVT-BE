@@ -36,7 +36,7 @@
     "laravel-mix-purgecss": "^1.0.5",
     "mdi": "^2.1.99",
     "mockjs": "^1.0.1-beta3",
-    "moment": "^2.22.0",
+    "moment": "^2.29.4",
     "print-js": "^1.0.56",
     "sweetalert2": "^7.15.1",
     "vee-validate": "^2.0.5",
