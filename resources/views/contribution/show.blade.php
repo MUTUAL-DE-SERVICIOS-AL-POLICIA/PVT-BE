@@ -168,7 +168,7 @@
             ],
 
             "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                if ( aData.type == " RE " )
+                if ( aData.type == "reintegro" || aData.type == "regularizacion")
                 {
                     $('td', nRow).addClass('warning');
                 }

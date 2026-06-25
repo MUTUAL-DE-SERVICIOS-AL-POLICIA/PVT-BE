@@ -92,7 +92,7 @@
                                         @endphp
                                         @if($valid_period)
                                             @if(isset($contributions[$period]->id))
-                                                <td class="numberformat" @if(isset($reims[$period])) bgcolor="#ffe6b3" @endif id="main{{$period}}">{{$contributions[$period]->total}}</td>
+                                                <td class="numberformat" @if(isset($reims[$period])) bgcolor="{{ collect($reims[$period])->contains('type_payroll', 'regularizacion') ? '#FFB5C0' : '#ffe6b3' }}" @endif id="main{{$period}}">{{$contributions[$period]->total}}</td>
                                             @else
                                                 <td class="numberformat" id="main{{$period}}">0</td>
                                             @endif
@@ -243,7 +243,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="numberformat" id="reim{{$period}}">
-                                                                {{$reims[$period]->total ?? '-'}}
+                                                                {{ $reims[$period]['reintegro']->total ?? '-' }}
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -715,3 +715,11 @@ $('#month').change(function(){
 });    
 </script>
 @endsection
+        $('.delete_reimbursement').hide();
+        $('#store_reimbursement').show();
+    }
+    //if({{ $("#reim'+$('#modal_year').val()+ '-' + $(this).val()+ '-01').html()" == '0')
+        //  console.log('cero');    
+});    
+</script>
+
