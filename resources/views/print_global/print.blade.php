@@ -75,6 +75,9 @@
         <tr>
             <td colspan="3" class="font-bold text-center text-xl uppercase">
                 {{ $title }}
+                @if (isset($subtitletwo))
+                <br><span class="font-bold text-lg">{!! $subtitletwo ?? '' !!}</span>
+                @endif
                 @if (isset($subtitle))
                 <br><span class="font-medium text-lg">{!! $subtitle ?? '' !!}</span>
                 @endif

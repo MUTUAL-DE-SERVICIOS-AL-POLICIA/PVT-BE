@@ -52,6 +52,12 @@
               </ul>
             </div>
               </div>
+          <div class="row" v-if="procedures_without_observation && procedures_without_observation.length > 0">
+            <h2>Trámites sin observación de descuento</h2>
+              <ul class="list-group">              
+                <li class="list-group-item list-group-item-danger" v-for="proc in procedures_without_observation">NUP: {{ proc.affiliate_id }} Code: {{ proc.code }}</li>
+              </ul>
+          </div>
           <div class="row">
             <h2>Total Número de Trámites: {{ tramit_number }}</h2>
             <h2>Total de Aportes: {{ total_contribution }}</h2>
@@ -82,6 +88,7 @@ export default {
       contribution_updated: 0,
       total_contribution: 0,
       not_updated: [],
+      procedures_without_observation: [],
       result_error:'',
       is_error: false,
       fails: [],
@@ -126,6 +133,7 @@ export default {
             this.contribution_updated = error.response.data.data.contribution_updated;
             this.contribution_created = error.response.data.data.contribution_created;
             this.total_contribution = error.response.data.data.total_contribution;
+            this.procedures_without_observation = error.response.data.data.procedures_without_observation;
           }
         });
       this.showResults = true;

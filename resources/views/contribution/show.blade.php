@@ -41,8 +41,10 @@
                                 <th>Gestión-1</th>
                                 <th>Grado</th>
                                 <th>Unidad</th>
+                                <th>Dias trab.</th>
                                 <th>Sueldo</th>
                                 <th>Antigüedad</th>
+                                <th>Categoria</th>
                                 <th>Estudio</th>
                                 <th>Cargo</th>
                                 <th>Frontera</th>
@@ -143,8 +145,10 @@
                 {data: 'month_year', },
                 {data: 'degree_id'},
                 {data: 'unit_id'},
+                {data: 'days_worked'},
                 {data: 'base_wage'},
                 {data: 'seniority_bonus'},
+                {data: 'category_id',},
                 {data: 'study_bonus', visible:false},
                 {data: 'position_bonus', visible:false},
                 {data: 'border_bonus',visible:false},

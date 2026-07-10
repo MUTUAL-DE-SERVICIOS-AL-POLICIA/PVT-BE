@@ -11,10 +11,7 @@
                         CERTIFICACIÓN DE REVISIÓN
                     </div>
                 </div>
-                <div class="text-center">
-                    @php $i = 1 @endphp
-                    {{ $correlative->code }}
-                </div>
+                @php $i = 1 @endphp
             </div>
             <br>
             {{-- <div style="border-top: 1px solid #22292f;"></div> --}}

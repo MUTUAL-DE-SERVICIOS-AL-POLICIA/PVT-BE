@@ -147,7 +147,7 @@
                 {extend: 'colvis', text: 'Columnas Visibles', columnText: function ( dt, idx, title ) { return (idx+1)+': '+title; }},
                 { extend: 'copy', text: 'Copiar'},
                 { extend: 'csv'},
-                { extend: 'excel', text:"Descargar en Excel", title: "Trámites de Fondo de Retiro "+moment().format('L_Hmm'), exportOptions: { columns: ':visible' }},
+                { extend: 'excel', text:"Descargar en Excel", title: "Trámites de Fondo de Complemento Económico "+moment().format('L_Hmm'), exportOptions: { columns: ':visible' }},
             ],
             columns:[
                 // { data: 'id' },

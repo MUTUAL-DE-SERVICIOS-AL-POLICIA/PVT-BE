@@ -36,31 +36,36 @@ class RetirementFundObserver
         $old = RetirementFund::find($rf->id);
         
         $message = 'El usuario '.Auth::user()->username.' modifico ';
+        $changes = '';  
         if($rf->city_start_id != $old->city_start_id)
         {
-            $message = $message . ' ciudad de recepción  de '.$old->city_start->name.' a '.$rf->city_start->name.', ';
-
+            $changes = $changes . ' ciudad de recepción  de '.$old->city_start->name.' a '.$rf->city_start->name.', ';
         }
         
         if($rf->city_end_id != $old->city_end_id)
         {
-            $message = $message . ' ciudad de recepción  de '.$old->city_end->name.' a '.$rf->city_end->name.', ';
-            
+            $changes = $changes . ' regional  de '.$old->city_end->name.' a '.$rf->city_end->name.', ';
         }
 
         if($rf->reception_date != $old->reception_date)
         {
-            $message = $message . ' fecha de recepción '.$old->reception_date.' a '.$rf->reception_date.', ';
-
+            $changes = $changes . ' fecha de recepción '.$old->reception_date.' a '.$rf->reception_date.', ';
         }
 
-        $message = $message . ' ';
+        if($rf->ret_fun_state_id != $old->ret_fun_state_id)
+        {
+            $changes = $changes . ' estado del trámite '.$old->ret_fun_state->name.' a '.$rf->ret_fun_state->name.', ';
+        }
 
-        $retfun = new RetFunRecord;
-        $retfun->user_id = Auth::user()->id;
-        $retfun->ret_fun_id = $rf->id;
-        $retfun->message = $message;
-        $retfun->save();
+        if($changes != '')
+        {
+            $message = $message . $changes;
+            $retfun = new RetFunRecord;
+            $retfun->user_id = Auth::user()->id;
+            $retfun->ret_fun_id = $rf->id;
+            $retfun->message = $message;
+            $retfun->save();
+        }
 
         $wf_state_sequence = WorkflowState::find($rf->wf_state_current_id)->sequence_number;
         $old_wf_state_sequence = WorkflowState::find($old->wf_state_current_id)->sequence_number;

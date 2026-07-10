@@ -7,52 +7,6 @@
         <div class="col-lg-7">
             {!!Breadcrumbs::render('show_qualification_retirement_fund', $retirement_fund)!!}
         </div>
-        <div class="col-md-5 text-center" style="margin-top:12px;">
-            {{-- <div class="pull-left">
-                <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Informacion General Solicitante y Afiliado" onclick="printJS({printable:'{!! route('ret_fun_print_beneficiaries_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Datos Personales</button>
-                @if (! $affiliate->selectedContributions() > 0)
-                    <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Salario Promedio Cotizable" onclick="printJS({printable:'{!! route('ret_fun_print_qualification_average_salary_quotable', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Salario Promedio Cotizable</button>
-                @endif
-                @if ($retirement_fund->total_ret_fun > 0)
-                    <button class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Información técnica</button>
-                @else
-                    <button v-if="totalRetFun > 0" class="btn btn-primary btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Datos de la Calificacion" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Calificacion</button>
-                @endif
-                @if ($affiliate->hasAvailability())
-                    @if ($retirement_fund->total_availability > 0)
-                        <button class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad</button>
-                    @else
-                        <button v-if="totalAvailability > 0" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad</button>
-                    @endif
-                    @if($retirement_fund->total > 0)
-                
-                    @else
-                    
-                    @endif
-                @else
-                    <button v-if="hasAvailability" class="btn btn-warning btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir datos de Disponibilidad" onclick="printJS({printable:'{!! route('ret_fun_print_data_qualification_availability', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Disponibilidad </button>
-                    
-                @endif
-                <button class="btn btn-danger btn-sm dim" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir todos los documentos de Calificacion"
-                    onclick="printJS({printable:'{!! route('ret_fun_print_all_qualification', $retirement_fund->id) !!}', type:'pdf', modalMessage: 'Generando documentos de impresión por favor espere un momento.', showModal:true})"><i class="fa fa-print"></i> Completo</button>
-            </div> --}}
-            <div class="pull-right">
-                {{-- @if ($has_validate)
-                <swal-modal inline-template :doc-id="{{$retirement_fund->id}}" :inbox-state="{{$retirement_fund->inbox_state ? 'true' : 'false'}}">
-                    <div>
-                        <div v-if="status == true" data-toggle="tooltip" data-placement="top" title="Trámite ya procesado">
-                            <button data-toggle="tooltip" data-placement="top" title="Trámite ya procesado" class="btn btn-primary btn-circle btn-outline btn-lg active"
-                                type="button" :disabled="! status == false "><i class="fa fa-check"></i></button>
-                        </div>
-                        <div v-else>
-                            <button data-toggle="tooltip" data-placement="top" title="Procesar Trámite" class="btn btn-primary btn-circle btn-outline btn-lg"
-                                type="button" @click="showModal()" :disabled="! status == false "><i class="fa fa-check"></i></button>
-                        </div>
-                    </div>
-                </swal-modal>
-                @endif --}}
-            </div>
-        </div>
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -183,7 +137,7 @@
                 <div class="ibox-title">
                     <h5>Datos Economicos</h5>
                 </div>
-                <div class="ibox-content" v-if="!globalPay">
+                <div class="ibox-content">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -192,69 +146,49 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Ultimo Sueldo Percibido</td>
-                                <td>Bs {{ Util::formatMoney($affiliate->getLastBaseWage()) ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td>Salario Promedio Cotizable</td>
-                                <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
-                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Densidad Total de Cotizaciones</td>
-                                <td>@{{ totalQuotesAnimated }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar
-                        <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
-                            <div>
-                                <check-svg></check-svg>
-                            </div>
-                        </transition>
-                    </button>
-                </div>
-                <div class="ibox-content" v-else>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Cotizacion</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                          @if ($retirement_fund->procedure_modality->procedure_type_id == 21)
-                            <tr>
-                                    <td>Total Devolución de Aportes</td>
-                                    <td>@{{ totalAporte | currency }}
-                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                    </td>
-                                </tr>
-                          @else
+                            <template v-if="!globalPay">
                                 <tr>
-                                    <td>Total Aportes</td>
-                                    <td>@{{ totalAporte | currency }}
-                                        <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#averageSalaryQuotable" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
+                                    <td>Ultimo Sueldo Percibido</td>
+                                    <td>@{{ lastBaseWage | currency }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Salario Promedio Cotizable</td>
+                                    <td>@{{ totalAverageSalaryQuotableAnimated | currency }}
+                                        <button type="button" class="btn btn-xs btn-primary" style="margin-left:15px;"
+                                        @click="openTableModal('{{ url('get_data_certification', $retirement_fund->id) }}', 
+                                            'SALARIO PROMEDIO COTIZABLE', '{{$retirement_fund->id}}')">
+                                            <i class="fa fa-calculator"></i> 
+                                            Ver completo
+                                        </button>
                                     </td>
                                 </tr>
-                            <tr>
-                                    @if($retirement_fund->procedure_modality->procedure_type_id == 2)
-                                        <td>+ Rendimiento del 5% {{$retirement_fund->procedure_modality->procedure_type_id}}</td>
-                                    @else
-                                        <td>+ Rendimiento del 5% </td>
-                                    @endif
+                                <tr v-if="averageSalaryLimit > 0">
+                                    <td>Salario Promedio Cotizable Limitado</td>
+                                    <td>Bs @{{ averageSalaryLimit }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Densidad Total de Cotizaciones</td>
+                                    <td>@{{ totalQuotesAnimated }}</td>
+                                </tr>
+                            </template>
+                            <template v-else>
+                                <tr>
+                                    <td>{{$retirement_fund->procedure_modality->procedure_type_id == 21 ? 'Total Devolución de Aportes' : 'Total Aportes'}}</td>
+                                    <td>@{{ totalAporte | currency }}
+                                        <button type="button" class="btn btn-xs btn-primary" style="margin-left:15px;"
+                                        @click="openTableModal('{{ url('get_data_certification', $retirement_fund->id) }}','{{$retirement_fund->procedure_modality->procedure_type->name}}', '{{$retirement_fund->id}}')">
+                                            <i class="fa fa-calculator"></i> 
+                                            Ver completo
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>+ Rendimiento del @{{ percentageYield }}% </td>
                                     <td>@{{ yield | currency}} </td>
                                 </tr>
-                                <!-- <tr>
-                                    <td>- Gastos Administrativos del 10%</td>
-                                    <td>@{{ lessAdministrativeExpenses | currency }}</td>
-                                </tr> -->
-                           @endif
-                        </tbody>
+                            </template>
                     </table>
-                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="saveAverageQuotable"><i class="fa fa-save"></i> Guardar
+                    <button class="btn btn-primary" :class="{'btn-outline':!showEconomicDataTotal}" type="submit" @click="calculateSubTotal"><i class="fa fa-save"></i> Guardar
                         <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showEconomicDataTotal">
                             <div>
                                 <check-svg></check-svg>
@@ -309,7 +243,7 @@
                                     <td>@{{ percentageAdvancePayment | percentage }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Retencion para pago de prestamo</td>
+                                    <td>Retención para pago de préstamo</td>
                                     <td>
                                         <input class="form-control" type="text" v-model="retentionLoanPayment" data-money='true' style="width:130px">
                                     </td>
@@ -327,7 +261,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>% de Retencion para pago de prestamo</td>
+                                    <td>% de Retención para pago de préstamo</td>
                                     <td>@{{ percentageRetentionLoanPayment | percentage }}</td>
                                 </tr>
                                 <tr>
@@ -353,7 +287,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Retencion para garantes
+                                        Retención para garantes
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" :value="retentionGuarantor" disabled>
@@ -365,16 +299,63 @@
                                         <input class="form-control" type="date" v-model="retentionGuarantorDate">
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" placeholder="# de Contrato de Préstamo" v-model="retentionGuarantorNoteCode">
+                                        <input class="form-control" type="text" v-model="retentionGuarantorNoteCode">
                                     </td>
                                     <td>
                                         <input class="form-control" type="date" v-model="retentionGuarantorNoteCodeDate">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>% de Retencion para garantes</td>
+                                    <td>% de Retención para garantes</td>
                                     <td colspan="5">@{{ percentageRetentionGuarantor | percentage }}</td>
                                 </tr>
+                            </tbody>
+                            <thead v-if="haveJudicialRetention">
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Monto</th>
+                                    <th colspan="2">Descripción</th>
+                                    <th>Documento</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="haveJudicialRetention">
+                                <tr>
+                                    <td>Retenciones judiciales</td>
+                                    <td>
+                                        <div :class="{ 'has-error': validateRetentionAmount(judicialRetentionAmount)}">
+                                            <input type="text" class="form-control" v-money v-model="judicialRetentionAmount">
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                        <textarea
+                                            class="form-control"
+                                            name="description"
+                                            placeholder="No registrado"
+                                            v-model="judicialRetentionDetail"
+                                            disabled
+                                        ></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea 
+                                            class="form-control" 
+                                            type="text" 
+                                            placeholder="Documento" 
+                                            v-model="judicialRetentionDocument">
+                                        </textarea>
+                                    </td>
+                                    <td>
+                                        <div :class="{ 'has-error': validateRetentionDate(judicialRetentionDate)}">
+                                            <input class="form-control" type="date" v-model="judicialRetentionDate">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>% de Retenciones judiciales</td>
+                                    <td colspan="5">@{{ percentageRetentionJudicial | percentage }}</td>
+                                </tr>
+                            </tbody>
+                            <tbody>
                                 <tr class="success">
                                     <td v-if="! globalPay">Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }}</td>
                                     <td v-else>Total {{ $retirement_fund->procedure_modality->procedure_type->second_name }} por {{ $retirement_fund->procedure_modality->name }} </td>
@@ -404,359 +385,57 @@
                             @endif
                             <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="saveTotalRetFun(true)" ><i class="fa fa-refresh"></i></button>
                         </div>
-                        <div class="ibox-content">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
-                                            <th>NOMBRE DEL DERECHOHABIENTE</th>
-                                        @else
-                                            <th>NOMBRE DEL TITULAR</th>
-                                        @endif
-                                        <th>% DE ASIGNACION</th>
-                                        <th>MONTO</th>
-                                        <th>PARENTESCO</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th :class="colorClass(totalPercentageRetFun, maxPercentage)">@{{ totalPercentageRetFun | percentage }}</th>
-                                        <th :class="colorClass(totalAmountRetFun, totalRetFun)">@{{ totalAmountRetFun | currency }}</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                                <tbody>
-                                    <tr v-for="(beneficiary, index) in beneficiaries" :key="index">
-                                        <td>@{{ beneficiary.full_name }}</td>
-                                        <td>
-                                            <div :class="{ 'has-error': max(totalPercentageRetFun, maxPercentage) }" >
-                                                <input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_percentage" >
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div :class="{ 'has-error': max(totalAmountRetFun,totalRetFun) }">
-                                                <input class="form-control" :class="{'text-danger':max(totalAmountRetFun,totalRetFun)}" type="number" step="0.01" v-model="beneficiary.temp_amount">
-                                            </div>
-                                        </td>
-                                        <td>@{{ beneficiary.kinship.name }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <button class="btn btn-primary" :class="{'btn-outline': !finishRetFun}" type="submit" @click="savePercentages(false)"><i class="fa fa-save"></i> Guardar
-                                <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="finishRetFun">
-                                    <div>
-                                        <check-svg></check-svg>
-                                    </div>
-                                </transition>
-                            </button>
-                        </div>
+                        <beneficiaries-qualification-amounts :beneficiaries="beneficiaries" :total="parseFloat(totalRetFun)" 
+                        :is-holder='@json($is_holder)'
+                        @save="savePercentages(false)"> </beneficiaries-qualification-amounts>
                     </div>
-                    <div v-if="hasAvailability" id="hasAvailabilityScroll">
-                        <div class="ibox" class="fadeInRight">
-                            <div class="ibox-title">
-                                <h5>DEVOLUCIÓN DE APORTES EN DISPONIBILIDAD</h5>
-                            </div>
-                            <div class="ibox-content">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Tipo</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Total aportes en disponibilidad</td>
-                                            <td>
-                                                @{{ subTotalAvailability | currency }}
-                                                <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal" style="margin-left:15px;"><i class="fa fa-calculator"></i> ver completo</button>
-                                            </td>
-                                        </tr>
-                                        <!-- <tr>
-                                            <td>Con rendimiento del {{ $current_procedure->annual_yield }}% Anual</td>
-                                            <td>@{{ totalAnnualYield | currency }}</td>
-                                        </tr> -->
-                                        <tr>
-                                            <td>Devolución de Aportes en Disponibilidad</td>
-                                            <td>@{{ totalAvailability | currency}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2"></td>
-                                        </tr>
-                                        <tr v-for="(discount, index) in arrayDiscounts">
-                                            <td>@{{ discount.name }}</td>
-                                            <td>@{{ discount.amount | currency }}</td>
-                                        </tr>
-                                        <tr class="success">
-                                            <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
-                                            <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount | currency }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="ibox" class="fadeInRight">
-                            <div class="ibox-title">
-                                @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
-                                    <h5>Calculo de las cuotas partes para los derechohabientes</h5>
-                                @else
-                                    <h5>Calculo de del total</h5>
-                                @endif
-                                <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="savePercentages(true)"><i class="fa fa-refresh"></i></button>
-                            </div>
-                            <div class="ibox-content">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4)
-                                                <th>NOMBRE DEL DERECHOHABIENTE</th>
-                                            @else
-                                                <th>NOMBRE DEL TITULAR</th>
-                                            @endif
-                                            <th>% DE ASIGNACION</th>
-                                            <th>MONTO</th>
-                                            <th>PARENTESCO</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th></th>
-                                            <th>@{{ totalPercentageAvailability | percentage}}</th>
-                                            <th :class="colorClass(totalAmountAvailability,totalAvailability)">@{{ totalAmountAvailability | currency }}</th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        <tr v-for="(beneficiary, index) in beneficiariesAvailability" :key="index">
-                                            <td>@{{ beneficiary.full_name }}</td>
-                                            <td><input class="form-control" disabled type="number" step="0.01" v-model="beneficiary.percentage" ></td>
-                                            <td>
-                                                <div :class="{'has-error': max(totalAmountAvailability,totalAvailability) }">
-                                                    <input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_availability">
-                                                </div>
-                                            </td>
-                                            <td>@{{ beneficiary.kinship.name }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <button class="btn btn-primary" :class="{'btn-outline': !showPercentagesRetFunAvailability}" type="submit" @click="savePercentagesAvailability(false)"><i class="fa fa-save"></i> Guardar
-                                    <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="showPercentagesRetFunAvailability">
-                                        <div>
-                                            <check-svg></check-svg>
-                                        </div>
-                                    </transition>
-                                </button>
-                            </div>
-                        </div>
-                        <div v-if="showPercentagesRetFunAvailability" id="showPercentagesRetFunAvailability">
+                    <template v-for="(refund, index) in refundsData" v-if="refundsData.length > 0">
+                        <div :id="'refund'+refund.id" :key="'rc'+index" v-if="refund.show">
                             <div class="ibox" class="fadeInRight">
                                 <div class="ibox-title">
-                                    @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4 || $retirement_fund->procedure_modality->id == 63)
-                                        <h5>Calculo de las cuotas partes para los derechohabientes (TOTAL) </h5>
-                                    @else
-                                        <h5>Calculo de del total (TOTAL) </h5>
-                                    @endif
-                                    <button class="btn btn-danger btn-xs" type="button" data-toggle="tooltip" data-placement="top" title="Recalcular" @click="savePercentagesAvailability(true)"><i class="fa fa-refresh"></i></button>
+                                    <h5>DEVOLUCIÓN DE APORTES - @{{refund.name}}</h5>
                                 </div>
                                 <div class="ibox-content">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4 || $retirement_fund->procedure_modality->id == 63)
-                                                    <th>NOMBRE DEL DERECHOHABIENTE</th>
-                                                @else
-                                                    <th>NOMBRE DEL TITULAR</th>
-                                                @endif
-                                                <th>% DE ASIGNACION</th>
-                                                <th>MONTO</th>
-                                                <th>PARENTESCO</th>
+                                                <th>Sub Total</th>
+                                                <th>Rendimiento</th>
+                                                <th>Total</th>
                                             </tr>
                                         </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th></th>
-                                                <th>@{{ totalPercentageRetFunAvailability | percentage }}</th>
-                                                <th :class="colorClass(totalAmountRetFunAvailability, total)">@{{ totalAmountRetFunAvailability | currency }}</th>
-                                                <th></th>
-                                            </tr>
-                                        </tfoot>
                                         <tbody>
-                                            <tr v-for="(beneficiary, index) in beneficiariesRetFunAvailability" :key="index">
-                                                <td>@{{ beneficiary.full_name }}</td>
-                                                <td><input class="form-control" disabled type="number" step="0.01" v-model="beneficiary.percentage" ></td>
+                                            <tr>
+                                                <td>@{{ refund.subtotal | currency }}</td>
+                                                <td>@{{ refund.yield | currency }}</td>
                                                 <td>
-                                                    <div :class="{'has-error': max(totalAmountRetFunAvailability, total)}">
-                                                        <input class="form-control" type="number" step="0.01" v-model="beneficiary.temp_amount_total">
-                                                    </div>
+                                                    @{{ refund.total | currency }}
+                                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#availability-modal2" style="margin-left:15px;" 
+                                                    @click="showRefundTable(
+                                                        retirementFundId, refund.id,
+                                                        'Devolución de Aportes - '+refund.name,
+                                                        refund.name+'-'+retirementFundId
+                                                        )">
+                                                        <i class="fa fa-calculator"></i> ver completo
+                                                    </button>
                                                 </td>
-                                                <td>@{{ beneficiary.kinship.name }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <button class="btn btn-primary" :class="{'btn-outline':!finishAvailability}" type="submit" @click="saveTotalRetFunAvailability"><i class="fa fa-save"></i> Guardar
-                                        <transition name="fade" enter-active-class="animated bounceInRight" leave-active-class="animated bounceOutLeft" v-if="finishAvailability">
-                                            <div>
-                                                <check-svg></check-svg>
-                                            </div>
-                                        </transition>
-                                    </button>
                                 </div>
                             </div>
+                            <beneficiaries-qualification-amounts :beneficiaries="refund.beneficiaries" :total="parseFloat(refund.total)" 
+                            :is-holder='@json($is_holder)'
+                            @save="saveRefundPercentages(refund)"> </beneficiaries-qualification-amounts>
                         </div>
-                        {{-- <div v-else>
-                            <div class="ibox" class="fadeInRight" v-if="arrayDiscounts.length">
-                                <div class="ibox-title">
-                                    <h5>Total Fondo de retiro con descuentos</h5>
-                                </div>
-                                <div class="ibox-content">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Foobar</th>
-                                                <th>baz</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(discount, index) in arrayDiscounts">
-                                                <td>@{{ discount.name }}</td>
-                                                <td>@{{ discount.amount }}</td>
-                                            </tr>
-                                            <tr class="success">
-                                                <td>@{{ arrayDiscounts[arrayDiscounts.length-1].name }}</td>
-                                                <td>@{{ arrayDiscounts[arrayDiscounts.length-1].amount }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div> --}}
-                    </div>
+                    </template>
                 </div>
             </div>
         </div>
     </div>
+    <contributions-table :data-url="contributionTableDataUrl" :title="contributionTableTitle" :file-name="contributionTableFileName"/>
     </div>
 </ret-fun-qualification>
-<div class="modal inmodal" id="averageSalaryQuotable" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content animated bounceInRight">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                @if ($retirement_fund->procedure_modality->procedure_type_id == 2)
-                    <h4 class="modal-title">SALARIO PROMEDIO COTIZABLE</h4>
-                @else
-                    <h4 class="modal-title">{{$retirement_fund->procedure_modality->procedure_type->name}}</h4>
-                @endif
-            </div>
-            <div class="modal-body">
-                <div class="col-lg-12">
-                    <table class="table table-striped" id="datatables-certification">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Periodo</th>
-                                <th>Haber Basico</th>
-                                <th>Categoria</th>
-                                <th>Salario Cotizable</th>
-                                <th>Total Aporte</th>
-                                <th>Aporte FRPS</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <table class="table table-bordered table-striped">
-                        <tbody>
-                            @if ($retirement_fund->procedure_modality->procedure_type_id == 1)
-                                <tr>
-                                    <td>Total Aportes FRPS</td>
-                                    <td>Bs {{ Util::formatMoney($total_retirement_fund) }}</td>
-                                </tr>
-                            @elseif($retirement_fund->procedure_modality->procedure_type_id == 21)
-                            <tr>
-                                    <td>Total Devolución de Aportes </td>
-                                    <td>Bs {{ Util::formatMoney($total_retirement_fund) }}</td>
-                                </tr>
-                            @else
-                                <tr>
-                                    <td>Total Aportes Fondo de Retiro Policial Solidario</td>
-                                    <td>{{ $total_retirement_fund }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Salario Total</td>
-                                    <td>{{ $sub_total_average_salary_quotable }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Salario Promedio</td>
-                                    <td>{{ $total_average_salary_quotable }}</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal inmodal" id="availability-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content animated bounceInRight">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                <h4 class="modal-title">Devolución de Aportes en Disponibilidad</h4>
-            </div>
-            <div class="modal-body">
-                <div class="col-lg-12">
-                    <table class="table table-striped" id="datatables-availability">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Periodo</th>
-                                <th>Haber Basico</th>
-                                <th>Categoria</th>
-                                <th>Salario Cotizable</th>
-                                <th>Total Aporte</th>
-                                <th>Aporte FRPS</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <td>Total</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>{{ $total_availability_aporte_frps }}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    {{-- <table class="table table-bordered table-striped">
-                        <tbody>
-                            <tr>
-                                <td>Total Aportes Fondo de Retiro Policial Solidario</td>
-                                <td>{{ $total_retirement_fund }}</td>
-                            </tr>
-                            <tr>
-                                <td>Salario Total</td>
-                                <td>{{ $sub_total_average_salary_quotable }}</td>
-                            </tr>
-                            <tr>
-                                <td>Salario Promedio</td>
-                                <td>{{ $total_average_salary_quotable }}</td>
-                            </tr>
-                        </tbody>
-                    </table> --}}
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 @section('styles')
 <link rel="stylesheet" href="{{asset('/css/datatables.css')}}">
@@ -764,62 +443,6 @@
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
 <script src="{{ asset('/js/datatables.js')}}"></script>
-<script>
-    $(document).ready(function () {
-        var datatable_contri = $('#datatables-certification').DataTable({
-            responsive: true,
-            fixedHeader: {
-            header: true,
-            footer: true,
-                headerOffset: $('#navbar-fixed-top').outerHeight()
-            },
-            order: [],
-            ajax: "{{ url('get_data_certification', $retirement_fund->id) }}",
-            lengthMenu: [[60, -1], [60, "Todos"]],
-            dom: '< "html5buttons"B>lTfgitp',
-            buttons:[
-                { extend: 'copy'},
-                { extend: 'csv'},
-                { extend: 'excel', title: "{!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
-            ],
-            columns:[
-                {data: 'DT_Row_Index' },
-                {data: 'month_year' },
-                {data: 'base_wage'},
-                {data: 'seniority_bonus'},
-                {data: 'quotable_salary'},
-                {data: 'total'},
-                {data: 'retirement_fund'},
-            ],
-        });
-        var datatable_availability = $('#datatables-availability').DataTable({
-            responsive: true,
-            fixedHeader: {
-            header: true,
-            footer: true,
-                headerOffset: $('#navbar-fixed-top').outerHeight()
-            },
-            order: [],
-            ajax: "{{ url('get_data_availability', $retirement_fund->id) }}",
-            lengthMenu: [[60, -1], [60, "Todos"]],
-            dom: '< "html5buttons"B>lTfgitp',
-            buttons:[
-                { extend: 'copy'},
-                { extend: 'csv'},
-                { extend: 'excel', title: "Dispobiblidad - {!! $retirement_fund->id.'-'.date('Y-m-d') !!}"},
-            ],
-            columns:[
-                {data: 'DT_Row_Index' },
-                {data: 'month_year' },
-                {data: 'base_wage'},
-                {data: 'seniority_bonus'},
-                {data: 'quotable_salary'},
-                {data: 'total'},
-                {data: 'retirement_fund'},
-            ],
-        });
-    });
-</script>
 @endsection
 
 <style>

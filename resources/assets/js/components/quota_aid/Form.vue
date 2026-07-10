@@ -1,4 +1,5 @@
 <script>
+import { scroller } from "vue-scrollto/src/scrollTo";
 import Swal from "sweetalert2"
 export default {
     data(){
@@ -32,26 +33,13 @@ export default {
         showRequirementsErrorChanged(val){
             this.showRequirementsError = val;
         },
-         validateFirstStep() {
-            this.showRequirementsError = false;
-            if (!this.$refs.one.$children[0].city_end_id) {
-                return false;
+        async validateFirstStep() {            
+            const isValid = await this.$refs.uno.validateStep();            
+            if (isValid) {
+                const scrollTo = scroller();
+                scrollTo("#quota-aid-form-header");
             }
-            if (!this.$refs.one.$children[0].modality) {
-                return false;
-            }
-            let x=this.$refs.one.$children[0].requirementList;
-            var someRequirement=true;
-            Object.keys(x).forEach(function(key) {
-                if( !x[key].some(rq=> rq.status) ){
-                    someRequirement=false;
-                }
-            });
-            if (!someRequirement) {
-                this.showRequirementsError = ! this.showRequirementsError;
-                return false;
-            }
-            return true;
+            return isValid;
         },
          validateSecondStep() {
             if(this.$refs.two.$children[0].quotaAid.modality_id == 15) {

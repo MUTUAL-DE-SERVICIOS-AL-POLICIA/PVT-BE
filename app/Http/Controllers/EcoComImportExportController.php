@@ -321,6 +321,7 @@ class EcoComImportExportController extends Controller
         $current_procedures = $request->ecoComProcedureId;
         $pago_futuro_id = 31;
         $contribution_discontinued_id = 41;
+        $procedures_without_observation = [];
         try{
           $affiliate_has_not_contributions = DB::table('observables')->select('observables.observable_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $contribution_discontinued_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
           $observation_disc_con = ObservationType::find($contribution_discontinued_id);
@@ -343,18 +344,22 @@ class EcoComImportExportController extends Controller
             foreach ($eco_com_all as $result) {
                 $hash_eco_com_all[$result->affiliate_id] = $result;
             }
-          foreach($affiliate_has_not_contributions as $affiliate_discontinued){
-          $eco_com_disc_con = $eco_com_all->where('affiliate_id', $affiliate_discontinued->observable_id)->first();
-            if($eco_com_disc_con){
-              if (!$eco_com_disc_con->hasObservationType($contribution_discontinued_id)) {
-                  $eco_com_disc_con->observations()->save($observation_disc_con, [
-                      'user_id' => Auth::user()->id,
-                      'date' => now(),
-                      'message' => "Observación generada desde el afiliado.",
-                      'enabled' => true
-                  ]);
-              }
+            foreach($affiliate_has_not_contributions as $affiliate_discontinued){
+                $eco_com_disc_con = $eco_com_all->where('affiliate_id', $affiliate_discontinued->observable_id)->first();
+                if($eco_com_disc_con){
+                    if (!$eco_com_disc_con->hasObservationType($contribution_discontinued_id)) {
+                        array_push($procedures_without_observation, ['affiliate_id'=>$eco_com_disc_con->affiliate_id, 'code'=>$eco_com_disc_con->code]);
+                    }
+                }
             }
+          if(count($procedures_without_observation) > 0){
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['Los siguientes trámites no tienen la observación '.$observation_disc_con->name],
+                'data' => [
+                    'procedures_without_observation' => $procedures_without_observation,
+                ]
+            ], 422);
           }
         $affiliates = DB::table('observables')->select('observables.observable_id', 'affiliates.pension_entity_id')->join('affiliates','observables.observable_id','affiliates.id')->join('economic_complements','affiliates.id','economic_complements.affiliate_id')->where('observable_type', 'affiliates')->where('observation_type_id', $pago_futuro_id)->whereNull('observables.deleted_at')->whereNull('economic_complements.deleted_at')->where('economic_complements.eco_com_procedure_id','=',$current_procedures)->distinct()->get();
         $observation = ObservationType::find($pago_futuro_id);

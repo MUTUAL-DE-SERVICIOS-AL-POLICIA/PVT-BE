@@ -7,6 +7,7 @@ import {scroller} from 'vue-scrollto/src/scrollTo'
 			'originalBeneficiariesBackend',
             'cities',
             'kinships',
+            'kinship_beneficiaries',
             'quotaAidId',
             'procedureModalityId',
 		],

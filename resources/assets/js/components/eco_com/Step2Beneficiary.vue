@@ -1091,10 +1091,10 @@
                 </div>
                 <div class="col-md-8">
                   <input
-                    type="text"
+                    type="number"
                     name="eco_com_beneficiary_nua"
                     v-model.trim="ecoComBeneficiary.nua"
-                    class="form-control"
+                    class="form-control no-arrows"
                   >
                 </div>
               </div>
@@ -1508,3 +1508,16 @@ export default {
   }
 };
 </script>
+<style>
+/* Chrome, Safari, Edge, Opera */
+.no-arrows::-webkit-outer-spin-button,
+.no-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.no-arrows {
+  -moz-appearance: textfield;
+}
+</style>

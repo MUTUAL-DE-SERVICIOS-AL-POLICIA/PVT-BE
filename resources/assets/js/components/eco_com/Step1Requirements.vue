@@ -5,22 +5,13 @@
         <div class="form-group" :class="{'has-error': errors.has('modality_id') }">
           <label class="col-sm-3 control-label">Modalidad</label>
           <div class="col-sm-8">
-            <select
-              class="form-control m-b"
-              ref="modality_id"
-              name="modality_id"
-              @change="onChooseModality()"
-              v-model="modality_id"
-              v-validate.initial="'required'"
-            >
+            <select class="form-control m-b" ref="modality_id" name="modality_id" @change="onChooseModality()"
+              v-model="modality_id" v-validate.initial="'required'">
               <option :value="null"></option>
               <option v-for="type in modalities" :value="type.id" :key="type.id">{{ type.name }}</option>
             </select>
             <i v-show="errors.has('modality_id')" class="fa fa-warning text-danger"></i>
-            <span
-              v-show="errors.has('modality_id')"
-              class="text-danger"
-            >{{ errors.first('modality_id') }}</span>
+            <span v-show="errors.has('modality_id')" class="text-danger">{{ errors.first('modality_id') }}</span>
           </div>
         </div>
       </div>
@@ -31,22 +22,13 @@
           <label class="col-sm-4 control-label">Tipo de Recepcion</label>
           <div class="col-sm-8">
             <input type="hidden" v-model="reception_type_id" name="reception_type">
-            <select
-              class="form-control m-b"
-              ref="reception_type_id"
-              name="reception_type_id"
-              @change="onChooseCity"
-              v-model="reception_type_id"
-              v-validate.initial="'required'"
-              disabled
-            >
+            <select class="form-control m-b" ref="reception_type_id" name="reception_type_id" @change="onChooseCity"
+              v-model="reception_type_id" v-validate.initial="'required'" disabled>
               <option v-for="rt in ecoComReceptionTypes" :value="rt.id" :key="rt.id">{{ rt.name }}</option>
             </select>
             <i v-show="errors.has('reception_type_id')" class="fa fa-warning text-danger"></i>
-            <span
-              v-show="errors.has('reception_type_id')"
-              class="text-danger"
-            >{{ errors.first('reception_type_id') }}</span>
+            <span v-show="errors.has('reception_type_id')" class="text-danger">{{ errors.first('reception_type_id')
+              }}</span>
           </div>
         </div>
       </div>
@@ -54,25 +36,15 @@
         <div class="form-group" :class="{'has-error': errors.has('pension_entity_id') }">
           <label class="col-sm-4 control-label">Ente Gestor</label>
           <div class="col-sm-8">
-            <select
-              class="form-control"
-              v-model="pension_entity_id"
-              ref="pension_entity_id"
-              name="pension_entity_id"
-              id="pension_entity_id"
-              v-validate.initial="'required'"
-              @change="setPensionEntity()"
-              :disabled="itsUsual"
-            >
+            <select class="form-control" v-model="pension_entity_id" ref="pension_entity_id" name="pension_entity_id"
+              id="pension_entity_id" v-validate.initial="'required'" @change="setPensionEntity()" :disabled="itsUsual">
               <option :value="null"></option>
               <option v-for="(p, index) in pensionEntities" :value="p.id" :key="index">{{p.name}}</option>
             </select>
             <input type="hidden" v-if="itsUsual" :value="pension_entity_id" name="pension_entity_id">
             <i v-show="errors.has('pension_entity_id')" class="fa fa-warning text-danger"></i>
-            <span
-              v-show="errors.has('pension_entity_id')"
-              class="text-danger"
-            >{{ errors.first('pension_entity_id') }}</span>
+            <span v-show="errors.has('pension_entity_id')" class="text-danger">{{ errors.first('pension_entity_id')
+              }}</span>
           </div>
         </div>
       </div>
@@ -82,14 +54,8 @@
         <div class="form-group" :class="{'has-error': errors.has('city_id') }">
           <label class="col-sm-4 control-label">Regional</label>
           <div class="col-sm-8">
-            <select
-              class="form-control m-b"
-              ref="city"
-              name="city_id"
-              @change="onChooseCity"
-              v-model="city_id"
-              v-validate.initial="'required'"
-            >
+            <select class="form-control m-b" ref="city" name="city_id" @change="onChooseCity" v-model="city_id"
+              v-validate.initial="'required'">
               <option :value="null"></option>
               <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
             </select>
@@ -99,80 +65,13 @@
         </div>
       </div>
     </div>
-    <h2>Lista de Requisitos</h2>
     <div class="wrapper wrapper-content animated fadeInRight">
-      <div v-for="(requirement, key)  in requirementList" :key="key">
-        <div
-          class="vote-item"
-          v-for="(rq, i) in requirement"
-          @click="checked(key, i)"
-          :class="rq.background"
-          style="cursor:pointer"
-          :key="rq.id"
-        >
-          <div class="row">
-            <div class="col-md-10">
-              <div class="vote-actions">
-                <h1>{{rq.number}}</h1>
-              </div>
-              <span class="vote-title">{{rq.procedure_document.name}}</span>
-              <div class="vote-info">
-                <div class="col-md-2 no-margins no-padding">
-                  <i class="fa fa-comments-o"></i> Comentario:
-                </div>
-                <div class="col-md-6 no-margins no-padding">
-                  <input type="text" :name="'comment'+rq.id" class="form-control" maxlength="80">
-                </div>
-                <br>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="vote-icon">
-                <span style="color:#3c3c3c">
-                  <i class="fa" :class="rq.status ? 'fa-check-square' :'fa-square-o'  "></i>
-                </span>
-                <div style="opacity:0">
-                  <input
-                    type="checkbox"
-                    v-model="rq.status"
-                    value="checked"
-                    :name="'document'+rq.id"
-                    class="largerCheckbox"
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <requirement-select ref="requirements" :requirement-list="requirementList"
+        :additional-requirements="additionalRequirements" :is-loading="loadingReq"></requirement-select>
     </div>
-    <br>
-    <div v-if="additionalRequirements.length > 0" style="margin-bottom:180px">
-      <h4>Documentos adicionales</h4>
-      <select
-        data-placeholder="Documentos adicionales..."
-        class="chosen-select"
-        name="aditional_requirements[]"
-        multiple
-        style="width: 350px; display: none;"
-        tabindex="-1"
-      >
-        <option
-          v-for="(requirement, index) in additionalRequirements"
-          :value="requirement.id"
-          :key="index"
-        >{{ requirement.procedure_document.name }}</option>
-      </select>
-    </div>
-    <transition name="show-requirements-error" enter-active-class="animated bounceInLeft">
-      <div class="alert alert-danger" v-if="showRequirementsError">
-        <h2>Debe seleccionar los requisitos</h2>
-      </div>
-    </transition>
   </div>
 </template>
 <script>
-import { mapState, mapMutations } from "vuex";
 export default {
   props: [
     "modalities",
@@ -195,9 +94,9 @@ export default {
   },
   data() {
     return {
-      requirements: [],
-      requirementList: [],
+      requirementList: {},
       additionalRequirements: [],
+      loadingReq: false,
       modality_id: !!this.lastEcoCom
         ? this.lastEcoCom.procedure_modality_id
         : null,
@@ -205,21 +104,31 @@ export default {
       pension_entity_id: !!this.affiliate.pension_entity_id
         ? this.affiliate.pension_entity_id
         : null,
-      reception_type_id: null
+      reception_type_id: null,
     };
   },
-  mounted() {
-    this.setReceptionType();
-    this.setPensionEntity();
-    this.setModality();
-    this.setCity();
-    this.getRequirements();
+  async mounted() {
+    await this.setReceptionType();
+    await this.setPensionEntity();
+    await this.setModality();
+    await this.setCity();
+    if (this.modality_id) {
+        await this.getRequirements();
+    }
   },
   methods: {
-    async onChooseModality(event) {
+    // Valida el primer paso del formulario, llamado desde el padre
+    async validateStep() {
+      const isStepValid = await this.$validator.validateAll();
+      const isRequirementsValid = this.reception_type_id == 1 ? true : this.$refs.requirements.validate();      
+      return isStepValid && isRequirementsValid;
+    },
+    async onChooseModality() {
       await this.setReceptionType();
       await this.setModality();
-      await this.getRequirements();
+      if (this.modality_id) {
+        this.getRequirements();
+      }
     },
     setPensionEntity() {
       let name = null;
@@ -264,12 +173,12 @@ export default {
         .catch(error => {
           console.log(error);
         });
+              
       await this.$store.commit(
         "ecoComForm/setReceptionType",
         this.ecoComReceptionTypes.find(r => r.id == this.reception_type_id)
       );
       await this.findBeneficiary();
-      this.getRequirements();
     },
     async findBeneficiary() {
       let last_eco_com_id = !!this.lastEcoCom ? this.lastEcoCom.id : null;
@@ -307,72 +216,23 @@ export default {
         });
     },
     async getRequirements() {
-      if (!this.modality_id) {
-        this.requirementList = [];
+      if (!this.modality_id || this.reception_type_id == 1) {
+        this.requirementList = {};
+        this.additionalRequirements = [];
+        return;
       }
-      await axios
-        .get("/get_procedure_requirements", {
-          params: {
-            affiliate_id: this.affiliate.id,
-            procedure_modality_id: this.modality_id,
-            reception_type_id: this.reception_type_id
-          }
-        })
-        .then(response => {
-          this.requirementList = response.data.requirements;
-          this.additionalRequirements = response.data.additional_requirements;
-          setTimeout(() => {
-            $(".chosen-select")
-              .chosen({ width: "100%" })
-              .trigger("chosen:updated");
-            $(".chosen-select")
-              .next('.chosen-container')
-              .find('.chosen-choices') // Para selects múltiples
-              .css("border", "4px solid #ceebd6");
-          }, 500);
-          this.verifyOneNumber();
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    verifyOneNumber(){
-      let sw = true;
-      for (const key in this.requirementList) {
-        if (this.requirementList[key].length != 1) {
-          sw = false;
-          break;
-        }
+      let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality_id}/collate`;
+      this.loadingReq = true;
+      try {
+        const data = (await axios.get(uri)).data;
+        this.requirementList = data.requiredDocuments;
+        this.additionalRequirements = data.additionallyDocuments;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loadingReq = false;
       }
-      if (sw) {
-        for (const key in this.requirementList) {
-          this.requirementList[key][0].background = "bg-success-green";
-          this.requirementList[key][0].status = true;
-        }
-      }
-    },
-    checked(index, i) {
-      for (var k = 0; k < this.requirementList[index].length; k++) {
-        if (k != i) {
-          this.requirementList[index][k].status = false;
-          this.requirementList[index][k].background = "bg-warning-yellow";
-        }
-      }
-      console.log(this.requirementList[index][i].status);
-      this.requirementList[index][i].status = !this.requirementList[index][i]
-        .status;
-      this.requirementList[index][i].background =
-        this.requirementList[index][i].background == "bg-success-green"
-          ? ""
-          : "bg-success-green";
-      if (this.requirementList[index].every(r => !r.status)) {
-        for (var k = 0; k < this.requirementList[index].length; k++) {
-          if (!this.requirementList[index][k].status) {
-            this.requirementList[index][k].background = "";
-          }
-        }
-      }
-    },
+    },    
     onChooseCity() {
       this.setCity();
     }

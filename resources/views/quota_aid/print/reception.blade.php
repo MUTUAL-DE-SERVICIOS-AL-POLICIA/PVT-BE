@@ -53,7 +53,8 @@
                 <tr class="font-medium text-white text-sm">
                     <td class="text-center p-5">N°</td>
                     <td class="text-center p-5">REQUISITOS</td>
-                    <td class="text-center p-5">V°B°</td>
+                    <td class="text-center p-5"  style="width: 100px">PRESENTADOS</td>
+                    <td class="text-center p-5"  style="width: 100px">EN ARCHIVO D.B.E.</td>
                 </tr>
             </thead>
             <tbody class="text-sm">
@@ -62,14 +63,18 @@
                     <tr>
                         <td class='text-center p-5'>{!! $item->procedure_requirement->number !!}</td>
                         <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                        @if (true)
+                        @if($item->is_uploaded)
+                        <td class="text-center p-5"></td>
                         <td class="text-center">
-                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
+                            <img
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
                         </td>
                         @else
                         <td class="text-center">
-                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEHSURBVEhL7ZVNCsIwEIXrz1HUYwiuBA8jbkU8h4ILxZ14J0X0DoKI+p5mIAzNJLZ1IfTBh3Uw81EzTbM6v0jbfaamCRqfy/SMwQ0sQIuFSLrgCA6gx0JKJuDpsQGWjJIzkN9fQAeYYcM78EUkJGNDXyIsQTQroBcSLQtJrqAPomEzNtUNiMgsyRAkx5LtQSUSiSXTFJZIUmSlJRLKdiBP8gAjUElCGy/IgJRKTCKUkuknXuDfpWukkCwk4cZzT9ZezecrmSWR6WKz0DQmyXjM8xTWi/NG2JLNgBm+U07AX2Q9JyHZFETD9wmP+phEomVbV0sKx5pH/eD9LR425l3M3XWdv0uWvQDq/6w9IEeDKwAAAABJRU5ErkJggg==">
+                            <img
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
                         </td>
+                        <td class="text-center p-5"></td>
                         @endif
                     </tr>
                 @endif
@@ -82,7 +87,8 @@
                     <tr class="font-medium text-white text-sm">
                         {{-- <td class="text-center p-5">N°</td> --}}
                         <td class="text-center p-5">ADICIONALES</td>
-                        <td class="text-center p-5">V°B°</td>
+                        <td class="text-center p-5"  style="width: 100px">PRESENTADOS</td>
+                        <td class="text-center p-5"  style="width: 100px">EN ARCHIVO D.B.E.</td>
                     </tr>
                 </thead>
                 <tbody class="text-sm">
@@ -91,14 +97,18 @@
                             <tr>
                                 {{-- <td class='text-center p-5'>{!! $item->procedure_requirement->number !!}</td> --}}
                                 <td class='text-justify p-5'>{!! $item->procedure_requirement->procedure_document->name !!} </td>
-                                @if (true)
+                                @if($item->is_uploaded)
+                                <td class="text-center p-5"></td>
                                 <td class="text-center">
-                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
+                                    <img
+                                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
                                 </td>
                                 @else
                                 <td class="text-center">
-                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEHSURBVEhL7ZVNCsIwEIXrz1HUYwiuBA8jbkU8h4ILxZ14J0X0DoKI+p5mIAzNJLZ1IfTBh3Uw81EzTbM6v0jbfaamCRqfy/SMwQ0sQIuFSLrgCA6gx0JKJuDpsQGWjJIzkN9fQAeYYcM78EUkJGNDXyIsQTQroBcSLQtJrqAPomEzNtUNiMgsyRAkx5LtQSUSiSXTFJZIUmSlJRLKdiBP8gAjUElCGy/IgJRKTCKUkuknXuDfpWukkCwk4cZzT9ZezecrmSWR6WKz0DQmyXjM8xTWi/NG2JLNgBm+U07AX2Q9JyHZFETD9wmP+phEomVbV0sKx5pH/eD9LR425l3M3XWdv0uWvQDq/6w9IEeDKwAAAABJRU5ErkJggg==">
+                                    <img
+                                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADhSURBVEhL7ZRJCsJAFETbG3kC1yIuRBRBHBEP4DyPiIiI4G0Vx6okH0SIJvqDmzx4pLvorr8IiQn5JzEYsZf61OENHqydMjXI8jtsMNCkCqW8xUCTCrxAlncYaFKEUt5joEkeSvmAgSY5KOUjBm5EnacfslDKJwzcWEAeLFg7b2TgGbJ8xuAdU8iDHMKX9Yk0PEHemTPwwhjKkBIDF1JQypcM/DCEMqTM4IUklPIVg2/oQxnCr1JIQClfM/iFLnweEodSvoEqtCELr/DorLdQlSZkMd0xCAL+bvf2MiQQjHkAzVw/sI3mdmoAAAAASUVORK5CYII=">
                                 </td>
+                                <td class="text-center p-5"></td>
                                 @endif
                             </tr>
                         @endif
@@ -106,13 +116,17 @@
                 </tbody>
             </table>
         @endif
-        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario,
+        <div class="text-justify text-xs">El pago del beneficio será desembolsado en su cuenta bancaria dentro de un plazo máximo de 12 días hábiles, contados a partir de la fecha de presentación de la solicitud formal.<br>
+                En caso de disconformidad con el monto pagado del beneficio de {!! $quota_aid->procedure_modality->procedure_type->second_name !!}, podrá presentar solicitud de revisión de la calificación en un plazo máximo de 10 días hábiles, computados desde el día hábil siguiente de la notificación realizada por mensaje de texto SMS o WhatsApp.<br>
+                Si no se presenta ninguna solicitud de revisión dentro del plazo establecido, el monto calificado quedará firme y definitivo.<br>
+                En mi calidad de solicitante, autorizo de manera expresa a la MUSERPOL a notificarme sobre el desembolso efectivizado del beneficio de {!! $quota_aid->procedure_modality->procedure_type->second_name !!}, así como otros actuados administrativos, mediante medios electrónicos (mensaje de texto SMS o WhatsApp) al número de celular consignado en el presente formulario de solicitud.<br><br><br><br></div>
+        <!-- <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario,
              Cuota y Auxilio Mortuorio procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme el Artículo {!! $quota_aid->procedure_modality->procedure_type->second_name == 'Cuota Mortuoria'? '44':'42' !!} del Reglamento de {!! $quota_aid->procedure_modality->procedure_type->second_name !!}.
         </div>
         <div class="text-justify text-xxs">En mi calidad de solicitante del beneficio, autorizo de forma expresa a la MUSERPOL para notificarme con el desembolso del beneficio por medio de mensaje de texto al celular detallado en el presente formulario.</div>
         <div class="text-justify text-xxs">El trámite iniciado, será desembolsado en su cuenta bancaria en el plazo de 12 días hábiles, iniciando a partir de este momento, el plazo de 10 días hábiles para presentar la solicitud de revisión del monto calificado.
             Posterior a este plazo y de no registrarse ninguna solicitud de revisión en este plazo de tiempo, se procederá a la ejecutoría de la liquidación de pago
-        </div>
+        </div> -->
         <table class="m-t-5">
             <tr>
                 <td class="no-border text-center text-base w-50 align-bottom">

@@ -6,6 +6,7 @@ use Muserpol\Models\Spouse;
 use Muserpol\Models\City;
 use Muserpol\Models\Affiliate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Log;
 use Validator;
 use Muserpol\Helpers\Util;
@@ -37,25 +38,30 @@ class SpouseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $affiliate_id)
     {
-        $spouse = Affiliate::find($request->affiliate_id)->spouse->first();
-        if (!$spouse) {
-            $spouse = new Spouse();
-        }
+        $spouse = new Spouse();
         $spouse->user_id = Auth::user()->id;
-        $spouse->affiliate_id = $request->affiliate_id;
+        $spouse->affiliate_id = $affiliate_id;
         $spouse->city_identity_card_id = $request->city_identity_card_id;
         $spouse->identity_card = $request->identity_card;
         $spouse->registration = $request->registration;
         $spouse->last_name = $request->last_name;
-        $spouse->mothers_last_name = $request->mother_last_namel;
+        $spouse->mothers_last_name = $request->mothers_last_name;
         $spouse->first_name = $request->first_name;
         $spouse->second_name = $request->second_name;
         $spouse->surname_husband = $request->surname_husband;
+        $spouse->city_birth_id = $request->city_birth_id;
         $spouse->civil_status = $request->civil_status;
         $spouse->birth_date = Util::verifyBarDate($request->birth_date) ? Util::parseBarDate($request->birth_date) : $request->birth_date;
         $spouse->date_death = $request->date_death;
+        $spouse->reason_death = $request->reason_death;
+        $spouse->death_certificate_number = $request->death_certificate_number;
+        $spouse->official = $request->official;
+        $spouse->book = $request->book;
+        $spouse->departure = $request->departure;
+        $spouse->marriage_date = Util::verifyBarDate($request->marriage_date) ? Util::parseBarDate($request->marriage_date) : $request->marriage_date;
+
         $spouse->save();
     }
 
@@ -138,4 +144,59 @@ class SpouseController extends Controller
     {
         //
     }
+    public function findSpouseOrAffiliateData($identityCard){
+        $datos = Affiliate::select([
+            'identity_card as cedula',
+            'first_name',
+            'second_name',
+            'last_name',
+            'mothers_last_name',
+            'surname_husband',
+            'birth_date',
+            'city_birth_id',
+            'civil_status',
+            'date_death',
+            'reason_death',
+            'death_certificate_number',
+            'uuid_reference as uuid_column'
+        ])
+        ->where('identity_card', $identityCard)
+        ->first();
+        if (!$datos) {
+            $datos = Spouse::select([
+                'identity_card as cedula',
+                'first_name',
+                'second_name',
+                'last_name',
+                'mothers_last_name',
+                'surname_husband',
+                'birth_date',
+                'city_birth_id',
+                'civil_status',
+                'date_death',
+                'reason_death',
+                'death_certificate_number',
+                'uuid_column'
+            ])
+            ->where('identity_card', $identityCard)
+            ->latest('updated_at')
+            ->first();
+        }
+        return response()->json(['spouses' => $datos]);
+        }
+
+    public function getRecord($affiliate_id)
+    {
+        $affiliate = Affiliate::find($affiliate_id);
+        if (!$affiliate) {
+            return response()->json(['error' => 'Affiliate not found'], 404);
+        }
+        $spouse = $affiliate->spouse->first();
+        if (!$spouse) {
+            return response()->json(['error' => 'Spouse not found'], 404);
+        }
+        $spouse_records = $spouse->records()->orderByDesc('created_at')->get();
+        return response()->json(['spouse_records' => $spouse_records]);
+    }
+
 }

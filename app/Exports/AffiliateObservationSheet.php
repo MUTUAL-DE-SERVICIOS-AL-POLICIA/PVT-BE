@@ -28,7 +28,7 @@ class AffiliateObservationSheet implements FromCollection, WithTitle, WithHeadin
         $data = collect([]);
         foreach ($this->affiliates as $a) {
             
-            $observation = $a->observations->where('id',$this->observation_type->id)->first();
+            $observation = $a->observations->where('id',$this->observation_type->id)->last();
             // if ($a->observations->contains($this->observation_type->id)) {
             if ($observation) {
                 

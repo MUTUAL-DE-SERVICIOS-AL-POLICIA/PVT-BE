@@ -218,6 +218,7 @@ import {
 export default {
   props: [
     "kinships",
+    "kinship_beneficiaries",
     "cities",
     "beneficiary",
     "editable",

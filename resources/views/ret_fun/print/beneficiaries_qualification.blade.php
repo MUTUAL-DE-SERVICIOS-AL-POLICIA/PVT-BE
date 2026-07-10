@@ -9,6 +9,7 @@
     @if ($retirement_fund->procedure_modality->id == 1 || $retirement_fund->procedure_modality->id == 4 || $retirement_fund->procedure_modality->id == 63)
         @include('ret_fun.print.beneficiaries_list', ['beneficiaries'=>$beneficiaries])
     @endif
-    @include('ret_fun.print.signature_footer',['user'=>$user])
+    {{-- @include('ret_fun.print.signature_footer',['user'=>$user]) --}}
+    @include('ret_fun.print.signature_footer_2',['qualification_users'=>$qualification_users])
 </div>
 @endsection

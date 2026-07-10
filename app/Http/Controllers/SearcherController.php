@@ -15,6 +15,7 @@ use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\ObservationType;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
 use DB;
+use Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary;
 
 class SearcherController
 {
@@ -39,6 +40,7 @@ class SearcherController
             new Affiliate(),
             new Spouse(),
             new RetFunBeneficiary(),
+            new QuotaAidBeneficiary(),
             new RetFunLegalGuardian(),
             new RetFunAdvisor(),
             new EcoComBeneficiary(),
@@ -48,13 +50,29 @@ class SearcherController
     }
     public function search($ci)
     {
-        if ($ci == '')
+        if (empty($ci)) {
             return new Person();
+        }
         $this->getDefaults();
+        $person = null;
         foreach ($this->tables as $table) {
-            $person = $table->where('identity_card', $ci)->select($this->select)->first();
-            if (isset($person->id)){
-                $person->address;
+            $query = $table->where('identity_card', $ci)->select($this->select);
+
+            // Si el modelo tiene definida la relación address, la cargamos
+            if (method_exists($table, 'address')) {
+                $query->with([
+                    'address' => function ($q) {
+                        $q->orderBy('id', 'desc');
+                    }
+                ]);
+            }
+
+            $person = $query->first();
+
+            if ($person) {
+                if ($person->relationLoaded('address')) {
+                    $person->setRelation('address', $person->address->first());
+                }
                 break;
             }
         }

@@ -234,8 +234,8 @@ export default {
       this.applicant_gender = data.gender;
       this.applicant_kinship_id = data.kinship_id;
       this.applicant_birth_date = data.birth_date;
-      this.applicant_phone_numbers = data.phone_number;
-      this.applicant_cell_phone_numbers = data.cell_phone_number;
+      this.applicant_phone_numbers = !! data.phone_number ? data.phone_number : [{value:null}];
+      this.applicant_cell_phone_numbers = !! data.cell_phone_number ? data.cell_phone_number : [{value:null}];
     },
     setDataLegalGuardian(data){
       this.legal_guardian_first_name = data.first_name;

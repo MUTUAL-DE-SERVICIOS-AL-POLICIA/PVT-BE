@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'session' => \Muserpol\Http\Middleware\SessionMiddleware::class,
         'affiliate_has_ret_fun' => \Muserpol\Http\Middleware\AffiliateHasRetFun::class,
         'api_auth' => \Muserpol\Http\Middleware\ApiAuth::class,
+        'verify.bearer' => \Muserpol\Http\Middleware\VerifyBearerToken::class,
     ];
     protected $commands = [
         UpdateAffiliateSubmittedDocuments::class,

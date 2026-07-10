@@ -57,7 +57,7 @@
                       <template v-if="x.value == 'name'">
                         <ul class="tag-list"
                             style="padding: 0"
-                            v-if="props.item.tags.length"
+                            v-if="props.item.tags"
                             key="saved">
                             <li v-for="(tag, tagIndex) in props.item.tags"
                                 :key="`tag-${tagIndex}`">

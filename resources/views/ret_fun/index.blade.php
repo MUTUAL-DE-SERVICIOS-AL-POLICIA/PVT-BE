@@ -16,15 +16,10 @@
                         <tr>
                             <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
+                            <th style="padding:5px; width:100px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:20px;"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
-                            <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
                             <th style="padding:5px; width:280px"><input type="text" class="form-control" style="width:100%"></th>
@@ -56,6 +51,7 @@
                         <tr>
                             <th># de Trámite</th>
                             <th>Fecha de Recepción</th>
+                            <th>NUP</th>
                             <th>C.I</th>
                             <th>Primer Nombre</th>
                             <th>Segundo Nombre</th>
@@ -75,20 +71,14 @@
                             <th>Disponibilidad</th>
                             <th>Fondo de Retiro</th>
                             <th>Total</th>                            
-                            <th># de Archivo</th>
                             <th>Fecha Archivo</th>
-                            <th># de Revision Legal</th>
                             <th>Fecha Revision Legal</th>
-                            <th># de Cuentas individuales</th>
                             <th>Fecha Cuentas individuales</th>
-                            <th># de Calificación</th>
                             <th>Fecha Calificación</th>
-                            <th># de Dictamen</th>
                             <th>Fecha Dictamen</th>
-                            <th># de Jefatura</th>
                             <th>Fecha Jefatura</th>
-                            <th># de Resolución</th>
                             <th>Fecha Resolución</th>
+                            <th>Fecha Liquidación</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -169,6 +159,7 @@
                 // { data: 'id' },
                 { data: 'code' },
                 { data: 'reception_date' },
+                { data: 'affiliate.id'},
                 { data: 'affiliate.identity_card' },
                 { data: 'affiliate.first_name' },
                 { data: 'affiliate.second_name' },
@@ -188,20 +179,14 @@
                 { data: 'total_availability', visible: false },
                 { data: 'subtotal_ret_fun', visible: false },
                 { data: 'total' },                
-                { data: 'file_code',  visible: false },
                 { data: 'file_date', visible: false },
-                { data: 'review_code', visible: false },
                 { data: 'review_date', visible: false },
-                { data: 'individuals_account_code', visible: false },
                 { data: 'individuals_account_date', visible: false },
-                { data: 'qualification_code', visible: false },
                 { data: 'qualification_date', visible: false },
-                { data: 'dictum_code', visible: false },
                 { data: 'dictum_date', visible: false },
-                { data: 'headship_code', visible: false },
                 { data: 'headship_date', visible: false },
-                { data: 'resolution_code', visible: false },
                 { data: 'resolution_date', visible: false },
+                { data: 'liquidation_date', visible: false },
                 { data: 'action' },
             ],
         });

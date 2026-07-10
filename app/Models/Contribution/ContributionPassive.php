@@ -3,9 +3,14 @@
 namespace Muserpol\Models\Contribution;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ContributionPassive extends Model
-{   public $timestamps = true;
+{   
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+    
+    public $timestamps = true;
     public $fillable = [
      'user_id',
      'affiliate_id',

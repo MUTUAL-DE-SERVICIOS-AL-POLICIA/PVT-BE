@@ -33,7 +33,7 @@ class DocumentController extends Controller
       case 2:
         # eco com
         $headers = Util::getHeadersInboxEcoCom();
-        $documents = EconomicComplement::with('tags')->select(
+        $documents = EconomicComplement::select(
           DB::raw(
             "
                         economic_complements.id as id,

@@ -1,7 +1,8 @@
 <script>
 export default {
     props:[
-        'items'
+        'items',
+        'kinship_beneficiaries',
     ],
     data(){
         return{

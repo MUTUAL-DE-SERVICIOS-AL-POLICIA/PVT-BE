@@ -1,119 +1,139 @@
+<template>
+    <div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="form-group" :class="{ 'has-error': errors.has('procedure_type_id') }">
+                    <label class="col-sm-3 control-label">Tipo de Pago</label>
+                    <div class="col-sm-8">
+                        <select class="form-control m-b" ref="procedure_type_id" name="procedure_type_id"
+                            @change="onChooseProcedureType" v-model="procedure_type_id" v-validate.initial="'required'">
+                            <option :value="null"></option>
+                            <option v-for="type in procedureTypes" :value="type.id" :key="type.id">{{ type.name }}
+                            </option>
+                        </select>
+                        <i v-show="errors.has('procedure_type_id')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('procedure_type_id')" class="text-danger">{{
+                            errors.first('procedure_type_id') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" :class="{ 'has-error': errors.has('city_end_id') }">
+                    <label class="col-sm-4 control-label">Regional</label>
+                    <div class="col-sm-8">
+                        <select class="form-control m-b" ref="city_end" name="city_end_id" @change="onChooseCity"
+                            v-model="city_end_id" v-validate.initial="'required'">
+                            <option :value="null"></option>
+                            <option v-for="city in cities" :value="city.id" :key="city.id">{{ city.name }}</option>
+                        </select>
+                        <i v-show="errors.has('city_end_id')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('city_end_id')" class="text-danger">{{ errors.first('city_end_id')
+                            }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" :class="{ 'has-error': errors.has('quota_aid_modality') }">
+                    <label class="col-sm-4 control-label">Modalidad</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" v-model="modality" v-on:change="onChooseModality" ref="modality"
+                            name="quota_aid_modality" id="quota_aid_modality" v-validate.initial="'required'">
+                            <option :value="null"></option>
+                            <option v-for="(modality, index) in modalitiesFilter" :value="modality.id" :key="index">
+                                {{ modality.name }}</option>
+                        </select>
+                        <i v-show="errors.has('quota_aid_modality')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('quota_aid_modality')" class="text-danger">{{
+                            errors.first('quota_aid_modality') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <requirement-select ref="requirements" :requirement-list="requirementList"
+                :additional-requirements="additionalRequirements" :is-loading="loadingReq"></requirement-select>
+        </div>
+    </div>
+</template>
 <script>
-	export default{
-		props:[
-			'modalities',
-            'requirements',
-            'user',
-            'cities',
-            'procedureTypes',
-            'showRequirementsError'
-		],
-        data(){
-            return{
-                editing: false,
-                requirementList: [],
-                aditionalRequirements: [],
-                modality: null,
-                show_spinner: false,
-                city_end_id:this.user.city_id,
-                procedure_type_id:3,
-                modalitiesFilter: [],
+export default {
+    props: [
+        'affiliate',
+        'modalities',
+        'user',
+        'cities',
+        'procedureTypes',
+    ],
+    data() {
+        return {
+            requirementList: {},
+            additionalRequirements: [],
+            loadingReq: false,
+            modality: null,
+            city_end_id: this.user.city_id,
+            procedure_type_id: 3,
+            modalitiesFilter: [],
+        }
+    },
+    mounted() {
+        this.$store.commit('quotaAidForm/setCity', this.cities.filter(city => city.id == this.city_end_id)[0].name);
+        this.onChooseProcedureType();
+    },
+    methods: {
+        // Valida el primer paso del formulario, llamado desde el padre
+        async validateStep() {            
+            const isStepValid = await this.$validator.validateAll();
+            const isRequirementsValid = this.$refs.requirements.validate();            
+            return isStepValid && isRequirementsValid;
+        },
+        onChooseProcedureType() {
+            this.modalitiesFilter = this.modalities.filter((m) => {
+                return m.procedure_type_id == this.procedure_type_id;
+            })
+            this.modality = null;
+            this.requirementList = {};
+            this.additionalRequirements = [];
+        },
+        onChooseModality() {
+            const mod = this.modalities.filter(e => e.id == this.modality)[0];
+            if (mod) {
+                let object = {
+                    name: mod.name,
+                    id: mod.id,
+                    shortened: mod.shortened
+                }
+                this.$store.commit('quotaAidForm/setModality', object);
+            }
+            this.getRequirements();
+        },
+        async getRequirements() {
+            if (!this.modality) {
+                this.requirementList = {};
+                this.additionalRequirements = [];
+                return;
+            }
+            else {
+                let uri = `/gateway/api/affiliates/${this.affiliate.id}/modality/${this.modality}/collate`;
+                this.loadingReq = true;
+                try {
+                    const data = (await axios.get(uri)).data;
+                    this.requirementList = data.requiredDocuments;
+                    this.additionalRequirements = data.additionallyDocuments;
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    this.loadingReq = false;
+                }
             }
         },
-        mounted(){
-            this.$store.commit('quotaAidForm/setCity',this.cities.filter(city => city.id == this.city_end_id)[0].name);
-            this.onChooseProcedureType();
+        onChooseCity(event) {
+            const options = event.target.options;
+            const selectedOption = options[options.selectedIndex];
+            const selectedText = selectedOption.textContent;
+            this.$store.commit('quotaAidForm/setCity', selectedText)
         },
-        methods:{
-            onChooseProcedureType(){
-                this.modalitiesFilter = this.modalities.filter((m) => {
-                    return m.procedure_type_id == this.procedure_type_id;
-                })
-                this.modality = null;
-                this.getRequirements();
-                //this.getAditionalRequirements();
-            },
-            onChooseModality(event){
-                // const options = event.target.options; 
-                // const selectedOption = options[options.selectedIndex];
-                let mod = this.modalities.filter(e => e.id == this.modality)[0];
-                if (mod) {
-                    let object = {
-                        name: mod.name,
-                        id: mod.id,
-                        shortened: mod.shortened
-                    }
-                    this.$store.commit('quotaAidForm/setModality', object);
-                }
-                // if (selectedOption) {
-                //     const selectedText = selectedOption.textContent;
-                //     var object={
-                //         name:selectedText,
-                //         id: this.modality
-                //     }
-                //     this.$store.commit('quotaAidForm/setModality',object);//solo se puede enviar un(1) argumento 
-                // }
-                this.getRequirements();
-                this.getAditionalRequirements();
-            },
-            getRequirements(){
-                if(!this.modality){ this.requirementList = [] }
-                this.requirementList = this.requirements.filter((r) => {
-                    if (r.modality_id == this.modality && r.number != 0) {
-                        r['status'] = false;
-                        r['background'] = '';
-                        return r;
-                    }
-                });
-                Array.prototype.groupBy = function(prop) {
-                    return this.reduce(function(groups, item) {
-                        const val = item[prop]
-                        groups[val] = groups[val] || []
-                        groups[val].push(item)
-                        return groups
-                    }, {})
-                }
-                this.requirementList =  this.requirementList.groupBy('number')
-            },
-            getAditionalRequirements(){
-                if(!this.modality){this.aditionalRequirements = []}                
-                this.aditionalRequirements = this.requirements.filter((requirement) => {
-                    if (requirement.modality_id == this.modality && requirement.number == 0) {
-                        return requirement;
-                    }
-                });                
-                console.log("requerimientos");
-                console.log(this.aditionalRequirements.length  );
-                setTimeout(() => {
-                    $(".chosen-select").chosen({ width: "100%" }).trigger("chosen:updated");
-                }, 500);                
-            },
-            checked(index, i){
-                for(var k = 0; k < this.requirementList[index].length; k++ ){
-                    if (k != i ) {
-                    this.requirementList[index][k].status = false;
-                    this.requirementList[index][k].background = 'bg-warning-yellow';
-
-                    }
-                }
-                this.requirementList[index][i].status =  ! this.requirementList[index][i].status;
-                this.requirementList[index][i].background = this.requirementList[index][i].background == 'bg-success-green' ? '' : 'bg-success-green';
-                // this.requirementList[index][i].status = true;
-                if (this.requirementList[index].every(r => !r.status )) {
-                    for(var k = 0; k < this.requirementList[index].length; k++ ){
-                        if (!this.requirementList[index][k].status) {
-                            this.requirementList[index][k].background = '';
-                        }
-                    }
-                }
-
-            },
-            onChooseCity(event){
-                const options = event.target.options;
-                const selectedOption = options[options.selectedIndex];
-                const selectedText = selectedOption.textContent;
-                this.$store.commit('quotaAidForm/setCity',selectedText)
-            },
-	}
+    }
 }
 </script>

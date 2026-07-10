@@ -2,6 +2,7 @@
 
 namespace Muserpol\Providers;
 
+use Muserpol\Observers\SpouseObserver;
 use Illuminate\Support\ServiceProvider;
 use Muserpol\Observers\AffiliateObserver;
 use Muserpol\Models\Affiliate;
@@ -27,6 +28,7 @@ use Muserpol\Models\Contribution\Contribution;
 use Muserpol\Observers\ContributionObserver;
 use Muserpol\Models\Contribution\Reimbursement;
 use Muserpol\Models\EconomicComplement\EcoComFixedPension;
+use Muserpol\Models\Spouse;
 use Muserpol\Observers\EcoComFixedPensionObserver;
 use Muserpol\Observers\ReimbursementObserver;
 
@@ -41,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Affiliate::observe(AffiliateObserver::class);
+        Spouse::observe(SpouseObserver::class);
         RetirementFund::observe(RetirementFundObserver::class);
         QuotaAidMortuary::observe(QuotaAidMortuaryObserver::class);
         //RetFunObservation::observe(RetirementFundObservationObserver::class);
@@ -67,6 +70,7 @@ class AppServiceProvider extends ServiceProvider
             'ret_fun_beneficiaries' => 'Muserpol\Models\RetirementFund\RetFunBeneficiary',
             'quota_aid_beneficiaries' => 'Muserpol\Models\QuotaAidMortuary\QuotaAidBeneficiary',
             'affiliates' => 'Muserpol\Models\Affiliate',
+            'spouses' => 'Muserpol\Models\Spouse',
             'modules' => 'Muserpol\Models\Module',
         ]);
 

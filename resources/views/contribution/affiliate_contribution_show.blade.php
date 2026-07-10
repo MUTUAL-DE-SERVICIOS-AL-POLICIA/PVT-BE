@@ -16,6 +16,9 @@
             {{-- <a href="{{route('direct_contribution', $affiliate->id)}}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Aportes Directos"><i class="fa fa-pencil"></i> Aporte Directo </a> --}}
         </div>
         <br>
+         <span class="badge" style="background-color:#a3bbd4; color: #353535; font-size: 12px" >Aportes para Primer FR</span>
+         <span class="badge" style="background-color:#a897fc; color: #1b143f; font-size: 12px" >Aportes para Segundo FR</span>
+         <span class="badge" style="background-color:#ffe6b3; color: #353535; font-size: 12px" >Aportes con Reintegro</span>
         <table class="table table-striped table-bordered table-hover size-13"  id="fixedheight">
             <thead>
                 <tr>
@@ -42,7 +45,17 @@
                             @php
                                 $month = $i<10?'0'.$i:$i;
                             @endphp
-                            <td @if(isset($reimbursements[$year_start.'-'.$month.'-01'])) bgcolor="#ffe6b3" @endif class="numberformat"> {{ $contributions[$year_start.'-'.$month.'-01']??0 }} </td>
+                            <td 
+                            @if(isset($reimbursements[$year_start.'-'.$month.'-01'])) style="border: 5px solid #ffe6b3" @endif 
+                            @if(isset($contributions[$year_start.'-'.$month.'-01']['fr_procedure']) && $contributions[$year_start.'-'.$month.'-01']['fr_procedure'] == 1)
+                            bgcolor="#a3bbd4"
+                            @elseif(isset($contributions[$year_start.'-'.$month.'-01']['fr_procedure']) && $contributions[$year_start.'-'.$month.'-01']['fr_procedure'] == 2)
+                            bgcolor="#a897fc"
+                            @endif
+                            class="numberformat"
+                            > 
+                                {{ $contributions[$year_start.'-'.$month.'-01']['value']??0 }} 
+                            </td>
                         @endfor
                         @php
                         $year_start--;

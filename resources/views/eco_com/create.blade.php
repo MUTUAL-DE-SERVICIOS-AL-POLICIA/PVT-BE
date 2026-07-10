@@ -28,8 +28,8 @@
                             error-color="#ED5565" @on-complete="onFinish" @on-loading="setLoading">
                             <eco-com-create-info></eco-com-create-info>
 
-                            <tab-content title="Modalidad y Requisitos" ref="uno" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep" key="uno">
-                                <eco-com-step1-requirements :last-eco-com="{{ $last_eco_com }}" :pension-entities="{{ $pension_entities }}" :modalities="{{ $modalities }}"
+                            <tab-content title="Modalidad y Requisitos" icon="mdi mdi-format-list-checks" :before-change="validateFirstStep" key="uno">
+                                <eco-com-step1-requirements ref="uno" :last-eco-com="{{ $last_eco_com }}" :pension-entities="{{ $pension_entities }}" :modalities="{{ $modalities }}"
                                     :affiliate="{{ $affiliate }}" :requirements="{{ $requirements }}" :user="{{ $user }}" :cities="{{ $cities }}"
                                     :show-requirements-error="showRequirementsError" :eco-com-procedure-id="{{ $eco_com_procedure_id }}" :eco-com-reception-types="{{ $eco_com_reception_types }}" :eco-com-consecutivo="{{ intval($affiliate->stop_eco_com_consecutively()) }}">
                                 </eco-com-step1-requirements>

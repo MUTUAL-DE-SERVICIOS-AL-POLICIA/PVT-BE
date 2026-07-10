@@ -81,7 +81,9 @@ Breadcrumbs::register('create_retirement_fund', function ($breadcrumbs, $affilia
   $breadcrumbs->push("Nuevo Trámite");
   $breadcrumbs->push($affiliate->fullName(), route('affiliate.show', $affiliate->id));
 });
-
+Breadcrumbs::register('ret_fun_qualification_parameters', function ($breadcrumbs) {
+  $breadcrumbs->push('Parámetros para la calificación del Fondo de Retiro');
+});
 
 Breadcrumbs::register('direct_contribution', function ($breadcrumbs) {
   $breadcrumbs->push('Trámites de Contribuciones', URL::to('direct_contribution'));

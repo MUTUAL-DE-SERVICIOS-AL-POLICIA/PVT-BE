@@ -24,7 +24,9 @@
         /* Retenciones judiciales */
         judicialRetentionAmount: 0,
         judicialRetentionDetail: null,
+        judicialRetentionDocument: null,
         judicialRetentionDate: null,
+        haveJudicialRetention: false,
         // retentionLoanPayment: 0,
         // retentionLoanPaymentNoteCodeDate: null,
         // retentionLoanPaymentNoteCode: null,
@@ -194,6 +196,7 @@
             advancePaymentCode:this.advancePaymentCode,
             advancePaymentDate:this.advancePaymentDate,
             judicialRetentionAmount: parseMoney(this.judicialRetentionAmount),
+            judicialRetentionDocument: this.judicialRetentionDocument,
             judicialRetentionDate: this.judicialRetentionDate,
             reload
           })
@@ -265,7 +268,11 @@
           if(response.data.data) {
             if(response.data.data[0].amount != null) this.judicialRetentionAmount = response.data.data[0].amount
             if(response.data.data[0].date != null) this.judicialRetentionDate = response.data.data[0].date
-            if(response.data.data[0].note_code != undefined) this.judicialRetentionDetail = response.data.data[0].note_code
+            if(response.data.data[0].note_code != undefined) {
+              this.judicialRetentionDetail = response.data.data[0].note_code;
+              this.haveJudicialRetention = true;
+            }
+            if(response.data.data[0].code != undefined) this.judicialRetentionDocument = response.data.data[0].code 
           }
         } catch (error) {
           if(error.response) {

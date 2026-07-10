@@ -16,7 +16,7 @@ class AffiliateDevolutionController extends Controller
 {
     public function getDevolutions($affiliate_id)
     {
-        $devolutions = Devolution::where('affiliate_id',$affiliate_id)->get();
+        $devolutions = Devolution::where('affiliate_id',$affiliate_id)->where('observation_type_id',13)->with('dues')->get();
         $list_devolution= collect();
         foreach ($devolutions as $devolution ) {
             $devolution_object = new \stdClass();
@@ -50,7 +50,7 @@ class AffiliateDevolutionController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
         $title = "CERTIFICACIÓN DE REPOSICIÓN DE FONDOS";
         $user = auth()->user();
-        $area = Util::getRol()->wf_states->first()->first_shortened;
+        $area = Util::getRol()->display_name;
         $date = Util::getTextDate();
         $affiliate = Affiliate::find($affiliate_id);
         $movement_list = EcoComMovement::where("affiliate_id", $affiliate_id)->get();
@@ -170,7 +170,7 @@ class AffiliateDevolutionController extends Controller
         $unit = "UNIDAD DE OTORGACIÓN DEL COMPLEMENTO ECONÓMICO";
         $title = "COMPROMISO DE DEVOLUCIÓN POR PAGOS EN DEMASÍA DEL COMPLEMENTO ECONÓMICO";
         $user = auth()->user();
-        $area = Util::getRol()->wf_states->first()->first_shortened;
+        $area = Util::getRol()->display_name;
         $date = Util::getTextDate();
         $affiliate = Affiliate::find($affiliate_id);
         $devolutions = $affiliate->devolutions()->with(['observation_type', 'dues'])
