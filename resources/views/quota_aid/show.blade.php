@@ -277,7 +277,11 @@
                                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-individual-accounts"><a href="#"><i class="fa fa-list"></i> Cuentas Individuales</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
-                                <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a>
+                                    @if($quota_aid->quota_aid_observations->count() > 0)
+                                        <span class="badge badge-danger" style="background-color: red; color: white;">{{ $quota_aid->quota_aid_observations->count() }}</span>
+                                    @endif
+                                </li>
                             </ul>
                     </div>
                     <br>
