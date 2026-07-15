@@ -163,7 +163,7 @@ export default {
                     }
                 })]
             }));
-            this.aditionalRequirements = this.requirements.additionallyDocuments;
+            this.aditionalRequirements = this.requirements.aditionalRequirements;
             this.aditionalRequirements.forEach(element => {
                 if (element.status) {
                     this.aditionalRequirementsSelected.push(JSON.stringify(element));
