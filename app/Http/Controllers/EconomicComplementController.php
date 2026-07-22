@@ -558,9 +558,9 @@ class EconomicComplementController extends Controller
                 $submit->save();
             }
         }
-        if ($request->additional_requirements) {
+        if ($request->aditional_requirements) {
             $additional_requirements = [];
-            foreach ($request->additional_requirements as $adr) {
+            foreach ($request->aditional_requirements as $adr) {
                 $additional_requirements[] = json_decode($adr);
             }
             foreach ($additional_requirements  as  $requirement) {
