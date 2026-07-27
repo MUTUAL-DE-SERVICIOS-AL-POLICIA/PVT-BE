@@ -411,6 +411,7 @@ class QuotaAidMortuaryController extends Controller
     $beneficiary->phone_number = trim(implode(",", $request->applicant_phone_number));
     $beneficiary->cell_phone_number = trim(implode(",", $request->applicant_cell_phone_number));
     $beneficiary->type = "S";
+    $beneficiary->birth_date = Util::verifyBarDate($request->applicant_birth_date) ? Util::parseBarDate($request->applicant_birth_date) : $request->applicant_birth_date;
     $beneficiary->save();
 
     if ($account_type == ID::applicant()->advisor_id) {
