@@ -287,12 +287,10 @@
             <div class="col-md-9" style="padding-left: 6px">
 
                     <div class="tab-content">
-                            <div id="tab-ret-fun" class="tab-pane active">
-                                @can('update',$quota_aid)                                
+                            <div id="tab-ret-fun" class="tab-pane active">                               
                                     <quota-aid-info :quota_aid="{{ $quota_aid }}" :rf_city_start="{{$quota_aid->city_start}}" :rf_city_end="{{$quota_aid->city_end}}" :rf_procedure_modality=" {{$quota_aid->procedure_modality}}" :states="{{ $states }}" inline-template>
                                         @include('quota_aid.info', ['quota_aid'=>$quota_aid,'cities'=>$birth_cities])
                                     </quota-aid-info>
-                                @endcan
                             </div>
                             <div id="tab-affiliate" class="tab-pane">
 
