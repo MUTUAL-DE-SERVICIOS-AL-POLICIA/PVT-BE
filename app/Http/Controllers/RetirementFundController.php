@@ -277,7 +277,21 @@ class RetirementFundController extends Controller
                 $submit->save();
             }
         }
-
+        
+        /**
+         ** has affiliate observation
+         */
+        $affiliate = Affiliate::find($request->affiliate_id);
+        $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->where('module_id', ID::module()->ret_fun)->get();
+        foreach ($observations as $o) {
+            $enabled = false;
+            $retirement_fund->ret_fun_observations()->save($o, [
+                'user_id' => $o->pivot->user_id,
+                'date' => $o->pivot->date,
+                'message' => $o->pivot->message,
+                'enabled' => $enabled
+            ]);
+        }
 
         $beneficiary = new RetFunBeneficiary();
         $beneficiary->retirement_fund_id = $retirement_fund->id;
