@@ -14,4 +14,8 @@ class ObservationType extends Model
     {
         return $this->belongsTo('Muserpol\Models\RetirementFund\RetFunObservation');
     }
+    public function module()
+    {
+        return $this->belongsTo('Muserpol\Models\Module');
+    }
 }
