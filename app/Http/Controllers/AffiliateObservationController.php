@@ -26,7 +26,7 @@ class AffiliateObservationController extends Controller
             ], 403);
         }
         $affiliate = Affiliate::find($affiliate_id);
-        return $affiliate->observations;
+        return $affiliate->observations()->with('module')->get();
     }
     public function getDeleteObservations($affiliate_id)
     {

@@ -397,6 +397,20 @@ class QuotaAidMortuaryController extends Controller
 
     $account_type = $request->input('accountType');
 
+        /**
+     ** has affiliate observation
+     */
+    $observations = $affiliate->observations()->where('type', 'AT')->whereNull('deleted_at')->where('module_id', ID::module()->quota_aid)->get();
+    foreach ($observations as $o) {
+        $enabled = false;
+        $quota_aid->quota_aid_observations()->save($o, [
+            'user_id' => $o->pivot->user_id,
+            'date' => $o->pivot->date,
+            'message' => $o->pivot->message,
+            'enabled' => $enabled
+        ]);
+    }
+
     $beneficiary = new QuotaAidBeneficiary();
     $beneficiary->quota_aid_mortuary_id = $quota_aid->id;
     $beneficiary->city_identity_card_id = $request->applicant_city_identity_card;

@@ -23,6 +23,7 @@
               <tr>
                 <th>Nro.</th>
                 <th>Fecha</th>
+                <th>Módulo</th>
                 <th>Tipo de Observacion</th>
                 <th>Mensaje</th>
                 <th>Estado</th>
@@ -33,6 +34,7 @@
               <tr v-for="(o, index) in observations" :key="index" v-if="o.pivot.deleted_at==null">
                 <td>{{index + 1}}</td>
                 <td>{{ o.pivot.date | textDate }}</td>
+                <td>{{ o.module.display_name }}</td>
                 <td>
                   <span class="label" :class="getBadge(o.type)">{{ o.type }}</span>
                   {{ o.name }}
