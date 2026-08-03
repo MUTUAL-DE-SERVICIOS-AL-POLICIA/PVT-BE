@@ -2009,7 +2009,7 @@ class EconomicComplementController extends Controller
         }
 
         $base_wage = BaseWage::whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->get();
-        if ($base_wage->count() == 0) {
+        if ($base_wage->count() == 0 && $eco_com->base_wage_id == null) {
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',
