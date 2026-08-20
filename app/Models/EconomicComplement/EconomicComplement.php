@@ -660,6 +660,10 @@ class EconomicComplement extends Model
         beneficiary.surname_husband as apellido_de_casado_ben,
         beneficiary.birth_date as fecha_nac_ben,
         beneficiary.due_date as fecha_vencimiento_ci_ben,
+        CASE 
+            WHEN beneficiary.is_duedate_undefined = true THEN 'SI'
+            ELSE 'NO'
+        END as fecha_vencimiento_ci_indefinida_ben,
         beneficiary.phone_number as telefonos_ben,
         beneficiary.cell_phone_number as celulares_ben,
         beneficiary.gender as genero_ben
