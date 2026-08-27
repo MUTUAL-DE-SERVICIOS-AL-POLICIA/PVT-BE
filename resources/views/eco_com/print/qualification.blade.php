@@ -1,20 +1,40 @@
 @extends('print_global.print')
 @section('content')
 <div style="min-height:1000px;">
+
+    <div class="font-bold m-b-5 counter">
+        DATOS PERSONALES DEL TITULAR
+    </div>
+    @include('eco_com.print.only_personal_info', ['affiliate'=>$affiliate])
+
     <div class="font-bold uppercase m-b-5 counter">
         Datos del Beneficiario
+    @if($eco_com->is_paid)
+        - PAGO POR ÚNICA VEZ
+            @if($beneficiary_one_payment->type === 'V')
+            VIUDEDAD
+            @else
+            ORFANDAD
+            @endif
     </div>
-    @include('eco_com.print.applicant_info', ['applicant'=>$eco_com_beneficiary])
+        @include('eco_com.print.applicant_info', ['applicant'=>$beneficiary_one_payment])
+    @else
+    </div>
+        @include('eco_com.print.applicant_info', ['applicant'=>$eco_com_beneficiary])
+    @endif
+
     <div class="font-bold uppercase m-b-5 counter">
         Datos del Trámite
     </div>
     @include('eco_com.print.info',['eco_com'=>$eco_com])
+
     <div class="font-bold uppercase m-b-5 counter">
         Datos Policiales del Titular
     </div>
     @include('eco_com.print.only_police_info', ['affiliate'=>$affiliate])
+
     <div class="font-bold uppercase m-b-5 counter">
-        Calculo del complemento economico {{ $eco_com_procedure->semester }} semestre {{ $eco_com_procedure->getYear() }}
+        Cálculo del complemento económico {{ $eco_com_procedure->semester }} semestre {{ $eco_com_procedure->getYear() }}
     </div>
     <table class="table-info w-100 m-b-10">
         <thead class="bg-grey-darker">
@@ -47,7 +67,7 @@
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
             <tr class="text-sm">
-                <td class="w-60 text-left px-10 py-3 uppercase">CATEGORIÍA (según años de servicio)</td>
+                <td class="w-60 text-left px-10 py-3 uppercase">CATEGORÍA (según años de servicio)</td>
                 <td class="w-15 text-right uppercase px-5 py-3"> {{ Util::formatMoney($eco_com->seniority)}} </td>
                 <td class="w-15  text-center uppercase px-5 py-3"></td>
             </tr>
@@ -120,33 +140,39 @@
             @endif
         </tbody>
     </table>
-    <div class="p-10 border justify rounded"><span class="font-bold uppercase">nota:</span> {{ $eco_com->comment }}</div>
-
-    <table class="m-t-25 border table-info">
-        <tbody>
-            <tr >
-                <td class="no-border text-center text-base w-33 align-bottom py-50" style="border-bottom:1px solid #5d6975!important;border-right:1px solid #5d6975!important; border-radius:0 !important">
-                </td>
-                <td class="no-border  text-center text-base w-33 align-bottom" style="border-bottom:1px solid #5d6975!important;border-right:1px solid #5d6975!important; border-radius:0 !important">
-                </td>
-                <td class="no-border text-center text-base w-33 align-bottom" style="border-bottom:1px solid #5d6975!important; border-radius:0 !important">
-                </td>
-            </tr>
-        </tbody>
-        <tfoot>
+    <div class="p-10 border justify rounded"><span class="font-bold">NOTA:</span> {{ $eco_com->comment }}</div>
+    <br>
+    <div style="border:1px solid #5d6975; border-radius:10px; overflow:hidden; ">
+        <table style="width:100%; border-collapse: collapse;">
             <tr>
-                <td class="no-border text-center text-base py-10 w-33 align-top" style="border-right:1px solid #5d6975!important; border-radius:0 !important" >
-                    <span class="font-bold uppercase">Elaborado por</span>
+                <td style="height:120px; border-right:1px solid #5d6975;"></td>
+                <td style="border-right:1px solid #5d6975;"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="text-align:center; border-top:1px solid #5d6975; border-right:1px solid #5d6975;">
+                    <strong>ELABORADO POR</strong>
                 </td>
-                <td class="no-border text-center text-base py-10 w-33 align-top" style="border-right:1px solid #5d6975!important; border-radius:0 !important">
-                    <span class="font-bold uppercase">revisador por</span>
+                <td style="text-align:center; border-top:1px solid #5d6975; border-right:1px solid #5d6975;">
+                    <strong>REVISADO POR</strong>
                 </td>
-                <td class="no-border  text-center text-base py-10 w-33 align-top">
-                    <span class="font-bold uppercase">V° B°</span>
+                <td style="text-align:center; border-top:1px solid #5d6975;">
+                    <strong>APROBADO POR</strong>
                 </td>
             </tr>
-        </tfoot>
-    </table>
+            <tr>
+                <td style="border-top:1px solid #5d6975; border-right:1px solid #5d6975;">
+                    <span>FECHA:</span>
+                </td>
+                <td style="border-top:1px solid #5d6975; border-right:1px solid #5d6975;">
+                    <span>FECHA:</span>
+                </td>
+                <td style="border-top:1px solid #5d6975;">
+                    <span>FECHA:</span>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 @endsection
 @section('other_content')

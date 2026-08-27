@@ -558,9 +558,9 @@ class EconomicComplementController extends Controller
                 $submit->save();
             }
         }
-        if ($request->additional_requirements) {
+        if ($request->aditional_requirements) {
             $additional_requirements = [];
-            foreach ($request->additional_requirements as $adr) {
+            foreach ($request->aditional_requirements as $adr) {
                 $additional_requirements[] = json_decode($adr);
             }
             foreach ($additional_requirements  as  $requirement) {
@@ -2009,7 +2009,7 @@ class EconomicComplementController extends Controller
         }
 
         $base_wage = BaseWage::whereYear('month_year', '=', Carbon::parse($eco_com_procedure->year)->year)->get();
-        if ($base_wage->count() == 0) {
+        if ($base_wage->count() == 0 && $eco_com->base_wage_id == null) {
             return response()->json([
                 'status' => 'error',
                 'msg' => 'Error',

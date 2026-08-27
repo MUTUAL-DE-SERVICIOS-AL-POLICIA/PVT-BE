@@ -31,6 +31,19 @@
                     </button>
                 </div>
             @endif
+            @if(Util::getRol()->id == 39 || Util::isRegionalRole())
+                <div class="text-right col-md-6">
+                    <button
+                        data-animation="flip"
+                        data-toggle="tooltip"
+                        title="Imprimir aportes"
+                        class="btn btn-primary"
+                        @click="printContributions"
+                    >
+                        <i class="fa fa-print"></i> Imprimir Aportes
+                    </button>
+                </div>
+            @endif
             </div>
                 @can('update',new Muserpol\Models\QuotaAidMortuary\QuotaAidMortuary)
                 <div class="text-right" v-if="!read">

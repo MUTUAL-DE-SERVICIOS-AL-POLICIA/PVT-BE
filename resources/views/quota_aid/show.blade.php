@@ -277,7 +277,11 @@
                                 <li class="list-group-item " data-toggle="tab" href="#tab-summited-document"><a href="#"><i class="fa fa-file"></i> Documentos Presentados</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-individual-accounts"><a href="#"><i class="fa fa-list"></i> Cuentas Individuales</a></li>
                                 <li class="list-group-item " data-toggle="tab" href="#tab-qualification"><a href="#"><i class="fa fa-dollar"></i> Calificacion</a></li>
-                                <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a></li>
+                                <li class="list-group-item " data-toggle="tab" href="#tab-observations"><a href="#"><i class="fa fa-eye-slash"></i> Observaciones</a>
+                                    @if($quota_aid->quota_aid_observations->count() > 0)
+                                        <span class="badge badge-danger" style="background-color: red; color: white;">{{ $quota_aid->quota_aid_observations->count() }}</span>
+                                    @endif
+                                </li>
                             </ul>
                     </div>
                     <br>
@@ -287,12 +291,10 @@
             <div class="col-md-9" style="padding-left: 6px">
 
                     <div class="tab-content">
-                            <div id="tab-ret-fun" class="tab-pane active">
-                                @can('update',$quota_aid)                                
+                            <div id="tab-ret-fun" class="tab-pane active">                               
                                     <quota-aid-info :quota_aid="{{ $quota_aid }}" :rf_city_start="{{$quota_aid->city_start}}" :rf_city_end="{{$quota_aid->city_end}}" :rf_procedure_modality=" {{$quota_aid->procedure_modality}}" :states="{{ $states }}" inline-template>
                                         @include('quota_aid.info', ['quota_aid'=>$quota_aid,'cities'=>$birth_cities])
                                     </quota-aid-info>
-                                @endcan
                             </div>
                             <div id="tab-affiliate" class="tab-pane">
 

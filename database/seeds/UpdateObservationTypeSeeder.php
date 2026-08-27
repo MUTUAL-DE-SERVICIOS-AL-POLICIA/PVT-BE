@@ -21,7 +21,7 @@ class UpdateObservationTypeSeeder extends Seeder
             'shortened' => 'Excluido - Percibe una pensión o renta igual o superior al salario del activo.',
             'active' => true
         ]);
-
+    
         // Typo de observaciones clasificadas como exclusiones semestrales
         $semiannual_exclusions = collect([
             (object) ['id' => 9, 'name' => 'Excluido - Percibe únicamente una Prestación por Riesgo o Invalidez.'],
@@ -29,7 +29,7 @@ class UpdateObservationTypeSeeder extends Seeder
             (object) ['id' => 47, 'name' => 'Excluido - No cumple con el semestre de sus prestaciones.'],
             (object) ['id' => 48, 'name' => 'Excluido - No cumple con el semestre como jubilados de la Policía Boliviana.']
         ]);
-
+    
         $semiannual_exclusion_observations = ObservationType::whereIn('id', $semiannual_exclusions->pluck('id'))->orderBy('id')->get();
         $counter = 0;
         foreach($semiannual_exclusion_observations as $exclusion) {
@@ -46,7 +46,7 @@ class UpdateObservationTypeSeeder extends Seeder
             (object) ['id' => 21, 'name' => 'Excluido - Tiene sentencias condenatorias ejecutoriadas por delitos cometidos contra la MUSERPOL o MUSEPOL.'],
             (object) ['id' => 36, 'name' => 'Excluido - Huérfano absoluto con (25) veinticinco años o más.'],
         ]);
-
+    
         $definitive_exclusion_observations = ObservationType::whereIn('id', $definitive_exclusions->pluck('id'))->orderBy('id')->get();
         $counter = 0;
         foreach($definitive_exclusion_observations as $exclusion) {
@@ -56,5 +56,40 @@ class UpdateObservationTypeSeeder extends Seeder
                 $counter++;
             }
         }
+    
+        ObservationType::firstOrCreate([
+            'module_id' => 3,
+            'name' => 'Retención del beneficio por Autoridad Juzgado o Fiscal',
+            'description' => 'Subsanable',
+            'type' => 'AT',
+            'shortened' => 'Retención del beneficio por Autoridad Juzgado o Fiscal',
+            'active' => true,
+        ]);
+    
+        ObservationType::firstOrCreate([
+            'module_id' => 4,
+            'name' => 'Retención del beneficio por Autoridad Juzgado o Fiscal',
+            'description' => 'Subsanable',
+            'type' => 'AT',
+            'shortened' => 'Retención del beneficio por Autoridad Juzgado o Fiscal',
+            'active' => true,
+        ]);
+        ObservationType::firstOrCreate([
+            'module_id' => 3,
+            'name' => 'Proceso de Unión Libre y de Hecho',
+            'description' => 'Subsanable',
+            'type' => 'AT',
+            'shortened' => 'Proceso de Unión Libre y de Hecho',
+            'active' => true,
+        ]);
+    
+        ObservationType::firstOrCreate([
+            'module_id' => 4,
+            'name' => 'Proceso de Unión Libre y de Hecho',
+            'description' => 'Subsanable',
+            'type' => 'AT',
+            'shortened' => 'Proceso de Unión Libre y de Hecho',
+            'active' => true,
+        ]);
     }
 }

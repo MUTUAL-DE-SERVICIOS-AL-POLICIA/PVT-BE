@@ -18,7 +18,7 @@
                     </button>
                 </div>
             @endif
-            @if(Session::get('rol_id') == 103)
+            @if(Session::get('rol_id') == 106)
                 <div class="text-right col-md-6">
                     <button
                         data-animation="flip"

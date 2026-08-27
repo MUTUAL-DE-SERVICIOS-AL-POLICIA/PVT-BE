@@ -181,6 +181,7 @@ class EconomicComplement extends Model
             ], 422);
         }
         $eco_com_procedure = $this->eco_com_procedure;
+        
         $eco_com_rent = $this->eco_com_fixed_pension->eco_com_rent
             ?? EcoComRent::where('degree_id', '=', $this->degree_id)
             ->where('procedure_modality_id', '=', ($this->isOrphanhood() ? 29 : $this->eco_com_modality->procedure_modality_id))
@@ -328,6 +329,12 @@ class EconomicComplement extends Model
         $this->base_wage()->associate($base_wage);
         $this->eco_com_rent()->associate($eco_com_rent);
         $this->save();
+
+        if ($this->isInclusion() && $this->eco_com_fixed_pension) {
+            $this->eco_com_fixed_pension->eco_com_rent_id = $eco_com_rent->id;
+            $this->eco_com_fixed_pension->save();
+        }
+
         if ($this->total_rent <= $this->salary_quotable && $this->eco_com_state_id == 12) {
             $this->eco_com_state_id = 16;
         }
@@ -651,7 +658,13 @@ class EconomicComplement extends Model
         beneficiary.last_name as apellido_paterno_ben,
         beneficiary.mothers_last_name as apellido_materno_ben,
         beneficiary.surname_husband as apellido_de_casado_ben,
-        beneficiary.birth_date as fecha_nac_ben,beneficiary.phone_number as telefonos_ben,
+        beneficiary.birth_date as fecha_nac_ben,
+        beneficiary.due_date as fecha_vencimiento_ci_ben,
+        CASE 
+            WHEN beneficiary.is_duedate_undefined = true THEN 'SI'
+            ELSE 'NO'
+        END as fecha_vencimiento_ci_indefinida_ben,
+        beneficiary.phone_number as telefonos_ben,
         beneficiary.cell_phone_number as celulares_ben,
         beneficiary.gender as genero_ben
         ";

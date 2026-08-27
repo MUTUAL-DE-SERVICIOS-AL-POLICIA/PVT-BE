@@ -116,13 +116,17 @@
                 </tbody>
             </table>
         @endif
-        <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario,
+        <div class="text-justify text-xs">El pago del beneficio será desembolsado en su cuenta bancaria dentro de un plazo máximo de 12 días hábiles, contados a partir de la fecha de presentación de la solicitud formal.<br>
+                En caso de disconformidad con el monto pagado del beneficio de {!! $quota_aid->procedure_modality->procedure_type->second_name !!}, podrá presentar solicitud de revisión de la calificación en un plazo máximo de 10 días hábiles, computados desde el día hábil siguiente de la notificación realizada por mensaje de texto SMS o WhatsApp.<br>
+                Si no se presenta ninguna solicitud de revisión dentro del plazo establecido, el monto calificado quedará firme y definitivo.<br>
+                En mi calidad de solicitante, autorizo de manera expresa a la MUSERPOL a notificarme sobre el desembolso efectivizado del beneficio de {!! $quota_aid->procedure_modality->procedure_type->second_name !!}, así como otros actuados administrativos, mediante medios electrónicos (mensaje de texto SMS o WhatsApp) al número de celular consignado en el presente formulario de solicitud.<br><br><br><br></div>
+        <!-- <div class="text-justify text-sm">Declaro que toda la documentación presentada es veraz y fidedigna, en caso de demostrarse cualquier falsedad, distorsión u omisión en la documentación, reconozco y asumo que la Unidad de Fondo de Retiro Policial Solidario,
              Cuota y Auxilio Mortuorio procederá a la anulación del trámite y podrá efectuar las acciones correspondientes conforme el Artículo {!! $quota_aid->procedure_modality->procedure_type->second_name == 'Cuota Mortuoria'? '44':'42' !!} del Reglamento de {!! $quota_aid->procedure_modality->procedure_type->second_name !!}.
         </div>
         <div class="text-justify text-xxs">En mi calidad de solicitante del beneficio, autorizo de forma expresa a la MUSERPOL para notificarme con el desembolso del beneficio por medio de mensaje de texto al celular detallado en el presente formulario.</div>
         <div class="text-justify text-xxs">El trámite iniciado, será desembolsado en su cuenta bancaria en el plazo de 12 días hábiles, iniciando a partir de este momento, el plazo de 10 días hábiles para presentar la solicitud de revisión del monto calificado.
             Posterior a este plazo y de no registrarse ninguna solicitud de revisión en este plazo de tiempo, se procederá a la ejecutoría de la liquidación de pago
-        </div>
+        </div> -->
         <table class="m-t-5">
             <tr>
                 <td class="no-border text-center text-base w-50 align-bottom">

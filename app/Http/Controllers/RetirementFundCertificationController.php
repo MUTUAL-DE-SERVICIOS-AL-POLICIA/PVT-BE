@@ -141,9 +141,9 @@ class RetirementFundCertificationController extends Controller
     $modality = $retirement_fund->procedure_modality->name;
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
     $dev_pay = ProcedureType::whereName("Devolución de Aportes")->first();//ojo cambiar 
-    $article_header = $retirement_fund->procedure_modality->procedure_type_id === $dev_pay->id ?" PARA LA ":" PARA EL ";
+    $article_header = $retirement_fund->procedure_modality->procedure_type_id === $dev_pay->id ?" DE ":" DE ";
     $article_by = $retirement_fund->procedure_modality->id==62 ? ' AL ': ' POR ';
-    $title = "REQUISITOS".$article_header. mb_strtoupper($retirement_fund->procedure_modality->procedure_type->name) . $article_by . mb_strtoupper($modality);
+    $title = "FORMULARIO DE SOLICITUD".$article_header. mb_strtoupper($retirement_fund->procedure_modality->procedure_type->name) . $article_by . mb_strtoupper($modality);
     $legend_ret_fun = $retirement_fund->procedure_modality->procedure_type_id === 2?'De evidenciarse descuentos en periodo de disponibilidad a la(s) Letra(s) se procederá a su devolución en consideración a la Disposición Transitoria Cuarta del Reglamento de Fondo de Retiro Policial Solidario.':'';
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
@@ -1451,7 +1451,7 @@ class RetirementFundCertificationController extends Controller
     $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
     $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
     $unit = "UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO";
-    $title = "CERTIFICACIÓN DE DEVOLUCIÓN DE DEPÓSITOS";
+    $title = "CERTIFICACIÓN DE DEVOLUCIÓN";
 
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 22)->first();
     $code = $retirement_fund->code;
@@ -2829,9 +2829,9 @@ class RetirementFundCertificationController extends Controller
       'beneficiaries' => $beneficiaries,
       'beneficiaries_minor' => $beneficiaries_minor,
       'refunds' => $refunds,
-      'hasRefund' => $refunds->count() > 0,
+      'hasRefund' => $refunds->isNotEmpty(),
     ];
-    logger()->info($data['beneficiaries']);
+
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {
       $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();

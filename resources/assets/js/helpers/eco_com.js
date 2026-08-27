@@ -18,6 +18,9 @@ export default {
       isInclusion(eco_com) {
         return eco_com.eco_com_reception_type_id === reception_type.INCLUSION;
       },
+      isRehabilitation(eco_com) {
+        return eco_com.eco_com_reception_type_id === reception_type.REHABILITACIÓN;
+      },
       // Roles
       isEncargadoCalificacion(roleId) {
         return roleId === roles.eco_com.ENCARGADO_CALIFICACION;

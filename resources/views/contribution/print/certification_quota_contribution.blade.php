@@ -12,7 +12,7 @@
 @include('print_global.police_info', ['affiliate' => $affiliate, 'degree' => $degree, 'exp' => $exp ])
 </div>
 @if(!isset($spouse->id)) 
-<strong>CERTIFICA:</strong> Que los &uacute;ltimos doce (12) aportes establecidos en el Reglamento de Couta Mortuoria y Auxilio Mortuorio, corresponden al siguiente detalle:
+    <strong>CERTIFICA:</strong> Que los aportes establecidos en el Reglamento de Cuota Mortuoria corresponden al siguiente detalle:
 @endif
 @if(isset($spouse->id) && ($quota_aid->getTypeMortuary() == 'Conyuge')) 
     <div class="font-bold uppercase m-b-5">
