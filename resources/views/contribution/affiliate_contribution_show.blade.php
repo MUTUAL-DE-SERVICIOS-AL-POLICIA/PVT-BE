@@ -19,6 +19,7 @@
          <span class="badge" style="background-color:#a3bbd4; color: #353535; font-size: 12px" >Aportes para Primer FR</span>
          <span class="badge" style="background-color:#a897fc; color: #1b143f; font-size: 12px" >Aportes para Segundo FR</span>
          <span class="badge" style="background-color:#ffe6b3; color: #353535; font-size: 12px" >Aportes con Reintegro</span>
+         <span class="badge" style="background-color:#FFB5C0; color: #353535; font-size: 12px" >Aportes Regularizados FR</span>
         <table class="table table-striped table-bordered table-hover size-13"  id="fixedheight">
             <thead>
                 <tr>
@@ -46,7 +47,15 @@
                                 $month = $i<10?'0'.$i:$i;
                             @endphp
                             <td 
-                            @if(isset($reimbursements[$year_start.'-'.$month.'-01'])) style="border: 5px solid #ffe6b3" @endif 
+                            @if(isset($reimbursements[$year_start.'-'.$month.'-01']))
+                                @if(collect($reimbursements[$year_start.'-'.$month.'-01'])->contains('type_payroll', 'regularizacion') && collect($reimbursements[$year_start.'-'.$month.'-01'])->contains('type_payroll', 'reintegro'))
+                                    style="border: 5px solid #ff0000"
+                                @elseif(collect($reimbursements[$year_start.'-'.$month.'-01'])->contains('type_payroll', 'reintegro'))
+                                    style="border: 5px solid #ffe6b3"
+                            @elseif(collect($reimbursements[$year_start.'-'.$month.'-01'])->contains('type_payroll', 'regularizacion'))
+                                    style="border: 5px solid #FFB5C0"
+                                @endif
+                            @endif 
                             @if(isset($contributions[$year_start.'-'.$month.'-01']['fr_procedure']) && $contributions[$year_start.'-'.$month.'-01']['fr_procedure'] == 1)
                             bgcolor="#a3bbd4"
                             @elseif(isset($contributions[$year_start.'-'.$month.'-01']['fr_procedure']) && $contributions[$year_start.'-'.$month.'-01']['fr_procedure'] == 2)

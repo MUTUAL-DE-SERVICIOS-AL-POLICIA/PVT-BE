@@ -1147,42 +1147,33 @@ class RetirementFundCertificationController extends Controller
     }, $month_years->toArray()));
 
     $contributions = DB::select("
-        select * from
-        (
-            select
-                contributions.id,
-                contributions.affiliate_id,
-                contributions.month_year,
-                contributions.base_wage,
-                contributions.quotable,
-                contributions.subtotal,
-                contributions.retirement_fund,
-                contributions.mortuary_quota,
-                contributions.interest,
-                contributions.total
-            from contributions
-            where affiliate_id = " . $affiliate->id . "
-            and deleted_at is null
-            and contribution_type_id in (2,3)
-            and month_year in (" . $months . ")
-            UNION
-            select
-                reimbursements.id,
-                reimbursements.affiliate_id,
-                reimbursements.month_year,
-                reimbursements.base_wage,
-                reimbursements.quotable,
-                reimbursements.subtotal,
-                reimbursements.retirement_fund,
-                reimbursements.mortuary_quota,
-                reimbursements.interest,
-                reimbursements.total
-            from reimbursements
-            where affiliate_id = " . $affiliate->id . "
-            and month_year in (" . $months . ")
-            and deleted_at is null
-        ) as contributions_reimbursements
-            ORDER BY month_year DESC");
+        select
+            contributions.id,
+            contributions.affiliate_id,
+            contributions.month_year,
+            contributions.base_wage,
+            contributions.quotable,
+            contributions.subtotal,
+            contributions.retirement_fund,
+            contributions.mortuary_quota,
+            contributions.interest,
+            contributions.total
+        from contributions
+        where affiliate_id = {$affiliate->id}
+        and deleted_at is null
+        and contribution_type_id in (2,3)
+        and month_year in ({$months})
+        order by month_year
+    ");
+
+    $reimbursements = Reimbursement::where('affiliate_id', $affiliate->id)
+        ->whereIn('month_year', $month_years->toArray())
+        ->whereNull('deleted_at')
+        ->orderBy('month_year')
+        ->get()
+        ->groupBy(function ($item) {
+            return $item->month_year;
+        });
 
     $contributions = array_reverse($contributions);
 
@@ -1206,6 +1197,7 @@ class RetirementFundCertificationController extends Controller
     $pdftitle = "Cuentas Individuales";
     $namepdf = Util::getPDFName($pdftitle, $affiliate);
     $item0_type = 2;
+    $num=0;
 
 
     $data = [
@@ -1219,11 +1211,13 @@ class RetirementFundCertificationController extends Controller
       'exp' => $exp,
       'degree' => $degree,
       'contributions' => $contributions,
+      'reimbursements' => $reimbursements,
       'affiliate' => $affiliate,
       'title' => $title,
       'institution' => $institution,
       'direction' => $direction,
       'unit' => $unit,
+      'num' => $num,
     ];
     return \PDF::loadView('contribution.print.certification_item0', $data)->setOption('encoding', 'utf-8')->setOption('footer-right', 'Pagina [page] de [toPage]')->setOption('footer-left', 'PLATAFORMA VIRTUAL DE LA MUSERPOL - '.Carbon::now()->year)->stream("$namepdf");
   }

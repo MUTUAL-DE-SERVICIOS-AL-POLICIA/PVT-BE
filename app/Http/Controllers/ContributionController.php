@@ -338,11 +338,19 @@ class ContributionController extends Controller
         $reimbursements = $affiliate->reimbursements()->selectRaw("
             affiliate_id,
             month_year,
-            concat('RE - ',  extract(year from month_year ))  as month_year_concat,
+            concat(
+                CASE
+                    WHEN lower(type_payroll) = 'reintegro' THEN 'RE'
+                    WHEN lower(type_payroll) = 'regularizacion' THEN 'REG'
+                    ELSE 'RE'
+                END,
+                ' - ',
+                extract(year from month_year)
+            ) as month_year_concat,
+            null,
             null,
             null,
             base_wage,
-            days_worked,
             seniority_bonus,
             null,
             study_bonus,
@@ -356,7 +364,8 @@ class ContributionController extends Controller
             mortuary_quota,
             total,
             null,
-            ' RE ' as type");
+            type_payroll as type"
+            );
         $contributions = $affiliate->contributions()->selectRaw("
             affiliate_id,
             month_year,
@@ -556,12 +565,15 @@ class ContributionController extends Controller
         
         $contributions = Contribution::with('category')->where('affiliate_id', $affiliate->id)->orderBy('month_year', 'DESC')->get();
         
-        $reims = Reimbursement::where('affiliate_id', $affiliate->id)->get();
+
         $group = [];
-        $group_reim = [];
-        foreach ($reims as $reim){
-            $group_reim[$reim->month_year] = $reim;        
-        }
+        $reims = Reimbursement::where('affiliate_id', $affiliate->id)
+            ->get()
+            ->groupBy('month_year')
+            ->map(function ($items) {
+                return $items->keyBy('type_payroll');
+            });
+
         foreach ($contributions as $contribution) {
             $group[$contribution->month_year] = $contribution;
         }    
@@ -603,10 +615,10 @@ class ContributionController extends Controller
         if (! sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = new Address();
         }
-        
+    
         $data = [
             'contributions' => $group,
-            'reims' => $group_reim,
+            'reims' => $reims,
             'affiliate_id' => $affiliate->id,
             'categories' => $categories,
             'year_start' => $year_start,
@@ -619,7 +631,7 @@ class ContributionController extends Controller
             'units' => $units,                   
         //    'commitment'    =>  $commitment,
             'today_date'         =>  date('Y-m-d'),            
-        ];        
+        ];   
          return view('contribution.affiliate_contributions_edit', $data);
     }
     public function storeContributions(Request $request)
