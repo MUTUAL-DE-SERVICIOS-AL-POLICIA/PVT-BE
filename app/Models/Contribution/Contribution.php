@@ -97,6 +97,7 @@ class Contribution extends Model
             ->select(array_merge(['affiliate_id', 'month_year'], $sumColumns))
             ->whereIn('month_year', $contributionMonths)
             ->whereNull('deleted_at')
+            ->where('payroll_type', 'reintegro')
             ->get()
             ->keyBy('month_year');
 
