@@ -57,41 +57,41 @@
                             <div class="ibox-content">
                                 <div class="form-group">
                                     <label for="">Regional:</label>
-                                    <select class="form-control" v-model="filter.city_id" @change="getData()">
+                                    <select class="form-control" v-model="filter.city_id" @change="getData(true)">
                                         <option value="0">TODO</option>
                                         <option v-for="c in cities" :key="c.id" :value="c.id">@{{ c.name }} </option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="">Tipo de Prestacion:</label>
-                                    <select class="form-control" v-model="filter.procedure_modality_id" @change="getData()">
+                                    <select class="form-control" v-model="filter.procedure_modality_id" @change="getData(true)">
                                         <option value="0">TODOS</option>
                                         <option v-for="pm in procedureModalities" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
                                     </select>
                                 </div>
                                 {{-- <div class="form-group">
                                     <label for="">Modalidad:</label>
-                                    <select class="form-control" v-model="filter.eco_com_modality_id" @change="getData()">
+                                    <select class="form-control" v-model="filter.eco_com_modality_id" @change="getData(true)">
                                         <option value="0">TODOS</option>
                                         <option v-for="pm in ecoComModalities" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
                                     </select>
                                 </div> --}}
                                 <div class="form-group">
                                     <label for="">Tipo de Recepcion:</label>
-                                    <select class="form-control" v-model="filter.eco_com_reception_type_id" @change="getData()">
+                                    <select class="form-control" v-model="filter.eco_com_reception_type_id" @change="getData(true)">
                                         <option value="0">TODOS</option>
                                         <option v-for="pm in receptionTypes" :key="pm.id" :value="pm.id">@{{ pm.name }} </option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="">Fecha de Recepcion</label>
-                                    <input class="form-control" type="date" v-model="filter.reception_date" @change="getData()">
+                                    <input class="form-control" type="date" v-model="filter.reception_date" @change="getData(true)">
                                 </div>
                             </div>
                             <div class="ibox-footer">
                                 <div class="text-center">
                                     <button class="btn btn-sm btn-danger" @click="cancelFilter()"><i class="fa fa-times"></i> Cancelar</button>
-                                    <button class="btn btn-sm btn-primary" @click="getData()"><i class="fa fa-search"></i> Filtrar</button>
+                                    <button class="btn btn-sm btn-primary" @click="getData(true)"><i class="fa fa-search"></i> Filtrar</button>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                         <div class="mail-tools tooltip-demo m-t-md" style="margin-bottom:45px;">
                             <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                                 <div class="col-md-1 text-center" v-if="! docs > 0 ">
-                                    <button class="btn btn-default" @click="getData()" data-toggle="tooltip" data-placement="top" title="Actualizar">
+                                    <button class="btn btn-default" @click="getData(true)" data-toggle="tooltip" data-placement="top" title="Actualizar">
                                         Actualizar <i class="fa fa-refresh"></i>
                                     </button>
                                 </div>
@@ -117,6 +117,28 @@
                             </div>
                             </transition>
                         </div>
+                    </div>
+                    <div class="text-center m-t-md" v-if="lastPage > 1">
+                        <button
+                            class="btn btn-default"
+                            @click="changePage(currentPage - 1)"
+                            :disabled="currentPage == 1">
+                            <i class="fa fa-chevron-left"></i>
+                            Anterior
+                        </button>
+                        <span style="margin: 0 15px;">
+                            Página @{{ currentPage }} de @{{ lastPage }}
+                        </span>
+                        <span style="margin-right: 15px;">
+                            @{{ perPage }}  items por página
+                        </span>
+                        <button
+                            class="btn btn-default"
+                            @click="changePage(currentPage + 1)"
+                            :disabled="currentPage == lastPage">
+                            Siguiente
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
                     </div>
                     <div class="mail-box">
                         <div class="sk-folding-cube" v-show="showLoading">

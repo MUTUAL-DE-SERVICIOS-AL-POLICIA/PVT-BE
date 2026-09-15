@@ -169,6 +169,28 @@
                             </div>
                         </div>
                     </div>
+                    <div class="text-center m-t-md" v-if="lastPage > 1">
+                        <button
+                            class="btn btn-default"
+                            @click="changePage(currentPage - 1)"
+                            :disabled="currentPage == 1">
+                            <i class="fa fa-chevron-left"></i>
+                            Anterior
+                        </button>
+                        <span style="margin: 0 15px;">
+                            Página @{{ currentPage }} de @{{ lastPage }}
+                        </span>
+                        <span style="margin-right: 15px;">
+                            @{{ perPage }}  items por página
+                        </span>
+                        <button
+                            class="btn btn-default"
+                            @click="changePage(currentPage + 1)"
+                            :disabled="currentPage == lastPage">
+                            Siguiente
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>
                     <div class="mail-box">
                         <div class="sk-folding-cube" v-show="showLoading">
                             <div class="sk-cube1 sk-cube"></div>
