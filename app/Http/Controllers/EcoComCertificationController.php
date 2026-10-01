@@ -584,4 +584,77 @@ class EcoComCertificationController extends Controller
             ->setOption('footer-html', $footerHtml)
             ->stream("Reception " . $eco_com->id . '.pdf');
     }
+     public function printArchiveBE($id)
+    {
+        $eco_com = EconomicComplement::with(['affiliate', 'eco_com_beneficiary', 'eco_com_procedure', 'eco_com_modality'])->find($id);
+        $affiliate = $eco_com->affiliate;
+        $eco_com_beneficiary = $eco_com->eco_com_beneficiary;
+        $eco_com_legal_guardian = $eco_com->eco_com_legal_guardian;
+        $submitted_document_ids = $eco_com->submitted_documents->pluck('procedure_requirement_id');
+   
+        $eco_com_submitted_documents = ProcedureRequirement::whereIn('procedure_requirements.id', $submitted_document_ids)
+        ->leftJoin('eco_com_submitted_documents', 'procedure_requirements.id', '=', 'eco_com_submitted_documents.procedure_requirement_id')
+        ->select('procedure_requirements.*', 'eco_com_submitted_documents.comment', 'eco_com_submitted_documents.is_uploaded')
+        ->where('eco_com_submitted_documents.economic_complement_id','=',$eco_com->id)
+        ->where('eco_com_submitted_documents.is_archive_review','=',true)
+        ->orderBy('number')
+        ->get();
+        
+        $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
+        $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
+        $unit = "";
+        $title = "CERTIFICACIÓN DE REVISIÓN DE DOCUMENTACIÓN DIGITALIZADA";
+        $size = 800;
+        $size_down = 100;
+        $subtitle = $eco_com->eco_com_procedure->getTextName() . " " . mb_strtoupper(optional(optional($eco_com->eco_com_modality)->procedure_modality)->name);
+        $text = "";
+        $habitual = false;
+
+        $code = $eco_com->code;
+        $area = $eco_com->wf_state->first_shortened;
+        $user = $eco_com->user;
+        $date = Util::getDateFormat($eco_com->reception_date);
+        $number = $code;
+
+
+        //$bar_code = \DNS2D::getBarcodePNG($eco_com->encode(), "QRCODE");
+        $bar_code = \DNS2D::getBarcodePNG($this->get_module_eco_com($eco_com->id), "QRCODE");
+        $footerHtml = view()->make('eco_com.print.footer_reception', ['bar_code' => $bar_code, 'user' => $user, 'eco_com' => $eco_com])->render();
+
+        $data = [
+            'direction' => $direction,
+            'institution' => $institution,
+            'unit' => $unit,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'code' => $code,
+            'area' => $area,
+            'user' => $user,
+            'date' => $date,
+            'number' => $number,
+            'text' => $text,
+            'habitual' => $habitual,
+            'size' => $size,
+            'size_down' => $size_down,
+            'eco_com' => $eco_com,
+            'affiliate' => $affiliate,
+            'eco_com_beneficiary' => $eco_com_beneficiary,
+            'eco_com_legal_guardian' => $eco_com_legal_guardian,
+            'eco_com_submitted_documents' => $eco_com_submitted_documents,
+        ];
+        $pages = [];
+
+        $number_pages = $eco_com->eco_com_reception_type_id == ID::ecoCom()->inclusion ? 1 : 1;
+        for ($i = 1; $i <= $number_pages; $i++) {
+            $pages[] = \View::make('eco_com.print.archive', $data)->render();
+        }
+
+
+        $pdf = \App::make('snappy.pdf.wrapper');
+        $pdf->loadHTML($pages);
+        return $pdf->setOption('encoding', 'utf-8')
+            ->setOption('margin-bottom', '23mm')
+            ->setOption('footer-html', $footerHtml)
+            ->stream("CertificacionBE " . $eco_com->id . '.pdf');
+    }
 }

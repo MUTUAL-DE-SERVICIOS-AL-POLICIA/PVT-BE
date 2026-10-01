@@ -120,6 +120,7 @@
                     title="Imprimir Certificacion de Archivo"
                     ret-fun-id="{{ $retirement_fund->id }}"
                     url-print="{{ route('ret_fun_print_file', $affiliate->id) }}"
+                    message="true"
                 >
                 </ret-fun-certification-button>
             @endif

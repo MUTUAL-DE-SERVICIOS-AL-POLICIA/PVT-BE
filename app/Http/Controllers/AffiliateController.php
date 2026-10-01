@@ -295,7 +295,11 @@ class AffiliateController extends Controller
 
         //GETTIN CONTRIBUTIONS
         $contributions =  collect(Contribution::where('affiliate_id',$affiliate->id)->orderBy('month_year', 'desc')->pluck('total','month_year'));
-        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $reimbursements_raw = Reimbursement::where('affiliate_id',$affiliate->id)->get();
+        $reimbursements = [];
+        foreach ($reimbursements_raw as $reim) {
+            $reimbursements[$reim->month_year][] = $reim->toArray();
+        }
 
         $date_entry = Carbon::hasFormat($affiliate->date_entry, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_entry)->startOfMonth() : null;
         $date_last_contribution = Carbon::hasFormat($affiliate->date_last_contribution, 'm/Y') ? Carbon::createFromFormat('m/Y', $affiliate->date_last_contribution)->startOfMonth() : null;

@@ -91,5 +91,14 @@ class UpdateObservationTypeSeeder extends Seeder
             'shortened' => 'Proceso de Unión Libre y de Hecho',
             'active' => true,
         ]);
+        //archivo DBE de CE
+        ObservationType::firstOrCreate([
+            'module_id' => 2,
+            'name' => 'Observado - Requistos(s) escaneados(s)',
+            'description' => 'Subsanable',
+            'type' => 'T',
+            'shortened' => 'Observado - Requistos(s) escaneados(s)',
+            'active' => true,
+        ]);
     }
 }

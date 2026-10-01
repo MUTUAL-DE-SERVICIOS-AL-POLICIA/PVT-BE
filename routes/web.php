@@ -631,6 +631,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('eco_com_cambiar_estado_individual/{eco_com_id}', 'EconomicComplementController@cambioEstadoIndividual');
     Route::get('eco_com_cambiar_habilitado/{eco_com_id}', 'EconomicComplementController@cambioEstadoObservados');
     Route::delete('delete_discount_type_aid', 'EconomicComplementController@delete_discount_type_aid');
+    Route::post('eco_com/{eco_com}/archive_review', 'EconomicComplementController@storeArchiveReview')->name('store_eco_com_archive_review_create');
     
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
@@ -659,6 +660,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('eco_com/{eco_com_id}/save_certification_note', 'EcoComCertificationController@saveCertificationNote')->name('save_certification_note');
     Route::get('eco_com/print/certification_all_eco_coms/{affiliate_id}', 'EcoComCertificationController@certificationAllEcoComs')->name('eco_com_print_certification_all_eco_coms');
     Route::get('eco_com/{eco_com_id}/print/lagging', 'EcoComCertificationController@printLagging')->name('eco_com_print_lagging');
+     Route::get('eco_com/{eco_com_id}/print/archive', 'EcoComCertificationController@printArchiveBE')->name('eco_com_print_archive');
 
 
     // eco com qualification parameters

@@ -25,7 +25,8 @@ class DocumentController extends Controller
     $module = Role::find($rol_id)->module;
     $headers = Util::getHeadersInboxRetFunQuotaAid();
     $documents = collect([]);
-    $documents_edited_total = collect([]);
+    $documents_edited_total = 0;
+    $number_pages = 500;
     switch ($module->id) {
       case 1:
         # code...
@@ -73,7 +74,7 @@ class DocumentController extends Controller
           if($request->reception_date){
             $documents->where('economic_complements.reception_date', '=', $request->reception_date);
           }
-        $documents = $documents->get();
+        $documents = $documents->paginate($number_pages);
         $documents_edited_total = EconomicComplement::with('tags')->select(
           DB::raw(
             "
@@ -95,7 +96,7 @@ class DocumentController extends Controller
           ->where('wf_states.role_id', '=', $rol_id)
           ->where('economic_complements.inbox_state', '=', true)
           ->where('economic_complements.user_id', '=', $user_id)
-          ->get()->count();
+          ->count();
         break;
       case 3:
         # ret fun
@@ -124,7 +125,7 @@ class DocumentController extends Controller
           ->where('retirement_funds.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
           ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-          ->get();
+          ->paginate($number_pages);
         $documents_edited_total = RetirementFund::select('retirement_funds.id as id')
           ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_start_id', '=', 'ret_fun_cities.id')
@@ -161,7 +162,7 @@ class DocumentController extends Controller
           ->where('quota_aid_mortuaries.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
           ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-          ->get();
+          ->paginate($number_pages);
         $documents_edited_total = QuotaAidMortuary::select('quota_aid_mortuaries.id as id')
           ->leftJoin('affiliates', 'quota_aid_mortuaries.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as quota_aid_cities', 'quota_aid_mortuaries.city_start_id', '=', 'quota_aid_cities.id')
@@ -200,7 +201,7 @@ class DocumentController extends Controller
           ->where('contribution_processes.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(contribution_processes.code, '/',2),'\D','','g')::integer"))
           ->orderBy(DB::raw("split_part(contribution_processes.code, '/',1)::integer"))
-          ->get();
+          ->paginate($number_pages);
         $documents_edited_total = ContributionProcess::select('contribution_processes.id as id')
           ->leftJoin('direct_contributions', 'contribution_processes.direct_contribution_id', '=', 'direct_contributions.id')
           ->leftJoin('affiliates', 'direct_contributions.affiliate_id', '=', 'affiliates.id')
@@ -225,12 +226,19 @@ class DocumentController extends Controller
     $workflows = Workflow::whereIn('id', $temp)->get();
 
     $data = [
-      'documents_received_total' => $documents->count() ?? 0,
-      'documents_edited_total' => $documents_edited_total ?? 0,
-      'documents' => $documents,
+      'documents_received_total' => $documents->total(),
+      'documents_edited_total' => $documents_edited_total,
+      'documents' => $documents->items(),
       'workflows' => $workflows,
-      'headers' => $headers
+      'headers' => $headers,
+      'pagination' => [
+        'current_page' => $documents->currentPage(),
+        'last_page' => $documents->lastPage(),
+        'per_page' => $documents->perPage(),
+        'total' => $documents->total(),
+      ]
     ];
+
     return $data;
     // return DataTables::of($documents)
     //     ->editColumn('name', function ($document)
@@ -247,6 +255,7 @@ class DocumentController extends Controller
     $headers = Util::getHeadersInboxRetFunQuotaAid();
     $documents = collect([]);
     $documents_received_total = collect([]);
+    $number_pages = 500;
     switch ($module->id) {
       case 1:
         # code...
@@ -297,7 +306,7 @@ class DocumentController extends Controller
           if($request->reception_date){
             $documents->where('economic_complements.reception_date', '=', $request->reception_date);
           }
-        $documents = $documents->get();
+        $documents = $documents->paginate($number_pages);
         $documents_received_total = EconomicComplement::with('tags')->select(
           DB::raw(
             "
@@ -317,7 +326,7 @@ class DocumentController extends Controller
           ->leftJoin('wf_states', 'economic_complements.wf_current_state_id', '=', 'wf_states.id')
           ->where('wf_states.role_id', '=', $rol_id)
           ->where('economic_complements.inbox_state', '=', false)
-          ->get()->count();
+          ->count();
         break;
       case 3:
         # ret fun
@@ -348,7 +357,7 @@ class DocumentController extends Controller
           ->where('retirement_funds.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
           ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-          ->get();
+          ->paginate($number_pages);
         $documents_received_total = RetirementFund::select('retirement_funds.id as id')
           ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_start_id', '=', 'ret_fun_cities.id')
@@ -387,7 +396,7 @@ class DocumentController extends Controller
           ->where('quota_aid_mortuaries.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
           ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-          ->get();
+          ->paginate($number_pages);
         $documents_received_total = QuotaAidMortuary::select('quota_aid_mortuaries.id as id')
           ->leftJoin('affiliates', 'quota_aid_mortuaries.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as quota_aid_cities', 'quota_aid_mortuaries.city_start_id', '=', 'quota_aid_cities.id')
@@ -427,7 +436,7 @@ class DocumentController extends Controller
           ->where('contribution_processes.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(contribution_processes.code, '/',2),'\D','','g')::integer"))
           ->orderBy(DB::raw("split_part(contribution_processes.code, '/',1)::integer"))
-          ->get();
+          ->paginate($number_pages);
         $documents_received_total = ContributionProcess::select('contribution_processes.id as id')
           ->leftJoin('direct_contributions', 'contribution_processes.direct_contribution_id', '=', 'direct_contributions.id')
           ->leftJoin('affiliates', 'direct_contributions.affiliate_id', '=', 'affiliates.id')
@@ -474,8 +483,14 @@ class DocumentController extends Controller
 
     $data = [
       'documents_received_total' => $documents_received_total ?? 0,
-      'documents_edited_total' => $documents->count() ?? 0,
-      'documents' => $documents,
+      'documents_edited_total' => $documents->total(),
+      'documents' => $documents->items(),
+      'pagination' => [
+          'current_page' => $documents->currentPage(),
+          'last_page' => $documents->lastPage(),
+          'per_page' => $documents->perPage(),
+          'total' => $documents->total(),
+      ],
       'workflows' => $workflows,
       'wf_sequences_next' => $wf_sequences_next,
       'wf_current_state' => $wf_current_state,

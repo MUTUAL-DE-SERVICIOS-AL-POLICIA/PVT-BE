@@ -50,9 +50,15 @@
                     </p>
                     @include('print_global.applicant_info', ['applicant' => $applicant ])
             </ol> 
-<span>
-    Es cuanto certifico para fines consiguientes.
-</span>
+            <span>
+             Asimismo, los documentos presentados de acuerdo a formularios de requisitos correspondiente al tramite N° {{$quota_aid->code}} han sido revisados en su versión digital por el personal de Archivo y Gestión Documental de Beneficios Económicos. Dicha verificación incluyo la verificación de su correcta indicación en el sistema informático y calidad de imagen.<br><br>
+            </span>
+
+            <span>
+            @if ($note_arch != '')
+                <strong>NOTA:</strong> {{ $note_arch }}<br><br>
+            @endif
+            </span>
 @include('ret_fun.print.signature_footer',['user'=>$user])
 </div>
 @endsection

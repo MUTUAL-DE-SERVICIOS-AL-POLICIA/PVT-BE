@@ -3,7 +3,7 @@
         <div class="ibox-content">
             <form>
                 <requirement-edit-select :requirements="requirements" :store="store"
-                    :is-legal-review="isLegalReview"></requirement-edit-select>
+                    :is-review="isReview"></requirement-edit-select>
             </form>
         </div>
     </div>
@@ -17,13 +17,13 @@ export default {
         'rol',
     ],
     computed: {
-        isLegalReview() {
+        isReview() {
             return this.rol === 38;
         }
     },
     methods: {
         store(requirements, aditionalRequirements = null) { // Se pasa la referencia de la funcion al componente hijo
-            if (!this.isLegalReview) {
+            if (!this.isReview) {
                 let uri = `/quota_aid/${this.quota_aid.id}/edit_requirements`;
                 axios.post(uri,
                     {

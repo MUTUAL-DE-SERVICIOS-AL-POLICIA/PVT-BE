@@ -295,6 +295,7 @@ class ContributionProcessController extends Controller
                 $contribution->interest = $aporte->interes;
                 $contribution->subtotal = 0;
                 $contribution->valid = false;
+                $contribution->type_payroll = 'reintegro';
                 $contribution->save();
                 $contribution->type = "R";
                 array_push($reimbursement_ids, $contribution->id);
