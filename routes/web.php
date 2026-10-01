@@ -631,6 +631,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('eco_com_cambiar_estado_individual/{eco_com_id}', 'EconomicComplementController@cambioEstadoIndividual');
     Route::get('eco_com_cambiar_habilitado/{eco_com_id}', 'EconomicComplementController@cambioEstadoObservados');
     Route::delete('delete_discount_type_aid', 'EconomicComplementController@delete_discount_type_aid');
+    Route::post('eco_com/{eco_com}/archive_review', 'EconomicComplementController@storeArchiveReview')->name('store_eco_com_archive_review_create');
     
     Route::get('/affiliate/{affiliate_id}/eco_com/create/{eco_com_procedure_id}', 'EconomicComplementController@create');
 
