@@ -237,6 +237,11 @@ class RetirementFundCertificationController extends Controller
     $bar_code = \DNS2D::getBarcodePNG($retirement_fund->getBasicInfoCode()['code'], "QRCODE");
     $footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $bar_code])->render();
     //$footerHtml = view()->make('ret_fun.print.footer', ['bar_code' => $this->generateBarCode($retirement_fund)])->render();
+    $correlative = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 20)->first();
+    $note_arch ='';
+    if ($correlative->note != '') {
+      $note_arch = $correlative->note;
+    }
     $data = [
       'code' => $code,
       'area' => $area,
@@ -248,6 +253,7 @@ class RetirementFundCertificationController extends Controller
       'affiliate_folders' => $affiliate_folders,
       'applicant' => $applicant,
       'unit1' => 'archivo y gestión documental<br> beneficios económicos',
+      'note_arch' => $note_arch,
     ];
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {

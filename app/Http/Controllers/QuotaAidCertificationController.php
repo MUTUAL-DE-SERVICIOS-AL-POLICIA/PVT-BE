@@ -506,6 +506,11 @@ class QuotaAidCertificationController extends Controller
     $bar_code = \DNS2D::getBarcodePNG($this->get_module_quota_aid_mortuary($quota_aid->id), "QRCODE");
     $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $bar_code])->render();
    // $footerHtml = view()->make('quota_aid.print.footer', ['bar_code' => $this->generateBarCode($quota_aid)])->render();
+    $correlative = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 34)->first();
+    $note_arch ='';
+    if ($correlative->note != '') {
+      $note_arch = $correlative->note;
+    }
     $data = [
       'code' => $code,
       'area' => $area,
@@ -517,6 +522,7 @@ class QuotaAidCertificationController extends Controller
       'affiliate_folders' => $affiliate_folders,
       'applicant' => $applicant,
       'unit1' => 'archivo y gestión documental<br> beneficios económicos',
+      'note_arch' => $note_arch,
     ];
     $pages = [];
     for ($i = 1; $i <= 2; $i++) {

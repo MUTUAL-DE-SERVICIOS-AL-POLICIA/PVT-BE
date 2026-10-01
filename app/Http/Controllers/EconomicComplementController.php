@@ -730,7 +730,7 @@ class EconomicComplementController extends Controller
         /**
          ** for observations
          */
-        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->where('type', 'AT')->where('active',true)->get();
+        $observation_types = ObservationType::where('module_id', Util::getRol()->module_id)->whereIn('type', ['AT', 'T'])->where('active',true)->get();
 
         /**
          ** Permissions
@@ -2467,6 +2467,23 @@ class EconomicComplementController extends Controller
             ->get();   
 
         return response()->json($eco_com_procedures);
+    }
+
+    public function storeArchiveReview(Request $request)
+    {
+       
+        DB::transaction(function () use ($request) {
+            foreach ($request->submit_documents as $document_array) {
+
+                foreach ($document_array as $document) {
+                    $submit_document = EcoComSubmittedDocument::find($document['submittedDocumentId']);
+                    $submit_document->is_archive_review = $document['status'];
+                    $submit_document->comment = $document['comment'];
+                    $submit_document->save();
+                }
+            }
+            return $request;
+        });
     }
 
 

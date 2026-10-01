@@ -9,6 +9,12 @@ export default {
             area_documents: [],
             documents:[],
             activeWorkflowId:null,
+
+            current_page: 1,
+            last_page: 1,
+            per_page: 0,
+            totalDocuments: 0,
+
             wfSequenceNextL:[],
             wfSequenceBackL:[],
             wfSequenceNext:null,
@@ -31,10 +37,22 @@ export default {
         this.tempFilter = JSON.parse(JSON.stringify(this.filter));
     },
     methods:{
-        async getData(){
-            this.showLoading=true;
+        async getData(resetPage = false){
+            if(resetPage){
+                this.currentPage = 1;
+            }
+
+            this.showLoading = true;
             let uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
-            await axios.get(uri, {params: this.filter}).then(({data})=>{
+
+            let params = {
+                ...this.filter,
+                page: this.currentPage,
+                per_page: this.perPage
+            };
+
+            await axios.get(uri, {params: params}).then(({data})=>{
+
                 this.workflows =  data.workflows;
                 this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
                 this.area_documents =  data.documents
@@ -43,11 +61,18 @@ export default {
                 } else {
                     this.documents =  this.area_documents.filter(v => v.user_id == this.user.id)
                 }
+
+                this.currentPage = data.pagination.current_page;
+                this.lastPage = data.pagination.last_page;
+                this.totalDocuments = data.pagination.total;
+                this.perPage = data.pagination.per_page;
+
                 this.wfCurrentState =  data.wf_current_state;
                 this.wfSequenceNextL =  data.wf_sequences_next;
                 this.wfSequenceBackL =  data.wf_sequences_back;
                 this.documentsReceivedTotal = data.documents_received_total;
                 this.documentsEditedTotal = data.documents_edited_total;
+                this.pagination = data.pagination;
                 this.updateCheckStatus();
                 this.showLoading = false;
                 this.$store.commit('inbox/setHeaders', data.headers);
@@ -285,7 +310,15 @@ export default {
             } catch (e) {
                 console.log(e);
             }
-        }
+        },
+        changePage(page){
+            if(page < 1 || page > this.lastPage){
+                return;
+            }
+
+            this.currentPage = page;
+            this.getData();
+        },
     },
     computed:{
         ...mapGetters('inbox',{
@@ -308,12 +341,13 @@ export default {
             return 0;
         },
         totalDocs(){
-            if(this.workflows.length == 0){
-                return null;
-            }
-            return this.workflows.reduce((accu, curr)=>{
-                return accu + this.classification(curr.id).length;
-            }, 0)
+            // if(this.workflows.length == 0){
+            //     return null;
+            // }
+            // return this.workflows.reduce((accu, curr)=>{
+            //     return accu + this.classification(curr.id).length;
+            // }, 0)
+             return this.totalDocuments;
         },
     }
 }
