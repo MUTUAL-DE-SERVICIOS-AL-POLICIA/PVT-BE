@@ -82,7 +82,7 @@
                 @foreach($reimbursements as $reimbursement)
                     @if($contribution->month_year == $reimbursement->month_year)       
                         <tr class="text-sm">                            
-                            <td class="text-center uppercase font-bold px-5 py-3">Ri</td>
+                            <td class="text-center uppercase font-bold px-5 py-3">{{ $reimbursement->type_payroll == 'regularizacion' ? 'REG' : 'R1' }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('Y', strtotime($reimbursement->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ date('m', strtotime($reimbursement->month_year)) }}</td>
                             <td class="text-center uppercase font-bold px-5 py-3">{{ $affiliate->degree->shortened  }}</td>

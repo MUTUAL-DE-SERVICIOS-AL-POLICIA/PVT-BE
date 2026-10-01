@@ -192,7 +192,11 @@ class DirectContributionController extends Controller
 
         //GETTIN CONTRIBUTIONS
         $contributions =  Contribution::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
-        $reimbursements = Reimbursement::where('affiliate_id',$affiliate->id)->pluck('total','month_year')->toArray();
+        $reimbursements_raw = Reimbursement::where('affiliate_id',$affiliate->id)->get();
+        $reimbursements = [];
+        foreach ($reimbursements_raw as $reim) {
+            $reimbursements[$reim->month_year][] = $reim->toArray();
+        }
 
         if($affiliate->date_entry)
             $end = explode('-', Util::parseMonthYearDate($affiliate->date_entry));

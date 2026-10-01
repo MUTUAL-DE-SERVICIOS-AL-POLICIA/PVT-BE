@@ -92,7 +92,8 @@ class ReimbursementController extends Controller
         $reim->mortuary_quota = $request->mortuary_quota ?? 0;
         $reim->days_worked = $request->days_worked ?? 30;       
         $reim->total = $request->total ?? 0;
-        $reim->subtotal = 0;        
+        $reim->subtotal = 0;
+        $reim->type_payroll = 'reintegro';// solo se puede crear de tipo reintegro, no desarrollado para regularizaciones
         $reim->save();        
         return $reim;        
     }
