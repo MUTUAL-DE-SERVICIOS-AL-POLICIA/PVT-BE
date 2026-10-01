@@ -659,6 +659,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('eco_com/{eco_com_id}/save_certification_note', 'EcoComCertificationController@saveCertificationNote')->name('save_certification_note');
     Route::get('eco_com/print/certification_all_eco_coms/{affiliate_id}', 'EcoComCertificationController@certificationAllEcoComs')->name('eco_com_print_certification_all_eco_coms');
     Route::get('eco_com/{eco_com_id}/print/lagging', 'EcoComCertificationController@printLagging')->name('eco_com_print_lagging');
+     Route::get('eco_com/{eco_com_id}/print/archive', 'EcoComCertificationController@printArchiveBE')->name('eco_com_print_archive');
 
 
     // eco com qualification parameters
