@@ -57,7 +57,7 @@
                     @include('print_global.applicant_info', ['applicant' => $applicant ])
             </ol> 
             <span>
-             Asimismo, los documentos presentados de acuerdo a formularios de requisitos correspondiente al tramite N° {{$retirement_fund->code}} han sido revisados en su versión digital por el personal de Archivo y Gestión Documental de Beneficios Económicos. Dicha verificación incluyo la verificación de su correcta indicación en el sistema informático y calidad de imagen.<br><br>
+             Asimismo, los documentos presentados de acuerdo a formulario de requisitos correspondiente al tramite N° {{$retirement_fund->code}} han sido revisados en su versión digital por el personal de Archivo y Gestión Documental de Beneficios Económicos. Dicha verificación incluyo la verificación de su correcta indexación en el sistema informático y calidad de imagen.<br><br>
             </span>
 
             <span>
