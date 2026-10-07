@@ -28,6 +28,13 @@ class AddCertifiedArchivoDbe extends Migration
         (workflow_id, wf_state_current_id, wf_state_next_id, action, created_at, updated_at)
         VALUES(1, 8, (select id from wf_states where name = 'Área de Archivo DBE Complemento Económico'), 'Aprobar', now(),now());");
 
+        ///acceso de jefatura a archivo ce
+
+        DB::statement("
+        INSERT INTO public.wf_sequences
+        (workflow_id, wf_state_current_id, wf_state_next_id, action, created_at, updated_at)
+        VALUES(1, 4, (select id from wf_states where name = 'Área de Archivo Complemento Económico'), 'Aprobar', now(),now());");
+
         //
         Schema::table('eco_com_submitted_documents', function (Blueprint $table) {
             $table->boolean('is_archive_review')
