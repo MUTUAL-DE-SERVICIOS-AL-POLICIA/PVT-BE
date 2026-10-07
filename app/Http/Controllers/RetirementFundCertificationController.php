@@ -2798,6 +2798,15 @@ class RetirementFundCertificationController extends Controller
   public function printLiquidation($id)
   {
     $ret_fun = RetirementFund::find($id);
+    $result = $this->buildLiquidationPdf($ret_fun);
+    return response()->make($result['pdf'], 200, [
+      'Content-Type' => 'application/pdf',
+      'Content-Disposition' => 'inline; filename="' . $result['name'] . '"',
+    ]);
+  }
+
+  public function buildLiquidationPdf(RetirementFund $ret_fun, $single = false)
+  {
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $ret_fun->id)->where('wf_state_id', ID::wf_state()->liquidationFR)->first();
     $code = $ret_fun->code;
     $date = Util::getDateFormat($next_area_code->date);
@@ -2827,14 +2836,18 @@ class RetirementFundCertificationController extends Controller
     ];
 
     $pages = [];
-    for ($i = 1; $i <= 2; $i++) {
+    $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();
+    if (!$single) {
       $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();
     }
     $pdf = \App::make('snappy.pdf.wrapper');
-    $pdf->loadHTML($pages);
-    return $pdf->setOption('encoding', 'utf-8')
+    $pdf->setOption('encoding', 'utf-8')
       ->setOption('margin-bottom', '15mm')
-      ->setOption('footer-html', $footerHtml)
-      ->stream("$namepdf");
+      ->setOption('footer-html', $footerHtml);
+
+    return [
+      'pdf' => $pdf->getOutputFromHtml($pages),
+      'name' => $namepdf,
+    ];
   }
 }

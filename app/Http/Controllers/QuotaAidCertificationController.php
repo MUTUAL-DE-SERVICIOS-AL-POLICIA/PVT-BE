@@ -440,6 +440,15 @@ class QuotaAidCertificationController extends Controller
   public function printLiquidation($id)
   {
     $quota_aid = QuotaAidMortuary::find($id);
+    $result = $this->buildLiquidationPdf($quota_aid);
+    return response()->make($result['pdf'], 200, [
+      'Content-Type' => 'application/pdf',
+      'Content-Disposition' => 'inline; filename="' . $result['name'] . '"',
+    ]);
+  }
+
+  public function buildLiquidationPdf(QuotaAidMortuary $quota_aid, $single = false)
+  {
     $discount = $quota_aid->discount_types()->where('discount_type_id', '10')->first();
     $next_area_code = QuotaAidCorrelative::where('quota_aid_mortuary_id', $quota_aid->id)->where('wf_state_id', 61)->first();
     $code = $quota_aid->code;
@@ -469,15 +478,19 @@ class QuotaAidCertificationController extends Controller
       'discount' => $discount 
     ];
     $pages = [];
-    for ($i = 1; $i <= 2; $i++) {
+    $pages[] = \View::make('quota_aid.print.liquidation', $data)->render();
+    if (!$single) {
       $pages[] = \View::make('quota_aid.print.liquidation', $data)->render();
     }
     $pdf = \App::make('snappy.pdf.wrapper');
-    $pdf->loadHTML($pages);
-    return $pdf->setOption('encoding', 'utf-8')
+    $pdf->setOption('encoding', 'utf-8')
       ->setOption('margin-bottom', '15mm')
-      ->setOption('footer-html', $footerHtml)
-      ->stream("$namepdf");
+      ->setOption('footer-html', $footerHtml);
+
+    return [
+      'pdf' => $pdf->getOutputFromHtml($pages),
+      'name' => $namepdf,
+    ];
   }
   public function printFile($id)
   {
