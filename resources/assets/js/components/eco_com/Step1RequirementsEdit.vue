@@ -19,7 +19,7 @@ export default {
   ],
   computed: {
     isReview() {
-      return this.rol === 107;
+      return this.rol === 108;
     }
   },
   methods: {
