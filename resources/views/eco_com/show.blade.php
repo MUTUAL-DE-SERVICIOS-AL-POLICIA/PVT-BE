@@ -39,7 +39,7 @@ show blade
                     url-print="{{ route('eco_com_print_revision_certificate', [$economic_complement->id])}}">
                 </certification-button>
             @endif
-            @if ((Util::getRol()->id == 107 ) and ($economic_complement->eco_com_reception_type->name =='Inclusión' or $economic_complement->eco_com_reception_type->name =='Habitual-Rehabilitacion'))
+            @if ((Util::getRol()->name == 'CE-area-de-archivo-dbe' ) and ($economic_complement->eco_com_reception_type->name =='Inclusión' or $economic_complement->eco_com_reception_type->name =='Habitual-Rehabilitacion'))
                 <certification-button
                     type="ecoCom"
                     title="Imprimir Certificación archivo"
