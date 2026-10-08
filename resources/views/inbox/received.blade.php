@@ -151,9 +151,9 @@
                             <v-tab :title="`${itab.name} (${classification(itab.id).length})`" v-for="(itab, index) in workflows" :dataId="itab.id" icon="fa fa-file-text-o "
                                 :key="`tab-received-${index}`" :suffix="`<span class='badge'> ${classification(itab.id).length} </span>`">
                                 @if(Session::get('rol_id') == 2)
-                                    <inbox-content :inbox-state="`edited`" :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
+                                    <inbox-content :inbox-state="`edited`" :workflow-id="itab.id" :documents="classification(itab.id)" @search-change="handleSearch"></inbox-content>
                                 @else
-                                    <inbox-content :inbox-state="`received`" :workflow-id="itab.id" :documents="classification(itab.id)"></inbox-content>
+                                    <inbox-content :inbox-state="`received`" :workflow-id="itab.id" :documents="classification(itab.id)" @search-change="handleSearch"></inbox-content>
                                 @endif
                             </v-tab>
                         </vue-tabs>

@@ -10,9 +10,9 @@ export default {
             documents:[],
             activeWorkflowId:null,
 
-            current_page: 1,
-            last_page: 1,
-            per_page: 0,
+            currentPage: 1,
+            lastPage: 1,
+            perPage: 100,
             totalDocuments: 0,
 
             wfSequenceNextL:[],
@@ -29,7 +29,8 @@ export default {
                 eco_com_reception_type_id: 0,
                 eco_com_modality_id: 0,
             },
-            tempFilter: {}
+            tempFilter: {},
+            search: '',
         }
     },
     mounted(){
@@ -47,6 +48,7 @@ export default {
 
             let params = {
                 ...this.filter,
+                search: this.search,
                 page: this.currentPage,
                 per_page: this.perPage
             };
@@ -117,6 +119,10 @@ export default {
             let found = this.dataInbox.workflows.find(w =>{
                 return w.workflow_id == this.activeWorkflowId
             });
+            ///Si find() no encuentra un elemento
+            if (!found) {
+                return;
+            }
             let procedures = found.docs
             if (found) {
                 /*
@@ -317,6 +323,11 @@ export default {
             }
 
             this.currentPage = page;
+            this.getData();
+        },
+        handleSearch(value) {
+            this.search = value;
+            this.currentPage = 1;
             this.getData();
         },
     },
