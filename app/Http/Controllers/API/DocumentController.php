@@ -74,6 +74,25 @@ class DocumentController extends Controller
           if($request->reception_date){
             $documents->where('economic_complements.reception_date', '=', $request->reception_date);
           }
+
+          if ($request->filled('search')) {
+              $documents = $this->applyInboxSearch(
+                  $documents,
+                  $request->search,
+                  'economic_complements.code',
+                  'affiliates.identity_card',
+                  "concat_ws(' ',
+                      affiliates.first_name,
+                      affiliates.second_name,
+                      affiliates.last_name,
+                      affiliates.mothers_last_name,
+                      affiliates.surname_husband
+                  )",
+                  'eco_com_cities.second_shortened',
+                  'procedure_modalities.name',
+                  'eco_com_reception_types.name'
+              );
+          }
         $documents = $documents->paginate($number_pages);
         $documents_edited_total = EconomicComplement::with('tags')->select(
           DB::raw(
@@ -124,8 +143,26 @@ class DocumentController extends Controller
           ->where('retirement_funds.inbox_state', '=', false)
           ->where('retirement_funds.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
-          ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-          ->paginate($number_pages);
+          ->orderBy(DB::raw("split_part(code, '/',1)::integer"));
+          if ($request->filled('search')) {
+            $documents = $this->applyInboxSearch(
+                $documents,
+                $request->search,
+                'retirement_funds.code',
+                'affiliates.identity_card',
+                "concat_ws(' ',
+                    affiliates.first_name,
+                    affiliates.second_name,
+                    affiliates.last_name,
+                    affiliates.mothers_last_name,
+                    affiliates.surname_husband
+                )",
+                'ret_fun_cities.second_shortened',
+                'procedure_modalities.name'
+            );
+        }
+
+        $documents = $documents->paginate($number_pages);
         $documents_edited_total = RetirementFund::select('retirement_funds.id as id')
           ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_start_id', '=', 'ret_fun_cities.id')
@@ -161,8 +198,26 @@ class DocumentController extends Controller
           ->where('quota_aid_mortuaries.inbox_state', '=', false)
           ->where('quota_aid_mortuaries.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
-          ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-          ->paginate($number_pages);
+          ->orderBy(DB::raw("split_part(code, '/',1)::integer"));
+          if ($request->filled('search')) {
+            $documents = $this->applyInboxSearch(
+                $documents,
+                $request->search,
+                'quota_aid_mortuaries.code',
+                'affiliates.identity_card',
+                "concat_ws(' ',
+                    affiliates.first_name,
+                    affiliates.second_name,
+                    affiliates.last_name,
+                    affiliates.mothers_last_name,
+                    affiliates.surname_husband
+                )",
+                'quota_aid_cities.second_shortened',
+                'procedure_modalities.name'
+            );
+        }
+
+        $documents = $documents->paginate($number_pages);
         $documents_edited_total = QuotaAidMortuary::select('quota_aid_mortuaries.id as id')
           ->leftJoin('affiliates', 'quota_aid_mortuaries.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as quota_aid_cities', 'quota_aid_mortuaries.city_start_id', '=', 'quota_aid_cities.id')
@@ -200,8 +255,26 @@ class DocumentController extends Controller
           ->where('contribution_processes.inbox_state', '=', false)
           ->where('contribution_processes.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(contribution_processes.code, '/',2),'\D','','g')::integer"))
-          ->orderBy(DB::raw("split_part(contribution_processes.code, '/',1)::integer"))
-          ->paginate($number_pages);
+          ->orderBy(DB::raw("split_part(contribution_processes.code, '/',1)::integer"));
+          
+          if ($request->filled('search')) {
+              $documents = $this->applyInboxSearch(
+                  $documents,
+                  $request->search,
+                  'contribution_processes.code',
+                  'affiliates.identity_card',
+                  "concat_ws(' ',
+                      affiliates.first_name,
+                      affiliates.second_name,
+                      affiliates.last_name,
+                      affiliates.mothers_last_name,
+                      affiliates.surname_husband
+                  )",
+                  'contribution_process_cities.second_shortened',
+                  'procedure_modalities.name'
+              );
+          }
+        $documents = $documents->paginate($number_pages);
         $documents_edited_total = ContributionProcess::select('contribution_processes.id as id')
           ->leftJoin('direct_contributions', 'contribution_processes.direct_contribution_id', '=', 'direct_contributions.id')
           ->leftJoin('affiliates', 'direct_contributions.affiliate_id', '=', 'affiliates.id')
@@ -306,7 +379,26 @@ class DocumentController extends Controller
           if($request->reception_date){
             $documents->where('economic_complements.reception_date', '=', $request->reception_date);
           }
-        $documents = $documents->paginate($number_pages);
+          if ($request->filled('search')) {
+              $documents = $this->applyInboxSearch(
+                  $documents,
+                  $request->search,
+                  'economic_complements.code',
+                  'eco_com_applicants.identity_card',
+                  "concat_ws(' ',
+                      eco_com_applicants.first_name,
+                      eco_com_applicants.second_name,
+                      eco_com_applicants.last_name,
+                      eco_com_applicants.mothers_last_name,
+                      eco_com_applicants.surname_husband
+                  )",
+                  'eco_com_cities.second_shortened',
+                  'procedure_modalities.name',
+                  'eco_com_reception_types.name'
+              );
+          }
+
+          $documents = $documents->paginate($number_pages);
         $documents_received_total = EconomicComplement::with('tags')->select(
           DB::raw(
             "
@@ -356,8 +448,27 @@ class DocumentController extends Controller
           //->where('retirement_funds.user_id', '=', $user_id)
           ->where('retirement_funds.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
-          ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-          ->paginate($number_pages);
+          ->orderBy(DB::raw("split_part(code, '/',1)::integer"));
+          
+          if ($request->filled('search')) {
+              $documents = $this->applyInboxSearch(
+                  $documents,
+                  $request->search,
+                  'retirement_funds.code',
+                  'affiliates.identity_card',
+                  "concat_ws(' ',
+                      affiliates.first_name,
+                      affiliates.second_name,
+                      affiliates.last_name,
+                      affiliates.mothers_last_name,
+                      affiliates.surname_husband
+                  )",
+                  'ret_fun_cities.second_shortened',
+                  'procedure_modalities.name'
+              );
+          }
+
+          $documents = $documents->paginate($number_pages);
         $documents_received_total = RetirementFund::select('retirement_funds.id as id')
           ->leftJoin('affiliates', 'retirement_funds.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as ret_fun_cities', 'retirement_funds.city_start_id', '=', 'ret_fun_cities.id')
@@ -395,8 +506,26 @@ class DocumentController extends Controller
           //->where('quota_aid_mortuaries.user_id', '=', $user_id)
           ->where('quota_aid_mortuaries.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(code, '/',2),'\D','','g')::integer"))
-          ->orderBy(DB::raw("split_part(code, '/',1)::integer"))
-          ->paginate($number_pages);
+          ->orderBy(DB::raw("split_part(code, '/',1)::integer"));
+          
+          if ($request->filled('search')) {
+              $documents = $this->applyInboxSearch(
+                  $documents,
+                  $request->search,
+                  'quota_aid_mortuaries.code',
+                  'affiliates.identity_card',
+                  "concat_ws(' ',
+                      affiliates.first_name,
+                      affiliates.second_name,
+                      affiliates.last_name,
+                      affiliates.mothers_last_name,
+                      affiliates.surname_husband
+                  )",
+                  'quota_aid_cities.second_shortened',
+                  'procedure_modalities.name'
+              );
+          }
+$       $documents = $documents->paginate($number_pages);
         $documents_received_total = QuotaAidMortuary::select('quota_aid_mortuaries.id as id')
           ->leftJoin('affiliates', 'quota_aid_mortuaries.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as quota_aid_cities', 'quota_aid_mortuaries.city_start_id', '=', 'quota_aid_cities.id')
@@ -435,8 +564,27 @@ class DocumentController extends Controller
           ->where('contribution_processes.user_id', '=', $user_id)
           ->where('contribution_processes.code', 'not like', '%A%')
           ->orderBy(DB::raw("regexp_replace(split_part(contribution_processes.code, '/',2),'\D','','g')::integer"))
-          ->orderBy(DB::raw("split_part(contribution_processes.code, '/',1)::integer"))
-          ->paginate($number_pages);
+          ->orderBy(DB::raw("split_part(contribution_processes.code, '/',1)::integer"));
+          
+        if ($request->filled('search')) {
+            $documents = $this->applyInboxSearch(
+                $documents,
+                $request->search,
+                'contribution_processes.code',
+                'affiliates.identity_card',
+                "concat_ws(' ',
+                    affiliates.first_name,
+                    affiliates.second_name,
+                    affiliates.last_name,
+                    affiliates.mothers_last_name,
+                    affiliates.surname_husband
+                )",
+                'contribution_process_cities.second_shortened',
+                'procedure_modalities.name'
+            );
+        }
+
+        $documents = $documents->paginate($number_pages);
         $documents_received_total = ContributionProcess::select('contribution_processes.id as id')
           ->leftJoin('direct_contributions', 'contribution_processes.direct_contribution_id', '=', 'direct_contributions.id')
           ->leftJoin('affiliates', 'direct_contributions.affiliate_id', '=', 'affiliates.id')
@@ -505,5 +653,44 @@ class DocumentController extends Controller
     //     })
     //     ->rawColumns(['ci','name','code'])
     //     ->make(true);
+  }
+
+  private function applyInboxSearch(
+      $query,
+      $search,
+      $codeColumn,
+      $ciColumn,
+      $nameExpression,
+      $cityColumn,
+      $modalityColumn,
+      $typeColumn = null
+  ) {
+      $search = trim($search);
+
+      if ($search === '') {
+          return $query;
+      }
+
+      $like = '%' . $search . '%';
+
+      return $query->where(function ($q) use (
+          $like,
+          $codeColumn,
+          $ciColumn,
+          $nameExpression,
+          $cityColumn,
+          $modalityColumn,
+          $typeColumn
+      ) {
+          $q->whereRaw("$codeColumn::text ILIKE ?", [$like])
+              ->orWhereRaw("$ciColumn::text ILIKE ?", [$like])
+              ->orWhereRaw("$nameExpression ILIKE ?", [$like])
+              ->orWhereRaw("$cityColumn::text ILIKE ?", [$like])
+              ->orWhereRaw("$modalityColumn::text ILIKE ?", [$like]);
+
+          if ($typeColumn) {
+              $q->orWhereRaw("$typeColumn::text ILIKE ?", [$like]);
+          }
+      });
   }
 }
