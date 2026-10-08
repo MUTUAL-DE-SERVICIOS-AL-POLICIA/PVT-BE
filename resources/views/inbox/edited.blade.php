@@ -1,3 +1,4 @@
+///edited.blade.php
 @extends('layouts.app')
 @section('title', 'Mi bandeja')
 @section('content')
@@ -202,7 +203,7 @@
                             <v-tab :title="`${itab.name} (${classification(itab.id).length})`" :dataId="itab.id" icon="fa fa-file-text-o" v-for="(itab, index) in workflows"
                             :key="`tab-edited-${index}`" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`"
                             >
-                                <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="classification(itab.id)"></inbox-content>
+                                <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="classification(itab.id)" @search-change="handleSearch"></inbox-content>
                                 {{-- <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="docss"></inbox-content> --}}
                             </v-tab>
                         </vue-tabs>
