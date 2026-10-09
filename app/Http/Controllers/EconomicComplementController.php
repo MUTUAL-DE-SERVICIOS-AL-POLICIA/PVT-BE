@@ -2214,6 +2214,7 @@ class EconomicComplementController extends Controller
             }
             $item->wf_current_state_id = 8;
             $item->user_id = Auth::user()->id;
+            $item->inbox_state = false;
             $item->update();
             //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
             $user_id = Auth::user()->id;
