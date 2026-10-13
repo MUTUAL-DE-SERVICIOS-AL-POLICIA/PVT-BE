@@ -94,10 +94,10 @@ class UpdateObservationTypeSeeder extends Seeder
         //archivo DBE de CE
         ObservationType::firstOrCreate([
             'module_id' => 2,
-            'name' => 'Observado - Requistos(s) escaneados(s)',
+            'name' => 'Observado - Requisitos(s) escaneados(s)',
             'description' => 'Subsanable',
             'type' => 'T',
-            'shortened' => 'Observado - Requistos(s) escaneados(s)',
+            'shortened' => 'Observado - Requisitos(s) escaneados(s)',
             'active' => true,
         ]);
     }
