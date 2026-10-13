@@ -6,7 +6,7 @@
                 <div class="text-left block text-sm">
                     <span class="text-justify"><br>El suscrito Profesional de Archivo y Gestión Documental de Beneficios Económicos</span><br>   
                     <span class="uppercase font-bold">CERTIFICA QUE:</span><br>
-                    <span class="text-justify">Los documentos presentados correspondiente al trámite N° <span class="uppercase font-bold">{!! $code !!}</span>  fueron revisados en su versión digital por el personal de Archivo y Gestión documental de Beneficios Económicos. Dicha revisión incluye la verificación de su correcta indexación en el sistema informático de tramites y calidad de imagen, en relación con el titular y/o beneficiario señor(a) </span><br>
+                    <span class="text-justify">Los documentos presentados correspondiente al trámite N° <span class="uppercase font-bold">{!! $code !!}</span>  fueron revisados en su versión digital por el personal de Archivo y Gestión Documental de Beneficios Económicos. Dicha revisión incluye la verificación de su correcta indexación en el sistema informático de tramites y calidad de imagen, en relación con el titular y/o beneficiario señor(a): </span><br>
                 </div><br>
 
         <div class="font-bold uppercase m-b-5 counter">
