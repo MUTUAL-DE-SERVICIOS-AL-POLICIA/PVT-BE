@@ -12,6 +12,7 @@ use Muserpol\Helpers\Util;
 
 class QuotaAidCertificationController extends Controller
 {
+    // App móvil: el afiliado se obtiene del token (middleware api_auth).
     public function index(Request $request)
     {
         $quota_aids = $request->affiliate->quota_aid_mortuaries()->get();
@@ -19,6 +20,7 @@ class QuotaAidCertificationController extends Controller
         return $this->toListResponse($quota_aids);
     }
 
+    // Kiosko: no hay token de afiliado, así que se resuelve por el ci recibido.
     public function kioskIndex(Request $request)
     {
         $affiliate = Affiliate::where('identity_card', $request->ci)->first();
@@ -34,6 +36,7 @@ class QuotaAidCertificationController extends Controller
         return $this->toListResponse($affiliate->quota_aid_mortuaries()->get());
     }
 
+    // Arma el listado; 'printable' indica si el trámite ya tiene liquidación generada (solo esos se imprimen).
     private function toListResponse($quota_aids)
     {
         $data = $quota_aids->map(function (QuotaAidMortuary $quota_aid) {
@@ -60,6 +63,7 @@ class QuotaAidCertificationController extends Controller
         ];
     }
 
+    // PDF crudo (binario); endpoint v1 (hoy sin ruta expuesta). Valida que el trámite sea del afiliado del token.
     public function print(Request $request, QuotaAidMortuary $quota_aid)
     {
         if ($quota_aid->affiliate_id != $request->affiliate->id) {
@@ -72,6 +76,7 @@ class QuotaAidCertificationController extends Controller
         return $this->print_pdf($quota_aid);
     }
 
+    // PDF en JSON base64 para la app móvil; valida que el trámite sea del afiliado del token.
     public function print_v2(Request $request, QuotaAidMortuary $quota_aid)
     {
         if ($quota_aid->affiliate_id != $request->affiliate->id) {
@@ -84,11 +89,14 @@ class QuotaAidCertificationController extends Controller
         return $this->print_pdf_v2($quota_aid);
     }
 
+    // Kiosko: devuelve el mismo JSON base64 que la app móvil (antes PDF crudo) para unificar la impresión.
+    // No valida pertenencia porque el kiosko no maneja token de afiliado; el acceso lo controla el HASH_TOKEN.
     public function printLiquidationKiosk(QuotaAidMortuary $quota_aid)
     {
-        return $this->print_pdf($quota_aid, true);
+        return $this->print_pdf_v2($quota_aid);
     }
 
+    // PDF crudo (binario). Si no se pasa $single, usa el default false = 2 copias.
     private function print_pdf(QuotaAidMortuary $quota_aid, $single = false)
     {
         $result = (new WebQuotaAidCertification)->buildLiquidationPdf($quota_aid, $single);
@@ -99,6 +107,7 @@ class QuotaAidCertificationController extends Controller
         ]);
     }
 
+    // Genera 1 copia (kiosko/app móvil) y la codifica en base64 para viajar como JSON.
     private function print_pdf_v2(QuotaAidMortuary $quota_aid)
     {
         $result = (new WebQuotaAidCertification)->buildLiquidationPdf($quota_aid, true);

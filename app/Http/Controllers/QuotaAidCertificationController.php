@@ -437,6 +437,7 @@ class QuotaAidCertificationController extends Controller
       ->setOption('footer-html', $footerHtml)
       ->stream("$namepdf");
   }
+  // Web: llama a buildLiquidationPdf sin $single (el default ya es false = 2 copias) y responde el PDF crudo.
   public function printLiquidation($id)
   {
     $quota_aid = QuotaAidMortuary::find($id);
@@ -447,6 +448,11 @@ class QuotaAidCertificationController extends Controller
     ]);
   }
 
+  // Arma el PDF una sola vez y lo devuelve como arreglo (['pdf', 'name']) para reutilizarlo.
+  // Se separó de printLiquidation porque el mismo PDF lo consumen dos "llamadores" con respuestas distintas:
+  //   - printLiquidation()  (web) -> responde el PDF crudo.
+  //   - print_pdf_v2()      (API) -> app móvil y kiosko responden el PDF en JSON base64.
+  // $single: true = 1 copia (kiosko/app móvil); false = 2 copias (web). Si se omite, PHP usa el default false.
   public function buildLiquidationPdf(QuotaAidMortuary $quota_aid, $single = false)
   {
     $discount = $quota_aid->discount_types()->where('discount_type_id', '10')->first();
@@ -478,6 +484,7 @@ class QuotaAidCertificationController extends Controller
       'discount' => $discount 
     ];
     $pages = [];
+    // La web imprime 2 copias; kiosko/app móvil solo 1 (single = true) para no duplicar páginas.
     $pages[] = \View::make('quota_aid.print.liquidation', $data)->render();
     if (!$single) {
       $pages[] = \View::make('quota_aid.print.liquidation', $data)->render();

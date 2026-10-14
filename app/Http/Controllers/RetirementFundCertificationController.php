@@ -2795,6 +2795,7 @@ class RetirementFundCertificationController extends Controller
     return ", ";
   }
 
+  // Web: llama a buildLiquidationPdf sin $single (el default ya es false = 2 copias) y responde el PDF crudo.
   public function printLiquidation($id)
   {
     $ret_fun = RetirementFund::find($id);
@@ -2805,6 +2806,11 @@ class RetirementFundCertificationController extends Controller
     ]);
   }
 
+  // Arma el PDF una sola vez y lo devuelve como arreglo (['pdf', 'name']) para reutilizarlo.
+  // Se separó de printLiquidation porque el mismo PDF lo consumen dos "llamadores" con respuestas distintas:
+  //   - printLiquidation()  (web) -> responde el PDF crudo.
+  //   - print_pdf_v2()      (API) -> app móvil y kiosko responden el PDF en JSON base64.
+  // $single: true = 1 copia (kiosko/app móvil); false = 2 copias (web). Si se omite, PHP usa el default false.
   public function buildLiquidationPdf(RetirementFund $ret_fun, $single = false)
   {
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $ret_fun->id)->where('wf_state_id', ID::wf_state()->liquidationFR)->first();
@@ -2836,6 +2842,7 @@ class RetirementFundCertificationController extends Controller
     ];
 
     $pages = [];
+    // La web imprime 2 copias; kiosko/app móvil solo 1 (single = true) para no duplicar páginas.
     $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();
     if (!$single) {
       $pages[] = \View::make('ret_fun.print.liquidation', $data)->render();
