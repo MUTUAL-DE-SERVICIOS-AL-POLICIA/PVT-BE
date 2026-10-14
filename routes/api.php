@@ -36,6 +36,10 @@ Route::group([
     Route::post('ecoComSaveIdentity', 'API\EconomicComplementController@ecoComSaveIdentity');
     Route::get('economic_complement/print/{economic_complement}', 'API\EconomicComplementController@print');
     Route::get('economic_complement/print_v2/{economic_complement}', 'API\EconomicComplementController@print_v2');
+    Route::get('ret_fun/{retirement_fund}/print/liquidation', 'API\RetirementFundCertificationController@print_v2');
+    Route::get('quota_aid/{quota_aid}/print/liquidation', 'API\QuotaAidCertificationController@print_v2');
+    Route::get('ret_fun', 'API\RetirementFundCertificationController@index');
+    Route::get('quota_aid', 'API\QuotaAidCertificationController@index');
     Route::resource('liveness', 'API\LivenessController')->only('index', 'store', 'show');
     Route::resource('message', 'API\MessageController')->only('show');
     Route::resource('eco_com_procedure', 'API\EcoComProcedureController')->only('show');
@@ -53,6 +57,10 @@ Route::group([
 ], function () {
     Route::get('eco_com/{eco_com_id}', 'API\EconomicComplementController@showFormatedEcoCom');
     Route::post('eco_com', 'API\EconomicComplementController@createEcoCom');
+    Route::get('kiosko/ret_fun/{retirement_fund}/print/liquidation', 'API\RetirementFundCertificationController@printLiquidationKiosk');
+    Route::get('kiosko/quota_aid/{quota_aid}/print/liquidation', 'API\QuotaAidCertificationController@printLiquidationKiosk');
+    Route::get('kiosko/ret_fun', 'API\RetirementFundCertificationController@kioskIndex');
+    Route::get('kiosko/quota_aid', 'API\QuotaAidCertificationController@kioskIndex');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
