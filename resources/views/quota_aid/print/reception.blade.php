@@ -38,7 +38,7 @@
                 <span class="capitalize">Señores:</span><br>
                 <!-- <span>CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS</span><br> -->
                 <!-- <span class="uppercase font-bold">DIRECTOR GENERAL EJECUTIVO</span> -->
-                <span class="uppercase font-bold">MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</span><br><br>
+                <span class="uppercase font-bold">"MUSERPOL"</span><br><br>
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
             <div class="text-right block m-t-10 m-b-10">
