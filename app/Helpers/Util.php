@@ -874,7 +874,7 @@ class Util
       ['text' => "Nombre del titular", 'value' => "name"],
       ['text' => "Modalidad", 'value' => "modality"],
       ['text' => "Regional", 'value' => "city"],
-      ['text' => "Fecha de Recepción", 'value' => "date_reception"],
+      ['text' => "Fecha de Recepción", 'value' => "reception_date"],
     ];
   }
   public static function getHeadersInboxEcoCom()
@@ -1225,20 +1225,20 @@ class Util
   public static function getDiscountId($observation_id)
   {
     switch ($observation_id) {
-      case 1:
-        return 4;
+      case 1://Suspendido - Rendición de cuentas o fondos en avance en el sistema contable.
+        return 4;//Amortización por Cuentas por Cobrar
         break;
-      case 2:
-        return 5;
+      case 2://Suspendido - Préstamo en mora.
+        return 5;//Amortización por Prestamos en Mora
         break;
-      case 13:
-        return 6;
+      case 13://Suspendido - Cuentas por cobrar RF
+        return 6;//Amortización por Reposición de Fondos
         break;
-      case 31:
-        return 7;
+      case 31://Descuento - Aporte para el Auxilio Mortuorio mediante el Complemento Económico.
+        return 7;//Amortización para Aporte Auxilio Mortuorio
         break;
-      case 62:
-        return 9;
+      case 62://obs.pres estacional
+        return 9;//Descuento por Amortización de Préstamo Estacional
         break;
       default:
         return [];

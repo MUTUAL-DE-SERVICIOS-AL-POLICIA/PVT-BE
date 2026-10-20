@@ -102,6 +102,8 @@ use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Muserpol\Models\EconomicComplement\EcoComLegalGuardian;
 use Muserpol\Models\EconomicComplement\EcoComBeneficiary;
 use Muserpol\Models\ComplementaryFactor;
+use Muserpol\Models\EconomicComplement\EcoComSubmittedDocument;
+use Muserpol\Policies\EcoComSubmittedDocumentPolicy;
 use Muserpol\Models\ObservationType;
 class AuthServiceProvider extends ServiceProvider
 {
@@ -165,6 +167,7 @@ class AuthServiceProvider extends ServiceProvider
          EcoComLegalGuardian::class => EcoComLegalGuardianPolicy::class,
          EcoComBeneficiary::class => EcoComBeneficiaryPolicy::class,
          Note::class => NotePolicy::class,
+         EcoComSubmittedDocument::class => EcoComSubmittedDocumentPolicy::class,
     ];
 
     /**

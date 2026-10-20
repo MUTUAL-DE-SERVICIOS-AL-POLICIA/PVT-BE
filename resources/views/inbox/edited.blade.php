@@ -1,3 +1,4 @@
+///edited.blade.php
 @extends('layouts.app')
 @section('title', 'Mi bandeja')
 @section('content')
@@ -169,6 +170,28 @@
                             </div>
                         </div>
                     </div>
+                    <div class="text-center m-t-md" v-if="lastPage > 1">
+                        <button
+                            class="btn btn-default"
+                            @click="changePage(currentPage - 1)"
+                            :disabled="currentPage == 1">
+                            <i class="fa fa-chevron-left"></i>
+                            Anterior
+                        </button>
+                        <span style="margin: 0 15px;">
+                            Página @{{ currentPage }} de @{{ lastPage }}
+                        </span>
+                        <span style="margin-right: 15px;">
+                            @{{ perPage }}  items por página
+                        </span>
+                        <button
+                            class="btn btn-default"
+                            @click="changePage(currentPage + 1)"
+                            :disabled="currentPage == lastPage">
+                            Siguiente
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>
                     <div class="mail-box">
                         <div class="sk-folding-cube" v-show="showLoading">
                             <div class="sk-cube1 sk-cube"></div>
@@ -180,7 +203,7 @@
                             <v-tab :title="`${itab.name} (${classification(itab.id).length})`" :dataId="itab.id" icon="fa fa-file-text-o" v-for="(itab, index) in workflows"
                             :key="`tab-edited-${index}`" :suffix="` <span class='badge'> ${classification(itab.id).length} </span>`"
                             >
-                                <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="classification(itab.id)"></inbox-content>
+                                <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="classification(itab.id)" @search-change="handleSearch"></inbox-content>
                                 {{-- <inbox-content :workflow-id="itab.id" :inbox-state="`edited`" :documents="docss"></inbox-content> --}}
                             </v-tab>
                         </vue-tabs>

@@ -22,7 +22,6 @@
                     @if(isset($unit1))
                         {!! $unit1 !!}
                     @endif
-                    {{ $unit ?? 'UNIDAD DE OTORGACIÓN DE FONDO DE RETIRO POLICIAL, CUOTA MORTUORIA Y AUXILIO MORTUORIO' }}
                 </span>
             </th>
             <th class="w-20 no-padding no-margins align-top">
@@ -60,7 +59,7 @@
                             </tr>
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Usuario</td>
-                                <td class="text-xs">{!! $user->username !!}</td>
+                                <td class="text-xs">rrrrrrrrr</td>
                             </tr>
                             <tr>
                                 <td class="text-center bg-grey-darker text-xxs text-white">Fecha</td>

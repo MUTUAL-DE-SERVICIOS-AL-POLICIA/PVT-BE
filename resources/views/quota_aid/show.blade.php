@@ -97,7 +97,7 @@
             @if(Util::getRol()->id == 40 || Util::isRegionalRole())
                 <quota-aid-certification-button
                     title="Imprimir recepción"
-                    quota-adi-id="{{ $quota_aid->id }}"
+                    quota-aid-id="{{ $quota_aid->id }}"
                     url-print="{{ route('quota_aid_print_reception', $quota_aid->id) }}"
                 >
                 </quota-aid-certification-button>
@@ -106,8 +106,9 @@
             @if(Util::getRol()->id == 42)
                 <quota-aid-certification-button
                     title="Imprimir Certificacion de Archivo"
-                    quota-adi-id="{{ $quota_aid->id }}"
+                    quota-aid-id="{{ $quota_aid->id }}"
                     url-print="{!! route('quota_aid_print_file', $quota_aid->id) !!}"
+                    message="true"
                 >
                 </quota-aid-certification-button>
             @endif

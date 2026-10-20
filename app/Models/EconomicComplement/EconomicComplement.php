@@ -918,6 +918,7 @@ class EconomicComplement extends Model
             'eco_com_submitted_documents.comment',
             'eco_com_submitted_documents.is_valid',
             'eco_com_submitted_documents.is_uploaded',
+            'eco_com_submitted_documents.is_archive_review',
             'procedure_documents.name'
         )
         ->leftJoin('procedure_requirements', 'eco_com_submitted_documents.procedure_requirement_id', '=', 'procedure_requirements.id')
@@ -933,6 +934,7 @@ class EconomicComplement extends Model
             $doc['isValid']    = (bool) $dbDoc->is_valid;
             $doc['comment']    = $dbDoc->comment;
             $doc['submittedDocumentId'] = $dbDoc->id;
+            $doc['isArchiveReview'] = (bool) $dbDoc->is_archive_review;
         };
 
         // Actualizar requiredDocuments usando referencias
@@ -969,6 +971,7 @@ class EconomicComplement extends Model
                     "status"                 => true,
                     "isValid"                => $dbDoc->is_valid,
                     "comment"                => $dbDoc->comment,
+                    "isArchiveReview"        => $dbDoc->is_archive_review,
                 ];
 
                 if ($dbDoc->number > 0) {
