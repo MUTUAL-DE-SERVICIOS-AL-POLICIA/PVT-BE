@@ -22,10 +22,10 @@
         @include('ret_fun.print.only_police_info', ['affiliate'=>$affiliate,'procedure_modality'=>$retirement_fund->procedure_modality, 'isReinstatement'=>$isReinstatement])
         <div class="m-t-15">
             <div class="text-left block">
-                <span class="capitalize">Señor:</span><br>
-                <span>CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS</span><br>
-                <span class="uppercase font-bold">DIRECTOR GENERAL EJECUTIVO</span>
-                <span class="uppercase font-bold">MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"</span><br>
+                <span class="capitalize">Señores:</span><br>
+                <!-- <span>CNL. MSc. CAD. LUCIO ENRIQUE RENÉ JIMÉNEZ VARGAS</span><br>
+                <span class="uppercase font-bold">DIRECTOR GENERAL EJECUTIVO</span> -->
+                <span class="uppercase font-bold">"MUSERPOL"</span><br><br>
                 <span class="font-bold capitalize">presente.-</span><br>
             </div>
             @php($article_by = $retirement_fund->procedure_modality->id==62 ? 'AL': 'POR')
