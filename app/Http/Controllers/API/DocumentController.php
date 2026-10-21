@@ -525,7 +525,7 @@ class DocumentController extends Controller
                   'procedure_modalities.name'
               );
           }
-$       $documents = $documents->paginate($number_pages);
+        $documents = $documents->paginate($number_pages);
         $documents_received_total = QuotaAidMortuary::select('quota_aid_mortuaries.id as id')
           ->leftJoin('affiliates', 'quota_aid_mortuaries.affiliate_id', '=', 'affiliates.id')
           ->leftJoin('cities as quota_aid_cities', 'quota_aid_mortuaries.city_start_id', '=', 'quota_aid_cities.id')
