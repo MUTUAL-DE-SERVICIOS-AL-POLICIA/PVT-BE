@@ -2,8 +2,7 @@
   <div class="ibox">
     <div class="ibox-content">
       <form>
-        <requirement-edit-select :requirements="requirements" :store="store" :is-review="isReview"
-    review-field="isArchiveReview"></requirement-edit-select>
+        <requirement-edit-select :requirements="requirements" :store="store" :is-review="isReview" :block-uploaded-documents="isReview" review-field="isArchiveReview"></requirement-edit-select>
       </form>
     </div>
   </div>
