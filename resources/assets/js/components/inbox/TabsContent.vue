@@ -9,6 +9,12 @@ export default {
             area_documents: [],
             documents:[],
             activeWorkflowId:null,
+
+            currentPage: 1,
+            lastPage: 1,
+            perPage: 100,
+            totalDocuments: 0,
+
             wfSequenceNextL:[],
             wfSequenceBackL:[],
             wfSequenceNext:null,
@@ -23,7 +29,8 @@ export default {
                 eco_com_reception_type_id: 0,
                 eco_com_modality_id: 0,
             },
-            tempFilter: {}
+            tempFilter: {},
+            search: '',
         }
     },
     mounted(){
@@ -31,10 +38,23 @@ export default {
         this.tempFilter = JSON.parse(JSON.stringify(this.filter));
     },
     methods:{
-        async getData(){
-            this.showLoading=true;
+        async getData(resetPage = false){
+            if(resetPage){
+                this.currentPage = 1;
+            }
+
+            this.showLoading = true;
             let uri = `/api/documents/${this.inboxState}/${this.rolId.id}/${this.user.id}`;
-            await axios.get(uri, {params: this.filter}).then(({data})=>{
+
+            let params = {
+                ...this.filter,
+                search: this.search,
+                page: this.currentPage,
+                per_page: this.perPage
+            };
+
+            await axios.get(uri, {params: params}).then(({data})=>{
+
                 this.workflows =  data.workflows;
                 this.activeWorkflowId = this.activeWorkflowId == null ? (data.workflows[0].id || null) : this.activeWorkflowId;
                 this.area_documents =  data.documents
@@ -43,11 +63,18 @@ export default {
                 } else {
                     this.documents =  this.area_documents.filter(v => v.user_id == this.user.id)
                 }
+
+                this.currentPage = data.pagination.current_page;
+                this.lastPage = data.pagination.last_page;
+                this.totalDocuments = data.pagination.total;
+                this.perPage = data.pagination.per_page;
+
                 this.wfCurrentState =  data.wf_current_state;
                 this.wfSequenceNextL =  data.wf_sequences_next;
                 this.wfSequenceBackL =  data.wf_sequences_back;
                 this.documentsReceivedTotal = data.documents_received_total;
                 this.documentsEditedTotal = data.documents_edited_total;
+                this.pagination = data.pagination;
                 this.updateCheckStatus();
                 this.showLoading = false;
                 this.$store.commit('inbox/setHeaders', data.headers);
@@ -92,6 +119,10 @@ export default {
             let found = this.dataInbox.workflows.find(w =>{
                 return w.workflow_id == this.activeWorkflowId
             });
+            ///Si find() no encuentra un elemento
+            if (!found) {
+                return;
+            }
             let procedures = found.docs
             if (found) {
                 /*
@@ -285,7 +316,20 @@ export default {
             } catch (e) {
                 console.log(e);
             }
-        }
+        },
+        changePage(page){
+            if(page < 1 || page > this.lastPage){
+                return;
+            }
+
+            this.currentPage = page;
+            this.getData();
+        },
+        handleSearch(value) {
+            this.search = value;
+            this.currentPage = 1;
+            this.getData();
+        },
     },
     computed:{
         ...mapGetters('inbox',{
@@ -308,12 +352,13 @@ export default {
             return 0;
         },
         totalDocs(){
-            if(this.workflows.length == 0){
-                return null;
-            }
-            return this.workflows.reduce((accu, curr)=>{
-                return accu + this.classification(curr.id).length;
-            }, 0)
+            // if(this.workflows.length == 0){
+            //     return null;
+            // }
+            // return this.workflows.reduce((accu, curr)=>{
+            //     return accu + this.classification(curr.id).length;
+            // }, 0)
+             return this.totalDocuments;
         },
     }
 }

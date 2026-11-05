@@ -4,8 +4,10 @@
             <div class="form-group m-md">
 
                 <label class="label-control">Buscar:</label>
-                <input type="text"
+                <input
+                    type="text"
                     v-model="search"
+                    @input="$emit('search-change', search)"
                     class="form-control input-sm"
                     name="search"
                     placeholder="Escribe el número de Trámite, Nombre del titular, etc...">
@@ -13,7 +15,6 @@
         </v-card-title>
         <v-data-table :headers="dataInbox.headers"
                       :items="documents"
-                      :search="search"
                       hide-actions
                       select-all
                       item-key="ci"

@@ -17,8 +17,8 @@
             <div class="wrapper wrapper-content">
                 <div v-for="(requirement, groupNumber) in requirementList" :key="'requirementList' + groupNumber"
                     class="animated fadeInRight">
-                    <div class="vote-item" @click="checked(groupNumber, i)" v-for="(rq, i) in requirement"
-                        :class="rq.background" style="cursor:pointer; padding: 10px;" :key="i" v-if="isVisible(rq)">
+                    <div class="vote-item" @click="!(blockUploadedDocuments && rq.isUploaded) && checked(groupNumber, i)" v-for="(rq, i) in requirement"
+                        :class="rq.background" :style="{cursor: (blockUploadedDocuments && rq.isUploaded) ? 'not-allowed' : 'pointer', padding: '10px'}"v-if="isVisible(rq)">
                         <input type="hidden"
                             :name="'required_requirements[' + rq.number + '][' + rq.procedureDocumentId + '][procedureRequirementId]'"
                             :value="rq.procedureRequirementId">
@@ -109,11 +109,20 @@ export default {
             type: Function,
             required: true,
         },
-        isLegalReview: {
+        isReview: {
             type: Boolean,
             required: false,
             default: false,
-        }
+        },
+        blockUploadedDocuments: {
+            type: Boolean,
+            default: false
+        },
+        reviewField: {
+            type: String,
+            required: false,
+            //default: 'isValid',
+    }
     },
     data() {
         return {
@@ -126,10 +135,11 @@ export default {
         }
     },
     mounted() {
+         console.log('REQUIREMENTS:', this.requirements);
         if (this.requirements.serviceStatus === 'error') {
             return;
         }
-        if (this.isLegalReview) {
+        if (this.isReview) {
             const filter = Object.fromEntries(
                 Object.entries(this.requirements.requiredDocuments)
                     .map(([key, group]) => {
@@ -137,8 +147,8 @@ export default {
                             .filter(req => req.status)
                             .map(req => ({
                                 ...req,
-                                status: req.isValid,
-                                background: req.isValid ? 'bg-success-green' : ''
+                                status: req[this.reviewField],
+                                background: req[this.reviewField] ? 'bg-success-green' : ''
                             }));
 
                         return [key, docs];
@@ -149,8 +159,8 @@ export default {
                 .map(aditional => {
                     return {
                         ...aditional,
-                        status: aditional.isValid,
-                        background: aditional.isValid ? 'bg-success-green' : ''
+                        status: aditional[this.reviewField],
+                        background: aditional[this.reviewField] ? 'bg-success-green' : ''
                     }
                 });
             this.requirementList = filter;
@@ -176,9 +186,10 @@ export default {
         checked(groupNumber, i) {
             if (!this.editing) return;
             const list = this.requirementList[groupNumber];
-            if (this.isLegalReview) {
+            if (this.isReview) {
                 let item = list[i];
-                item.status = !item.status;
+                item[this.reviewField] = !item[this.reviewField];
+                item.status = item[this.reviewField];
                 item.background = item.status ? 'bg-success-green' : '';
                 return;
             }
@@ -200,7 +211,7 @@ export default {
             }
         },
         isVisible(requeriment) {
-            return this.isLegalReview || this.editing || requeriment.status;
+            return this.isReview || this.editing || requeriment.status;
         },
         toggle_editing: function () {
             this.editing = !this.editing;
@@ -218,7 +229,7 @@ export default {
             });
         },
         save() {
-            if (!this.isLegalReview) {
+            if (!this.isReview) {
                 let reqSelected = $("#aditionalRequirementsSelected").val();
                 this.store(this.requirementList, [...reqSelected.map(e => JSON.parse(e))]);
             } else {
