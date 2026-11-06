@@ -1,4 +1,3 @@
-///edited.blade.php
 @extends('layouts.app')
 @section('title', 'Mi bandeja')
 @section('content')

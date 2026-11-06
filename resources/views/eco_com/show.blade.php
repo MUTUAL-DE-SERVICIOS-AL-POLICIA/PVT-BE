@@ -1,6 +1,3 @@
-show blade 
-
-
 @extends('layouts.app') 
 @section('title', 'Complemento economico Padre') 
 @section('content')
