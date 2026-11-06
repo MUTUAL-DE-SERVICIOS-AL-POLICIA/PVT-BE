@@ -18,7 +18,8 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::resource('auth', 'API\AuthController')->only('store');
-    Route::get('version', 'API\VersionController@versiones');
+    // get_version() es un helper interno (recibe $bool y $store_url), no una accion.
+    // El endpoint real es el POST de abajo.
     Route::resource('city', 'API\CityController')->only('index');
     Route::resource('affiliate.observation', 'API\AffiliateObservationController')->only('index');
     Route::resource('policy', 'API\PolicyController')->only('index');
