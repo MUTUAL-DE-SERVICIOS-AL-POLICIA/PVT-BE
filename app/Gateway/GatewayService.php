@@ -3,7 +3,7 @@
 namespace Muserpol\Gateway;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 
 class GatewayService
 {
@@ -34,12 +34,14 @@ class GatewayService
             }
             $res = $this->client->request($method, $route, $options);
             return $res->getBody();
-        } catch (RequestException $e) {
-            return [
+        } catch (GuzzleException $e) {
+            // Los llamadores siempre hacen json_decode() sobre el resultado.
+            // Devolver un array rompia con PHP 8 (json_decode exige string).
+            return json_encode([
                 'status' => 'error',
                 'message' => 'Error al realizar la solicitud',
                 'data' => $e->getMessage(),
-            ];
+            ]);
         }
     }
 }

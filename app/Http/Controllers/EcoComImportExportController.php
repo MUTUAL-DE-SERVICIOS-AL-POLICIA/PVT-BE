@@ -414,7 +414,7 @@ class EcoComImportExportController extends Controller
                                         ];
                                         if (filter_var($import_contribution[3], FILTER_VALIDATE_BOOLEAN)) {
                                             $month = Carbon::parse($import_contribution[4]);
-                                            $month = $month->formatLocalized('%B');
+                                            $month = $month->formatLocalizedEs('%B');
                                             return response()->json([
                                                 'status' => 'error',
                                                 'errors' => ['El afiliado con Nup:' . $affiliate_id . ' tiene registro de aportes en el mes de ' . $month . ' con origen Senasir. DEBE SUBSANAR EL ERROR Y VOLVER A EJECUTAR LA FUNCIÓN DE PAGO A FUTURO'],
