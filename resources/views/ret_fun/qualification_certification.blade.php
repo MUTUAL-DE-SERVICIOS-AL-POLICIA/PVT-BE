@@ -82,6 +82,8 @@
             },
             order: [],
             ajax: "{{ url('get_data_certification', $retirement_fund->id) }}",
+            serverSide: true,
+            processing: true,
             lengthMenu: [[15, 30, 60, -1], [15, 30, 60, "Todos"]],
             dom: '< "html5buttons"B>lTfgitp',
             buttons:[
