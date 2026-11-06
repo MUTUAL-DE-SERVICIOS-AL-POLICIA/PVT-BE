@@ -13,6 +13,17 @@ require("dotenv").config();
  */
 // 'prod' por defecto: compila app.scss con purgecss y versiona los assets.
 const app = process.env.MIX_APP || "prod";
+
+// Uglify por defecto renombra los identificadores (mangle). Con este bundle
+// eso rompe componentes de Vue en tiempo de ejecucion ("r is not a function"
+// dentro de __patch__). Se mantiene la compresion y se desactiva el renombrado.
+mix.options({
+  uglify: {
+    uglifyOptions: {
+      mangle: false,
+    },
+  },
+});
 mix
 
   .webpackConfig({ devtool: "inline-source-map" })
