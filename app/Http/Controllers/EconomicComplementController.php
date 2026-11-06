@@ -59,6 +59,8 @@ use Muserpol\Models\BaseWage;
 use Muserpol\Models\EconomicComplement\EcoComMovement;
 use Muserpol\Models\EconomicComplement\EcoComReviewProcedure;
 use Ramsey\Uuid\Uuid;
+use Muserpol\Http\Controllers\AffiliateObservationController;
+use Muserpol\Models\AffiliateRecord;
 
 class EconomicComplementController extends Controller
 {
@@ -1579,6 +1581,10 @@ class EconomicComplementController extends Controller
         } else {
             $eco_com->discount_types()->save($discount_type, ['amount' => $request->amount, 'date' => now()]);
         }
+        // Eliminar la observación al realizar la amortización por préstamo estacional
+        if ((int)$discount_type_id === 9) {
+            $this->resolveSeasonalLoanAmortizationObservation($eco_com);
+        }
         $eco_com->procedure_records()->create([
             'user_id' => Auth::user()->id,
             'record_type_id' => 10,
@@ -2219,6 +2225,10 @@ class EconomicComplementController extends Controller
             //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
             $user_id = Auth::user()->id;
             $valid_payment_contribucion_passive = DB::select("SELECT change_state_contribution_paid_eco_com($user_id,$item->id)");
+            // Eliminar la observación del afiliado cuando el trámite cambie a estado Pagado, si es que tiene la observación de Préstamo Estacional
+            if (in_array((int) $item->eco_com_state_id, [1, 26])) {
+                $this->deleteSeasonalLoanObservations($item->affiliate_id);
+            }
         }
         return 0;
     }
@@ -2264,6 +2274,10 @@ class EconomicComplementController extends Controller
             }
         }
         $eco_com->save();
+        // Eliminar observación del afiliado al realizar el pago individual
+        if (in_array((int) $eco_com->eco_com_state_id, [17, 2])) {
+            $this->deleteSeasonalLoanObservations($eco_com->affiliate_id);
+        }
         //cambio de estado del aporte de En Proceso a Pagado en la tabla contribution_passives
         $user_id = Auth::user()->id;
         $valid_payment_contribucion_passive = DB::select("SELECT change_state_contribution_paid_eco_com($user_id,$id)");
@@ -2487,5 +2501,73 @@ class EconomicComplementController extends Controller
         });
     }
 
+    // Subsanar la observación de Préstamo Estacional al amortizar el préstamo estacional
+    public function resolveSeasonalLoanAmortizationObservation(EconomicComplement $ecoCom)
+    {
+        try {
+            $observation = DB::table('observables')
+                ->where('observable_type', 'economic_complements')
+                ->where('observable_id', $ecoCom->id)
+                ->where('observation_type_id', 62)
+                ->where('enabled', false)
+                ->whereNull('deleted_at')
+                ->orderBy('date', 'desc')
+                ->first();
+            if (!$observation) {
+                return 0;
+            }
+            $request = new Request([
+                'ecoComId' => $ecoCom->id,
+                'editObservationTypeId' => 62,
+                'message' => $observation->message,
+                'date' => $observation->date,
+                'enabled' => true
+            ]);
+            $controller = app(EcoComObservationController::class);
+            $response = $controller->update($request);
+            if ($response !== 'updated') {
+                return 0;
+            }
+            return 1;
+        } catch (\Exception $e) {
+            Log::error('Error al subsanar observación por Préstamo Estacional: ' . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    // Eliminación de observaciones de Préstamo Estacional al cambiar el estado del trámite a Pagado
+    public function deleteSeasonalLoanObservations($affiliateId)
+    {
+        try {
+            $observations = DB::table('observables')
+                ->where('observable_type', 'affiliates')
+                ->where('observable_id', $affiliateId)
+                ->where('observation_type_id', 62)
+                ->whereNull('deleted_at')
+                ->get(['message', 'date']);
 
+            if ($observations->isEmpty()) {
+                return 0;
+            }
+            $controller = app(AffiliateObservationController::class);
+            $deleted = 0;
+            foreach ($observations as $observation) {
+                $request = new Request([
+                    'affiliateId' => $affiliateId,
+                    'observationTypeId' => 62,
+                    'message' => $observation->message,
+                    'date' => $observation->date
+                ]);
+                $response = $controller->delete($request);
+                if (!($response instanceof AffiliateRecord)) {
+                    throw new \RuntimeException('No se pudo eliminar la observación del afiliado: ' . $affiliateId);
+                }
+                $deleted++;
+            }
+            return $deleted;
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar las observaciones de Préstamo Estacional: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 }
