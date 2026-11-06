@@ -42,13 +42,15 @@ class Util
   //input $string=YYYY/mm/dd
   public static function getStringDate($string = "1800/01/01", $month_year = false)
   {
-    setlocale(LC_TIME, 'es_ES.utf8');
     $date = DateTime::createFromFormat("Y-m-d", $string);
     if ($date) {
-      if ($month_year)
-        return strftime("%B de %Y", $date->getTimestamp());
-      else
-        return strftime("%d de %B de %Y", $date->getTimestamp());
+      // translatedFormat usa el locale de la aplicacion, no el del sistema.
+      // Antes dependia de setlocale(LC_TIME) y strftime (deprecado en PHP 8.1):
+      // si la imagen no traia el locale es_ES, las fechas salian en ingles.
+      $carbon = \Carbon\Carbon::instance($date)->locale(config('app.locale', 'es'));
+      return $month_year
+        ? $carbon->translatedFormat('F \\d\\e Y')
+        : $carbon->translatedFormat('d \\d\\e F \\d\\e Y');
     } else
       return "sin fecha";
   }
@@ -103,7 +105,7 @@ class Util
       if (self::verifyMonthYearDate($date)) {
         $date = Carbon::createFromFormat('d/m/Y', '01/' . $date)->toDateString();
       }
-      return Carbon::parse($date)->formatLocalized('%b. %Y');
+      return Carbon::parse($date)->formatLocalizedEs('%b. %Y');
     }
     return null;
   }
@@ -111,7 +113,7 @@ class Util
   {
     setlocale(LC_TIME, 'es_ES.utf8');
     if ($date) {
-      return Carbon::parse($date)->formatLocalized('%b/%Y');
+      return Carbon::parse($date)->formatLocalizedEs('%b/%Y');
     }
     return null;
   }
@@ -533,15 +535,15 @@ class Util
     if ($date) {
       if ($short) {
 
-        return Carbon::parse($date)->formatLocalized("%b");
+        return Carbon::parse($date)->formatLocalizedEs("%b");
       }
-      return Carbon::parse($date)->formatLocalized("%B");
+      return Carbon::parse($date)->formatLocalizedEs("%B");
     }
   }
   public static function extractYear($date)
   {
     if ($date) {
-      return Carbon::parse($date)->formatLocalized("%Y");
+      return Carbon::parse($date)->formatLocalizedEs("%Y");
     }
   }
   public static function getDateFormat($date, $size = 'short')
@@ -553,9 +555,9 @@ class Util
       }
       if ($size == 'short') {
         // return 05 MAY. 1983 // change %d-> %e for 5 MAY. 1983
-        return Carbon::parse($date)->formatLocalized('%d %b. %Y'); //
+        return Carbon::parse($date)->formatLocalizedEs('%d %b. %Y'); //
       } elseif ($size == 'large') {
-        return Carbon::parse($date)->formatLocalized('%d %B. %Y'); //
+        return Carbon::parse($date)->formatLocalizedEs('%d %B. %Y'); //
       }
     }
     return 'sin fecha';
@@ -734,7 +736,7 @@ class Util
     }
   }
 
-  public static function getRegistration($birth_date = null, $last_name, $mothers_last_name, $first_name, $gender)
+  public static function getRegistration($last_name, $mothers_last_name, $first_name, $gender, $birth_date = null)
   {
     if ($birth_date) {
       $birth_date_exploded = explode("-", $birth_date);
@@ -1089,7 +1091,7 @@ class Util
     if (!$date) {
       $date = now();
     }
-    return Carbon::parse($date)->formatLocalized('%d de %B de %Y');
+    return Carbon::parse($date)->formatLocalizedEs('%d de %B de %Y');
   }
   public static function getEconomicComplementSendToBank($eco_com_procedure_id, $change_state)
   {

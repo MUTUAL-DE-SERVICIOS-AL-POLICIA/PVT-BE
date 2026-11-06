@@ -126,9 +126,9 @@ class SyncLoanObservation extends Command
         }
       }
 
-      $loan->PadCedulaIdentidad = utf8_encode(trim($padron->PadCedulaIdentidad));
-      $loan->PadMatricula = utf8_encode(trim($padron->PadMatricula));
-      $loan->PadName = implode(' ', [utf8_encode(trim($padron->PadPaterno)), utf8_encode(trim($padron->PadMaterno)), utf8_encode(trim($padron->PadNombres))]);
+      $loan->PadCedulaIdentidad = mb_convert_encoding(trim($padron->PadCedulaIdentidad), 'UTF-8', 'ISO-8859-1');
+      $loan->PadMatricula = mb_convert_encoding(trim($padron->PadMatricula), 'UTF-8', 'ISO-8859-1');
+      $loan->PadName = implode(' ', [mb_convert_encoding(trim($padron->PadPaterno), 'UTF-8', 'ISO-8859-1'), mb_convert_encoding(trim($padron->PadMaterno), 'UTF-8', 'ISO-8859-1'), mb_convert_encoding(trim($padron->PadNombres), 'UTF-8', 'ISO-8859-1')]);
 
       $affiliate = Affiliate::where('identity_card', $loan->PadCedulaIdentidad)->first();
       if (!$affiliate and !$loan->affiliate) {
