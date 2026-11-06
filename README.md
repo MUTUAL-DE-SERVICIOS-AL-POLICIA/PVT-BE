@@ -65,6 +65,27 @@ APP_CONTAINER=pvt-be-prod PVT_USER=<usuario> PVT_PASS=<clave> PVT_ROL=53 \
   bash harness/crawl.sh http://localhost:9015
 ```
 
+## Imagen de testing (con Debugbar)
+
+El Debugbar está en `require-dev`, así que la imagen de producción
+(`--no-dev`) no lo incluye. Para testing hay que construir con las
+dependencias de desarrollo:
+
+```sh
+docker build --build-arg COMPOSER_NO_DEV= -t pvt-app:testing .
+
+APP_IMAGE=pvt-app:testing \
+  docker compose -f docker-compose.prod.yml up -d
+```
+
+Y en el `.env` de ese entorno:
+
+```ini
+DEBUGBAR_ENABLED=true     # el compose fuerza APP_DEBUG=false
+```
+
+Eso devuelve la barra del Debugbar, que muestra el entorno y la versión.
+
 ## Frontend
 
 El bundle está compilado en **modo producción** y versionado en `public/`.
