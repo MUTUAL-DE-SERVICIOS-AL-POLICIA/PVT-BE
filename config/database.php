@@ -106,7 +106,8 @@ return [
 
   'redis' => [
 
-    'client' => 'predis',
+    // La imagen incluye la extension phpredis (no esta el paquete predis).
+      'client' => env('REDIS_CLIENT', 'phpredis'),
 
     'default' => [
       'host' => env('REDIS_HOST', '127.0.0.1'),

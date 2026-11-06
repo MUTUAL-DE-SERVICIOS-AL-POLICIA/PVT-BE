@@ -15,7 +15,9 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    // Laravel 10 lee QUEUE_CONNECTION; QUEUE_DRIVER queda como respaldo
+    // para no romper .env viejos, pero el nombre nuevo tiene prioridad.
+    'default' => env('QUEUE_CONNECTION', env('QUEUE_DRIVER', 'sync')),
 
     /*
     |--------------------------------------------------------------------------
