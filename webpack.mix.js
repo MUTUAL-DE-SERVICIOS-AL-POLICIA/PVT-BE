@@ -20,6 +20,10 @@ const app = process.env.MIX_APP || "prod";
 mix.options({
   uglify: {
     uglifyOptions: {
+      // compress elimina codigo que Vue necesita en tiempo de ejecucion
+      // (genera "n is not a function" dentro de __patch__). Se apaga junto
+      // con mangle: el bundle queda sin transformaciones.
+      compress: false,
       mangle: false,
     },
   },

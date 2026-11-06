@@ -18,7 +18,7 @@
                 <div v-for="(requirement, groupNumber) in requirementList" :key="'requirementList' + groupNumber"
                     class="animated fadeInRight">
                     <div class="vote-item" @click="!(blockUploadedDocuments && rq.isUploaded) && checked(groupNumber, i)" v-for="(rq, i) in requirement"
-                        :class="rq.background" :style="{cursor: (blockUploadedDocuments && rq.isUploaded) ? 'not-allowed' : 'pointer', padding: '10px'}"v-if="isVisible(rq)">
+                        :class="rq.background" :style="{cursor: (blockUploadedDocuments && rq.isUploaded) ? 'not-allowed' : 'pointer', padding: '10px'}" v-if="isVisible(rq)">
                         <input type="hidden"
                             :name="'required_requirements[' + rq.number + '][' + rq.procedureDocumentId + '][procedureRequirementId]'"
                             :value="rq.procedureRequirementId">
