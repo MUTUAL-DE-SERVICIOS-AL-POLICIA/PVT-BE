@@ -65,6 +65,22 @@ APP_CONTAINER=pvt-be-prod PVT_USER=<usuario> PVT_PASS=<clave> PVT_ROL=53 \
   bash harness/crawl.sh http://localhost:9015
 ```
 
+## Frontend
+
+El bundle está compilado en **modo producción** y versionado en `public/`.
+Para recompilarlo tras cambiar algo en `resources/assets`:
+
+```sh
+docker run --rm -v "$PWD:/app" -w /app node:8 \
+  sh -c 'npm install && MIX_APP=prod npm run production'
+```
+
+Se usa node 8 porque el proyecto trae Laravel Mix 1.x (webpack 3).
+
+`MIX_APP=prod` además activa **purgecss**, que recorta el CSS según las clases
+usadas en las vistas. Es útil para el tamaño, pero puede borrar clases armadas
+dinámicamente: revisar visualmente antes de quedarse con ese CSS.
+
 ## Exportaciones en segundo plano
 
 Las exportaciones pesadas de Excel no se generan en la petición del usuario:
