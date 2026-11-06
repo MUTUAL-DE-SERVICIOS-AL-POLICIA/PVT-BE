@@ -900,6 +900,19 @@ class EconomicComplement extends Model
             return ['serviceStatus' => 'error'];
         }
         
+        // El gateway puede responder un error (503, timeout) o un JSON sin las
+        // claves esperadas. Antes eso seguia de largo y PHP 8 lanzaba
+        // "Undefined array key requiredDocuments" -> 500 en /eco_com/{id}.
+        if (!is_array($collateDocuments)
+            || !isset($collateDocuments['requiredDocuments'])
+            || !isset($collateDocuments['additionallyDocuments'])) {
+            logger()->warning('requirementsList: respuesta inesperada del gateway', [
+                'affiliate_id' => $this->affiliate->id ?? null,
+                'respuesta' => is_array($collateDocuments) ? array_keys($collateDocuments) : gettype($collateDocuments),
+            ]);
+            return ['serviceStatus' => 'error'];
+        }
+
         $existingIds = [];
         foreach ($collateDocuments['requiredDocuments'] as $group) {
             foreach ($group as $doc) {
