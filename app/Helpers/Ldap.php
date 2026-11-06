@@ -288,16 +288,23 @@ class Ldap
         $result = [];
 
         foreach ($entries as $value) {
-          if ($value[$this->config['user_id_key']]) {
+          // ldap_get_entries() agrega la clave "count" (int) al array: hay que
+          // saltarla. En PHP 8 acceder a $value["uid"] sobre un int es warning,
+          // y el manejador de Laravel lo convierte en excepcion.
+          if (!is_array($value)) {
+            continue;
+          }
+          $uid = $value[$this->config['user_id_key']] ?? null;
+          if ($uid) {
             $result[] = (object)[
-              $this->config['user_id_key'] => $value[$this->config['user_id_key']][0],
-              'givenName' => $value['givenname'][0],
-              'employeeNumber' => (int)$value['employeenumber'][0],
-              'sn' => $value['sn'][0],
-              'cn' => $value['cn'][0],
-              'title' => $value['title'][0],
-              'dn' => $value['dn'],
-              'mail' => $value['mail'][0],
+              $this->config['user_id_key'] => $uid[0],
+              'givenName' => $value['givenname'][0] ?? '',
+              'employeeNumber' => (int)($value['employeenumber'][0] ?? 0),
+              'sn' => $value['sn'][0] ?? '',
+              'cn' => $value['cn'][0] ?? '',
+              'title' => $value['title'][0] ?? '',
+              'dn' => $value['dn'] ?? '',
+              'mail' => $value['mail'][0] ?? '',
             ];
           }
         }
@@ -309,7 +316,9 @@ class Ldap
         return $result;
       }
     }
-    abort(500);
+    // Sin conexion o sin bind, se devuelve lista vacia: la pantalla
+    // de alta de usuarios debe abrir igual.
+    return [];
   }
 
   public function hash_password($password)
@@ -336,7 +345,12 @@ class Ldap
 
   public function unbind()
   {
-    @ldap_unbind($this->connection);
-    @ldap_close($this->connection);
+    // ldap_close es alias de ldap_unbind: llamar a las dos cierra dos veces.
+    // En PHP 8 la segunda llamada lanza "LDAP connection has already been
+    // closed" (el @ no frena una excepcion), y eso rompia todo login por LDAP.
+    if ($this->connection) {
+      @ldap_unbind($this->connection);
+      $this->connection = null;
+    }
   }
 }
