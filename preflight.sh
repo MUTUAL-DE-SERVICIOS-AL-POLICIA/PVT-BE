@@ -53,6 +53,14 @@ if [ -f "$ENVF" ]; then
   if grep -q '^BROADCAST_DRIVER=redis' "$ENVF"; then
     warn "BROADCAST_DRIVER=redis: el codigo no emite eventos, pero si se agregan, necesita un redis accesible"
   fi
+  # Claves con espacios alrededor del "=": dotenv guarda la clave con el
+  # espacio final ("USER_TEST_DEVICE ") y env() despues no la encuentra.
+  malas="$(grep -nE '^[[:space:]]*[A-Z0-9_]+[[:space:]]+=' "$ENVF" 2>/dev/null | head -3)"
+  if [ -n "$malas" ]; then
+    warn "claves con espacios alrededor del '=' (env() no las encontrara):"
+    echo "$malas" | sed 's/^/         /'
+  fi
+
   for k in DB_HOST DB_DATABASE DB_USERNAME HASH_TOKEN; do
     v="$(grep -m1 "^$k=" "$ENVF" | cut -d= -f2-)"
     [ -n "$v" ] && ok "$k definida" || bad "$k vacia (rompe login o API)"

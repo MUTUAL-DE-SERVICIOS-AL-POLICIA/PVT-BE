@@ -59,7 +59,7 @@ switch (app) {
       whitelist: ['mdi', 'fa', 'glyphicon', 'text-base',
                   'navbar-minimalize', 'sk-cube1', 'toggle-arrow-tiny', 'cont', 'title'],
       whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/, /^mdi-/, /^fa-/, /^glyphicon-/,
-                          /navbar-minimalize/, /sk-cube1/, /toggle-arrow-tiny/]
+                          /navbar-minimalize/, /sk-cube1/, /toggle-arrow-tiny/, /sk-spinner/]
     })
     ;
    break;
