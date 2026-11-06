@@ -54,7 +54,7 @@ class AffiliateController extends Controller
     {           
         // $affiliates = Affiliate::where('registration',null)->where('birth_date','!=',null)->get();        
         // foreach($affiliates as $affiliate) {            
-        //     $affiliate->registration = Util::getRegistration(Util::parseBarDate($affiliate->birth_date),$affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender);
+        //     $affiliate->registration = Util::getRegistration($affiliate->last_name,$affiliate->mothers_last_name,$affiliate->first_name,$affiliate->gender,Util::parseBarDate($affiliate->birth_date));
         //     $affiliate->save();
         // }
         // return ;
@@ -63,41 +63,46 @@ class AffiliateController extends Controller
     }
     public function getAllAffiliates(Request $request)
     {
-        /*$query = Affiliate::take(100)->get();
+        $offset = (int) ($request->offset ?? 0);
+        $limit = (int) ($request->limit ?? 10);
+        $sort = in_array($request->sort, ['id', 'identity_card', 'registration', 'first_name', 'second_name', 'last_name', 'mothers_last_name', 'surname_husband', 'degree', 'affiliate_state'], true) ? $request->sort : 'id';
+        $order = strtolower((string) $request->order) === 'desc' ? 'desc' : 'asc';
 
-        return $datatables->collection($query)
-            // ->addColumn('action', 'eloquent.tables.users-action')
-        ->make(true);*/
-        $offset = $request->offset ?? 0;
-        $limit = $request->limit ?? 10;
-        $sort = $request->sort ?? 'id';
-        $order = $request->order ?? 'asc';
-        $last_name = strtoupper($request->last_name) ?? '';
-        $first_name = strtoupper($request->first_name) ?? '';
-        $second_name = strtoupper($request->second_name) ?? '';
-        $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
-        $surname_husband = strtoupper($request->surname_husband) ?? '';
-        $identity_card = strtoupper($request->identity_card) ?? '';
-        $degree = strtoupper($request->degree) ?? '';
-        $affiliate_state = strtoupper($request->affiliate_state) ?? '';
-        //$total=Affiliate::where('identity_card','LIKE',$identity_card.'%')->where('last_name','LIKE',$last_name.'%')->count();
-        //$total=6669783;
-        //$affiliates = Affiliate::skip($offset)->take($limit)->orderBy($sort,$order)->where('last_name','LIKE',$last_name.'%')->get();
+        // strtoupper() recibe el valor ya resuelto: con el ?? afuera no protegia
+        // nada, porque strtoupper(null) devuelve "" y emitia una deprecacion.
+        $filters = [
+            'first_name' => strtoupper($request->first_name ?? ''),
+            'second_name' => strtoupper($request->second_name ?? ''),
+            'last_name' => strtoupper($request->last_name ?? ''),
+            'mothers_last_name' => strtoupper($request->mothers_last_name ?? ''),
+            'surname_husband' => strtoupper($request->surname_husband ?? ''),
+            'identity_card' => strtoupper($request->identity_card ?? ''),
+            'degree' => strtoupper($request->degree ?? ''),
+            'affiliate_state' => strtoupper($request->affiliate_state ?? ''),
+        ];
 
-        $total = Affiliate::select('affiliates.id')//,'identity_card','registration','degrees.name as degree','first_name','second_name','last_name','mothers_last_name','civil_status')->
-                                ->leftJoin('degrees', 'affiliates.id', '=', 'degrees.id')
-                                ->leftJoin('affiliate_states', 'affiliates.affiliate_state_id', '=', 'affiliate_states.id')
-                                ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
-                                ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
-                                ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
-                                ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
-                                ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
-                                ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
-                                ->whereRaw("coalesce(upper(degrees.name), '') LIKE '$degree%'")
-                                ->whereRaw("coalesce(upper(affiliate_states.name), '') LIKE '$affiliate_state%'")
-                                ->count();
+        // Cada condicion se arma con binding: antes se interpolaba el valor
+        // directamente en el SQL y permitia inyeccion.
+        $conditions = [
+            ['coalesce(affiliates.first_name, \'\') LIKE ?', $filters['first_name'] . '%'],
+            ['coalesce(affiliates.second_name, \'\') LIKE ?', $filters['second_name'] . '%'],
+            ['coalesce(affiliates.last_name, \'\') LIKE ?', $filters['last_name'] . '%'],
+            ['coalesce(affiliates.mothers_last_name, \'\') LIKE ?', $filters['mothers_last_name'] . '%'],
+            ['coalesce(affiliates.surname_husband, \'\') LIKE ?', $filters['surname_husband'] . '%'],
+            ['coalesce(affiliates.identity_card, \'\') LIKE ?', $filters['identity_card'] . '%'],
+            ['coalesce(upper(degrees.name), \'\') LIKE ?', $filters['degree'] . '%'],
+            ['coalesce(upper(affiliate_states.name), \'\') LIKE ?', $filters['affiliate_state'] . '%'],
+        ];
 
-        $affiliates = Affiliate::select(
+        $totalQuery = Affiliate::select('affiliates.id')
+            ->leftJoin('degrees', 'affiliates.id', '=', 'degrees.id')
+            ->leftJoin('affiliate_states', 'affiliates.affiliate_state_id', '=', 'affiliate_states.id');
+        foreach ($conditions as [$sql, $binding]) {
+            $totalQuery->whereRaw($sql, [$binding]);
+        }
+        $total = $totalQuery->count();
+
+        $listQuery = Affiliate::select(
             'affiliates.id',
             'identity_card',
             'registration',
@@ -110,21 +115,17 @@ class AffiliateController extends Controller
             'civil_status',
             'affiliate_states.name as affiliate_state'
         )
-                                ->leftJoin('degrees','affiliates.id','=','degrees.id')
-                                ->leftJoin('affiliate_states','affiliates.affiliate_state_id','=','affiliate_states.id')
-                                ->skip($offset)
-                                ->take($limit)
-                                ->orderBy($sort,$order)
-                                ->whereRaw("coalesce(affiliates.first_name,'' ) LIKE '$first_name%'")
-                                ->whereRaw("coalesce(affiliates.second_name,'' ) LIKE '$second_name%'")
-                                ->whereRaw("coalesce(affiliates.last_name,'') LIKE '$last_name%'")
-                                ->whereRaw("coalesce(affiliates.mothers_last_name,'') LIKE '$mothers_last_name%'")
-                                ->whereRaw("coalesce(affiliates.surname_husband,'') LIKE '$surname_husband%'")
-                                ->whereRaw("coalesce(affiliates.identity_card, '') LIKE '$identity_card%'")
-                                ->whereRaw("coalesce(upper(degrees.name), '') LIKE '$degree%'")
-                                ->whereRaw("coalesce(upper(affiliate_states.name), '') LIKE '$affiliate_state%'")
-                                ->get();
-        return response()->json(['affiliates' => $affiliates->toArray(),'total'=>$total]);
+            ->leftJoin('degrees', 'affiliates.id', '=', 'degrees.id')
+            ->leftJoin('affiliate_states', 'affiliates.affiliate_state_id', '=', 'affiliate_states.id')
+            ->skip($offset)
+            ->take($limit)
+            ->orderBy($sort, $order);
+        foreach ($conditions as [$sql, $binding]) {
+            $listQuery->whereRaw($sql, [$binding]);
+        }
+        $affiliates = $listQuery->get();
+
+        return response()->json(['affiliates' => $affiliates->toArray(), 'total' => $total]);
     }
 
     /**
