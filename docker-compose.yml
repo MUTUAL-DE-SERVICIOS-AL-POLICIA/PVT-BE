@@ -16,6 +16,10 @@ services:
     restart: unless-stopped
     ports:
       - "${APP_PORT:-9014}:8080"
+    # Permite llegar a servicios publicados en el host (por ejemplo el
+    # Gateway de microservicios) usando host.docker.internal.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
@@ -64,6 +68,10 @@ services:
     container_name: pvt-be-dev-worker
     restart: unless-stopped
     working_dir: /var/www
+    # Permite llegar a servicios publicados en el host (por ejemplo el
+    # Gateway de microservicios) usando host.docker.internal.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     # umask 022: los archivos que genera el worker deben ser legibles por
     # www-data; con el umask por defecto quedan 700 y el web no puede leerlos.
     command: ["sh", "-c", "umask 022 && exec php artisan queue:work --queue=exports,default --tries=1 --timeout=900 --sleep=3"]
