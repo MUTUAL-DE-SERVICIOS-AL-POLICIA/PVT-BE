@@ -23,11 +23,10 @@ services:
     # Gateway de microservicios) usando host.docker.internal.
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    # Produccion: sin banner (la imagen se construye con --no-dev, asi que el
-    # Debugbar ni siquiera esta instalado).
+    # APP_ENV y APP_DEBUG se ponen a mano en el .env.
+    # Sin barra del Debugbar: este compose no la lleva (ademas la imagen se
+    # construye con --no-dev, asi que el paquete no esta instalado).
     environment:
-      APP_ENV: production
-      APP_DEBUG: "false"
       DEBUGBAR_ENABLED: "false"
       LOG_CHANNEL: stderr
     volumes:
@@ -73,11 +72,10 @@ services:
     # umask 022: los archivos que genera el worker deben ser legibles por
     # www-data; con el umask por defecto quedan 700 y el web no puede leerlos.
     command: ["sh", "-c", "umask 022 && exec php artisan queue:work --queue=exports,default --tries=1 --timeout=900 --sleep=3"]
-    # Produccion: sin banner (la imagen se construye con --no-dev, asi que el
-    # Debugbar ni siquiera esta instalado).
+    # APP_ENV y APP_DEBUG se ponen a mano en el .env.
+    # Sin barra del Debugbar: este compose no la lleva (ademas la imagen se
+    # construye con --no-dev, asi que el paquete no esta instalado).
     environment:
-      APP_ENV: production
-      APP_DEBUG: "false"
       DEBUGBAR_ENABLED: "false"
       LOG_CHANNEL: stderr
     volumes:

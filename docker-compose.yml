@@ -24,11 +24,10 @@ services:
     # Gateway de microservicios) usando host.docker.internal.
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    # Desarrollo: fuerza el entorno y la barra del Debugbar (entorno/version).
-    # La imagen se construye con dependencias de desarrollo para que exista.
+    # APP_ENV y APP_DEBUG se ponen a mano en el .env.
+    # Lo unico que fuerza este compose es la barra del Debugbar, para saber
+    # con cual compose se levanto el entorno.
     environment:
-      APP_ENV: development
-      APP_DEBUG: "true"
       DEBUGBAR_ENABLED: "true"
       # Igual que produccion: los logs salen por docker compose logs -f app.
       # El canal 'deprecations' sigue escribiendo a storage/logs/deprecations.log.
@@ -89,8 +88,6 @@ services:
     # APP_ENV y APP_DEBUG salen del .env: con development/true aparece la
     # barra del Debugbar; con production/false no.
     environment:
-      APP_ENV: development
-      APP_DEBUG: "true"
       DEBUGBAR_ENABLED: "true"
       LOG_CHANNEL: stderr
     volumes:
