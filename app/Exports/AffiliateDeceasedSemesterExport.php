@@ -2,6 +2,8 @@
 
 namespace Muserpol\Exports;
 
+
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -59,7 +61,7 @@ class AffiliateDeceasedSemesterExport implements FromCollection, WithHeadings, S
                         $person = $affiliate;
                         if ($person && $person->date_death) {
                             $death_record = $person->affiliate_records_pvt->filter(function($record) {
-                                return str_contains($record->message, 'fecha de fallecimiento');
+                                return Str::contains($record->message, 'fecha de fallecimiento');
                             })->last();
                             if ($death_record) {
                                 $record_date = $death_record->created_at ? $death_record->created_at->format('d/m/Y H:i:s') : '';
@@ -71,7 +73,7 @@ class AffiliateDeceasedSemesterExport implements FromCollection, WithHeadings, S
                             $person = $affiliate->spouse->first();
                             if ($person && $person->date_death) {
                                 $death_record = $person->records->filter(function($record) {
-                                    return str_contains($record->action, ' fallecimiento');
+                                    return Str::contains($record->action, ' fallecimiento');
                                 })->last();
                                 if ($death_record) {
                                     $record_date = $death_record->created_at ? $death_record->created_at->format('d/m/Y H:i:s') : '';

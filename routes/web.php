@@ -159,7 +159,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('quota_aid/{quota_aid_id}/save_discounts', 'QuotaAidMortuaryController@saveDiscounts')->name('quota_aid_save_discounts');
     Route::patch('quota_aid/{quota_aid_id}/save_percentages', 'QuotaAidMortuaryController@savePercentages')->name('quota_aid_save_percentages');
     Route::patch('/update_information_quota_aid', 'QuotaAidMortuaryController@updateInformation')->name('update_information_quota_aid');
-    Route::resource('quota_aid_observation', 'QuotaAidObservationController');
     Route::post('quotaAideditObservation', 'QuotaAidObservationController@editObservation')->name('quotaAideditObservation');
     Route::post('quotaAiddeleteObservation', 'QuotaAidObservationController@destroy')->name('quotaAiddeleteObservation');
     Route::get('affiliate/{affiliate}/ret_fun/create', 'RetirementFundController@generateProcedure')->middleware('affiliate_has_ret_fun')->name('create_ret_fun');
@@ -594,9 +593,6 @@ Route::group(['middleware' => ['auth']], function () {
       return view('print_global.report', $data);
       return $filter->all();
     })->name('print_send_daa_quota_aid');
-    Route::get('test', function () {
-      return Util::getNextAreaCode(102);
-    });
     Route::get('/treasury/select_report', 'TreasuryController@selectReport');
     Route::get('/treasury/report', 'TreasuryController@report');
 
@@ -678,12 +674,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('base_wage_create', 'BaseWageController@base_wage_create');
 
     // Complementary Factor
-    Route::resource('complementary_factor', 'ComplementaryFactorController');
+    // El index/create estaban comentados en el controlador; la vista se sigue
+    // usando como partial en eco_com/qualification_parameters.
+    Route::resource('complementary_factor', 'ComplementaryFactorController')->only(['store', 'update']);
     Route::get('get_complementary_factor_old_age', 'ComplementaryFactorController@old_ageData')->name('get_complementary_factor_old_age');
     Route::get('get_complementary_factor_widowhood', 'ComplementaryFactorController@widowhoodData')->name('get_complementary_factor_widowhood');
 
     // average eco com
-    Route::get('averages', 'EconomicComplementController@averages')->name('averages');
     Route::get('get_averages', 'EconomicComplementController@getAverageData')->name('get_averages');
     Route::get('print_average', 'EconomicComplementController@printAverage')->name('print_average');
     // Route::get('export_average/{year}/{semester}', 'EconomicComplementReportController@export_average')->name('export_average');
@@ -691,7 +688,7 @@ Route::group(['middleware' => ['auth']], function () {
     // eco com_rent
     Route::post('import_averages', 'EcoComRentController@importAverage');
     Route::get('exportDegreesWithPrestations', 'EcoComRentController@exportDegreesWithPrestations');
-    Route::resource('ecocomrents', 'EcoComRentController');
+    Route::resource('ecocomrents', 'EcoComRentController')->except(['create']);
     
     // observations
     Route::get('eco_com_get_observations/{eco_com_id}', 'EcoComObservationController@getObservations');
@@ -777,5 +774,8 @@ Route::post('eco_com_replicate', 'EconomicComplementReplicationController@prepar
     Route::get('salary_calculation/export', 'SalaryCalculationController@exportExcel')->name('salary_calculation.export');
     Route::get('salary_calculation/download_template', 'SalaryCalculationController@downloadSalaryTemplate')->name('salary_calculation.download_template');
     Route::post('salary_calculation/import', 'SalaryCalculationController@importSalaries')->name('salary_calculation.import');
+    // Exportaciones en segundo plano
+    Route::get('exports/{jobKey}/status', 'ExportController@status')->name('export_status');
+    Route::get('exports/{jobKey}/download', 'ExportController@download')->name('export_download');
   });
 });

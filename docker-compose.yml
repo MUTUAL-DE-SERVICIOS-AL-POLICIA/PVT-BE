@@ -1,0 +1,117 @@
+# DESARROLLO
+#   docker compose up -d            (o --build si cambiaron dependencias)
+#   APP_PORT=9016 docker compose up -d   para otro puerto
+# El codigo se monta desde el disco, asi que los cambios se ven al recargar.
+# La estructura es identica a docker-compose.prod.yml; solo cambian los
+# montajes del codigo y las variables de entorno.
+name: pvt-be-dev
+
+services:
+  app:
+    container_name: pvt-be-dev
+    # Imagen propia de desarrollo: incluye las dependencias de desarrollo
+    # (laravel-debugbar), que es lo que muestra la barra de entorno/version.
+    image: ${APP_IMAGE:-pvt-app:dev}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        COMPOSER_NO_DEV: ""
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-9014}:8080"
+    # Permite llegar a servicios publicados en el host (por ejemplo el
+    # Gateway de microservicios) usando host.docker.internal.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # APP_ENV y APP_DEBUG se ponen a mano en el .env.
+    # Lo unico que fuerza este compose es la barra del Debugbar, para saber
+    # con cual compose se levanto el entorno.
+    environment:
+      DEBUGBAR_ENABLED: "true"
+      # Igual que produccion: los logs salen por docker compose logs -f app.
+      # El canal 'deprecations' sigue escribiendo a storage/logs/deprecations.log.
+      LOG_CHANNEL: stderr
+    volumes:
+      # Codigo en vivo
+      - ./app:/var/www/app:ro
+      - ./config:/var/www/config:ro
+      - ./routes:/var/www/routes:ro
+      - ./resources:/var/www/resources:ro
+      - ./public:/var/www/public:ro
+      - ./database:/var/www/database:ro
+      # Opcache con revalidacion (en produccion no revalida)
+      - ./php-dev.ini:/usr/local/etc/php/conf.d/zzz-dev.ini:ro
+      # Configuracion (no se versiona)
+      - ./.env:/var/www/.env:ro
+      # Persistencia fuera del repo
+      - app-storage:/var/www/storage
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Sesiones y cache compartidos. Sin esto, Laravel escribe la sesion en un
+  # archivo con bloqueo exclusivo y las peticiones del MISMO usuario se turnan.
+  redis:
+    image: redis:7-alpine
+    container_name: pvt-be-dev-redis
+    restart: unless-stopped
+    # appendonly: las sesiones sobreviven a un reinicio de redis.
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  # Worker de la cola: genera exportaciones pesadas fuera de la peticion.
+  # Limitar el numero de workers controla cuantas exportaciones corren a la vez.
+  worker:
+    # Imagen propia de desarrollo: incluye las dependencias de desarrollo
+    # (laravel-debugbar), que es lo que muestra la barra de entorno/version.
+    image: ${APP_IMAGE:-pvt-app:dev}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        COMPOSER_NO_DEV: ""
+    container_name: pvt-be-dev-worker
+    restart: unless-stopped
+    working_dir: /var/www
+    # Permite llegar a servicios publicados en el host (por ejemplo el
+    # Gateway de microservicios) usando host.docker.internal.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # umask 022: los archivos que genera el worker deben ser legibles por
+    # www-data; con el umask por defecto quedan 700 y el web no puede leerlos.
+    command: ["sh", "-c", "umask 022 && exec php artisan queue:work --queue=exports,default --tries=1 --timeout=900 --sleep=3"]
+    # APP_ENV y APP_DEBUG salen del .env: con development/true aparece la
+    # barra del Debugbar; con production/false no.
+    environment:
+      DEBUGBAR_ENABLED: "true"
+      LOG_CHANNEL: stderr
+    volumes:
+      - ./app:/var/www/app:ro
+      - ./config:/var/www/config:ro
+      - ./routes:/var/www/routes:ro
+      - ./resources:/var/www/resources:ro
+      - ./public:/var/www/public:ro
+      - ./database:/var/www/database:ro
+      - ./php-dev.ini:/usr/local/etc/php/conf.d/zzz-dev.ini:ro
+      - ./.env:/var/www/.env:ro
+      - app-storage:/var/www/storage
+    depends_on:
+      - redis
+    # Docker manda SIGTERM y espera 10 s por defecto: un Excel de 5 minutos
+    # moriria a la mitad. queue:work termina el job en curso y sale.
+    stop_grace_period: 16m
+    healthcheck:
+      # Falla si la cola supera 500 pendientes: senal de que el worker no da abasto.
+      test: ["CMD-SHELL", "php artisan queue:monitor redis:exports:500 > /dev/null 2>&1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  app-storage:
+  redis-data:

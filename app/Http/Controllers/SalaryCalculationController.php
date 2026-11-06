@@ -4,6 +4,7 @@ namespace Muserpol\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Muserpol\Models\Degree;
 use Muserpol\Models\BaseWage;
 use Muserpol\Models\Contribution\Contribution;
@@ -21,14 +22,19 @@ class SalaryCalculationController extends Controller
     public function getYears()
     {
 
-        $contributionYears = Contribution::select(DB::raw('EXTRACT(YEAR FROM month_year) as year'))
-            ->where(function($q){
-                $q->where('contributionable_type','ilike','%payroll_commands%')
-                ->orWhere('contributionable_type','ilike','%contributions%');
-            })
-            ->where('type','ilike','%Planilla%')
-            ->distinct()
-            ->pluck('year');
+        // La tabla contributions tiene ~13 millones de filas. Con ILIKE '%...%'
+        // (comodin al inicio) no se puede usar el indice y tardaba 13s. Los
+        // valores son un conjunto cerrado, asi que se compara por igualdad.
+        // El resultado cambia una vez al anio: se cachea un dia.
+        $contributionYears = Cache::remember('salary_calculation_years', 86400, function () {
+            return Contribution::select(DB::raw('EXTRACT(YEAR FROM month_year) as year'))
+                ->whereIn('contributionable_type', ['payroll_commands', 'contributions'])
+                ->where('type', 'Planilla')
+                ->distinct()
+                ->orderBy('year')
+                ->pluck('year');
+        });
+
         return response()->json($contributionYears);
     }
 

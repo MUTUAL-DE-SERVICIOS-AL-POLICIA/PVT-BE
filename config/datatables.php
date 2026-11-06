@@ -9,7 +9,9 @@ return [
          * Smart search will enclose search keyword with wildcard string "%keyword%".
          * SQL: column LIKE "%keyword%"
          */
-        'smart' => false,
+        // true: el keyword se envuelve en %...% -> la busqueda encuentra
+        // coincidencias parciales (antes exigia el valor completo).
+        'smart' => true,
 
         /*
          * Multi-term search will explode search keyword using spaces resulting into multiple term search.

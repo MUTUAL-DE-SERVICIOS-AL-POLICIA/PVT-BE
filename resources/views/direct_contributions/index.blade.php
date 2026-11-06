@@ -101,6 +101,8 @@
             responsive: true,
             order: [],
             ajax: "{{ url('get_all_direct_contribution') }}",
+            serverSide: true,
+            processing: true,
             lengthMenu: [[10, 25, 50,100, -1], [10, 25, 50,100, "Todos"]],
             dom: '< "html5buttons"B>Tgitp',
             buttons:[

@@ -14,8 +14,10 @@ class Contribution extends Model
 {
 
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
-
+    // Laravel 10 elimino $dates: las fechas se declaran en $casts.
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
     protected $fillable = [
 
         'user_id',

@@ -24,6 +24,10 @@
       $icons[9]=$icons[6];
       $icons[5]=$icons[4];
       $icons[11]=$icons[10];
+      $icons[12]=['color' => 'blue-bg', 'icon' => 'fa fa-folder-open fa-5x'];
+      // Cualquier modulo sin icono definido usa uno generico en vez de romper:
+      // con roles de todos los modulos la vista lanzaba "Undefined array key".
+      $defaultIcon = ['color' => 'blue-bg', 'icon' => 'fa fa-user fa-5x'];
 
       switch($count) {
         case(1):
@@ -43,11 +47,12 @@
     {!! Form::open(['url' => 'postchangerol', 'role' => 'form']) !!}
       @php
         echo $style;
+        $icon = $icons[$role->module_id] ?? $defaultIcon;
       @endphp
-        <button class="widget style1 {{$icons[$role->module_id]['color']}} px-1 text-center" style="height: 100px; width: 100%; border: none">
+        <button class="widget style1 {{$icon['color']}} px-1 text-center" style="height: 100px; width: 100%; border: none">
           <div class="row">
             <div class="col-xs-3">
-              <i class="{{$icons[$role->module_id]['icon']}}"></i>
+              <i class="{{$icon['icon']}}"></i>
             </div>
             <div class="col-xs-9">
               <span>
@@ -55,7 +60,7 @@
               </span>
               <input type="hidden" name="rol_id" value={!! $role->id !!}>
               <b>
-              <span class="info-box-text"><p style="font-size: 1em">{!! $role->module->name !!}</p>  </span>
+              <span class="info-box-text"><p style="font-size: 1em">{!! optional($role->module)->name !!}</p>  </span>
               </b>
               <br>
               <!-- /.info-box-content -->

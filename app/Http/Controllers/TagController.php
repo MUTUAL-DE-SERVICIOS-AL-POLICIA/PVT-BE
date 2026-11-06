@@ -2,6 +2,8 @@
 
 namespace Muserpol\Http\Controllers;
 
+
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Muserpol\Helpers\Util;
 use Muserpol\Models\Workflow\WorkflowState;
@@ -21,7 +23,8 @@ class TagController extends Controller
     public function wfState()
     {
         $wf_current_state = WorkflowState::where('role_id', Util::getRol()->id)->first();
-        return $wf_current_state->tags;
+        // Un rol sin estado de workflow no debe romper la pantalla.
+        return $wf_current_state ? $wf_current_state->tags : [];
     }
     public function module()
     {
@@ -178,7 +181,7 @@ class TagController extends Controller
     public function getTagWfState(Request $request)
     {
         $wf_state = WorkflowState::find($request->id);
-        return $wf_state->tags;
+        return $wf_state ? $wf_state->tags : [];
     }
     public function tagWfState()
     {
@@ -229,7 +232,7 @@ class TagController extends Controller
             $t = new Tag();
             $t->name = $request->name;
             $t->shortened = $request->shortened;
-            $t->slug = str_slug($request->name, '-');
+            $t->slug = Str::slug($request->name, '-');
             $t->save();
             if ($request->wf_state_id) {
                 $wf_state = WorkflowState::find($request->wf_state_id);
@@ -260,7 +263,7 @@ class TagController extends Controller
         if ($t) {
             $t->name = $request->name;
             $t->shortened = $request->shortened;
-            $t->slug = str_slug($request->name, '-');
+            $t->slug = Str::slug($request->name, '-');
             $t->save();
             return response("updated", 202);
         }

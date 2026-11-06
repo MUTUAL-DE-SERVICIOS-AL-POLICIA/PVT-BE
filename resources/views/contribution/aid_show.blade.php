@@ -91,6 +91,8 @@
             },
             order: [],
 			ajax:"/get_aid_contributions/{{$affiliate->id}}",
+			serverSide: true,
+			processing: true,
             // ajax: "{{ url('affiliate_aid_contributions', $affiliate->id) }}",
             lengthMenu: [[15, 25, 50,100, -1], [15, 25, 50,100, "Todos"]],
             //dom:"<'row'<'col-sm-6'l><'col-sm-6'>><'row'<'col-sm-12't>><'row'<'col-sm-5'i>><'row'<'bottom'p>>",

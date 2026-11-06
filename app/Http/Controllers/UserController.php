@@ -40,6 +40,8 @@ class UserController extends Controller
 
   public function getUsersLdapUpdate()
   {
+    // Si el LDAP no responde, la pantalla debe abrir igual con la lista vacia.
+    $ldap_users = [];
     $ldap = new Ldap();
     if ($ldap->connection && $ldap->verify_open_port()) {
       $ldap_users = $ldap->list_entries();
@@ -152,6 +154,8 @@ class UserController extends Controller
       $citiesL[$city->id] = $city->name;
     }
 
+    // Si el LDAP no responde, la pantalla debe abrir igual con la lista vacia.
+    $ldap_users = [];
     $ldap = new Ldap();
     if ($ldap->connection && $ldap->verify_open_port()) {
       $ldap_users = $ldap->list_entries();

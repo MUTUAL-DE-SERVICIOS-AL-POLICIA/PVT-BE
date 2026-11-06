@@ -166,7 +166,19 @@ class QuotaAidMortuary extends Model
             return ['serviceStatus' => 'error'];
         }
         
-        $existingIds = [];
+                // El gateway puede responder un error (401/503) o un JSON sin las
+        // claves esperadas. Sin este control, PHP 8 lanza
+        // "Undefined array key requiredDocuments" y la pantalla da 500.
+        if (!is_array($collateDocuments)
+            || !isset($collateDocuments['requiredDocuments'])
+            || !isset($collateDocuments['additionallyDocuments'])) {
+            logger()->warning('requirementsList: respuesta inesperada del gateway', [
+                'respuesta' => is_array($collateDocuments) ? array_keys($collateDocuments) : gettype($collateDocuments),
+            ]);
+            return ['serviceStatus' => 'error'];
+        }
+
+$existingIds = [];
         foreach ($collateDocuments['requiredDocuments'] as $group) {
             foreach ($group as $doc) {
                 $existingIds[] = $doc['procedureRequirementId'];

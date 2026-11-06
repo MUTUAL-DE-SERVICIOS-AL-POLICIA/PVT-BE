@@ -64,7 +64,7 @@
                     <tr>
                         <td class='text-center p-5'>{!! $item->number !!}</td>
                             <td class='text-justify p-5'>{!! $item->procedure_document->name !!}
-                        @if(trim($item->comment) != null && trim($item->comment) != '')
+                        @if(trim((string) $item->comment) != null && trim((string) $item->comment) != '')
                             <span class="text-justify text-xs"> <i>* ({!! $item->comment !!})</i></span>
                         @endif
                         </td>

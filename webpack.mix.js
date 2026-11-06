@@ -11,7 +11,23 @@ require("dotenv").config();
  | file for the application as well as bundling f all the JS files.
  |
  */
-const app = process.env.MIX_APP;
+// 'prod' por defecto: compila app.scss con purgecss y versiona los assets.
+const app = process.env.MIX_APP || "prod";
+
+// Uglify por defecto renombra los identificadores (mangle). Con este bundle
+// eso rompe componentes de Vue en tiempo de ejecucion ("r is not a function"
+// dentro de __patch__). Se mantiene la compresion y se desactiva el renombrado.
+mix.options({
+  uglify: {
+    uglifyOptions: {
+      // compress elimina codigo que Vue necesita en tiempo de ejecucion
+      // (genera "n is not a function" dentro de __patch__). Se apaga junto
+      // con mangle: el bundle queda sin transformaciones.
+      compress: false,
+      mangle: false,
+    },
+  },
+});
 mix
 
   .webpackConfig({ devtool: "inline-source-map" })
@@ -35,7 +51,15 @@ switch (app) {
         path.join(__dirname, "resources/assets/js/**/*.vue")
       ],
       extensions: ["html", "js", "php", "vue"],
-      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/]
+      // 'mdi', 'fa' y 'glyphicon' son la clase base del icono (sin guion):
+      // sin ellas el <i> no tiene font-family y el icono sale como texto.
+      // Clases que purgecss quito y que SI se usan en las vistas:
+      // navbar-minimalize (boton de colapsar el menu), sk-cube1 (spinner),
+      // toggle-arrow-tiny, cont y title.
+      whitelist: ['mdi', 'fa', 'glyphicon', 'text-base',
+                  'navbar-minimalize', 'sk-cube1', 'toggle-arrow-tiny', 'cont', 'title'],
+      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/, /^mdi-/, /^fa-/, /^glyphicon-/,
+                          /navbar-minimalize/, /sk-cube1/, /toggle-arrow-tiny/, /sk-spinner/]
     })
     ;
    break;
@@ -52,7 +76,10 @@ switch (app) {
         path.join(__dirname, "resources/assets/js/**/*.vue")
       ],
       extensions: ["html", "js", "php", "vue"],
-      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/]
+      // 'mdi', 'fa' y 'glyphicon' son la clase base del icono (sin guion):
+      // sin ellas el <i> no tiene font-family y el icono sale como texto.
+      whitelist: ['mdi', 'fa', 'glyphicon', 'text-base'],
+      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/, /^mdi-/, /^fa-/, /^glyphicon-/]
     });
    break;
   case 'dev':

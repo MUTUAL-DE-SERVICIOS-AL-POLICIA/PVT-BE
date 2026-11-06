@@ -131,6 +131,8 @@
             */
 			// ajax:"/get_affiliate_contributions/{{$affiliate->id}}",
             ajax: "{{ url('get_affiliate_contributions', $affiliate->id) }}",
+            serverSide: true,
+            processing: true,
             lengthMenu: [[25, 50,100, -1], [25, 50,100, "Todos"]],
             //dom:"<'row'<'col-sm-6'l><'col-sm-6'>><'row'<'col-sm-12't>><'row'<'col-sm-5'i>><'row'<'bottom'p>>",
             dom: '< "html5buttons"B>lTfgitp',

@@ -36,6 +36,7 @@ class Kernel extends HttpKernel
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Muserpol\Http\Middleware\VerifyCsrfToken::class,
+            \Muserpol\Http\Middleware\ClampDataTablesLength::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 

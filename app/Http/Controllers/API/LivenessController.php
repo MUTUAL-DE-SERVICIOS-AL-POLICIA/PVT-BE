@@ -2,6 +2,8 @@
 
 namespace Muserpol\Http\Controllers\API;
 
+
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Muserpol\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +16,12 @@ use Illuminate\Support\Facades\Log;
 
 class LivenessController extends Controller
 {
+    /** @var \GuzzleHttp\Client */
+    protected $api_client;
+
+    /** @var float */
+    protected $distance;
+
     public function __construct()
     {
         $this->api_client = new Client([
@@ -146,13 +154,13 @@ class LivenessController extends Controller
     {
         $device = $request->affiliate->affiliate_token->affiliate_device;
         $continue = true;
-        if (str_contains($request->image, ';base64,')) {
+        if (Str::contains($request->image, ';base64,')) {
             $image = explode(";base64,", $request->image)[1];
         } else {
             $image = $request->image;
         }
         $path = 'liveness/faces/' . $request->affiliate->id . '/';
-        $random_string = str_random(12);
+        $random_string = Str::random(12);
         $file_name = $random_string . '.jpg';
 
         $liveness_actions = collect($device->liveness_actions);

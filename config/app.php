@@ -65,7 +65,8 @@ return [
     |
     */
 
-  'timezone' => 'America/La_Paz',
+  // Se deja configurable por entorno; el valor por defecto es el historico.
+  'timezone' => env('APP_TIMEZONE', 'America/La_Paz'),
 
   /*
     |--------------------------------------------------------------------------
@@ -78,7 +79,7 @@ return [
     |
     */
 
-  'locale' => 'es',
+  'locale' => env('APP_LOCALE', 'es'),
 
   /*
     |--------------------------------------------------------------------------

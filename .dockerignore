@@ -1,0 +1,33 @@
+# No viaja al contexto de build
+.git
+.gitignore
+.gitmodules
+.worktrees
+laradock
+vendor
+node_modules
+
+# Scripts de prueba: no hacen falta en la imagen
+harness
+
+# Fuentes del frontend: los assets compilados ya estan en public/
+resources/assets
+
+# Generado en desarrollo
+bootstrap/cache/*.php
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+*.log
+
+# Secretos: el .env se monta en runtime
+.env
+
+# No hacen falta en runtime y se quedaban viejos dentro de la imagen
+docker-compose*.yml
+README.md
+INSTRUCTIONS.md
+UPDATE.md
+LICENSE
+LICENCE.txt

@@ -42,6 +42,40 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        // Reemplazo compatible de Carbon::formatLocalized(), que usa strftime()
+        // (deprecado en PHP 8.1) y desaparece en Carbon 3. Mantiene la misma
+        // salida: en es el mes abreviado de Carbon lleva punto ("oct.") y el de
+        // strftime no, asi que se ajusta segun el formato pedido.
+        \Carbon\Carbon::macro('formatLocalizedEs', function (string $format) {
+            /** @var \Carbon\Carbon $this */
+            $map = [
+                'B' => 'F', 'b' => 'M', 'Y' => 'Y', 'd' => 'd',
+                'm' => 'm', 'H' => 'H', 'M' => 'i', 'S' => 's',
+            ];
+            // Se recorre el formato: los codigos %X pasan a date() y todo el
+            // texto literal se escapa, porque letras como "d" o "e" (de "de")
+            // serian interpretadas por date().
+            $php = '';
+            $len = strlen($format);
+            for ($i = 0; $i < $len; $i++) {
+                if ($format[$i] === '%' && $i + 1 < $len) {
+                    $code = $format[++$i];
+                    $php .= $map[$code] ?? $code;
+                } else {
+                    $php .= '\\' . $format[$i];
+                }
+            }
+            $out = $this->locale(config('app.locale', 'es'))->translatedFormat($php);
+
+            if (strpos($format, '%b.') !== false) {
+                $out = str_replace('..', '.', $out);
+            } elseif (strpos($format, '%b') !== false) {
+                $out = preg_replace('/(\p{L}+)\.(\s|\/|$)/u', '$1$2', $out);
+            }
+
+            return $out;
+        });
+
         Affiliate::observe(AffiliateObserver::class);
         Spouse::observe(SpouseObserver::class);
         RetirementFund::observe(RetirementFundObserver::class);

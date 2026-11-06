@@ -2,28 +2,31 @@
 
 namespace Muserpol\Http\Middleware;
 
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
 use Illuminate\Http\Request;
-use Fideloper\Proxy\TrustProxies as Middleware;
 
 class TrustProxies extends Middleware
 {
     /**
      * The trusted proxies for this application.
      *
-     * @var array
+     * @var array|string|null
      */
     protected $proxies;
 
     /**
-     * The current proxy header mappings.
+     * The proxy header mappings.
      *
-     * @var array
+     * Desde Laravel 9 el framework trae su propio TrustProxies; el paquete
+     * fideloper/proxy quedo absorbido. Se mantiene el mismo conjunto de
+     * cabeceras que usaba la version anterior.
+     *
+     * @var int
      */
-    protected $headers = [
-        Request::HEADER_FORWARDED => 'FORWARDED',
-        Request::HEADER_X_FORWARDED_FOR => 'X_FORWARDED_FOR',
-        Request::HEADER_X_FORWARDED_HOST => 'X_FORWARDED_HOST',
-        Request::HEADER_X_FORWARDED_PORT => 'X_FORWARDED_PORT',
-        Request::HEADER_X_FORWARDED_PROTO => 'X_FORWARDED_PROTO',
-    ];
+    protected $headers =
+        Request::HEADER_FORWARDED |
+        Request::HEADER_X_FORWARDED_FOR |
+        Request::HEADER_X_FORWARDED_HOST |
+        Request::HEADER_X_FORWARDED_PORT |
+        Request::HEADER_X_FORWARDED_PROTO;
 }

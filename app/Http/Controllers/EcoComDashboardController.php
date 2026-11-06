@@ -190,7 +190,7 @@ class EcoComDashboardController extends Controller
         foreach ($eco_coms as $e) {
             $results->push([
                 'quantity' => $e->quantity,
-                'name' => Carbon::parse($e->name)->formatLocalized("%b %Y"),
+                'name' => Carbon::parse($e->name)->formatLocalizedEs("%b %Y"),
             ]);
         }
         return $results;

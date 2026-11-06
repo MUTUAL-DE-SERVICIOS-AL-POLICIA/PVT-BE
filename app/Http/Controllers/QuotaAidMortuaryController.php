@@ -2,6 +2,8 @@
 
 namespace Muserpol\Http\Controllers;
 
+
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\ProcedureRequirement;
@@ -766,7 +768,7 @@ class QuotaAidMortuaryController extends Controller
     $i = 0;
     $ben = 0;
     $beneficiaries_array_request = [];
-    foreach (array_pluck($request->all(), 'id') as $key => $value) {
+    foreach (Arr::pluck($request->all(), 'id') as $key => $value) {
       if ($value) {
         array_push($beneficiaries_array_request, $value);
       }
@@ -1288,7 +1290,7 @@ class QuotaAidMortuaryController extends Controller
     $quota_aid = QuotaAidMortuary::find($quota_aid_id);
     $affiliate = $quota_aid->affiliate;
     
-    $testimonies_array_request = array_filter(array_pluck($request->all(), 'id'));
+    $testimonies_array_request = array_filter(Arr::pluck($request->all(), 'id'));
     
     foreach ($affiliate->testimony as $t) {
         if (!in_array($t->id, $testimonies_array_request)) {
@@ -1315,7 +1317,7 @@ class QuotaAidMortuaryController extends Controller
       $testimony->notary = $t['notary'];
       $testimony->save();
      
-      $testimony->quota_aid_beneficiaries()->sync(array_pluck($t['quota_aid_beneficiaries'], 'id'));
+      $testimony->quota_aid_beneficiaries()->sync(Arr::pluck($t['quota_aid_beneficiaries'], 'id'));
     }
     return;
   }

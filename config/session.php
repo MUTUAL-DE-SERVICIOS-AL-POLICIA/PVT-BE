@@ -16,7 +16,9 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'file'),
+    // Redis por defecto (el compose levanta el servicio). Para archivos:
+    // SESSION_DRIVER=file.
+    'driver' => env('SESSION_DRIVER', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
@@ -124,7 +126,9 @@ return [
 
     'cookie' => env(
         'SESSION_COOKIE',
-        str_slug(env('APP_NAME', 'laravel'), '_').'_session'
+        // str_slug() se elimino en Laravel 6; Str::slug() genera el mismo
+        // nombre, asi que no se invalidan las sesiones existentes.
+        \Illuminate\Support\Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
     ),
 
     /*

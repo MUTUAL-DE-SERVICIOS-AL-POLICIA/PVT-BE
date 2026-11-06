@@ -15,7 +15,11 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    // Laravel 10 lee QUEUE_CONNECTION; QUEUE_DRIVER queda como respaldo
+    // para no romper .env viejos, pero el nombre nuevo tiene prioridad.
+    // Redis por defecto: el servicio worker del compose procesa la cola.
+    // Para ejecutar en la peticion (sin worker): QUEUE_CONNECTION=sync.
+    'default' => env('QUEUE_CONNECTION', env('QUEUE_DRIVER', 'redis')),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,14 +42,18 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 90,
+            // Mayor que el --timeout del worker (900): si no, el job se reintenta
+            // mientras todavia se esta ejecutando.
+            'retry_after' => 960,
         ],
 
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',
             'queue' => 'default',
-            'retry_after' => 90,
+            // Mayor que el --timeout del worker (900): si no, el job se reintenta
+            // mientras todavia se esta ejecutando.
+            'retry_after' => 960,
         ],
 
         'sqs' => [
@@ -61,7 +69,9 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'default',
-            'retry_after' => 90,
+            // Mayor que el --timeout del worker (900): si no, el job se reintenta
+            // mientras todavia se esta ejecutando.
+            'retry_after' => 960,
         ],
 
     ],

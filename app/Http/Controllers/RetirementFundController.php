@@ -1,6 +1,8 @@
 <?php
 namespace Muserpol\Http\Controllers;
 
+
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\ProcedureRequirement;
@@ -492,16 +494,16 @@ class RetirementFundController extends Controller
         $this->authorize('view', $retirement_fund);
 
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
-        $affiliate->phone_number = explode(',', $affiliate->phone_number);
-        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
+        $affiliate->phone_number = explode(',', (string) $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', (string) $affiliate->cell_phone_number);
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
 
         $beneficiaries = RetFunBeneficiary::with(['address', 'kinship', 'city_identity_card'])->where('retirement_fund_id', $retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
-            $b->phone_number = explode(',', $b->phone_number);
-            $b->cell_phone_number = explode(',', $b->cell_phone_number);
+            $b->phone_number = explode(',', (string) $b->phone_number);
+            $b->cell_phone_number = explode(',', (string) $b->cell_phone_number);
             if (!sizeOf($b->address) > 0 && $b->type == 'S') {
                 $b->address[] = array('zone' => null, 'street' => null, 'number_address' => null);
             }
@@ -835,23 +837,25 @@ class RetirementFundController extends Controller
             'workflow:id,name',
             'ret_fun_correlative',
             'ret_fun_beneficiaries'
+        // Columnas calificadas: al filtrar por una columna de una relacion,
+        // yajra agrega un left join y "id"/"code" quedan ambiguos (SQLSTATE 42702).
         ])->select(
-            'id',
-            'code',
-            'reception_date',
-            'affiliate_id',
-            'city_start_id',
-            'inbox_state',
-            'total',
-            'wf_state_current_id',
-            'procedure_modality_id',
-            'ret_fun_procedure_id',
-            'workflow_id',
-            'total_availability',
-            'subtotal_ret_fun'
+            'retirement_funds.id as id',
+            'retirement_funds.code as code',
+            'retirement_funds.reception_date',
+            'retirement_funds.affiliate_id',
+            'retirement_funds.city_start_id',
+            'retirement_funds.inbox_state',
+            'retirement_funds.total',
+            'retirement_funds.wf_state_current_id',
+            'retirement_funds.procedure_modality_id',
+            'retirement_funds.ret_fun_procedure_id',
+            'retirement_funds.workflow_id',
+            'retirement_funds.total_availability',
+            'retirement_funds.subtotal_ret_fun'
         )
-            ->where('code', 'not like', '%A')
-            ->orderByDesc(DB::raw("split_part(code, '/',1)::integer"));
+            ->where('retirement_funds.code', 'not like', '%A')
+            ->orderByDesc(DB::raw("split_part(retirement_funds.code, '/',1)::integer"));
         return $datatables->eloquent($retirement_funds)
             ->addColumn('type', function ($ret_fun) {
                 return $ret_fun->procedure_modality->procedure_type->name ?? null;
@@ -967,7 +971,7 @@ class RetirementFundController extends Controller
         $i = 0;
         $ben = 0;
         $beneficiaries_array_request = [];
-        foreach (array_pluck($request->all(), 'id') as $value) {
+        foreach (Arr::pluck($request->all(), 'id') as $value) {
             if ($value) {
                 array_push($beneficiaries_array_request, $value);
             }
@@ -1234,8 +1238,8 @@ class RetirementFundController extends Controller
         }
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card', 'address'])->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
-            $b->phone_number = explode(',', $b->phone_number);
-            $b->cell_phone_number = explode(',', $b->cell_phone_number);
+            $b->phone_number = explode(',', (string) $b->phone_number);
+            $b->cell_phone_number = explode(',', (string) $b->cell_phone_number);
             if (!sizeOf($b->address) > 0 && $b->type == 'S') {
                 $b->address[] = array('zone' => null, 'street' => null, 'number_address' => null);
             }
@@ -1285,7 +1289,7 @@ class RetirementFundController extends Controller
         $affiliate = $ret_fun->affiliate;
 
         $testimonies_array_request =  array();
-        foreach (array_pluck($request->all(), 'id') as $key => $value) {
+        foreach (Arr::pluck($request->all(), 'id') as $key => $value) {
             if ($value) {
                 array_push($testimonies_array_request, $value);
             }

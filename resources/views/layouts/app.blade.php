@@ -8,8 +8,8 @@
     <title>Muserpol - @yield('title') </title>
 
     <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
-    <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
-    <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" />
+    <link rel="stylesheet" href="{{ mix('/css/app.css') }}" />
+    <link rel="stylesheet" href="{{ mix('/css/materialicons.css') }}" media="all" />
     @section('styles')
     @show
 </head>
