@@ -12,6 +12,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Muserpol\Models\Affiliate;
 use Muserpol\Models\AffiliateRecord;
 use Muserpol\Models\EconomicComplement\EconomicComplement;
+use Illuminate\Validation\ValidationException;
 
 class AffiliateObservationController extends Controller
 {

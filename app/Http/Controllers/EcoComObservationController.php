@@ -14,6 +14,7 @@ use DB;
 use Muserpol\Helpers\Util;
 use Illuminate\Auth\Access\AuthorizationException;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Illuminate\Validation\ValidationException;
 
 class EcoComObservationController extends Controller
 {
