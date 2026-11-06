@@ -40,14 +40,18 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 90,
+            // Mayor que el --timeout del worker (900): si no, el job se reintenta
+            // mientras todavia se esta ejecutando.
+            'retry_after' => 960,
         ],
 
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host' => 'localhost',
             'queue' => 'default',
-            'retry_after' => 90,
+            // Mayor que el --timeout del worker (900): si no, el job se reintenta
+            // mientras todavia se esta ejecutando.
+            'retry_after' => 960,
         ],
 
         'sqs' => [
@@ -63,7 +67,9 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'default',
-            'retry_after' => 90,
+            // Mayor que el --timeout del worker (900): si no, el job se reintenta
+            // mientras todavia se esta ejecutando.
+            'retry_after' => 960,
         ],
 
     ],

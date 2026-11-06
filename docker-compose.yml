@@ -54,6 +54,36 @@ services:
     volumes:
       - redis-data:/data
 
+  # Worker de la cola: genera exportaciones pesadas fuera de la peticion.
+  # Limitar el numero de workers controla cuantas exportaciones corren a la vez.
+  worker:
+    image: ${APP_IMAGE:-pvt-app:10.50-8.3.36}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pvt-be-dev-worker
+    restart: unless-stopped
+    working_dir: /var/www
+    # umask 022: los archivos que genera el worker deben ser legibles por
+    # www-data; con el umask por defecto quedan 700 y el web no puede leerlos.
+    command: ["sh", "-c", "umask 022 && exec php artisan queue:work --queue=exports,default --tries=1 --timeout=900 --sleep=3"]
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      LOG_CHANNEL: stderr
+    volumes:
+      - ./app:/var/www/app:ro
+      - ./config:/var/www/config:ro
+      - ./routes:/var/www/routes:ro
+      - ./resources:/var/www/resources:ro
+      - ./public:/var/www/public:ro
+      - ./database:/var/www/database:ro
+      - ./php-dev.ini:/usr/local/etc/php/conf.d/zzz-dev.ini:ro
+      - ./.env:/var/www/.env:ro
+      - app-storage:/var/www/storage
+    depends_on:
+      - redis
+
 volumes:
   app-storage:
   redis-data:

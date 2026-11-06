@@ -774,5 +774,8 @@ Route::post('eco_com_replicate', 'EconomicComplementReplicationController@prepar
     Route::get('salary_calculation/export', 'SalaryCalculationController@exportExcel')->name('salary_calculation.export');
     Route::get('salary_calculation/download_template', 'SalaryCalculationController@downloadSalaryTemplate')->name('salary_calculation.download_template');
     Route::post('salary_calculation/import', 'SalaryCalculationController@importSalaries')->name('salary_calculation.import');
+    // Exportaciones en segundo plano
+    Route::get('exports/{jobKey}/status', 'ExportController@status')->name('export_status');
+    Route::get('exports/{jobKey}/download', 'ExportController@download')->name('export_download');
   });
 });
