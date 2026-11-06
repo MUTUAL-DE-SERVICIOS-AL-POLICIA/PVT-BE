@@ -19,14 +19,20 @@ export default {
     };
   },
   mounted() {
-    console.log(this.affiliateId);
+    // MIX_PVT_URL se resuelve al compilar. Si no esta definida (esta app no
+    // expone /loans_paid_by_guarantors), la peticion apuntaba a
+    // "undefined/loans_paid_by_guarantors/..." y terminaba en 404.
+    const base = process.env.MIX_PVT_URL || "";
+    if (!base || !this.affiliateId) return;
     this.loansPaidByGuarantors(this.affiliateId);
   },
   methods: {
     async loansPaidByGuarantors(affiliate_id) {
       try {
+        const base = process.env.MIX_PVT_URL || "";
+        if (!base) return;
         let res = await axios.get(
-          `${process.env.MIX_PVT_URL}/loans_paid_by_guarantors/${affiliate_id}`
+          `${base}/loans_paid_by_guarantors/${affiliate_id}`
         );
         this.paid_by_guarantor = res.data == "1" ? true : false;
       } catch (e) {
