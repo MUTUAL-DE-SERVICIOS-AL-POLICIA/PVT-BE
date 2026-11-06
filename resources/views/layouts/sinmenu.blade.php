@@ -8,7 +8,7 @@
 
 
     <link rel="stylesheet" href="{!! asset('css/vendor.css') !!}" />
-    <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
+    <link rel="stylesheet" href="{{ mix('/css/app.css') }}" />
 </head>
 <body class="gray-bg">
 

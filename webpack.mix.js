@@ -53,8 +53,13 @@ switch (app) {
       extensions: ["html", "js", "php", "vue"],
       // 'mdi', 'fa' y 'glyphicon' son la clase base del icono (sin guion):
       // sin ellas el <i> no tiene font-family y el icono sale como texto.
-      whitelist: ['mdi', 'fa', 'glyphicon', 'text-base'],
-      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/, /^mdi-/, /^fa-/, /^glyphicon-/]
+      // Clases que purgecss quito y que SI se usan en las vistas:
+      // navbar-minimalize (boton de colapsar el menu), sk-cube1 (spinner),
+      // toggle-arrow-tiny, cont y title.
+      whitelist: ['mdi', 'fa', 'glyphicon', 'text-base',
+                  'navbar-minimalize', 'sk-cube1', 'toggle-arrow-tiny', 'cont', 'title'],
+      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/, /^mdi-/, /^fa-/, /^glyphicon-/,
+                          /navbar-minimalize/, /sk-cube1/, /toggle-arrow-tiny/]
     })
     ;
    break;
