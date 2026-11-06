@@ -11,7 +11,8 @@ require("dotenv").config();
  | file for the application as well as bundling f all the JS files.
  |
  */
-const app = process.env.MIX_APP;
+// 'prod' por defecto: compila app.scss con purgecss y versiona los assets.
+const app = process.env.MIX_APP || "prod";
 mix
 
   .webpackConfig({ devtool: "inline-source-map" })
@@ -35,7 +36,10 @@ switch (app) {
         path.join(__dirname, "resources/assets/js/**/*.vue")
       ],
       extensions: ["html", "js", "php", "vue"],
-      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/]
+      // 'mdi', 'fa' y 'glyphicon' son la clase base del icono (sin guion):
+      // sin ellas el <i> no tiene font-family y el icono sale como texto.
+      whitelist: ['mdi', 'fa', 'glyphicon', 'text-base'],
+      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/, /^mdi-/, /^fa-/, /^glyphicon-/]
     })
     ;
    break;
@@ -52,7 +56,10 @@ switch (app) {
         path.join(__dirname, "resources/assets/js/**/*.vue")
       ],
       extensions: ["html", "js", "php", "vue"],
-      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/]
+      // 'mdi', 'fa' y 'glyphicon' son la clase base del icono (sin guion):
+      // sin ellas el <i> no tiene font-family y el icono sale como texto.
+      whitelist: ['mdi', 'fa', 'glyphicon', 'text-base'],
+      whitelistPatterns: [/language/, /hljs/,/chosen-select/,/chosen-/, /^mdi-/, /^fa-/, /^glyphicon-/]
     });
    break;
   case 'dev':
