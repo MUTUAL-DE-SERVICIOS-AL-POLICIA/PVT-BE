@@ -1,12 +1,5 @@
 /node_modules
 /public/hot
-public/js/app.js
-public/js/datatable.js
-public/css/app.css
-public/css/datatable.css
-public/css/materialicons.css
-public/css/wkhtml.css
-public/mix-manifest.json
 /public/storage
 /storage/*.key
 /vendor
@@ -28,3 +21,10 @@ storage/.DS_Store
 .DS_Store
 .DS_Store
 *.code-workspace
+
+# Despliegue
+
+.audit.json
+
+# Assets compilados: se versionan para que un clon arranque sin npm
+# (el layout principal usa mix('/js/app.js')).

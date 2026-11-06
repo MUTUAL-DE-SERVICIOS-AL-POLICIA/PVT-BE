@@ -1,5 +1,12 @@
-* text=auto
-*.css linguist-vendored
-*.scss linguist-vendored
-*.js linguist-vendored
-CHANGELOG.md export-ignore
+# Los assets compilados se versionan para que un clon arranque sin npm, pero
+# no se revisan linea por linea: GitHub los colapsa como "generated".
+public/js/app.js            linguist-generated=true
+public/js/datatable.js      linguist-generated=true
+public/css/app.css          linguist-generated=true
+public/css/datatable.css    linguist-generated=true
+public/css/materialicons.css linguist-generated=true
+public/css/wkhtml.css       linguist-generated=true
+public/mix-manifest.json    linguist-generated=true
+
+# Composer es generado por el gestor, no por las manos.
+composer.lock               linguist-generated=true
