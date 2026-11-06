@@ -467,7 +467,7 @@ class EcoComCertificationController extends Controller
     public function certificationAllEcoComs(Request $request, $affiliate_id)
     {
         $selected_ids_eco_com = $request->input('selected_ids_eco_com');
-        $ids_eco_com = explode(',', $selected_ids_eco_com);
+        $ids_eco_com = explode(',', (string) $selected_ids_eco_com);
  
         $institution = 'MUTUAL DE SERVICIOS AL POLICÍA "MUSERPOL"';
         $direction = "DIRECCIÓN DE BENEFICIOS ECONÓMICOS";
