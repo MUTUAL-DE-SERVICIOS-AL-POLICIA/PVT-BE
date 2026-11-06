@@ -1692,9 +1692,13 @@ class EconomicComplementController extends Controller
         $year = $request->year;
         $semester = $request->semester;
         if (!$request->has('year') || !$request->has('semester')) {
-            $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first());
-            $year = Carbon::parse($procedure->year)->year;
-            $semester = $procedure->semester;
+            // Si no hay procedimiento vigente se usa el ultimo, para no romper.
+            $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first())
+                ?? EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->first();
+            if ($procedure) {
+                $year = Carbon::parse($procedure->year)->year;
+                $semester = $procedure->semester;
+            }
         }
         $average_list = EcoComRent::select(DB::raw("degrees.code as code, degrees.correlative as correlative, degrees.shortened as degree, procedure_modalities.name as type,eco_com_rents.minor as rmin,eco_com_rents.higher as rmax, eco_com_rents.average as average "))
             ->leftJoin('procedure_modalities', 'eco_com_rents.procedure_modality_id', '=', 'procedure_modalities.id')

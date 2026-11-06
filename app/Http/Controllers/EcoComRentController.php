@@ -22,9 +22,14 @@ class EcoComRentController extends Controller
         $semester = $request->semester;
 
         if (!$year || !$semester) {
-            $procedure = Util::getEcoComCurrentProcedure()->first();
-            $year = Carbon::parse($procedure->year)->year;
-            $semester = $procedure->semester;
+            // getEcoComCurrentProcedure() devuelve IDs: hay que resolver el modelo.
+            // Si no hay procedimiento vigente se usa el ultimo, para no romper.
+            $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first())
+                ?? EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->first();
+            if ($procedure) {
+                $year = Carbon::parse($procedure->year)->year;
+                $semester = $procedure->semester;
+            }
         }
 
         $query = EcoComRent::with(['degree', 'procedureModality'])

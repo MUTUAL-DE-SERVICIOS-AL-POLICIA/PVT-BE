@@ -211,7 +211,14 @@ class RetirementFundCertificationController extends Controller
   public function printFile($id)
   {
     $affiliate = Affiliate::find($id);
+    if (!$affiliate) {
+      abort(404, 'Afiliado no encontrado.');
+    }
+
     $retirement_fund = RetirementFund::where('affiliate_id', $affiliate->id)->where('ret_fun_state_id', '!=', '3')->get()->last();
+    if (!$retirement_fund) {
+      abort(404, 'El afiliado no tiene un tramite de fondo de retiro para certificar.');
+    }
 
     // $next_area_code = Util::getNextAreaCode($retirement_fund->id);
     $next_area_code = RetFunCorrelative::where('retirement_fund_id', $retirement_fund->id)->where('wf_state_id', 20)->first();

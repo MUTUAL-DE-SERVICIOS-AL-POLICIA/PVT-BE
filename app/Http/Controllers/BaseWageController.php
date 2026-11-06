@@ -6,6 +6,8 @@ use Muserpol\Models\BaseWage;
 use Muserpol\Models\Hierarchy;
 use Muserpol\Models\Degree;
 use Illuminate\Http\Request;
+use Muserpol\Models\ComplementaryFactor;
+use Muserpol\Models\EconomicComplement\EcoComProcedure;
 use Carbon\Carbon;
 use Muserpol\Helpers\Util;
 use Validator;
@@ -20,7 +22,17 @@ class BaseWageController extends Controller
      */
     public function index()
     {
-        return view('base_wages.index');
+        // La vista hace @can('update', $complementary_factor). La policy no usa
+        // los datos del modelo, solo el permiso, asi que una instancia vacia
+        // alcanza y evita el "Undefined variable" que rompia la pagina.
+        $procedure = EcoComProcedure::find(Util::getEcoComCurrentProcedure()->first())
+            ?? EcoComProcedure::orderByDesc('year')->orderByDesc('semester')->first();
+        $year = $procedure ? Carbon::parse($procedure->year)->year : Carbon::now()->year;
+
+        return view('base_wages.index', [
+            'complementary_factor' => new ComplementaryFactor(),
+            'year' => $year,
+        ]);
     }
 
     public function getGroupedWages()
