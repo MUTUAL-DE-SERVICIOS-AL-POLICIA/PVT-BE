@@ -126,7 +126,12 @@ class EcoComReportController extends Controller
                  return Excel::download(new EcoComDocumentManagementReport(), 'Gestion Documental.xlsx');  
                  break;
             case 32:
-                return Excel::download(new AffiliateDeceasedSemesterExport($eco_com_procedure->id), 'Afiliados_fallecidos_semestre.xlsx');
+                // Exportacion en segundo plano: la genera un worker para no
+                // ocupar un php-fpm durante minutos.
+                $jobKey = app(\Muserpol\Http\Controllers\ExportController::class)
+                    ->dispatchJob($request, \Muserpol\Exports\AffiliateDeceasedSemesterExport::class,
+                        [$eco_com_procedure->id], 'Afiliados_fallecidos_semestre.xlsx');
+                return view('exports.processing', ['jobKey' => $jobKey]);
                 break;
             default:
                 # code...

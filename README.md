@@ -65,6 +65,34 @@ APP_CONTAINER=pvt-be-prod PVT_USER=<usuario> PVT_PASS=<clave> PVT_ROL=53 \
   bash harness/crawl.sh http://localhost:9015
 ```
 
+## Exportaciones en segundo plano
+
+Las exportaciones pesadas de Excel no se generan en la petición del usuario:
+se encolan y las procesa el servicio `worker`.
+
+```sh
+docker compose -f docker-compose.prod.yml logs -f worker    # ver el procesamiento
+docker compose -f docker-compose.prod.yml exec app php artisan queue:failed
+```
+
+Con un worker corre **una exportación a la vez**; para permitir dos en paralelo:
+
+```sh
+docker compose -f docker-compose.prod.yml up -d --scale worker=2
+```
+
+El flujo es: se dispara el reporte → se muestra una página que consulta el
+estado → cuando el archivo está listo, el navegador lo descarga solo.
+
+Para agregar otra exportación al flujo, alcanza con encolarla:
+
+```php
+$jobKey = app(ExportController::class)->dispatchJob(
+    $request, MiExport::class, [$parametro], 'archivo.xlsx'
+);
+return view('exports.processing', ['jobKey' => $jobKey]);
+```
+
 ## Comandos frecuentes
 
 ```sh
