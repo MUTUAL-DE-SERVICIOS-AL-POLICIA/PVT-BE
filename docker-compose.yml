@@ -1,0 +1,59 @@
+# DESARROLLO
+#   docker compose up -d            (o --build si cambiaron dependencias)
+#   APP_PORT=9016 docker compose up -d   para otro puerto
+# El codigo se monta desde el disco, asi que los cambios se ven al recargar.
+# La estructura es identica a docker-compose.prod.yml; solo cambian los
+# montajes del codigo y las variables de entorno.
+name: pvt-be-dev
+
+services:
+  app:
+    container_name: pvt-be-dev
+    image: ${APP_IMAGE:-pvt-app:10.50-8.3.36}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-9014}:8080"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      # Igual que produccion: los logs salen por docker compose logs -f app.
+      # El canal 'deprecations' sigue escribiendo a storage/logs/deprecations.log.
+      LOG_CHANNEL: stderr
+    volumes:
+      # Codigo en vivo
+      - ./app:/var/www/app:ro
+      - ./config:/var/www/config:ro
+      - ./routes:/var/www/routes:ro
+      - ./resources:/var/www/resources:ro
+      - ./public:/var/www/public:ro
+      - ./database:/var/www/database:ro
+      # Opcache con revalidacion (en produccion no revalida)
+      - ./php-dev.ini:/usr/local/etc/php/conf.d/zzz-dev.ini:ro
+      # Configuracion (no se versiona)
+      - ./.env:/var/www/.env:ro
+      # Persistencia fuera del repo
+      - app-storage:/var/www/storage
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Sesiones y cache compartidos. Sin esto, Laravel escribe la sesion en un
+  # archivo con bloqueo exclusivo y las peticiones del MISMO usuario se turnan.
+  redis:
+    image: redis:7-alpine
+    container_name: pvt-be-dev-redis
+    restart: unless-stopped
+    # appendonly: las sesiones sobreviven a un reinicio de redis.
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+volumes:
+  app-storage:
+  redis-data:

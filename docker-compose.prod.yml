@@ -1,0 +1,47 @@
+# PRODUCCION
+#   docker compose -f docker-compose.prod.yml up -d --build
+#   APP_PORT=9016 docker compose -f docker-compose.prod.yml up -d --build
+# El codigo va horneado en la imagen: para aplicar cambios hay que reconstruir.
+# La estructura es identica a docker-compose.yml; solo cambian los montajes del
+# codigo y las variables de entorno.
+name: pvt-be-prod
+
+services:
+  app:
+    container_name: pvt-be-prod
+    image: ${APP_IMAGE:-pvt-app:10.50-8.3.36}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-9015}:8080"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      LOG_CHANNEL: stderr
+    volumes:
+      # Sin montajes de codigo: todo viene de la imagen
+      - ./.env:/var/www/.env:ro
+      - app-storage:/var/www/storage
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Sesiones y cache compartidos. Sin esto, Laravel escribe la sesion en un
+  # archivo con bloqueo exclusivo y las peticiones del MISMO usuario se turnan.
+  redis:
+    image: redis:7-alpine
+    container_name: pvt-be-prod-redis
+    restart: unless-stopped
+    # appendonly: las sesiones sobreviven a un reinicio de redis.
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+volumes:
+  app-storage:
+  redis-data:
