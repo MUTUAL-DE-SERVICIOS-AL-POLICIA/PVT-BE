@@ -15,7 +15,9 @@ return [
     |
     */
 
-    'default' => env('CACHE_DRIVER', 'file'),
+    // Redis por defecto: el compose levanta el servicio y el cache se
+    // comparte si se escalan instancias. Para volver a archivos: CACHE_DRIVER=file.
+    'default' => env('CACHE_DRIVER', 'redis'),
 
     /*
     |--------------------------------------------------------------------------

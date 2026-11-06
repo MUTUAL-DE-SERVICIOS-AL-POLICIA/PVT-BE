@@ -17,7 +17,9 @@ return [
 
     // Laravel 10 lee QUEUE_CONNECTION; QUEUE_DRIVER queda como respaldo
     // para no romper .env viejos, pero el nombre nuevo tiene prioridad.
-    'default' => env('QUEUE_CONNECTION', env('QUEUE_DRIVER', 'sync')),
+    // Redis por defecto: el servicio worker del compose procesa la cola.
+    // Para ejecutar en la peticion (sin worker): QUEUE_CONNECTION=sync.
+    'default' => env('QUEUE_CONNECTION', env('QUEUE_DRIVER', 'redis')),
 
     /*
     |--------------------------------------------------------------------------

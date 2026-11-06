@@ -16,7 +16,9 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'file'),
+    // Redis por defecto (el compose levanta el servicio). Para archivos:
+    // SESSION_DRIVER=file.
+    'driver' => env('SESSION_DRIVER', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
