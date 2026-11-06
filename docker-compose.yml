@@ -9,10 +9,14 @@ name: pvt-be-dev
 services:
   app:
     container_name: pvt-be-dev
-    image: ${APP_IMAGE:-pvt-app:10.50-8.3.36}
+    # Imagen propia de desarrollo: incluye las dependencias de desarrollo
+    # (laravel-debugbar), que es lo que muestra la barra de entorno/version.
+    image: ${APP_IMAGE:-pvt-app:dev}
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        COMPOSER_NO_DEV: ""
     restart: unless-stopped
     ports:
       - "${APP_PORT:-9014}:8080"
@@ -20,9 +24,12 @@ services:
     # Gateway de microservicios) usando host.docker.internal.
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    # Desarrollo: fuerza el entorno y la barra del Debugbar (entorno/version).
+    # La imagen se construye con dependencias de desarrollo para que exista.
     environment:
-      APP_ENV: local
+      APP_ENV: development
       APP_DEBUG: "true"
+      DEBUGBAR_ENABLED: "true"
       # Igual que produccion: los logs salen por docker compose logs -f app.
       # El canal 'deprecations' sigue escribiendo a storage/logs/deprecations.log.
       LOG_CHANNEL: stderr
@@ -61,10 +68,14 @@ services:
   # Worker de la cola: genera exportaciones pesadas fuera de la peticion.
   # Limitar el numero de workers controla cuantas exportaciones corren a la vez.
   worker:
-    image: ${APP_IMAGE:-pvt-app:10.50-8.3.36}
+    # Imagen propia de desarrollo: incluye las dependencias de desarrollo
+    # (laravel-debugbar), que es lo que muestra la barra de entorno/version.
+    image: ${APP_IMAGE:-pvt-app:dev}
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        COMPOSER_NO_DEV: ""
     container_name: pvt-be-dev-worker
     restart: unless-stopped
     working_dir: /var/www
@@ -75,9 +86,12 @@ services:
     # umask 022: los archivos que genera el worker deben ser legibles por
     # www-data; con el umask por defecto quedan 700 y el web no puede leerlos.
     command: ["sh", "-c", "umask 022 && exec php artisan queue:work --queue=exports,default --tries=1 --timeout=900 --sleep=3"]
+    # APP_ENV y APP_DEBUG salen del .env: con development/true aparece la
+    # barra del Debugbar; con production/false no.
     environment:
-      APP_ENV: local
+      APP_ENV: development
       APP_DEBUG: "true"
+      DEBUGBAR_ENABLED: "true"
       LOG_CHANNEL: stderr
     volumes:
       - ./app:/var/www/app:ro

@@ -9,10 +9,13 @@ name: pvt-be-prod
 services:
   app:
     container_name: pvt-be-prod
-    image: ${APP_IMAGE:-pvt-app:10.50-8.3.36}
+    # Imagen de produccion: sin dependencias de desarrollo (sin Debugbar).
+    image: ${APP_IMAGE:-pvt-app:prod}
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        COMPOSER_NO_DEV: "--no-dev"
     restart: unless-stopped
     ports:
       - "${APP_PORT:-9015}:8080"
@@ -20,9 +23,12 @@ services:
     # Gateway de microservicios) usando host.docker.internal.
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    # Produccion: sin banner (la imagen se construye con --no-dev, asi que el
+    # Debugbar ni siquiera esta instalado).
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
+      DEBUGBAR_ENABLED: "false"
       LOG_CHANNEL: stderr
     volumes:
       # Sin montajes de codigo: todo viene de la imagen
@@ -50,10 +56,13 @@ services:
   # Con 1 contenedor corre una exportacion a la vez; escalar con
   #   docker compose -f docker-compose.prod.yml up -d --scale worker=2
   worker:
-    image: ${APP_IMAGE:-pvt-app:10.50-8.3.36}
+    # Imagen de produccion: sin dependencias de desarrollo (sin Debugbar).
+    image: ${APP_IMAGE:-pvt-app:prod}
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        COMPOSER_NO_DEV: "--no-dev"
     container_name: pvt-be-prod-worker
     restart: unless-stopped
     working_dir: /var/www
@@ -64,9 +73,12 @@ services:
     # umask 022: los archivos que genera el worker deben ser legibles por
     # www-data; con el umask por defecto quedan 700 y el web no puede leerlos.
     command: ["sh", "-c", "umask 022 && exec php artisan queue:work --queue=exports,default --tries=1 --timeout=900 --sleep=3"]
+    # Produccion: sin banner (la imagen se construye con --no-dev, asi que el
+    # Debugbar ni siquiera esta instalado).
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
+      DEBUGBAR_ENABLED: "false"
       LOG_CHANNEL: stderr
     volumes:
       - ./.env:/var/www/.env:ro
