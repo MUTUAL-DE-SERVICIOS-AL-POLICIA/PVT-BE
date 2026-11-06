@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ContributionPassive extends Model
 {   
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
-    
+    // Laravel 10 elimino $dates: las fechas se declaran en $casts.
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
     public $timestamps = true;
     public $fillable = [
      'user_id',
