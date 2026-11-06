@@ -494,16 +494,16 @@ class RetirementFundController extends Controller
         $this->authorize('view', $retirement_fund);
 
         $affiliate = Affiliate::find($retirement_fund->affiliate_id);
-        $affiliate->phone_number = explode(',', $affiliate->phone_number);
-        $affiliate->cell_phone_number = explode(',', $affiliate->cell_phone_number);
+        $affiliate->phone_number = explode(',', (string) $affiliate->phone_number);
+        $affiliate->cell_phone_number = explode(',', (string) $affiliate->cell_phone_number);
         if (!sizeOf($affiliate->address) > 0) {
             $affiliate->address[] = array('zone' => null, 'street' => null, 'number_address' => null, 'city_address_id' => null);
         }
 
         $beneficiaries = RetFunBeneficiary::with(['address', 'kinship', 'city_identity_card'])->where('retirement_fund_id', $retirement_fund->id)->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
-            $b->phone_number = explode(',', $b->phone_number);
-            $b->cell_phone_number = explode(',', $b->cell_phone_number);
+            $b->phone_number = explode(',', (string) $b->phone_number);
+            $b->cell_phone_number = explode(',', (string) $b->cell_phone_number);
             if (!sizeOf($b->address) > 0 && $b->type == 'S') {
                 $b->address[] = array('zone' => null, 'street' => null, 'number_address' => null);
             }
@@ -1238,8 +1238,8 @@ class RetirementFundController extends Controller
         }
         $beneficiaries = RetirementFund::find($id)->ret_fun_beneficiaries()->with(['kinship', 'city_identity_card', 'address'])->orderByDesc('type')->orderBy('id')->get();
         foreach ($beneficiaries as $b) {
-            $b->phone_number = explode(',', $b->phone_number);
-            $b->cell_phone_number = explode(',', $b->cell_phone_number);
+            $b->phone_number = explode(',', (string) $b->phone_number);
+            $b->cell_phone_number = explode(',', (string) $b->cell_phone_number);
             if (!sizeOf($b->address) > 0 && $b->type == 'S') {
                 $b->address[] = array('zone' => null, 'street' => null, 'number_address' => null);
             }
