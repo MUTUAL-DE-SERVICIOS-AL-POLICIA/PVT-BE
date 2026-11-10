@@ -59,26 +59,51 @@ bash smoke.sh                  # usa APP_URL del .env
 bash smoke.sh http://localhost:9015   # o se le pasa la URL
 ```
 
-## Imagen de testing (con Debugbar)
+## Tres entornos
 
-El Debugbar está en `require-dev`, así que la imagen de producción
-(`--no-dev`) no lo incluye. Para testing hay que construir con las
-dependencias de desarrollo:
+| Entorno | Comando | Código | Banner |
+| --- | --- | --- | --- |
+| Desarrollo | `docker compose up -d` | montado (edición en vivo) | sí |
+| Testing | `docker compose -f docker-compose.test.yml up -d --build` | en la imagen | **sí** |
+| Producción | `docker compose -f docker-compose.prod.yml up -d --build` | en la imagen | no |
 
-```sh
-docker build --build-arg COMPOSER_NO_DEV= -t pvt-app:testing .
+Desarrollo y testing muestran la barra del Debugbar; producción no. Así se ve
+de un vistazo contra qué entorno se está trabajando, aunque los valores del
+`.env` sean parecidos.
 
-APP_IMAGE=pvt-app:testing \
-  docker compose -f docker-compose.prod.yml up -d
-```
+Testing es **igual a producción** (mismo código horneado, mismos servicios)
+salvo que la imagen se construye con las dependencias de desarrollo para que
+exista la barra.
 
-Y en el `.env` de ese entorno:
+Puertos por defecto: desarrollo `9014`, testing `9014` (en su propio servidor)
+y producción `9015`. Se cambian con `APP_PORT`.
+
+### `.env` en cada entorno
 
 ```ini
-DEBUGBAR_ENABLED=true     # el compose fuerza APP_DEBUG=false
+# testing
+APP_URL=http://<host-interno>:9014
+APP_ENV=production          # se comporta como producción
+APP_DEBUG=false             # true solo para ver el detalle de un error
+
+# producción
+APP_URL=https://pvt.example.gob.bo
+APP_ENV=production
+APP_DEBUG=false
 ```
 
-Eso devuelve la barra del Debugbar, que muestra el entorno y la versión.
+## Por qué el banner requiere otra imagen
+
+El Debugbar está en `require-dev`, así que la imagen de producción (`--no-dev`)
+no lo incluye. El compose de testing construye con las dependencias de
+desarrollo (`COMPOSER_NO_DEV=""`) para que la barra exista; el de producción
+no las incluye.
+
+Si hace falta construirla a mano:
+
+```sh
+docker build --build-arg COMPOSER_NO_DEV= -t pvt-app:test .
+```
 
 ## Frontend
 
