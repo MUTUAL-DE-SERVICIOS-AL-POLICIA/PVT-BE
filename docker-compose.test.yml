@@ -1,98 +1,32 @@
-# TESTING / PRE-PRODUCCION
-#   docker compose -f docker-compose.test.yml up -d --build
-# Igual que produccion (codigo horneado, misma estructura) pero con la barra
-# del Debugbar visible, para saber de un vistazo que NO es produccion.
-# El .env de este entorno lleva su propio APP_URL y, si se quiere ver el
-# detalle de los errores, APP_DEBUG=true.
+# TESTING / PRE-PRODUCCION  (override de docker-compose.prod.yml)
+#
+#   APP_PORT=9014 docker compose -f docker-compose.prod.yml -f docker-compose.test.yml up -d --build
+#
+# No es una copia: solo cambia lo que diferencia testing de produccion. Todo lo
+# demas (servicios, healthchecks, volumenes, worker) sale de docker-compose.prod.yml.
+# Si produccion cambia, testing lo hereda automaticamente.
 name: pvt-be-test
 
 services:
   app:
     container_name: pvt-be-test
-    # Imagen de produccion: sin dependencias de desarrollo (sin Debugbar).
     image: ${APP_IMAGE:-pvt-app:test}
     build:
-      context: .
-      dockerfile: Dockerfile
+      # con dependencias de desarrollo: la imagen incluye el Debugbar
       args:
         COMPOSER_NO_DEV: ""
-    restart: unless-stopped
-    ports:
-      - "${APP_PORT:-9014}:8080"
-    # Permite llegar a servicios publicados en el host (por ejemplo el
-    # Gateway de microservicios) usando host.docker.internal.
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    # APP_ENV y APP_DEBUG se ponen a mano en el .env.
-    # Sin barra del Debugbar: este compose no la lleva (ademas la imagen se
-    # construye con --no-dev, asi que el paquete no esta instalado).
     environment:
+      # barra del Debugbar visible: identifica que es el entorno de pruebas
       DEBUGBAR_ENABLED: "true"
-      LOG_CHANNEL: stderr
-    volumes:
-      # Sin montajes de codigo: todo viene de la imagen
-      - ./.env:/var/www/.env:ro
-      - app-storage:/var/www/storage
-    healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 40s
 
-  # Sesiones y cache compartidos. Sin esto, Laravel escribe la sesion en un
-  # archivo con bloqueo exclusivo y las peticiones del MISMO usuario se turnan.
   redis:
-    image: redis:7-alpine
     container_name: pvt-be-test-redis
-    restart: unless-stopped
-    # appendonly: las sesiones sobreviven a un reinicio de redis.
-    command: ["redis-server", "--appendonly", "yes"]
-    volumes:
-      - redis-data:/data
 
-  # Worker de la cola: genera exportaciones pesadas fuera de la peticion.
-  # Con 1 contenedor corre una exportacion a la vez; escalar con
-  #   docker compose -f docker-compose.prod.yml up -d --scale worker=2
   worker:
-    # Imagen de produccion: sin dependencias de desarrollo (sin Debugbar).
+    container_name: pvt-be-test-worker
     image: ${APP_IMAGE:-pvt-app:test}
     build:
-      context: .
-      dockerfile: Dockerfile
       args:
         COMPOSER_NO_DEV: ""
-    container_name: pvt-be-test-worker
-    restart: unless-stopped
-    working_dir: /var/www
-    # Permite llegar a servicios publicados en el host (por ejemplo el
-    # Gateway de microservicios) usando host.docker.internal.
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    # umask 022: los archivos que genera el worker deben ser legibles por
-    # www-data; con el umask por defecto quedan 700 y el web no puede leerlos.
-    command: ["sh", "-c", "umask 022 && exec php artisan queue:work --queue=exports,default --tries=1 --timeout=900 --sleep=3"]
-    # APP_ENV y APP_DEBUG se ponen a mano en el .env.
-    # Sin barra del Debugbar: este compose no la lleva (ademas la imagen se
-    # construye con --no-dev, asi que el paquete no esta instalado).
     environment:
       DEBUGBAR_ENABLED: "true"
-      LOG_CHANNEL: stderr
-    volumes:
-      - ./.env:/var/www/.env:ro
-      - app-storage:/var/www/storage
-    depends_on:
-      - redis
-    # Docker manda SIGTERM y espera 10 s por defecto: un Excel de 5 minutos
-    # moriria a la mitad. queue:work termina el job en curso y sale.
-    stop_grace_period: 16m
-    healthcheck:
-      # Falla si la cola supera 500 pendientes: senal de que el worker no da abasto.
-      test: ["CMD-SHELL", "php artisan queue:monitor redis:exports:500 > /dev/null 2>&1"]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-
-volumes:
-  app-storage:
-  redis-data:

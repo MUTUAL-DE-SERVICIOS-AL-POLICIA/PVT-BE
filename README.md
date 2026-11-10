@@ -64,7 +64,7 @@ bash smoke.sh http://localhost:9015   # o se le pasa la URL
 | Entorno | Comando | Código | Banner |
 | --- | --- | --- | --- |
 | Desarrollo | `docker compose up -d` | montado (edición en vivo) | sí |
-| Testing | `docker compose -f docker-compose.test.yml up -d --build` | en la imagen | **sí** |
+| Testing | `docker compose -f docker-compose.prod.yml -f docker-compose.test.yml up -d --build` | en la imagen | **sí** |
 | Producción | `docker compose -f docker-compose.prod.yml up -d --build` | en la imagen | no |
 
 Desarrollo y testing muestran la barra del Debugbar; producción no. Así se ve
@@ -74,6 +74,11 @@ de un vistazo contra qué entorno se está trabajando, aunque los valores del
 Testing es **igual a producción** (mismo código horneado, mismos servicios)
 salvo que la imagen se construye con las dependencias de desarrollo para que
 exista la barra.
+
+`docker-compose.test.yml` no es una copia: es un **override** de 29 líneas que
+solo cambia lo que diferencia testing de producción (imagen, dependencias,
+banner y nombres de contenedor). Todo lo demás se hereda de
+`docker-compose.prod.yml`, así que si producción cambia, testing lo toma solo.
 
 Puertos por defecto: desarrollo `9014`, testing `9014` (en su propio servidor)
 y producción `9015`. Se cambian con `APP_PORT`.
