@@ -58,13 +58,6 @@ curl -s -o /dev/null -w 'login:   %{http_code}\n' http://localhost:9015/login
 bash smoke.sh http://localhost:9015
 ```
 
-Recorrido completo de rutas (reporta las que devuelvan 5xx):
-
-```sh
-APP_CONTAINER=pvt-be-prod PVT_USER=<usuario> PVT_PASS=<clave> PVT_ROL=53 \
-  bash harness/crawl.sh http://localhost:9015
-```
-
 ## Imagen de testing (con Debugbar)
 
 El Debugbar está en `require-dev`, así que la imagen de producción
@@ -169,7 +162,6 @@ php-dev.ini               variante de desarrollo (opcache revalida)
 entrypoint.sh             prepara storage y precalienta caché
 preflight.sh              valida el .env antes de construir
 smoke.sh                  verifica el contenedor ya arriba
-harness/crawl.sh          recorrido de rutas: reporta las que devuelven 5xx
 .env.example              plantilla con todas las claves
 ```
 

@@ -7,9 +7,6 @@ laradock
 vendor
 node_modules
 
-# Scripts de prueba: no hacen falta en la imagen
-harness
-
 # Fuentes del frontend: los assets compilados ya estan en public/
 resources/assets
 
