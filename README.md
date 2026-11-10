@@ -55,7 +55,8 @@ docker compose -f docker-compose.prod.yml exec app php artisan migrate --pretend
 ```sh
 curl -s -o /dev/null -w 'healthz: %{http_code}\n' http://localhost:9015/healthz
 curl -s -o /dev/null -w 'login:   %{http_code}\n' http://localhost:9015/login
-bash smoke.sh http://localhost:9015
+bash smoke.sh                  # usa APP_URL del .env
+bash smoke.sh http://localhost:9015   # o se le pasa la URL
 ```
 
 ## Imagen de testing (con Debugbar)

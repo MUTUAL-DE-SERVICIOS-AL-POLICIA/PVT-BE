@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
-# Verifica un despliegue ya levantado. Uso: bash smoke.sh [url] [contenedor]
+# Verifica un despliegue ya levantado.
+# Uso: bash smoke.sh [url] [contenedor]   (sin url usa APP_URL del .env)
 set -uo pipefail
-BASE="${1:-http://localhost:9015}"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENVF="$ROOT/.env"
+
+# URL: el argumento manda; si no, se usa APP_URL del .env; si no, localhost.
+if [ -n "${1:-}" ]; then
+  BASE="$1"
+else
+  BASE="$(grep -m1 '^APP_URL=' "$ENVF" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" | sed 's#/*$##')"
+  BASE="${BASE:-http://localhost:9015}"
+fi
 CT="${2:-${APP_CONTAINER:-pvt-be-prod}}"
 fail=0
 
