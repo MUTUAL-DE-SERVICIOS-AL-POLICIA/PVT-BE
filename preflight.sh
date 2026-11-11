@@ -36,13 +36,15 @@ fi
 echo "== env/.env.$ENTORNO =="
 if [ -f "$ENVF" ]; then
   grep -q '^APP_KEY=base64:' "$ENVF" && ok "APP_KEY definida" || bad "APP_KEY vacia o invalida"
-  grep -q '^APP_DEBUG=false' "$ENVF" && ok "APP_DEBUG=false" || bad "APP_DEBUG debe ser false en produccion"
-  if grep -q '^APP_ENV=production' "$ENVF"; then
-    ok "APP_ENV=production"
-  elif [ "${ALLOW_NONPROD:-0}" = "1" ]; then
-    warn "APP_ENV no es production (permitido por ALLOW_NONPROD=1)"
+  # En prod se exige el modo seguro; en test/dev APP_DEBUG puede estar en true
+  # (es justo lo que se quiere para ver el detalle de un error).
+  if [ "$ENTORNO" = "prod" ]; then
+    grep -q '^APP_DEBUG=false' "$ENVF" && ok "APP_DEBUG=false" || bad "APP_DEBUG debe ser false en produccion"
+    grep -q '^APP_ENV=production' "$ENVF" && ok "APP_ENV=production" || bad "APP_ENV debe ser production"
   else
-    bad "APP_ENV debe ser production (o exportar ALLOW_NONPROD=1 para un ensayo)"
+    debug="$(grep -m1 '^APP_DEBUG=' "$ENVF" | cut -d= -f2-)"
+    envv="$(grep -m1 '^APP_ENV=' "$ENVF" | cut -d= -f2-)"
+    warn "APP_ENV=$envv APP_DEBUG=$debug (permitido en $ENTORNO)"
   fi
 
   # Cola: Laravel 10 lee QUEUE_CONNECTION. Si el .env define QUEUE_DRIVER con

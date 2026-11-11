@@ -1,7 +1,7 @@
 # Atajos para operar los entornos. Cada target toma sus variables de
 # env/<entorno>.compose.env, que ademas define COMPOSE_FILE (base, o base + dev).
 
-ENVS := prod test dev dev-local
+ENVS := prod test dev
 
 help:
 	@echo "Entornos: $(ENVS)"

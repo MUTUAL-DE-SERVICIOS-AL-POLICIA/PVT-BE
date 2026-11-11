@@ -17,10 +17,10 @@ No hace falta PHP, Composer ni Node en la máquina: todo corre en la imagen.
 
 ```sh
 # un archivo de runtime por entorno, copiado de la plantilla
-cp .env.example env/.env.dev-local
-bash preflight.sh dev-local        # valida ese entorno
+cp .env.example env/.env.dev
+bash preflight.sh dev              # valida ese entorno
 
-make up-dev-local                  # desarrollo local (:9013, código montado)
+make up-dev                        # desarrollo (:9012, código montado)
 make up-prod                       # producción (:9014, código en la imagen)
 ```
 
@@ -64,7 +64,6 @@ Cada entorno tiene su archivo de variables de compose en `env/`, y se opera con
 | Producción | `make up-prod` | 9014 | `pvt-app:prod` | prod | no |
 | Testing | `make up-test` | 9014 | `pvt-app:test` | prod (TODO) | **sí** |
 | Desarrollo público | `make up-dev` | 9012 | `pvt-app:dev` | prod (TODO) | **sí** |
-| Desarrollo local | `make up-dev-local` | 9013 | `pvt-app:dev` | prod (TODO) | **sí** |
 
 Testing y producción comparten el puerto 9014 porque corren en servidores
 distintos.
@@ -96,27 +95,48 @@ Tres capas, cada variable en un solo lugar:
 
 **Runtime de Laravel** (`env/.env.<entorno>`):
 
-| Variable | prod | test | dev | dev-local |
-| --- | --- | --- | --- | --- |
-| `APP_ENV` | production | production | development | development |
-| `APP_DEBUG` | false | false | true | true |
-| `LOG_LEVEL` | warning | warning | debug | debug |
-| `SESSION_SECURE_COOKIE` | false | false | false | false |
-| `APP_URL` | `http://<host-interno>:9014` | `http://<host-interno>:9014` | `http://<host-interno>:9012` | `http://localhost:9013` |
+| Variable | prod | test | dev |
+| --- | --- | --- | --- |
+| `APP_ENV` | production | production | development |
+| `APP_DEBUG` | false | false | true |
+| `LOG_LEVEL` | warning | warning | debug |
+| `SESSION_SECURE_COOKIE` | false | false | false |
+| `APP_URL` | `http://<host-interno>:9014` | `http://<host-interno>:9014` | ver nota abajo |
 
 **Orquestación y build** (`env/<entorno>.compose.env`):
 
-| Variable | prod | test | dev | dev-local |
-| --- | --- | --- | --- | --- |
-| `DEBUGBAR_ENABLED` | false | true | true | true |
-| `COMPOSER_FLAGS` | `--no-dev` | `--dev` | `--dev` | `--dev` |
-| `MIX_APP` | prod | prod | prod | prod |
-| `MIX_PVT_URL` | vacío | vacío | vacío | vacío |
-| `MIX_RRHH_URL` | vacío | vacío | vacío | vacío |
-| `APP_PORT` | 9014 | 9014 | 9012 | 9013 |
+| Variable | prod | test | dev |
+| --- | --- | --- | --- |
+| `DEBUGBAR_ENABLED` | false | true | true |
+| `COMPOSER_FLAGS` | `--no-dev` | `--dev` | `--dev` |
+| `MIX_APP` | prod | prod | prod |
+| `MIX_PVT_URL` | vacío | vacío | vacío |
+| `MIX_RRHH_URL` | vacío | vacío | vacío |
+| `APP_PORT` | 9014 | 9014 | 9012 |
 
 `SESSION_SECURE_COOKIE` va en `true` solo cuando el sitio se sirve por HTTPS: con
 http el navegador no manda la cookie y el login falla.
+
+`dev` es el mismo entorno para el servidor y para la PC: cada máquina tiene su
+propio `env/.env.dev` (no versionado) y solo cambia `APP_URL`:
+
+```ini
+# servidor
+APP_URL=http://<host-interno>:9012
+# PC local
+APP_URL=http://localhost:9012
+```
+
+### Correr dev junto a otro entorno en la misma máquina
+
+Si el puerto o el nombre del proyecto ya están en uso:
+
+```sh
+APP_PORT=9015 COMPOSE_PROJECT_NAME=pvt-be-dev-2 make up-dev
+```
+
+`COMPOSE_PROJECT_NAME` evita que los contenedores y volúmenes de los dos
+proyectos se pisen.
 
 Paridad: **todos compilan con `MIX_APP=prod`** hasta que se apruebe el cambio de
 test/dev a su propio scss. Por eso el CSS es idéntico entre entornos.
@@ -165,7 +185,7 @@ ni `node_modules`.
 Los compilados (`public/js/app.js`, `public/css/app.css`, `mix-manifest.json`)
 **ya no se versionan**. Después de un `git pull` no están, y no es un error:
 
-- en desarrollo los regenera el servicio `assets` (`make up-dev`, `make up-dev-local`);
+- en desarrollo los regenera el servicio `assets` (`make up-dev`);
 - en test y producción los genera el build (`make up-test`, `make up-prod`).
 
 Si la interfaz aparece sin estilos después de un pull, es que faltó el `--build`
@@ -174,7 +194,7 @@ o el servicio `assets` no está corriendo.
 Para recompilar una vez, sin levantar todo:
 
 ```sh
-docker compose --env-file env/dev-local.compose.env run --rm assets
+docker compose --env-file env/dev.compose.env run --rm assets
 ```
 
 `MIX_APP` elige el CSS: `prod` (`app.scss` + purgecss), `test` (`app_test.scss`)
@@ -194,6 +214,10 @@ terminan dentro del JS público.
 No son obligatorias: la app funciona sin ellas. Solo hacen falta si se quieren
 esas dos funciones. Cambiarlas exige reconstruir la imagen (van dentro del
 bundle).
+
+**Nunca pongas secretos en variables `MIX_*`.** Laravel Mix inyecta en el bundle
+todas las que empiezan con `MIX_`, y el bundle es público: cualquiera puede leer
+esas cadenas. Van vacías en los tres entornos.
 
 ## Exportaciones en segundo plano
 
@@ -247,7 +271,7 @@ Después de editar el `.env` hay que recrear los contenedores, porque el archivo
 se monta y el contenedor queda apuntando a la versión anterior:
 
 ```sh
-docker compose down && make up-dev-local
+docker compose down && make up-dev
 ```
 
 ## Estructura del despliegue
