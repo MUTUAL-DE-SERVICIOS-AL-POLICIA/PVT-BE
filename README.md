@@ -132,7 +132,7 @@ APP_URL=http://localhost:9012
 Si el puerto o el nombre del proyecto ya están en uso:
 
 ```sh
-APP_PORT=9015 COMPOSE_PROJECT_NAME=pvt-be-dev-2 make up-dev
+APP_PORT=9020 COMPOSE_PROJECT_NAME=pvt-be-dev-2 make up-dev
 ```
 
 `COMPOSE_PROJECT_NAME` evita que los contenedores y volúmenes de los dos
@@ -295,6 +295,76 @@ smoke.sh                  verifica el despliegue ya arriba
 Los dos compose tienen la misma estructura: el servicio `app`, el servicio
 `redis` y un volumen de storage. Solo cambian los montajes del código y las
 variables `APP_ENV`, `APP_DEBUG` y `LOG_CHANNEL`.
+
+## Comparar entornos
+
+La configuración resuelta de cada entorno se puede volcar y comparar:
+
+```sh
+docker compose --env-file env/prod.compose.env config > /tmp/prod.yml
+docker compose --env-file env/test.compose.env config > /tmp/test.yml
+diff /tmp/prod.yml /tmp/test.yml
+```
+
+Entre prod y test solo deben diferir: `name`, `APP_PORT`, `image`,
+`COMPOSER_FLAGS`, `DEBUGBAR_ENABLED` y la ruta de `ENV_FILE`. Cualquier otra
+diferencia es un cambio que se coló.
+
+`make config-<env>` hace lo mismo sin redirigir.
+
+## Problemas frecuentes
+
+| Síntoma | Causa | Solución |
+| --- | --- | --- |
+| La UI aparece sin estilos o sin JS | los compilados no están y no se generaron | `make up-<env>` (con `--build`); en dev, verificar que el servicio `assets` esté arriba |
+| Cambié un `.scss` y no se ve | en test/prod el frontend va dentro de la imagen | reconstruir: `make up-prod` |
+| Aparece la barra del Debugbar en prod | `DEBUGBAR_ENABLED=true` o imagen con `--dev` | revisar `env/prod.compose.env`; debe ser `false` y `COMPOSER_FLAGS=--no-dev` |
+| No aparece el banner en test | la imagen se construyó sin dependencias de desarrollo | `COMPOSER_FLAGS=--dev` en `env/test.compose.env` y reconstruir |
+| Cambié `MIX_*` y no pasa nada | van dentro del bundle | reconstruir la imagen |
+| `service "app" refers to undefined volume env/.env.prod` | `ENV_FILE` sin `./` | usar `./env/.env.prod` |
+| El puerto está ocupado al levantar dev | ya hay otro entorno con ese puerto | `APP_PORT=9020 COMPOSE_PROJECT_NAME=pvt-be-dev-2 make up-dev` |
+
+## Actualizar Node/Mix
+
+Estado actual: **Node 8**, Laravel Mix **1.7.2** (webpack 3), `node-sass` 4.14.1.
+
+`npm audit` (al 2026-11-11) reporta **470 vulnerabilidades** (19 críticas, 188
+altas, 246 moderadas, 17 bajas) en 54 paquetes. Son de **desarrollo**: no viajan
+al bundle ni a la imagen final. Pero bloquean subir Node.
+
+### Qué bloquea la subida
+
+| Paquete | Versión | Por qué bloquea |
+| --- | --- | --- |
+| `node-sass` | 4.14.1 | no compila en Node 16+; necesita 6.x/7.x o migrar a `sass` (dart) |
+| `webpack` | 3.12.0 | Node 17+ rompe con OpenSSL 3 (`ERR_OSSL_EVP_UNSUPPORTED`, hash md4) |
+| `laravel-mix` | 1.7.2 | ata webpack 3 |
+| `pngquant-bin` / `optipng-bin` | 4.0.0 / 3.1.4 | binarios viejos, sin builds para Node moderno |
+| `babel-*` | 6.x | toolchain antiguo (no bloquea, pero conviene migrar) |
+
+### Pasos
+
+1. **Auditoría de partida**: `npm audit > auditoria-inicial.txt` (sin `fix`).
+2. **Saltos intermedios de Node**: 8 → 12 → 14 → 16. En cada salto cambiar
+   `NODE_VERSION` en el Dockerfile, reconstruir y correr `npm run production`.
+   No saltear directo a 18/20: cada versión destapa un problema distinto.
+3. **Migrar el bundler**: Laravel Mix 6 (webpack 5), `node-sass` → `sass`,
+   quitar `browser-sync` y `laravel-mix-purgecss` (Mix 6 lo trae), actualizar
+   `vue-loader` (Vue 2.7 ya está instalado).
+4. **Regla en cada paso**: comparar los tres artefactos antes y después
+
+   ```
+   public/css/app.css
+   public/js/app.js
+   public/mix-manifest.json
+   ```
+
+   Tamaño y contenido. Si `app.css` cambia mucho, revisar purgecss (puede estar
+   borrando clases que se arman desde PHP). Si `app.js` cambia, revisar que no se
+   haya activado el `mangle` de uglify (rompe componentes de Vue).
+
+5. **Cerrar con el smoke**: `make up-test` y recorrer las pantallas con datos
+   reales antes de tocar producción.
 
 ## Notas
 
