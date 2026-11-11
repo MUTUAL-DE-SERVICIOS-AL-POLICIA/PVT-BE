@@ -7,8 +7,8 @@ laradock
 vendor
 node_modules
 
-# Fuentes del frontend: los assets compilados ya estan en public/
-resources/assets
+# El frontend se compila en la etapa assets, asi que resources/ SI viaja.
+# Lo que no viaja son los compilados: los genera esa etapa (ver Dockerfile).
 
 # Generado en desarrollo
 bootstrap/cache/*.php
@@ -28,3 +28,20 @@ INSTRUCTIONS.md
 UPDATE.md
 LICENSE
 LICENCE.txt
+
+# Compilados del frontend: los genera la etapa assets, no se copian del host
+public/js/app.js
+public/js/app.js.map
+public/js/datatable.js
+public/js/datatable.js.map
+public/css/app.css
+public/css/app.css.map
+public/css/datatable.css
+public/css/datatable.css.map
+public/css/materialicons.css
+public/css/materialicons.css.map
+public/css/wkhtml.css
+public/css/wkhtml.css.map
+public/css/vuetify.css
+public/css/vuetify.css.map
+public/mix-manifest.json

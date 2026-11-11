@@ -87,7 +87,9 @@ switch (app) {
     .sass("resources/assets/sass/app_dev.scss", "public/css/app.css")
    break;
   default:
-    break;
+    // Un valor invalido compilaba sin app.css y la app quedaba sin estilos,
+    // sin error. Mejor fallar el build.
+    throw new Error('MIX_APP="' + app + '" invalido: usar prod, test o dev');
 }
 
   // mix.browserSync("https://wwwachuchus.dev");

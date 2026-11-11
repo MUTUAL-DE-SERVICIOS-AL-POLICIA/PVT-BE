@@ -1,17 +1,51 @@
 # ---------------------------------------------------------------------------
-# Imagen de produccion: Laravel 10 + PHP 8.3.36 (runtime con el parche de
+# Imagen de PVT-BE: Laravel 10 + PHP 8.3.36 (runtime con el parche de
 # CVE-2026-109618 / CVE-2026-109619).
 #
-# Multi-etapa: las herramientas de compilacion (gcc, headers -dev) viven solo
-# en la etapa builder. En la imagen final quedan las extensiones compiladas y
-# unicamente las librerias de runtime que necesitan.
+# Tres etapas, cada una con un trabajo:
+#   assets   compila el frontend con Laravel Mix (Node). Aporta solo public/.
+#   builder  compila las extensiones de PHP (necesita gcc y headers -dev).
+#   final    runtime: php-fpm + nginx + extensiones .so + public/ compilado.
 #
-#   docker build -t pvt-app:10.50-8.3.36 .
+# La imagen final NO lleva Node, npm ni node_modules: la etapa assets se
+# descarta. El .env NO se hornea: se monta en runtime, porque el frontend se
+# compila con las variables de build (MIX_APP) y no con el .env.
 #
-# El .env NO se hornea en la imagen: se monta en runtime.
+#   docker build --build-arg MIX_APP=prod -t pvt-app:prod .
 # ---------------------------------------------------------------------------
 
-# --- Etapa 1: compilar las extensiones de PHP ------------------------------
+# --- Etapa 1: compilar el frontend -----------------------------------------
+# Node 8 es obligatorio: el proyecto usa Laravel Mix 1.x (webpack 3).
+# Para actualizar Mix hay que subir NODE_VERSION y probar `npm run production`.
+ARG NODE_VERSION=8
+FROM node:${NODE_VERSION} AS assets
+
+WORKDIR /app
+
+# Dependencias primero: si no cambia el lock, la capa se reutiliza y solo se
+# recompila el bundle cuando cambian las fuentes.
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+# Fuentes del frontend. Tambien views/: purgecss las lee para no borrar clases
+# que se usan en las plantillas.
+# artisan: Laravel Mix solo detecta que es un proyecto Laravel si existe ese
+# archivo (Mix.sees('laravel')); sin el, publicPath queda vacio y .version()
+# busca los archivos en la raiz del contenedor.
+COPY artisan webpack.mix.js ./
+COPY resources ./resources
+
+# MIX_APP elige el CSS (prod | test | dev). Un valor invalido falla el build.
+# MIX_PVT_URL se pasa a la etapa; hoy webpack.mix.js no la inyecta en el bundle
+# (falta el DefinePlugin), se agrega en un commit aparte.
+ARG MIX_APP=prod
+ARG MIX_PVT_URL=
+ENV MIX_APP=${MIX_APP}
+ENV MIX_PVT_URL=${MIX_PVT_URL}
+
+RUN npm run production
+
+# --- Etapa 2: compilar las extensiones de PHP ------------------------------
 FROM php:8.3.36-fpm AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -25,7 +59,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-enable redis \
     && rm -rf /var/lib/apt/lists/* /tmp/pear
 
-# --- Etapa 2: imagen final, solo runtime -----------------------------------
+# --- Etapa 3: imagen final, solo runtime -----------------------------------
 FROM php:8.3.36-fpm
 
 # Librerias de runtime que necesitan las extensiones copiadas (sin headers ni
@@ -59,6 +93,17 @@ ARG COMPOSER_NO_DEV=--no-dev
 RUN composer install ${COMPOSER_NO_DEV} --no-scripts --no-autoloader --no-interaction --prefer-dist
 
 COPY . .
+
+# public/js y public/css entran al contexto sin los compilados (ver
+# .dockerignore): los que valen son los de la etapa assets. Los estaticos
+# (datatables.js, vendor.css, patterns/, fonts/, images/) vienen del repo.
+COPY --from=assets /app/public/js/  /var/www/public/js/
+COPY --from=assets /app/public/css/ /var/www/public/css/
+COPY --from=assets /app/public/mix-manifest.json /var/www/public/mix-manifest.json
+
+# Las fuentes del frontend viajan al contexto para la etapa assets, pero en
+# runtime no se usan: fuera de la imagen (31 MB).
+RUN rm -rf resources/assets
 
 # El cache de paquetes se genera en runtime: si viaja desde el arbol de
 # desarrollo, referencia paquetes de require-dev que la imagen no tiene.
