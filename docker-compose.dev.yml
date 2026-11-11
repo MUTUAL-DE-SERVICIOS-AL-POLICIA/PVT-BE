@@ -1,0 +1,56 @@
+# DESARROLLO: se usa ENCIMA de docker-compose.yml.
+#   docker compose --env-file env/dev-local.compose.env up -d --build
+#
+# Agrega dos cosas que produccion no tiene:
+#   - los montajes del codigo, para editar sin reconstruir la imagen;
+#   - el servicio assets, que recompila el frontend al guardar.
+
+services:
+  app:
+    volumes:
+      - ./app:/var/www/app:ro
+      - ./config:/var/www/config:ro
+      - ./routes:/var/www/routes:ro
+      - ./resources:/var/www/resources:ro
+      - ./public:/var/www/public:ro
+      - ./database:/var/www/database:ro
+      - ./php-dev.ini:/usr/local/etc/php/conf.d/zzz-dev.ini:ro
+      - ${ENV_FILE:?definir ENV_FILE}:/var/www/.env:ro
+      - app-storage:/var/www/storage
+    environment:
+      DEBUGBAR_ENABLED: "true"
+
+  worker:
+    volumes:
+      - ./app:/var/www/app:ro
+      - ./config:/var/www/config:ro
+      - ./routes:/var/www/routes:ro
+      - ./resources:/var/www/resources:ro
+      - ./public:/var/www/public:ro
+      - ./database:/var/www/database:ro
+      - ./php-dev.ini:/usr/local/etc/php/conf.d/zzz-dev.ini:ro
+      - ${ENV_FILE:?definir ENV_FILE}:/var/www/.env:ro
+      - app-storage:/var/www/storage
+    environment:
+      DEBUGBAR_ENABLED: "true"
+
+  # Compila el frontend en modo watch. Escribe en ./public del host (el app lo
+  # monta :ro, asi que solo lee). node_modules vive en un volumen propio para
+  # no ensuciar el directorio del proyecto.
+  assets:
+    image: node:${NODE_VERSION:-8}
+    working_dir: /app
+    restart: unless-stopped
+    volumes:
+      - .:/app
+      - assets-node-modules:/app/node_modules
+    environment:
+      # Las MIX_* llegan al bundle: Laravel Mix inyecta todas las que empiezan
+      # con MIX_ (MixDefinitionsPlugin). No hace falta DefinePlugin.
+      MIX_APP: ${MIX_APP:-prod}
+      MIX_PVT_URL: ${MIX_PVT_URL:-}
+      MIX_RRHH_URL: ${MIX_RRHH_URL:-}
+    command: ["sh", "-c", "[ -x node_modules/.bin/webpack ] || npm ci --no-audit --no-fund; exec npm run watch-poll"]
+
+volumes:
+  assets-node-modules:

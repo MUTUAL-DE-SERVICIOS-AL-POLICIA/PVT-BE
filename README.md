@@ -20,16 +20,16 @@ cp .env.example .env          # completar credenciales y APP_KEY
 bash preflight.sh             # valida el .env antes de construir
 
 # desarrollo (:9014, código montado)
-docker compose up -d
+make up-dev-local
 
 # producción (:9015, código horneado en la imagen)
-docker compose -f docker-compose.prod.yml up -d --build
+make up-prod
 ```
 
 El puerto se cambia con `APP_PORT`:
 
 ```sh
-APP_PORT=9020 docker compose up -d
+APP_PORT=9020 make up-dev-local   # el puerto se cambia en env/<entorno>.compose.env
 ```
 
 ## Migraciones
@@ -37,7 +37,7 @@ APP_PORT=9020 docker compose up -d
 No hace falta `--force`: el comando pregunta y se confirma escribiendo `yes`.
 
 ```sh
-docker compose -f docker-compose.prod.yml exec app php artisan migrate
+docker compose --env-file env/prod.compose.env exec app php artisan migrate
 ```
 
 `docker compose exec` abre una terminal interactiva, así que la confirmación
@@ -47,7 +47,7 @@ pregunta no se puede responder y el comando se cancela.
 Para revisar qué va a ejecutar antes de aplicarlo:
 
 ```sh
-docker compose -f docker-compose.prod.yml exec app php artisan migrate --pretend
+docker compose --env-file env/prod.compose.env exec app php artisan migrate --pretend
 ```
 
 ## Verificación
@@ -59,43 +59,63 @@ bash smoke.sh                  # usa APP_URL del .env
 bash smoke.sh http://localhost:9015   # o se le pasa la URL
 ```
 
-## Tres entornos
+## Entornos
 
-| Entorno | Comando | Código | Banner |
-| --- | --- | --- | --- |
-| Desarrollo | `docker compose up -d` | montado (edición en vivo) | sí |
-| Testing | `docker compose -f docker-compose.prod.yml -f docker-compose.test.yml up -d --build` | en la imagen | **sí** |
-| Producción | `docker compose -f docker-compose.prod.yml up -d --build` | en la imagen | no |
+Cada entorno tiene su archivo de variables de compose en `env/`, y se opera con
+`make`:
 
-Desarrollo y testing muestran la barra del Debugbar; producción no. Así se ve
-de un vistazo contra qué entorno se está trabajando, aunque los valores del
-`.env` sean parecidos.
+| Entorno | Comando | Puerto | Imagen | CSS | Banner |
+| --- | --- | --- | --- | --- | --- |
+| Producción | `make up-prod` | 9015 | `pvt-app:prod` | prod | no |
+| Testing | `make up-test` | 9014 | `pvt-app:test` | prod (TODO) | **sí** |
+| Desarrollo público | `make up-dev` | 9013 ⚠️ | `pvt-app:dev` | prod (TODO) | **sí** |
+| Desarrollo local | `make up-dev-local` | 9014 ⚠️ | `pvt-app:dev` | prod (TODO) | **sí** |
 
-Testing es **igual a producción** (mismo código horneado, mismos servicios)
-salvo que la imagen se construye con las dependencias de desarrollo para que
-exista la barra.
+⚠️ = puerto por confirmar.
 
-`docker-compose.test.yml` no es una copia: es un **override** de 29 líneas que
-solo cambia lo que diferencia testing de producción (imagen, dependencias,
-banner y nombres de contenedor). Todo lo demás se hereda de
-`docker-compose.prod.yml`, así que si producción cambia, testing lo toma solo.
+Los mismos targets sin `make`:
 
-Puertos por defecto: desarrollo `9014`, testing `9014` (en su propio servidor)
-y producción `9015`. Se cambian con `APP_PORT`.
-
-### `.env` en cada entorno
-
-```ini
-# testing
-APP_URL=http://<host-interno>:9014
-APP_ENV=production          # se comporta como producción
-APP_DEBUG=false             # true solo para ver el detalle de un error
-
-# producción
-APP_URL=https://pvt.example.gob.bo
-APP_ENV=production
-APP_DEBUG=false
+```sh
+docker compose --env-file env/prod.compose.env up -d --build
+make config-prod        # ver la configuracion resuelta
+make logs-prod          # seguir los logs
+make down-prod          # apagar
 ```
+
+`docker-compose.yml` es la **base** (sin montajes de código). `docker-compose.dev.yml`
+se suma encima para desarrollo: monta el código y agrega el servicio `assets`,
+que recompila el frontend al guardar.
+
+### Dónde vive cada variable
+
+Tres capas, cada variable en un solo lugar:
+
+| Capa | Archivo | Contiene | Se lee |
+| --- | --- | --- | --- |
+| Orquestación y build | `env/<entorno>.compose.env` (versionado) | proyecto, puerto, imagen, `COMPOSER_FLAGS`, `MIX_*`, `DEBUGBAR_ENABLED`, `ENV_FILE` | al ejecutar `docker compose`/`make` |
+| Runtime de Laravel | `env/.env.<entorno>` (no versionado) | `APP_ENV`, `APP_DEBUG`, DB, redis, LDAP, secretos | al arrancar el contenedor |
+| Plantilla | `.env.example` (versionado) | todas las variables de Laravel, vacías o seguras | solo documentación |
+
+### Valores por entorno
+
+| Variable | prod | test | dev | dev-local |
+| --- | --- | --- | --- | --- |
+| `APP_ENV` | production | production | development | development |
+| `APP_DEBUG` | false | false | true | true |
+| `SESSION_SECURE_COOKIE` | false | false | false | false |
+| `DEBUGBAR_ENABLED` | false | true | true | true |
+| `COMPOSER_FLAGS` | `--no-dev` | `--dev` | `--dev` | `--dev` |
+| `MIX_APP` | prod | prod | prod | prod |
+| `APP_PORT` | 9015 | 9014 | 9013 ⚠️ | 9014 ⚠️ |
+| `APP_URL` | `http://<host-interno>:9015` | `http://<host-interno>:9014` | por confirmar | `http://localhost:9014` |
+
+`SESSION_SECURE_COOKIE` va en `true` solo cuando el sitio se sirve por HTTPS.
+
+Paridad: **todos compilan con `MIX_APP=prod`** hasta que se apruebe el cambio de
+test/dev a su propio scss. Por eso el CSS es idéntico entre entornos.
+
+`COMPOSER_FLAGS` no se llama `COMPOSER_NO_DEV` porque Composer lee esa variable
+de entorno y la aplica como `--no-dev`, chocando con `--dev`.
 
 ## Por qué el banner requiere otra imagen
 
@@ -132,14 +152,14 @@ Las exportaciones pesadas de Excel no se generan en la petición del usuario:
 se encolan y las procesa el servicio `worker`.
 
 ```sh
-docker compose -f docker-compose.prod.yml logs -f worker    # ver el procesamiento
-docker compose -f docker-compose.prod.yml exec app php artisan queue:failed
+docker compose --env-file env/prod.compose.env logs -f worker    # ver el procesamiento
+docker compose --env-file env/prod.compose.env exec app php artisan queue:failed
 ```
 
 Con un worker corre **una exportación a la vez**; para permitir dos en paralelo:
 
 ```sh
-docker compose -f docker-compose.prod.yml up -d --scale worker=2
+docker compose --env-file env/prod.compose.env up -d --scale worker=2
 ```
 
 El flujo es: se dispara el reporte → se muestra una página que consulta el
@@ -164,36 +184,39 @@ docker compose exec app composer install
 
 # logs (van a stderr)
 docker compose logs -f app
-docker compose -f docker-compose.prod.yml logs -f app
+docker compose --env-file env/prod.compose.env logs -f app
 
 # limpiar cachés después de cambiar configuración
 docker compose exec app php artisan optimize:clear
 
 # apagar (conserva el volumen de storage)
 docker compose down
-docker compose -f docker-compose.prod.yml down
+make down-prod
 ```
 
 Después de editar el `.env` hay que recrear los contenedores, porque el archivo
 se monta y el contenedor queda apuntando a la versión anterior:
 
 ```sh
-docker compose down && docker compose up -d
+docker compose down && make up-dev-local
 ```
 
 ## Estructura del despliegue
 
 ```
-docker-compose.yml        desarrollo (código montado, :9014)
-docker-compose.prod.yml   producción (código en la imagen, :9015)
-Dockerfile                nginx + php-fpm 8.3.36, multi-etapa
-nginx.conf                compresión y cache de estáticos
-php.ini                   configuración de PHP (producción)
+docker-compose.yml        base comun (sin montajes de codigo)
+docker-compose.dev.yml    se suma en desarrollo: montajes + watcher de assets
+env/<entorno>.compose.env variables de orquestacion y build (versionadas)
+env/.env.<entorno>        variables de Laravel y secretos (no versionadas)
+Dockerfile                assets (Node) + builder (PHP) + final (nginx/php-fpm)
+Makefile                  atajos: up-<env>, down-<env>, logs-<env>, config-<env>
+nginx.conf                compresion y cache de estaticos
+php.ini                   configuracion de PHP (produccion)
 php-dev.ini               variante de desarrollo (opcache revalida)
-entrypoint.sh             prepara storage y precalienta caché
+entrypoint.sh             prepara storage y precalienta cache
 preflight.sh              valida el .env antes de construir
-smoke.sh                  verifica el contenedor ya arriba
-.env.example              plantilla con todas las claves
+smoke.sh                  verifica el despliegue ya arriba
+.env.example              plantilla de las variables de Laravel
 ```
 
 Los dos compose tienen la misma estructura: el servicio `app`, el servicio

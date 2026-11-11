@@ -1,50 +1,43 @@
-# DESARROLLO
-#   docker compose up -d            (o --build si cambiaron dependencias)
-#   APP_PORT=9016 docker compose up -d   para otro puerto
-# El codigo se monta desde el disco, asi que los cambios se ven al recargar.
-# La estructura es identica a docker-compose.prod.yml; solo cambian los
-# montajes del codigo y las variables de entorno.
-name: pvt-be-dev
+# BASE COMUN a todos los entornos. El codigo va horneado en la imagen: para
+# aplicar cambios hay que reconstruir (--build).
+#
+# Cada entorno se activa con su archivo de variables, que define proyecto,
+# puerto, imagen y como se compila el frontend:
+#
+#   docker compose --env-file env/prod.compose.env up -d --build
+#   make up-prod          (lo mismo, mas corto)
+#
+# Desarrollo suma docker-compose.dev.yml, que monta el codigo y agrega el
+# watcher del frontend. El archivo de entorno lo indica en COMPOSE_FILE.
+#
+# Los secretos de Laravel NO estan aca: viven en env/.env.<entorno>, que se
+# monta como /var/www/.env en runtime (ENV_FILE).
 
 services:
   app:
-    container_name: pvt-be-dev
-    # Imagen propia de desarrollo: incluye las dependencias de desarrollo
-    # (laravel-debugbar), que es lo que muestra la barra de entorno/version.
-    image: ${APP_IMAGE:-pvt-app:dev}
+    image: ${APP_IMAGE:?definir APP_IMAGE en env/<entorno>.compose.env}
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        COMPOSER_NO_DEV: ""
+        # --no-dev en prod; --dev en test/dev (necesitan el Debugbar).
+        COMPOSER_FLAGS: ${COMPOSER_FLAGS:---no-dev}
+        # Se compilan DENTRO de la imagen (etapa assets de Node).
+        MIX_APP: ${MIX_APP:-prod}
+        MIX_PVT_URL: ${MIX_PVT_URL:-}
+        MIX_RRHH_URL: ${MIX_RRHH_URL:-}
     restart: unless-stopped
     ports:
-      - "${APP_PORT:-9014}:8080"
-    # Permite llegar a servicios publicados en el host (por ejemplo el
-    # Gateway de microservicios) usando host.docker.internal.
+      - "${APP_PORT:?definir APP_PORT}:8080"
+    # Para llegar a servicios publicados en el host (Gateway de microservicios).
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    # APP_ENV y APP_DEBUG se ponen a mano en el .env.
-    # Lo unico que fuerza este compose es la barra del Debugbar, para saber
-    # con cual compose se levanto el entorno.
     environment:
-      DEBUGBAR_ENABLED: "true"
-      # Igual que produccion: los logs salen por docker compose logs -f app.
-      # El canal 'deprecations' sigue escribiendo a storage/logs/deprecations.log.
       LOG_CHANNEL: stderr
+      # true = barra del Debugbar (test y dev). Requiere imagen con dev deps.
+      DEBUGBAR_ENABLED: ${DEBUGBAR_ENABLED:-false}
     volumes:
-      # Codigo en vivo
-      - ./app:/var/www/app:ro
-      - ./config:/var/www/config:ro
-      - ./routes:/var/www/routes:ro
-      - ./resources:/var/www/resources:ro
-      - ./public:/var/www/public:ro
-      - ./database:/var/www/database:ro
-      # Opcache con revalidacion (en produccion no revalida)
-      - ./php-dev.ini:/usr/local/etc/php/conf.d/zzz-dev.ini:ro
-      # Configuracion (no se versiona)
-      - ./.env:/var/www/.env:ro
-      # Persistencia fuera del repo
+      - ${ENV_FILE:?definir ENV_FILE}:/var/www/.env:ro
       - app-storage:/var/www/storage
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]
@@ -52,53 +45,43 @@ services:
       timeout: 5s
       retries: 3
       start_period: 40s
+    # Limites opcionales: descomentar para acotar el consumo del host.
+    # mem_limit: ${APP_MEM_LIMIT:-1g}
+    # cpus: ${APP_CPUS:-2}
 
-  # Sesiones y cache compartidos. Sin esto, Laravel escribe la sesion en un
-  # archivo con bloqueo exclusivo y las peticiones del MISMO usuario se turnan.
   redis:
     image: redis:7-alpine
-    container_name: pvt-be-dev-redis
     restart: unless-stopped
     # appendonly: las sesiones sobreviven a un reinicio de redis.
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis-data:/data
+    # mem_limit: ${REDIS_MEM_LIMIT:-256m}
 
-  # Worker de la cola: genera exportaciones pesadas fuera de la peticion.
-  # Limitar el numero de workers controla cuantas exportaciones corren a la vez.
+  # Worker de la cola: las exportaciones pesadas corren fuera de la peticion.
+  # Con 1 contenedor procesa una a la vez; escalar con --scale worker=N.
   worker:
-    # Imagen propia de desarrollo: incluye las dependencias de desarrollo
-    # (laravel-debugbar), que es lo que muestra la barra de entorno/version.
-    image: ${APP_IMAGE:-pvt-app:dev}
+    image: ${APP_IMAGE:?definir APP_IMAGE en env/<entorno>.compose.env}
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        COMPOSER_NO_DEV: ""
-    container_name: pvt-be-dev-worker
+        COMPOSER_FLAGS: ${COMPOSER_FLAGS:---no-dev}
+        MIX_APP: ${MIX_APP:-prod}
+        MIX_PVT_URL: ${MIX_PVT_URL:-}
+        MIX_RRHH_URL: ${MIX_RRHH_URL:-}
     restart: unless-stopped
     working_dir: /var/www
-    # Permite llegar a servicios publicados en el host (por ejemplo el
-    # Gateway de microservicios) usando host.docker.internal.
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    # umask 022: los archivos que genera el worker deben ser legibles por
-    # www-data; con el umask por defecto quedan 700 y el web no puede leerlos.
+    # umask 022: los archivos que genera el worker tienen que ser legibles por
+    # www-data; con el umask por defecto quedan 700.
     command: ["sh", "-c", "umask 022 && exec php artisan queue:work --queue=exports,default --tries=1 --timeout=900 --sleep=3"]
-    # APP_ENV y APP_DEBUG salen del .env: con development/true aparece la
-    # barra del Debugbar; con production/false no.
     environment:
-      DEBUGBAR_ENABLED: "true"
       LOG_CHANNEL: stderr
+      DEBUGBAR_ENABLED: ${DEBUGBAR_ENABLED:-false}
     volumes:
-      - ./app:/var/www/app:ro
-      - ./config:/var/www/config:ro
-      - ./routes:/var/www/routes:ro
-      - ./resources:/var/www/resources:ro
-      - ./public:/var/www/public:ro
-      - ./database:/var/www/database:ro
-      - ./php-dev.ini:/usr/local/etc/php/conf.d/zzz-dev.ini:ro
-      - ./.env:/var/www/.env:ro
+      - ${ENV_FILE:?definir ENV_FILE}:/var/www/.env:ro
       - app-storage:/var/www/storage
     depends_on:
       - redis
@@ -106,11 +89,12 @@ services:
     # moriria a la mitad. queue:work termina el job en curso y sale.
     stop_grace_period: 16m
     healthcheck:
-      # Falla si la cola supera 500 pendientes: senal de que el worker no da abasto.
+      # Falla si la cola supera 500 pendientes: el worker no da abasto.
       test: ["CMD-SHELL", "php artisan queue:monitor redis:exports:500 > /dev/null 2>&1"]
       interval: 60s
       timeout: 10s
       retries: 3
+    # mem_limit: ${WORKER_MEM_LIMIT:-512m}
 
 volumes:
   app-storage:

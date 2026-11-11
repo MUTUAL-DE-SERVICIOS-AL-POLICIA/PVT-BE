@@ -12,7 +12,12 @@ else
   BASE="$(grep -m1 '^APP_URL=' "$ENVF" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" | sed 's#/*$##')"
   BASE="${BASE:-http://localhost:9015}"
 fi
-CT="${2:-${APP_CONTAINER:-pvt-be-prod}}"
+# El nombre del contenedor depende del proyecto Compose: si no se indica, se
+# busca el servicio app del proyecto en ejecucion.
+CT="${2:-${APP_CONTAINER:-}}"
+if [ -z "$CT" ] && command -v docker >/dev/null 2>&1; then
+  CT="$(docker ps --format '{{.Names}}' 2>/dev/null | grep -E 'pvt-be-.*app(-1)?$' | head -1)"
+fi
 fail=0
 
 ok()   { printf '  \033[1;32mOK\033[0m    %-32s %s\n' "$1" "$2"; }

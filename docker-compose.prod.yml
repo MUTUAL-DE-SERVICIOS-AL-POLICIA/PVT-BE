@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        COMPOSER_NO_DEV: "--no-dev"
+        COMPOSER_FLAGS: "--no-dev"
     restart: unless-stopped
     ports:
       - "${APP_PORT:-9015}:8080"
@@ -61,7 +61,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        COMPOSER_NO_DEV: "--no-dev"
+        COMPOSER_FLAGS: "--no-dev"
     container_name: pvt-be-prod-worker
     restart: unless-stopped
     working_dir: /var/www

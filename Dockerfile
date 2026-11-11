@@ -86,11 +86,11 @@ WORKDIR /var/www
 # Solo las dependencias: el autoloader se genera despues de copiar el codigo,
 # porque el classmap apunta a app/ y database/.
 COPY composer.json composer.lock ./
-# COMPOSER_NO_DEV=--no-dev en produccion. Para una imagen de testing con las
-# dependencias de desarrollo (por ejemplo laravel-debugbar, que muestra el
-# entorno y la version), construir con --build-arg COMPOSER_NO_DEV=
-ARG COMPOSER_NO_DEV=--no-dev
-RUN composer install ${COMPOSER_NO_DEV} --no-scripts --no-autoloader --no-interaction --prefer-dist
+# Flags de composer: --no-dev en produccion, --dev en test/dev (necesitan el
+# Debugbar). No se llama COMPOSER_NO_DEV porque Composer lee esa variable de
+# entorno y la aplica como --no-dev, chocando con --dev.
+ARG COMPOSER_FLAGS=--no-dev
+RUN composer install ${COMPOSER_FLAGS} --no-scripts --no-autoloader --no-interaction --prefer-dist
 
 COPY . .
 
@@ -108,7 +108,7 @@ RUN rm -rf resources/assets
 # El cache de paquetes se genera en runtime: si viaja desde el arbol de
 # desarrollo, referencia paquetes de require-dev que la imagen no tiene.
 RUN rm -f bootstrap/cache/*.php \
-    && composer dump-autoload ${COMPOSER_NO_DEV} --optimize --no-scripts \
+    && composer dump-autoload ${COMPOSER_FLAGS} --optimize --no-scripts \
     && mkdir -p storage/framework/cache storage/framework/sessions \
                 storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache

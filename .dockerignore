@@ -45,3 +45,6 @@ public/css/wkhtml.css.map
 public/css/vuetify.css
 public/css/vuetify.css.map
 public/mix-manifest.json
+
+# Variables de runtime: se montan en runtime, no viajan en el contexto
+env/.env.*

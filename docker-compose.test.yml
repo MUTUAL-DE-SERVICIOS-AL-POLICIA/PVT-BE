@@ -14,7 +14,7 @@ services:
     build:
       # con dependencias de desarrollo: la imagen incluye el Debugbar
       args:
-        COMPOSER_NO_DEV: ""
+        COMPOSER_FLAGS: ""
     environment:
       # barra del Debugbar visible: identifica que es el entorno de pruebas
       DEBUGBAR_ENABLED: "true"
@@ -27,6 +27,6 @@ services:
     image: ${APP_IMAGE:-pvt-app:test}
     build:
       args:
-        COMPOSER_NO_DEV: ""
+        COMPOSER_FLAGS: ""
     environment:
       DEBUGBAR_ENABLED: "true"
