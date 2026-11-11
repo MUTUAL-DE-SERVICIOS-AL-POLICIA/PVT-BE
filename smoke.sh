@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 # Verifica un despliegue ya levantado.
-# Uso: bash smoke.sh [url] [contenedor]   (sin url usa APP_URL del .env)
+# Uso: bash smoke.sh [url] [contenedor]
+# Sin url: APP_URL del env/.env.<entorno> (SMOKE_ENV, por defecto dev-local).
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENVF="$ROOT/.env"
-
-# URL: el argumento manda; si no, se usa APP_URL del .env; si no, localhost.
+# URL: el argumento manda; si no, APP_URL del env/.env.<entorno> de SMOKE_ENV
+# (por defecto dev-local); si tampoco, localhost.
 if [ -n "${1:-}" ]; then
   BASE="$1"
 else
+  ENVF="$ROOT/env/.env.${SMOKE_ENV:-dev-local}"
+  [ -f "$ENVF" ] || ENVF="$ROOT/.env"
   BASE="$(grep -m1 '^APP_URL=' "$ENVF" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" | sed 's#/*$##')"
-  BASE="${BASE:-http://localhost:9015}"
+  BASE="${BASE:-http://localhost:9013}"
 fi
 # El nombre del contenedor depende del proyecto Compose: si no se indica, se
 # busca el servicio app del proyecto en ejecucion.

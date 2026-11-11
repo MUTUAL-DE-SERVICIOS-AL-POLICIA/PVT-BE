@@ -16,21 +16,16 @@ No hace falta PHP, Composer ni Node en la máquina: todo corre en la imagen.
 ## Arranque
 
 ```sh
-cp .env.example .env          # completar credenciales y APP_KEY
-bash preflight.sh             # valida el .env antes de construir
+# un archivo de runtime por entorno, copiado de la plantilla
+cp .env.example env/.env.dev-local
+bash preflight.sh dev-local        # valida ese entorno
 
-# desarrollo (:9014, código montado)
-make up-dev-local
-
-# producción (:9015, código horneado en la imagen)
-make up-prod
+make up-dev-local                  # desarrollo local (:9013, código montado)
+make up-prod                       # producción (:9014, código en la imagen)
 ```
 
-El puerto se cambia con `APP_PORT`:
-
-```sh
-APP_PORT=9020 make up-dev-local   # el puerto se cambia en env/<entorno>.compose.env
-```
+El puerto y la imagen se cambian en `env/<entorno>.compose.env`, no por línea de
+comandos.
 
 ## Migraciones
 
@@ -53,10 +48,10 @@ docker compose --env-file env/prod.compose.env exec app php artisan migrate --pr
 ## Verificación
 
 ```sh
-curl -s -o /dev/null -w 'healthz: %{http_code}\n' http://localhost:9015/healthz
-curl -s -o /dev/null -w 'login:   %{http_code}\n' http://localhost:9015/login
-bash smoke.sh                  # usa APP_URL del .env
-bash smoke.sh http://localhost:9015   # o se le pasa la URL
+curl -s -o /dev/null -w 'healthz: %{http_code}\n' http://localhost:9014/healthz
+curl -s -o /dev/null -w 'login:   %{http_code}\n' http://localhost:9014/login
+SMOKE_ENV=prod bash smoke.sh          # usa APP_URL de env/.env.prod (la URL publica)
+bash smoke.sh http://localhost:9014   # para probar desde esta maquina
 ```
 
 ## Entornos
@@ -66,12 +61,13 @@ Cada entorno tiene su archivo de variables de compose en `env/`, y se opera con
 
 | Entorno | Comando | Puerto | Imagen | CSS | Banner |
 | --- | --- | --- | --- | --- | --- |
-| Producción | `make up-prod` | 9015 | `pvt-app:prod` | prod | no |
+| Producción | `make up-prod` | 9014 | `pvt-app:prod` | prod | no |
 | Testing | `make up-test` | 9014 | `pvt-app:test` | prod (TODO) | **sí** |
-| Desarrollo público | `make up-dev` | 9013 ⚠️ | `pvt-app:dev` | prod (TODO) | **sí** |
-| Desarrollo local | `make up-dev-local` | 9014 ⚠️ | `pvt-app:dev` | prod (TODO) | **sí** |
+| Desarrollo público | `make up-dev` | 9012 | `pvt-app:dev` | prod (TODO) | **sí** |
+| Desarrollo local | `make up-dev-local` | 9013 | `pvt-app:dev` | prod (TODO) | **sí** |
 
-⚠️ = puerto por confirmar.
+Testing y producción comparten el puerto 9014 porque corren en servidores
+distintos.
 
 Los mismos targets sin `make`:
 
@@ -106,7 +102,7 @@ Tres capas, cada variable en un solo lugar:
 | `APP_DEBUG` | false | false | true | true |
 | `LOG_LEVEL` | warning | warning | debug | debug |
 | `SESSION_SECURE_COOKIE` | false | false | false | false |
-| `APP_URL` | `http://<host-interno>:9015` | `http://<host-interno>:9014` | por confirmar | `http://localhost:9014` |
+| `APP_URL` | `http://<host-interno>:9014` | `http://<host-interno>:9014` | `http://<host-interno>:9012` | `http://localhost:9013` |
 
 **Orquestación y build** (`env/<entorno>.compose.env`):
 
@@ -117,7 +113,7 @@ Tres capas, cada variable en un solo lugar:
 | `MIX_APP` | prod | prod | prod | prod |
 | `MIX_PVT_URL` | vacío | vacío | vacío | vacío |
 | `MIX_RRHH_URL` | vacío | vacío | vacío | vacío |
-| `APP_PORT` | 9015 | 9014 | 9013 ⚠️ | 9014 ⚠️ |
+| `APP_PORT` | 9014 | 9014 | 9012 | 9013 |
 
 `SESSION_SECURE_COOKIE` va en `true` solo cuando el sitio se sirve por HTTPS: con
 http el navegador no manda la cookie y el login falla.
@@ -189,6 +185,15 @@ Las variables `MIX_*` se pasan como build args desde `env/<entorno>.compose.env`
 Laravel Mix inyecta en el bundle **todas** las que empiezan con `MIX_`
 (`MixDefinitionsPlugin`), así que no hace falta DefinePlugin. No son secretas:
 terminan dentro del JS público.
+
+| Variable | Dónde se usa | Qué hace | Si está vacía |
+| --- | --- | --- | --- |
+| `MIX_PVT_URL` | `Alert.vue` (detalle de ret_fun) | consulta `{URL}/loans_paid_by_guarantors/{id}` en la plataforma de préstamos y muestra el aviso de préstamos pagados por garantes | no consulta nada |
+| `MIX_RRHH_URL` | `EditUser.vue` (edición de usuario) | consulta `{URL}/employee/{id}` para precargar teléfono y ciudad | la URL queda relativa y la consulta falla en silencio |
+
+No son obligatorias: la app funciona sin ellas. Solo hacen falta si se quieren
+esas dos funciones. Cambiarlas exige reconstruir la imagen (van dentro del
+bundle).
 
 ## Exportaciones en segundo plano
 
