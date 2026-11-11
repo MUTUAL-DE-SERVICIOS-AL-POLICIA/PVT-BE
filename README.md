@@ -98,24 +98,50 @@ Tres capas, cada variable en un solo lugar:
 
 ### Valores por entorno
 
+**Runtime de Laravel** (`env/.env.<entorno>`):
+
 | Variable | prod | test | dev | dev-local |
 | --- | --- | --- | --- | --- |
 | `APP_ENV` | production | production | development | development |
 | `APP_DEBUG` | false | false | true | true |
+| `LOG_LEVEL` | warning | warning | debug | debug |
 | `SESSION_SECURE_COOKIE` | false | false | false | false |
+| `APP_URL` | `http://<host-interno>:9015` | `http://<host-interno>:9014` | por confirmar | `http://localhost:9014` |
+
+**Orquestación y build** (`env/<entorno>.compose.env`):
+
+| Variable | prod | test | dev | dev-local |
+| --- | --- | --- | --- | --- |
 | `DEBUGBAR_ENABLED` | false | true | true | true |
 | `COMPOSER_FLAGS` | `--no-dev` | `--dev` | `--dev` | `--dev` |
 | `MIX_APP` | prod | prod | prod | prod |
+| `MIX_PVT_URL` | vacío | vacío | vacío | vacío |
+| `MIX_RRHH_URL` | vacío | vacío | vacío | vacío |
 | `APP_PORT` | 9015 | 9014 | 9013 ⚠️ | 9014 ⚠️ |
-| `APP_URL` | `http://<host-interno>:9015` | `http://<host-interno>:9014` | por confirmar | `http://localhost:9014` |
 
-`SESSION_SECURE_COOKIE` va en `true` solo cuando el sitio se sirve por HTTPS.
+`SESSION_SECURE_COOKIE` va en `true` solo cuando el sitio se sirve por HTTPS: con
+http el navegador no manda la cookie y el login falla.
 
 Paridad: **todos compilan con `MIX_APP=prod`** hasta que se apruebe el cambio de
 test/dev a su propio scss. Por eso el CSS es idéntico entre entornos.
 
-`COMPOSER_FLAGS` no se llama `COMPOSER_NO_DEV` porque Composer lee esa variable
-de entorno y la aplica como `--no-dev`, chocando con `--dev`.
+### Dos detalles que no hay que "arreglar"
+
+**`COMPOSER_FLAGS`, no `COMPOSER_NO_DEV`.** Composer lee la variable de entorno
+`COMPOSER_NO_DEV` y la aplica como si fuera `--no-dev`. Si el argumento se
+llamara así y en test/dev se pasara `--dev`, el build falla con
+`You can not use both --no-dev and --dev as they conflict with each other`.
+Por eso el nombre es `COMPOSER_FLAGS` y **no debe renombrarse**.
+
+`COMPOSER_FLAGS=--dev` es explícito y no estrictamente necesario (composer ya
+incluye las dependencias de desarrollo por defecto), pero el compose usa
+`${COMPOSER_FLAGS:---no-dev}` y con `:-` un valor vacío cae al default
+`--no-dev`. Dejarlo vacío apagaría el Debugbar en test/dev.
+
+**`ENV_FILE` empieza con `./`.** La ruta se usa como bind mount
+(`${ENV_FILE}:/var/www/.env:ro`). Compose solo trata una ruta relativa como bind
+si empieza con `./`; sin eso la interpreta como **volumen nombrado** y falla:
+`service "app" refers to undefined volume env/.env.prod`.
 
 ## Por qué el banner requiere otra imagen
 

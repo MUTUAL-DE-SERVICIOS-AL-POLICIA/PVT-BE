@@ -2,14 +2,17 @@
 # Verificaciones previas al despliegue. No modifica nada.
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENVF="$ROOT/.env"
+# Cada entorno tiene su archivo de runtime: env/.env.<entorno>.
+# Uso: bash preflight.sh [prod|test|dev|dev-local]   (por defecto prod)
+ENTORNO="${1:-prod}"
+ENVF="$ROOT/env/.env.$ENTORNO"
 fail=0
 ok()   { printf '  \033[1;32mOK\033[0m   %s\n' "$*"; }
 bad()  { printf '  \033[1;31mFALLA\033[0m %s\n' "$*"; fail=1; }
 warn() { printf '  \033[1;33mOJO\033[0m  %s\n' "$*"; }
 
 echo "== Archivos =="
-[ -f "$ENVF" ] && ok ".env existe" || bad "falta .env (copiar de .env.example)"
+[ -f "$ENVF" ] && ok "env/.env.$ENTORNO existe" || bad "falta env/.env.$ENTORNO (copiar de .env.example)"
 [ -f "$ROOT/Dockerfile" ] && ok "Dockerfile" || bad "falta Dockerfile"
 if [ -f "$ROOT/public/mix-manifest.json" ]; then
   ok "assets compilados"
@@ -30,7 +33,7 @@ else
   bad "falta public/mix-manifest.json (la UI no renderiza)"
 fi
 
-echo "== .env =="
+echo "== env/.env.$ENTORNO =="
 if [ -f "$ENVF" ]; then
   grep -q '^APP_KEY=base64:' "$ENVF" && ok "APP_KEY definida" || bad "APP_KEY vacia o invalida"
   grep -q '^APP_DEBUG=false' "$ENVF" && ok "APP_DEBUG=false" || bad "APP_DEBUG debe ser false en produccion"
@@ -68,11 +71,17 @@ if [ -f "$ENVF" ]; then
 fi
 
 echo "== Compose =="
-if docker compose -f "$ROOT/docker-compose.prod.yml" config >/dev/null 2>&1; then
-  ok "docker-compose.prod.yml valido"
-else
-  bad "docker-compose.prod.yml no valida"
-fi
+# Se valida cada entorno con su archivo de variables; COMPOSE_FILE decide si
+# suma docker-compose.dev.yml.
+for envf in "$ROOT"/env/*.compose.env; do
+  [ -f "$envf" ] || { bad "no hay env/*.compose.env"; break; }
+  nombre="$(basename "$envf" .compose.env)"
+  if ( cd "$ROOT" && docker compose --env-file "env/$nombre.compose.env" config >/dev/null 2>&1 ); then
+    ok "compose $nombre valido"
+  else
+    bad "compose $nombre no valida"
+  fi
+done
 
 echo "== Cacheo de configuracion =="
 warn "config:cache y route:cache NO se usan: 29 env() fuera de config/ y 19 closures en rutas."
