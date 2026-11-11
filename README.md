@@ -158,19 +158,37 @@ docker build --build-arg COMPOSER_NO_DEV= -t pvt-app:test .
 
 ## Frontend
 
-El bundle está compilado en **modo producción** y versionado en `public/`.
-Para recompilarlo tras cambiar algo en `resources/assets`:
+Se compila **dentro de la imagen**, en la etapa `assets` del Dockerfile
+(Node 8, porque el proyecto usa Laravel Mix 1.x). La imagen final no lleva Node
+ni `node_modules`.
+
+- **Desarrollo**: el servicio `assets` de `docker-compose.dev.yml` compila y
+  queda en watch; al guardar en `resources/assets` regenera `public/`.
+- **Test y producción**: lo genera el build de la imagen.
+
+Los compilados (`public/js/app.js`, `public/css/app.css`, `mix-manifest.json`)
+**ya no se versionan**. Después de un `git pull` no están, y no es un error:
+
+- en desarrollo los regenera el servicio `assets` (`make up-dev`, `make up-dev-local`);
+- en test y producción los genera el build (`make up-test`, `make up-prod`).
+
+Si la interfaz aparece sin estilos después de un pull, es que faltó el `--build`
+o el servicio `assets` no está corriendo.
+
+Para recompilar una vez, sin levantar todo:
 
 ```sh
-docker run --rm -v "$PWD:/app" -w /app node:8 \
-  sh -c 'npm install && MIX_APP=prod npm run production'
+docker compose --env-file env/dev-local.compose.env run --rm assets
 ```
 
-Se usa node 8 porque el proyecto trae Laravel Mix 1.x (webpack 3).
+`MIX_APP` elige el CSS: `prod` (`app.scss` + purgecss), `test` (`app_test.scss`)
+y `dev` (`app_dev.scss`). Hoy todos los entornos usan `prod`, para que el CSS sea
+idéntico; un valor inválido falla el build a propósito.
 
-`MIX_APP=prod` además activa **purgecss**, que recorta el CSS según las clases
-usadas en las vistas. Es útil para el tamaño, pero puede borrar clases armadas
-dinámicamente: revisar visualmente antes de quedarse con ese CSS.
+Las variables `MIX_*` se pasan como build args desde `env/<entorno>.compose.env`.
+Laravel Mix inyecta en el bundle **todas** las que empiezan con `MIX_`
+(`MixDefinitionsPlugin`), así que no hace falta DefinePlugin. No son secretas:
+terminan dentro del JS público.
 
 ## Exportaciones en segundo plano
 

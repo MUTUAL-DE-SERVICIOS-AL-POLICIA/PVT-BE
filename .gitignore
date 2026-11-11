@@ -26,8 +26,24 @@ storage/.DS_Store
 
 .audit.json
 
-# Assets compilados: se versionan para que un clon arranque sin npm
-# (el layout principal usa mix('/js/app.js')).
+# Compilados del frontend: los genera la etapa assets del Dockerfile (test y
+# produccion) y el servicio assets en desarrollo. No se versionan: un clon
+# limpio los obtiene al construir la imagen o se regeneran con `make up-dev`.
+/public/js/app.js
+/public/js/app.js.map
+/public/js/datatable.js
+/public/js/datatable.js.map
+/public/css/app.css
+/public/css/app.css.map
+/public/css/datatable.css
+/public/css/datatable.css.map
+/public/css/materialicons.css
+/public/css/materialicons.css.map
+/public/css/vuetify.css
+/public/css/vuetify.css.map
+/public/css/wkhtml.css
+/public/css/wkhtml.css.map
+/public/mix-manifest.json
 
 # Variables de runtime por entorno (secretos): solo se versionan las de compose
 env/.env.*
