@@ -17,8 +17,8 @@
             <div class="wrapper wrapper-content">
                 <div v-for="(requirement, groupNumber) in requirementList" :key="'requirementList' + groupNumber"
                     class="animated fadeInRight">
-                    <div class="vote-item" @click="!(isReview && rq.isUploaded) && checked(groupNumber, i)" v-for="(rq, i) in requirement"
-                        :class="rq.background" style="cursor:pointer; padding: 10px;" :key="i" v-if="isVisible(rq)">
+                    <div class="vote-item" @click="!(blockUploadedDocuments && rq.isUploaded) && checked(groupNumber, i)" v-for="(rq, i) in requirement"
+                        :class="rq.background" :style="{cursor: (blockUploadedDocuments && rq.isUploaded) ? 'not-allowed' : 'pointer', padding: '10px'}"v-if="isVisible(rq)">
                         <input type="hidden"
                             :name="'required_requirements[' + rq.number + '][' + rq.procedureDocumentId + '][procedureRequirementId]'"
                             :value="rq.procedureRequirementId">
@@ -113,6 +113,10 @@ export default {
             type: Boolean,
             required: false,
             default: false,
+        },
+        blockUploadedDocuments: {
+            type: Boolean,
+            default: false
         },
         reviewField: {
             type: String,
